@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+<table class="table table-striped" data-toggle="table" data-pagination="true" data-side-pagination="server"
+       data-url="requests.json" data-page-list="[10, 20, 50]" data-search="true">
+  <thead>
+    <tr>
+      <th data-field="user.email">From</th>
+      <th data-field="is_first_time" data-formatter="firstFormatter"></th>
+      <th data-field="gender"></th>
+      <th data-field="has_color" data-formatter="colorFormatter"></th>
+      <th>Position</th>
+      <th>Notes</th>
+      <th>Qid</th>
+      <th>cid</th>
+      <th>Ticket url</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Request', new_request_path %>

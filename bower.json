@@ -1,0 +1,27 @@
+{
+  "name": "CTD",
+  "lib": {
+    "name": "bower-rails generated lib assets",
+    "dependencies": {}
+  },
+  "vendor": {
+    "name": "bower-rails generated vendor assets",
+    "dependencies": {}
+  },
+  "dependencies": {
+    "bootstrap-table": "~1.10.0",
+    "bootstrap": "~3.3.6"
+  },
+  "authors": [
+    "Wojtek Grabski <wojtek@grabski.ca>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

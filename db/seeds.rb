@@ -5,3 +5,15 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+admin = User.create( email: 'wojtek@grabski.ca', password: 'testtest', password_confirmation: 'testtest' )
+request = admin.requests.create(
+                     is_first_time: false,
+                     position: 'hip',
+                    notes: 'test note'
+)
+request.save!
+
+
+Product.create( name: 'Large Sleeve Design', size: 'l', type: 'design', slug: '' )
+
+Product.create( name: 'Large Design', type: 'design', slug: 'large-design' )

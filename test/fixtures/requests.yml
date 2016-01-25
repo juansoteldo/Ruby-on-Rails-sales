@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 
+  token: MyString
+  is_first_time: false
+  gender: MyString
+  has_color: false
+  position: MyString
+  notes: MyString
+  qid: MyString
+  requesting_cid: MyString
+  ticket_url: MyString
+
+two:
+  user_id: 
+  token: MyString
+  is_first_time: false
+  gender: MyString
+  has_color: false
+  position: MyString
+  notes: MyString
+  qid: MyString
+  requesting_cid: MyString
+  ticket_url: MyString

@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @request.user %>
+</p>
+
+<p>
+  <strong>Token:</strong>
+  <%= @request.token %>
+</p>
+
+<p>
+  <strong>Is first time:</strong>
+  <%= @request.is_first_time %>
+</p>
+
+<p>
+  <strong>Gender:</strong>
+  <%= @request.gender %>
+</p>
+
+<p>
+  <strong>Has color:</strong>
+  <%= @request.has_color %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @request.position %>
+</p>
+
+<p>
+  <strong>Notes:</strong>
+  <%= @request.notes %>
+</p>
+
+<p>
+  <strong>Qid:</strong>
+  <%= @request.qid %>
+</p>
+
+<p>
+  <strong>Requesting cid:</strong>
+  <%= @request.requesting_cid %>
+</p>
+
+<p>
+  <strong>Ticket url:</strong>
+  <%= @request.ticket_url %>
+</p>
+
+<%= link_to 'Edit', edit_request_path(@request) %> |
+<%= link_to 'Back', requests_path %>
