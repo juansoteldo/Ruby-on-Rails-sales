@@ -1,0 +1,1 @@
+ShopifyAPI::Base.site = ENV['SHOPIFY_URL']
