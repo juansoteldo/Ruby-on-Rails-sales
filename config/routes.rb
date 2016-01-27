@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  resources :product_variants
+  get 'shopify/products'
+
+  get 'shopify/variants'
+
   resources :products
   resources :requests
   devise_for :users
@@ -56,6 +59,5 @@ Rails.application.routes.draw do
   #   namespace :admin do
   #     # Directs /admin/products/* to Admin::ProductsController
   #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
+  #     #   end
 end

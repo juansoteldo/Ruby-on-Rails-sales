@@ -1,17 +1,15 @@
 <p id="notice"><%= notice %></p>
-<table class="table table-striped" data-toggle="table" data-pagination="true" data-side-pagination="server"
-       data-url="requests.json" data-page-list="[10, 20, 50]" data-search="true">
+<table class="table" data-toggle="table" data-pagination="true" data-side-pagination="server"
+       data-url="requests.json" data-page-list="[10, 20, 50]" data-search="true" id="request-table"
+       data-show-refresh="true" data-id-field="id">
   <thead>
     <tr>
       <th data-field="user.email">From</th>
       <th data-field="is_first_time" data-formatter="firstFormatter"></th>
       <th data-field="gender"></th>
       <th data-field="has_color" data-formatter="colorFormatter"></th>
-      <th>Position</th>
-      <th>Notes</th>
-      <th>Qid</th>
-      <th>cid</th>
-      <th>Ticket url</th>
+      <th data-field="position">Position</th>
+      <th data-formatter="cartButtons"></th>
     </tr>
   </thead>
 

@@ -1,0 +1,1 @@
+ShopifyAPI::Base.site = 'https://xxxx:xxxxx@custom-tattoo-shop.myshopify.com/admin'

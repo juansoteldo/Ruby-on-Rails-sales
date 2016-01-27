@@ -14,6 +14,6 @@ request = admin.requests.create(
 request.save!
 
 
-Product.create( name: 'Large Sleeve Design', size: 'l', type: 'design', slug: '' )
+# Product.create( name: 'Large Sleeve Design', size: 'l', type: 'design', slug: '' )
 
-Product.create( name: 'Large Design', type: 'design', slug: 'large-design' )
+# Product.create( name: 'Large Design', type: 'design', slug: 'large-design' )
