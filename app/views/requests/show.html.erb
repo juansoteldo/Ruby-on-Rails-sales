@@ -37,17 +37,17 @@
 
 <p>
   <strong>Qid:</strong>
-  <%= @request.qid %>
+  <%= @request.quote_id %>
 </p>
 
 <p>
   <strong>Requesting cid:</strong>
-  <%= @request.requesting_cid %>
+  <%= @request.client_id %>
 </p>
 
 <p>
   <strong>Ticket url:</strong>
-  <%= @request.ticket_url %>
+  <a href="https://customtattoodesign.freshdesk.com/helpdesk/tickets/<%= @request.ticket_id %>">https://customtattoodesign.freshdesk.com/helpdesk/tickets/<%= @request.ticket_id %></a>
 </p>
 
 <%= link_to 'Edit', edit_request_path(@request) %> |

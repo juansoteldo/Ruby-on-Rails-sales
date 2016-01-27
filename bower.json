@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "bootstrap-table": "~1.10.0",
-    "bootstrap": "~3.3.6"
+    "bootstrap": "~3.3.6",
+    "underscore.string": "~3.2.3",
+    "clipboard": "~1.5.5",
+    "zeroclipboard": "~2.2.0"
   },
   "authors": [
     "Wojtek Grabski <wojtek@grabski.ca>"

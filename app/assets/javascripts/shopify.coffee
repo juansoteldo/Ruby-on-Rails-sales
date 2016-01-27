@@ -3,14 +3,33 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 
-copyUrl = (event) ->
-  btn = event.target
-  url = $(btn).data('url')
-  closeSidebar(event)
+copyText = (url) ->
+  doc = document
+  text = doc.createElement('SPAN')
+  $(text).text url
+  range = undefined
+  selection = undefined
+  if doc.body.createTextRange
+    range = document.body.createTextRange()
+    range.moveToElementText text
+    range.select()
+  else if window.getSelection
+    selection = window.getSelection()
+    range = document.createRange()
+    range.selectNodeContents text
+    selection.removeAllRanges()
+    selection.addRange range
+  document.execCommand 'copy'
+  console.log text
+  $(text).remove()
+  return
 
 ready = ->
-  $('#variants').on "click", '.btn-url', copyUrl
-  console.log "attached"
+  #$('#variants').on "click", '.btn-url', closeSidebar
+  $('.btn-url').each ->
+    clip = new ZeroClipboard(this)
+    clip.on "aftercopy", (event) ->
+      closeSidebar()
 
 $(document).ready ready
 $(document).on 'page:load', ready

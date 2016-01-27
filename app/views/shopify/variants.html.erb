@@ -1,5 +1,5 @@
 <div id="variants">
-  <div class="list-group">
+  <ul class="list-group">
     <% @groups.each do |group| %>
         <a class="list-group-item" href="#!" data-toggle="collapse" data-parent="#variants" data-target="#group-<%= group.id %>" >
           <%= group.title %>
@@ -15,19 +15,20 @@
               </a>
               <div id="product-<%= product.id %>" class="list-group collapse <%= product.css_classes %>">
                 <% product.variants.each do |variant| %>
-                    <p class="list-group-item">
-                      <div class="row">
+
+                      <div class="row list-group-item">
                         <div class="col col-md-4">
                           <%= variant.price %>
                         </div>
-                        <button class="btn btn-sm btn-url" data-url="http://shop.customtattoodesign.ca/products/<%= product.handle %>?variant=<%= variant.id %>">GO</button>
+                        <% url = "http://shop.customtattoodesign.ca/products/#{product.handle}?variant=#{variant.id}" %>
+                        <button class="btn btn-sm btn-url"
+                                data-clipboard-text="<%= url %>&uid=" title="Copy to clipboard">Copy URL</button>
                       </div>
-                    </p>
                 <% end %>
               </div>
 
             <% end %>
         </div>
     <% end %>
-  </div>
+  </ul>
 </div>

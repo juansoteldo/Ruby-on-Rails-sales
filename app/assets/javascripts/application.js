@@ -14,4 +14,6 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require bootstrap-table
+//= require underscore.string
+//= require ZeroClipboard
 //= require_tree .

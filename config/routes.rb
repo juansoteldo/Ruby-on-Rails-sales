@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  post 'public/new_request'
+
   get 'shopify/products'
 
   get 'shopify/variants'

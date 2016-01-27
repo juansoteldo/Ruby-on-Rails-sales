@@ -1,10 +1,7 @@
 @openSidebar = ->
   $("#wrapper").removeClass("toggled")
+  $("#variants .collapse").removeClass("in")
 
 @closeSidebar = ->
   $("#wrapper").addClass("toggled")
 
-@filterSidebar = (filter) ->
-  $("#variants .deposit, #variants .final").hide()
-  $("#variants .#{filter}").show()
-  $('#variants-title').text(filter)
