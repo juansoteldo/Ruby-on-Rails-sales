@@ -15,5 +15,5 @@
 //= require bootstrap
 //= require bootstrap-table
 //= require underscore.string
-//= require ZeroClipboard
+//= require zeroclipboard
 //= require_tree .
