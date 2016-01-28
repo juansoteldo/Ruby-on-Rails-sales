@@ -5,7 +5,7 @@ json.rows do
     json.user do
       json.extract!(request.user, :id, :email)
     end
-    json.url request_url(request, format: :json)
+    json.url admin_request_url(request, format: :json)
   end
 end
 

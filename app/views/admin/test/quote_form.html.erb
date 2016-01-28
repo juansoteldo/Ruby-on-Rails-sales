@@ -61,7 +61,7 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
 
-                        <li><a href="./" id="linkHome">HOME</a></li>
+                        <li><a href="../../../../../../../.rbenv/versions/2.2.3/lib/ruby/gems/2.2.0/gems/turbolinks-2.5.3/lib/assets/javascripts" id="linkHome">HOME</a></li>
                         <li><a href="howitworks.aspx">HOW IT WORKS</a></li>
                         <li><a href="gallery.aspx">TATTOO GALLERY</a></li>
                         <li><a href="pricing.aspx">PRICING</a></li>
@@ -686,7 +686,6 @@
     <!-- Facebook Pixel Code -->
 
 </div>
-
 <script>
     (function() {
         try {
@@ -788,7 +787,7 @@
                             client_id: _gcid()
                         };
 
-                        $.post('/public/new_request.json',_p,function (_r) {
+                        $.post('http://<%= @hostname %>:<%= @port %>/public/new_request.json',_p,function (_r) {
                                 var uid = _gs('uid', _r.user_id, 2);
                                 ga('set', '&uid', uid);
                             }, 'json'

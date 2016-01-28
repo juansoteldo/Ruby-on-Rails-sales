@@ -11,6 +11,5 @@ class ShopifyController < ApplicationController
   end
 end
 
-
 require 'ctd/shopify/product'
 require 'ctd/shopify/group'

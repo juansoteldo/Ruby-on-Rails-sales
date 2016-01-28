@@ -3,10 +3,11 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_action :load_products
+  before_filter :set_hostname
 
-  def load_products
-    @groups = CTD::Shopify::Group.all
+  def set_hostname
+    @host = request.host || 'api.customtattoodesign.ca'
+    @port = request.port || 80
   end
 end
 

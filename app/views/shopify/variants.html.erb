@@ -17,6 +17,9 @@
                 <% product.variants.each do |variant| %>
 
                       <div class="row list-group-item">
+                        <div class="col col-md-1">
+                          <%= variant.option
+                        </div>
                         <div class="col col-md-4">
                           <%= variant.price %>
                         </div>

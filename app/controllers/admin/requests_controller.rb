@@ -1,4 +1,6 @@
-class RequestsController < ApplicationController
+class Admin::RequestsController < Admin::BaseController
+  load_and_authorize_resource :request, class: Request
+
   before_action :set_request, only: [:show, :edit, :update, :destroy]
 
   # GET /requests
