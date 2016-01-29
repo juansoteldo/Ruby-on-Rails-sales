@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   devise_for :admins
   devise_for :users
 
+  match '*any' => 'application#options', :via => [:options]
+
   post 'public/new_request'
   match 'public/get_uid', via: [:get, :post]
 
