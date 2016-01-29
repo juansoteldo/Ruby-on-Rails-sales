@@ -8,10 +8,10 @@ class Admin::RequestsController < Admin::BaseController
   def index
     @requests = Request.all
     if params[:search]
-      term = params[:search]
+      term = params[:search].downcase
       @requests = @requests.joins(:user).
-          where( 'users.email LIKE ?',
-                 "%#{term}%" )
+          where( 'LOWER(users.email) LIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ?',
+                 "%#{term}%", "%#{term}%", "%#{term}%" )
     end
 
     @requests_count = @requests.count

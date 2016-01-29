@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   devise_for :users
 
   post 'public/new_request'
-  match 'public/get_uid'
+  match 'public/get_uid', via: [:get, :post]
 
   get 'shopify/products'
 

@@ -6,7 +6,7 @@
 <html>
 <head>
     <title>
-        Start Your Tattoo Design | Custom Tattoo Design
+        CTD Quote
     </title><link href="http://dev.benefitos.com/ctdwebv2/img/favicon.png?v=2" rel="shortcut icon" type="image/png" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" rel="stylesheet" media="all" />
 
@@ -22,7 +22,7 @@
 <body>
 
 <!-- Google Tag Manager -->
-<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KPS6QS"
+<!--noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KPS6QS"
                   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>(function (w, d, s, l, i) {
     w[l] = w[l] || []; w[l].push({
@@ -31,7 +31,7 @@
     }); var f = d.getElementsByTagName(s)[0],
             j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
             '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-})(window, document, 'script', 'dataLayer', 'GTM-KPS6QS');</script>
+})(window, document, 'script', 'dataLayer', 'GTM-KPS6QS');</script-->
 <!-- End Google Tag Manager -->
 
 
@@ -663,7 +663,7 @@
 
 
 
-                document.forms[0].submit();
+//                document.forms[0].submit();
 
 
 
@@ -678,14 +678,6 @@
 
 </script>
 
-
-
-
-<div style="display: none;">
-
-    <!-- Facebook Pixel Code -->
-
-</div>
 <script>
     (function() {
         try {
@@ -787,7 +779,7 @@
                             client_id: _gcid()
                         };
 
-                        $.post('http://<%= @hostname %>:<%= @port %>/public/new_request.json',_p,function (_r) {
+                        $.post('http://<%= @host %>:<%= @port %>/public/new_request.json',_p,function (_r) {
                                 var uid = _gs('uid', _r.user_id, 2);
                                 ga('set', '&uid', uid);
                             }, 'json'

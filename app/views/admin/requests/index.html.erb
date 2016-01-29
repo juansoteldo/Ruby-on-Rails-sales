@@ -4,11 +4,11 @@
        data-show-refresh="true" data-id-field="id">
   <thead>
     <tr>
-      <th data-field="user.id"></th>
-      <th data-field="user.email">From</th>
-      <th data-field="is_first_time" data-formatter="firstFormatter"></th>
-      <th data-field="gender"></th>
-      <th data-field="has_color" data-formatter="colorFormatter"></th>
+      <th data-field="user" data-formatter="userFormatter"></th>
+      <th data-field="is_first_time" data-formatter="firstFormatter">1<sup>st</sup></th>
+      <th data-field="gender">Sex</th>
+      <th data-field="has_color" data-formatter="colorFormatter">Color?</th>
+      <th data-field="has_cover_up" data-formatter="coverFormatter"></th>
       <th data-field="position">Position</th>
       <th data-formatter="cartButtons"></th>
     </tr>
@@ -19,5 +19,3 @@
 </table>
 
 <br>
-
-<%= link_to 'New Request', new_admin_request_path %>

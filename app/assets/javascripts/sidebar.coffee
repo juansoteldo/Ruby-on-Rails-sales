@@ -1,7 +1,8 @@
-@openSidebar = ->
+@openSidebar = (collapse) ->
   $("#wrapper").removeClass("toggled")
-  $("#variants .collapse").removeClass("in")
+  $("#variants .collapse").removeClass("in") if collapse
 
-@closeSidebar = ->
+@closeSidebar = (collapse) ->
   $("#wrapper").addClass("toggled")
+  $("#variants .collapse").removeClass("in") if collapse
 

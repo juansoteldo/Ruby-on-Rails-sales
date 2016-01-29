@@ -20,7 +20,6 @@ copyText = (url) ->
     selection.removeAllRanges()
     selection.addRange range
   document.execCommand 'copy'
-  console.log text
   $(text).remove()
   return
 
@@ -29,7 +28,7 @@ ready = ->
   $('.btn-url').each ->
     clip = new ZeroClipboard(this)
     clip.on "aftercopy", (event) ->
-      closeSidebar()
+      closeSidebar(true)
 
 $(document).ready ready
 $(document).on 'page:load', ready

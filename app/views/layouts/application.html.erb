@@ -7,9 +7,8 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <div class="container" id="wrapper">
+  <div class="container toggled" id="wrapper">
     <% if current_admin and in_admin_panel? %>
-        <%= link_to "Admin sign out", destroy_admin_session_path, :method => :delete %>
         <div id="sidebar-wrapper">
       <ul class="sidebar-nav">
         <li class="sidebar-brand">
@@ -24,9 +23,16 @@
       </ul>
     </div>
     <% end %>
-  <div id="page-content-wrapper">
-  <%= yield %>
+    <div id="page-content-wrapper">
+    <%= yield %>
+    </div>
+
+    <footer>
+      <% if current_admin %>
+          <%= link_to "Admin sign out", destroy_admin_session_path, :method => :delete %>
+      <% end %>
+    </footer>
+
   </div>
-</div>
 </body>
 </html>

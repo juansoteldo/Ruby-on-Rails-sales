@@ -11,19 +11,26 @@
     '<button class="btn btn-xs btn-show-options btn-primary btn-block" data-class="final">Final</button>' +
     '</div></div>'
 
+@userFormatter = (value, row) ->
+  $(row).data 'userId', value.id
+  $(row).data 'email', value.email
+  value.email
+
 @firstFormatter = (value, row) ->
   return '1st' if value
   ''
 
 @colorFormatter = (value, row) ->
-  return '<img src="assets/color-wheel.png" width="16" height="16"/>' if value
+  return "<img src='#{image_path('color-wheel.png')}' width='16' height='16'/>" if value
+  ''
+
+@coverFormatter = (value, row) ->
+  return '<div style="border: 1px solid #222;padding: 2px;color: #444;" class="">CU</div>' if value
   ''
 
 filterSidebar = (filter) ->
   $("#variants .deposit, #variants .final").hide()
   $("#variants .#{filter}").show()
-  $('#variants-title').
-  text(s.titleize(filter) + " Products").addClass(filter)
 
 appendSidebarUids = (userId) ->
   $('.btn-url').each ->
@@ -35,13 +42,15 @@ ready = ->
   $('#request-table').on 'click', '.btn-show-options', (e) ->
     e.preventDefault()
     row = $(e.target).closest('tr')
-    userId = $($('td', row )[0]).text()
+    userId = $(row).data('userId')
+
     appendSidebarUids(userId)
     $('#request-table tr.active').removeClass('active')
-    email = $($('td', row )[1]).text()
+    row.addClass 'active'
+
+    email = $(row).data('email')
     $('#variants-user').text email
-    console.log email
-    openSidebar()
+    openSidebar ($('#variants-user').text() != email)
 
     filter_class = $(e.target).data('class')
     filterSidebar(filter_class)

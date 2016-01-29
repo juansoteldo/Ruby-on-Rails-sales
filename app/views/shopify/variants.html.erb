@@ -5,27 +5,28 @@
           <%= group.title %>
         </a>
         <div id="group-<%= group.id %>" class="list-group collapse">
-
             <% group.products.each do |product| %>
-
-              <a href="#!" data-toggle="collapse" data-parent="#group-<%= group.id %>"
-                 class="list-group-item text-right <%= product.css_classes %>"
-                     data-target="#product-<%= product.id %>">
-                <%= product.sub_title %>
-              </a>
-              <div id="product-<%= product.id %>" class="list-group collapse <%= product.css_classes %>">
+              <div id="product-<%= product.id %>" class="list-group <%= product.css_classes %>">
                 <% product.variants.each do |variant| %>
-
                       <div class="row list-group-item">
-                        <div class="col col-md-1">
-                          <%= variant.option
+                        <div class="col col-md-1 col-sm-1">
+                          <% if variant.has_color? %>
+                              <img src="<%= asset_url('color-wheel.png') %>" width="16" height="16"/>
+                          <% end %>
                         </div>
-                        <div class="col col-md-4">
+                        <div class="col col-md-1 col-sm-1">
+                          <% if variant.has_cover_up? %>
+                              <span style="border: 1px solid #222;padding-left: 2px;padding-right: 2px;color: #444;">C</span>
+                          <% end %>
+                        </div>
+                        <div class="col col-md-4 col-sm-3">
                           <%= variant.price %>
                         </div>
                         <% url = "http://shop.customtattoodesign.ca/products/#{product.handle}?variant=#{variant.id}" %>
-                        <button class="btn btn-sm btn-url"
-                                data-clipboard-text="<%= url %>&uid=" title="Copy to clipboard">Copy URL</button>
+                        <div class="col col-md-4 col-sm-4">
+                          <button class="btn btn-sm btn-url"
+                                  data-clipboard-text="<%= url %>&uid=" title="Copy to clipboard"><%= product.is_deposit? && 'Deposit' || 'Final' %></button>
+                        </div>
                       </div>
                 <% end %>
               </div>
