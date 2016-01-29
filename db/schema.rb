@@ -36,8 +36,8 @@ ActiveRecord::Schema.define(version: 20160128123126) do
 
   create_table "requests", force: :cascade do |t|
     t.integer  "user_id"
-    t.string   "first_name",    default: ""
-    t.string   "last_name",     default: ""
+    t.string   "first_name",       default: ""
+    t.string   "last_name",        default: ""
     t.string   "token"
     t.boolean  "is_first_time"
     t.string   "gender"
@@ -46,32 +46,39 @@ ActiveRecord::Schema.define(version: 20160128123126) do
     t.string   "position"
     t.string   "large"
     t.string   "notes"
-    t.string   "quote_id"
+    t.string   "sku"
+    t.string   "deposit_order_id"
+    t.string   "final_order_id"
+    t.string   "sub_total"
+    t.string   "request_id"
     t.string   "client_id"
     t.string   "ticket_id"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
+  add_index "requests", ["sku"], name: "index_requests_on_sku", using: :btree
   add_index "requests", ["user_id"], name: "index_requests_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
+    t.string   "email",                            default: "", null: false
+    t.string   "encrypted_password",               default: "", null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer  "sign_in_count",                    default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.integer  "shopify_id",             limit: 8
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["shopify_id"], name: "index_users_on_shopify_id", using: :btree
 
   add_foreign_key "requests", "users"
 end

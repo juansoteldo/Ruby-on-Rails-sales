@@ -14,7 +14,11 @@ class CreateRequests < ActiveRecord::Migration
       t.string :position
       t.string :large
       t.string :notes
-      t.string :quote_id
+      t.string :sku, index: true, null: true
+      t.string :deposit_order_id
+      t.string :final_order_id
+      t.string :sub_total
+      t.string :request_id
       t.string :client_id
       t.string :ticket_id
 

@@ -1,0 +1,11 @@
+<dic class="row">
+  <div class="col col-sm-2">
+    <%= l order.created_at, format: :short %>
+  </div>
+  <div class="col col-sm-2">
+    <%= order.sku %>
+  </div>
+  <div class="col col-sm-2">
+    <%= number_to_currency(order.subtotal_price) %>
+  </div>
+</dic>

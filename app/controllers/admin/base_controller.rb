@@ -10,7 +10,7 @@ class Admin::BaseController < ApplicationController
   end
 
   def load_products
-    @groups = CTD::Shopify::Group.all
+    @groups = Shopify::Group.all
   end
 
 end

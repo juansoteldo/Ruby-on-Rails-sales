@@ -3,18 +3,21 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 @cartButtons = (value, row) ->
-
   '<div class="row">' +
     '<div class="col-md-5">' +
-    '<button class="btn btn-xs btn-show-options btn-block" data-class="deposit">Deposit</button>' +
+    '<button class="btn btn-xs btn-show-options btn-block" data-user-id="'+row.id+'" data-user-id="'+row.email+'" data-class="deposit">Deposit</button>' +
     '</div><div class="col-md-2"></div><div class="col-md-5">' +
-    '<button class="btn btn-xs btn-show-options btn-primary btn-block" data-class="final">Final</button>' +
+    '<button class="btn btn-xs btn-show-options btn-primary btn-block" data-user-id="'+row.id+'" data-user-id="'+row.email+'" data-class="final">Final</button>' +
     '</div></div>'
 
 @userFormatter = (value, row) ->
+
   $(row).data 'userId', value.id
   $(row).data 'email', value.email
   value.email
+
+@hideButton = (value, row) ->
+  "<button class='btn btn-sm btn-default btn-hide-request' data-id='#{value}'>hide</button>"
 
 @firstFormatter = (value, row) ->
   return '1st' if value
@@ -39,16 +42,20 @@ appendSidebarUids = (userId) ->
     $(this).attr('data-clipboard-text', txt)
 
 ready = ->
+  $('#request-table').on 'click', '.btn-hide-request', (e) ->
+    id = $(e.target).data('id')
+
+
   $('#request-table').on 'click', '.btn-show-options', (e) ->
     e.preventDefault()
     row = $(e.target).closest('tr')
-    userId = $(row).data('userId')
-
+    userId = $(e.target).data('userId')
+    console.log userId
     appendSidebarUids(userId)
     $('#request-table tr.active').removeClass('active')
     row.addClass 'active'
 
-    email = $(row).data('email')
+    email = $(e.target).data('email')
     $('#variants-user').text email
     openSidebar ($('#variants-user').text() != email)
 

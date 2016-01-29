@@ -20,6 +20,8 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string   :current_sign_in_ip
       t.string   :last_sign_in_ip
 
+      t.integer :shopify_id, index: true, :limit => 8
+
       ## Confirmable
       # t.string   :confirmation_token
       # t.datetime :confirmed_at

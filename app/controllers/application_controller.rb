@@ -25,6 +25,3 @@ class ApplicationController < ActionController::Base
     @port = request.port || 80
   end
 end
-
-require 'ctd/shopify/product'
-require 'ctd/shopify/group'
