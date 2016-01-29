@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <title>Post Form</title>
+    <script src="//code.jquery.com/jquery-1.12.0.min.js" type="application/javascript" ></script>
+  </head>
+  <body>
+  <h1>Thank You!</h1>
+
+  <script>
+    (function() {
+      try {
+        var _gcid = function () {
+          try {
+            var trackers = ga.getAll();
+            var i, len;
+            for (i = 0, len = trackers.length; i < len; i += 1) {
+              if (trackers[i].get('trackingId') === 'UA-34117074-2') {
+                return trackers[i].get('clientId');
+              }
+            }
+          } catch (e) {
+          }
+          return 'false';
+        };
+
+        var _sc = function (cname, cvalue, exdays) {
+          var d = new Date();
+          d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+          var expires = "expires=" + d.toUTCString();
+          document.cookie = cname + "=" + cvalue + "; " + expires;
+        };
+
+        var _gc = function (cname) {
+          var name = cname + "=";
+          var ca = document.cookie.split(';');
+          for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1);
+            if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+          }
+          return "";
+        };
+
+        var _qs = function () {
+          var query_string = {};
+          var query = window.location.search.substring(1);
+          var vars = query.split("&");
+          for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (typeof query_string[pair[0]] === "undefined") {
+              query_string[pair[0]] = decodeURIComponent(pair[1]);
+            } else if (typeof query_string[pair[0]] === "string") {
+              var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+              query_string[pair[0]] = arr;
+            } else {
+              query_string[pair[0]].push(decodeURIComponent(pair[1]));
+            }
+          }
+          return query_string;
+        }();
+
+        var _gs = function (name, value, dim) {
+          if (typeof(value) == 'undefined') {
+            value = _gc(name);
+          } else {
+            _sc(name, value);
+          }
+          ga('set', 'dimension' + dim, value);
+        };
+
+        var _init = function () {
+          try {
+            ga("set", "dimension1", _gcid());
+            var uid = _gs('uid', _qs.uid, 2);
+            ga('set', '&uid', uid);
+          }catch(e){}
+        };
+
+        var _gruid = function() {
+          var uid = _gs('uid', _qs.uid, 2);
+          var _p = {
+            client_id: <%= Rails.env.development? && 12345.to_json || '_gcid()' %>
+          };
+          $.post('http://<%= @host %>:<%= @port %>/public/get_uid.json',_p,function (_r) {
+                if (!_r) return;
+                var uid = _gs('uid', _r, 2);
+                ga('set', '&uid', uid);
+              }, 'json'
+          );
+        };
+
+        var ready = function () {
+          _init();
+          _gruid();
+        };
+
+        $(document).ready(ready);
+      } catch (e) {
+      }
+    })();
+  </script>
+
+  </body>
+</html>

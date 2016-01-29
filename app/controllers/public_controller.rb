@@ -1,6 +1,7 @@
 class PublicController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
+  before_filter :validate_parameters, only: [:new_request]
   before_filter :set_user_by_email, only: [ :new_request ]
   before_filter :set_user_by_client_id, only: [ :get_uid ]
 
@@ -19,6 +20,8 @@ class PublicController < ApplicationController
     if Request.where( client_id: params[:client_id] ).any?
       user_id = Request.where( client_id: params[:client_id] ).first.user_id
       @user =  User.find(user_id)
+    else
+      render json: false
     end
   end
 
@@ -29,6 +32,12 @@ class PublicController < ApplicationController
       password = SecureRandom.hex(8)
       @user = User.create( email: params[:email], password: password, password_confirmation: password )
     end
+  end
+
+  def validate_parameters
+     [:position, :gender, :first_name, :last_name, :client_id ].each do |sym|
+        render( json: false ) if params[sym] == '' or params[sym] == false
+      end
   end
 
   def request_params

@@ -12,6 +12,8 @@ Rails.application.routes.draw do
     resources :products
     resources :requests
     get 'test/quote_form' => 'test#quote_form', as: 'quote_form'
+    get 'test/post_form' => 'test#post_form', as: 'post_form'
+
   end
 
   get '/admin' => 'content#admin', as: 'admin_root'
