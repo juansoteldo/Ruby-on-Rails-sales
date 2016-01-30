@@ -6,10 +6,11 @@ class Admin::RequestsController < Admin::BaseController
   # GET /requests
   # GET /requests.json
   def index
-    @requests = Request.all
+    @requests = Request.all.joins(:user).order( created_at: :desc ).
+        where( 'NOT (users.email LIKE ? OR users.email LIKE ?)', '%grabski.ca%', '%fluxinc.ca%')
     if params[:search]
       term = params[:search].downcase
-      @requests = @requests.joins(:user).
+      @requests = @requests.
           where( 'LOWER(users.email) LIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ?',
                  "%#{term}%", "%#{term}%", "%#{term}%" )
     end

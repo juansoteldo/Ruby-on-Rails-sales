@@ -16,4 +16,5 @@
 //= require bootstrap-table
 //= require underscore.string
 //= require zeroclipboard
+//= require moment
 //= require_tree .
