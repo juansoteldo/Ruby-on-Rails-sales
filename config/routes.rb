@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   devise_for :users
 
   match '*any' => 'application#options', :via => [:options]
-
+  get 'public/redirect/:handle/:variant', to: 'public#redirect'
   post 'public/new_request'
   match 'public/get_uid', via: [:get, :post]
 

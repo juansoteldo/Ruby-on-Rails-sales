@@ -22,10 +22,10 @@
                         <div class="col col-md-4 col-sm-3">
                           <%= variant.price %>
                         </div>
-                        <% url = "http://shop.customtattoodesign.ca/products/#{product.handle}?variant=#{variant.id}" %>
+                        <% url = "http://#{@host}:#{@port}/public/redirect/#{product.handle}/#{variant.id}" %>
                         <div class="col col-md-4 col-sm-4">
                           <button class="btn btn-sm btn-url"
-                                  data-clipboard-text="<%= url %>&uid=" title="Copy to clipboard"><%= product.is_deposit? && 'Deposit' || 'Final' %></button>
+                                  data-clipboard-text="<%= url %>?clientId=&uid=" title="Copy to clipboard"><%= product.is_deposit? && 'Deposit' || 'Final' %></button>
                         </div>
                       </div>
                 <% end %>

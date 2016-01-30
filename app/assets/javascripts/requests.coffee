@@ -5,15 +5,17 @@
 @cartButtons = (value, row) ->
   '<div class="row">' +
     '<div class="col-md-5">' +
-    '<button class="btn btn-xs btn-show-options btn-block" data-user-id="'+row.id+'" data-user-id="'+row.email+'" data-class="deposit">Deposit</button>' +
+    '<button class="btn btn-xs btn-show-options btn-block" data-user-id="'+row.id+'" ' +
+    'data-user-id="'+row.email+'" data-client-id="'+row.client_id+'" data-class="deposit">Deposit</button>' +
     '</div><div class="col-md-2"></div><div class="col-md-5">' +
-    '<button class="btn btn-xs btn-show-options btn-primary btn-block" data-user-id="'+row.id+'" data-user-id="'+row.email+'" data-class="final">Final</button>' +
+    '<button class="btn btn-xs btn-show-options btn-primary btn-block" data-user-id="'+row.id+'" ' +
+    'data-user-id="'+row.email+'" data-client-id="'+row.client_id+'" data-class="final">Final</button>' +
     '</div></div>'
 
-@userFormatter = (value, row) ->
+@dateFormatter = (value) ->
+  moment(value).format('D MMM')
 
-  $(row).data 'userId', value.id
-  $(row).data 'email', value.email
+@userFormatter = (value, row) ->
   value.email
 
 @hideButton = (value, row) ->
@@ -35,10 +37,11 @@ filterSidebar = (filter) ->
   $("#variants .deposit, #variants .final").hide()
   $("#variants .#{filter}").show()
 
-appendSidebarUids = (userId) ->
+appendSidebarUids = (userId, clientId) ->
   $('.btn-url').each ->
     txt = $(this).data('clipboard-text')
     txt = txt.replace /uid\=[\d]*/, "uid=#{userId}"
+    txt = txt.replace /clientId\=[^&]*&/, "clientId=#{clientId}&"
     $(this).attr('data-clipboard-text', txt)
 
 ready = ->
@@ -50,8 +53,9 @@ ready = ->
     e.preventDefault()
     row = $(e.target).closest('tr')
     userId = $(e.target).data('userId')
-    console.log userId
-    appendSidebarUids(userId)
+    clientId = $(e.target).data('clientId')
+    console.log clientId
+    appendSidebarUids(userId, clientId)
     $('#request-table tr.active').removeClass('active')
     row.addClass 'active'
 

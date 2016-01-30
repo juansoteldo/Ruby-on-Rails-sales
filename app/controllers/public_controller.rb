@@ -5,6 +5,14 @@ class PublicController < ApplicationController
   before_filter :set_user_by_email, only: [ :new_request ]
   before_filter :set_user_by_client_id, only: [ :get_uid ]
 
+  def redirect
+    @user = User.find(params[:uid])
+    @client_id = params[:client_id]
+    @client_id ||= params[:clientId]
+    @variant = params[:variant]
+    @handle = params[:handle]
+  end
+
   def new_request
     request_params
     @request = @user.requests.create(request_params)

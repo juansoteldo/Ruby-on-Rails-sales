@@ -1,0 +1,75 @@
+<% url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@user.id}&_ga=GA1.2.#{@client_id}&cid=#{@client_id}" %>
+<div class="row">
+  <div class="col text-center">
+    <h3 class="text-muted">CUSTOM TATTOO SHOP</h3>
+    <br><br><br>
+    <h1 class="text-info">Taking you to your cart...</h1>
+
+    <a class="btn btn-sm btn-default" href="<%= url %>">click here if nothing happens after 5 seconds</a>
+  </div>
+</div>
+<h2></h2>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  var _sc = function (cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires+";domain=.customtattoodesign.ca;path=/";
+  };
+
+
+  var _qs = function () {
+    var query_string = {};
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (typeof query_string[pair[0]] === "undefined") {
+        query_string[pair[0]] = decodeURIComponent(pair[1]);
+      } else if (typeof query_string[pair[0]] === "string") {
+        var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+        query_string[pair[0]] = arr;
+      } else {
+        query_string[pair[0]].push(decodeURIComponent(pair[1]));
+      }
+    }
+    return query_string;
+  }();
+
+  var _gs = function (name, value, dim) {
+    if (typeof(value) == 'undefined') {
+      value = _gc(name);
+    } else {
+      _sc(name, value);
+    }
+    return value;
+  };
+
+  var cid = _qs.clientId+"";
+  var uid = _qs.uid+"";
+
+  ga('create', 'UA-34117074-2', 'customtattoodesign.ca',
+      {'allowLinker' : 'true',
+        'cookieDomain':'customtattoodesign.ca',
+        'clientId': <%= @client_id.to_json.html_safe %>
+      });
+
+  ga(function(tracker) {
+    _sc('cid', cid);
+    _sc('uid', uid);
+    ga('set', 'dimension1', cid);
+    ga('set', 'dimension2', uid);
+    ga('send', 'pageview');
+
+  });
+  /*setTimeout(function(){
+    window.location = <%= url.to_json.html_safe %>;
+  }, 10000)*/
+</script>
+</body>
+</html>
