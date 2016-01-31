@@ -22,10 +22,10 @@
                         <div class="col col-md-4 col-sm-3">
                           <%= variant.price %>
                         </div>
-                        <% url = "http://#{@host}:#{@port}/public/redirect/#{product.handle}/#{variant.id}" %>
+                        <% url = "http://#{@host}:#{@port}/public/redirect/#{product.handle}/#{variant.id}?clientId=&linkerParam=&_ga=&uid=" %>
                         <div class="col col-md-4 col-sm-4">
-                          <button class="btn btn-sm btn-url"
-                                  data-clipboard-text="<%= url %>?clientId=&uid=" title="Copy to clipboard"><%= product.is_deposit? && 'Deposit' || 'Final' %></button>
+                          <button class="btn btn-sm btn-url" data-clipboard-html="<a style='font-family: sans-serif;' href='<%= url %>'><%= product.title %></a>"
+                                  data-clipboard-text="<%= url %>" title="Copy to clipboard"><%= product.is_deposit? && 'Deposit' || 'Final' %></button>
                         </div>
                       </div>
                 <% end %>

@@ -9,6 +9,9 @@ class PublicController < ApplicationController
     @user = User.find(params[:uid])
     @client_id = params[:client_id]
     @client_id ||= params[:clientId]
+    @linker_param = params[:linkerParam]
+    @_ga = params[:_ga]
+
     @variant = params[:variant]
     @handle = params[:handle]
   end
@@ -49,7 +52,8 @@ class PublicController < ApplicationController
   end
 
   def request_params
-    params.permit( :client_id, :ticket_id, :quote_id, :position, :gender, :has_color, :is_first_time, :first_name, :last_name )
+    params.permit( :client_id, :ticket_id, :quote_id, :position, :gender,
+                   :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga )
   end
 end
 

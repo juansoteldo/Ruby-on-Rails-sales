@@ -2,32 +2,17 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-
-copyText = (url) ->
-  doc = document
-  text = doc.createElement('SPAN')
-  $(text).text url
-  range = undefined
-  selection = undefined
-  if doc.body.createTextRange
-    range = document.body.createTextRange()
-    range.moveToElementText text
-    range.select()
-  else if window.getSelection
-    selection = window.getSelection()
-    range = document.createRange()
-    range.selectNodeContents text
-    selection.removeAllRanges()
-    selection.addRange range
-  document.execCommand 'copy'
-  $(text).remove()
-  return
-
 ready = ->
   #$('#variants').on "click", '.btn-url', closeSidebar
   $('.btn-url').each ->
     clip = new ZeroClipboard(this)
+    clip.on "copy", (event) ->
+      clipboard = event.clipboardData
+      clipboard.setData 'text/html', $(event.target).data('clipboardHtml');
+      #clipboard.setData 'text/plain', $(event.target).data('clipboardText');
+
     clip.on "aftercopy", (event) ->
+      console.log event.data["text/html"]
       closeSidebar(true)
 
 $(document).ready ready

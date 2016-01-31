@@ -679,122 +679,143 @@
 </script>
 
 <script>
-    (function() {
+  (function() {
+    try {
+      var getTrackerAttribute = function(trackingId, attr) {
         try {
-            var _gcid = function () {
-                try {
-                    var trackers = ga.getAll();
-                    var i, len;
-                    for (i = 0, len = trackers.length; i < len; i += 1) {
-                        if (trackers[i].get('trackingId') === 'UA-34117074-2') {
-                            return trackers[i].get('clientId');
-                        }
-                    }
-                } catch (e) {
-                }
-                return 'false';
-            };
-
-            var _sc = function (cname, cvalue, exdays) {
-                var d = new Date();
-                d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-                var expires = "expires=" + d.toUTCString();
-                document.cookie = cname + "=" + cvalue + "; " + expires;
-            };
-
-            var _gc = function (cname) {
-                var name = cname + "=";
-                var ca = document.cookie.split(';');
-                for (var i = 0; i < ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0) == ' ') c = c.substring(1);
-                    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-                }
-                return "";
-            };
-
-            var _qs = function () {
-                var query_string = {};
-                var query = window.location.search.substring(1);
-                var vars = query.split("&");
-                for (var i = 0; i < vars.length; i++) {
-                    var pair = vars[i].split("=");
-                    if (typeof query_string[pair[0]] === "undefined") {
-                        query_string[pair[0]] = decodeURIComponent(pair[1]);
-                    } else if (typeof query_string[pair[0]] === "string") {
-                        var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
-                        query_string[pair[0]] = arr;
-                    } else {
-                        query_string[pair[0]].push(decodeURIComponent(pair[1]));
-                    }
-                }
-                return query_string;
-            }();
-
-            var _gs = function (name, value, dim) {
-                if (typeof(value) == 'undefined') {
-                    value = _gc(name);
-                } else {
-                    _sc(name, value);
-                }
-                ga('set', 'dimension' + dim, value);
-            };
-
-            var _gcv = function(_ids) {
-                var _v = null;
-
-                _ids.forEach( function(id) {
-                    var _el = document.getElementById(id);
-                    if (_el == null ) return;
-                    if (!_el.checked ) return;
-                    _v = _el.value;
-                });
-                return _v && _v || '';
-            };
-
-            var _init = function () {
-                try {
-                    ga("set", "dimension1", _gcid());
-                    var uid = _gs('uid', _qs.uid, 2);
-                    ga('set', '&uid', uid);
-                    _gs('qid', _qs.qid, 3);
-                }catch(e){}
-            };
-
-            var ready = function () {
-                _init();
-                var _b = document.getElementById('doSubmit');
-                _b.addEventListener( "click", function (e) {
-                    try {
-                        var _e = document.getElementById('inpEmailAddress').value,
-                                _ev = document.getElementById('inpEmailAddressVerify').value;
-                        if (_e !== _ev) return false;
-                        var _p = {
-                            email: _e,
-                            first_name: document.getElementById('inpFirstName').value,
-                            last_name: document.getElementById('inpLastName').value,
-                            position: document.getElementById('inpPosition').value,
-                            gender: _gcv( ['gendermale','genderfemale'] ),
-                            has_color: ( _gcv( [ 'coloryes', 'colorno' ] ) == 'Yes'),
-                            client_id: _gcid()
-                        };
-
-                        $.post('http://<%= @host %>:<%= @port %>/public/new_request.json',_p,function (_r) {
-                                var uid = _gs('uid', _r.user_id, 2);
-                                ga('set', '&uid', uid);
-                            }, 'json'
-                        );
-
-                    } catch (e) {
-                    }
-                    return false;
-                });
-            };
-
-            $(document).ready(ready);
+          var trackers = ga.getAll();
+          var i, len;
+          for (i = 0, len = trackers.length; i < len; i += 1) {
+            if (trackers[i].get('trackingId') === trackingId) {
+              return trackers[i].get('clientId');
+            }
+          }
         } catch (e) {
         }
-    })();
+        return 'false';
+      };
+
+      var getClientId = function () {
+        return getTrackerAttribute('UA-34117074-2', 'clientId');
+      };
+
+      var getLinkerParam = function () {
+        return getTrackerAttribute('UA-34117074-2', 'linkerParam');
+      };
+
+      var setCookie = function (cname, cvalue, exdays, domain) {
+        var d = new Date();
+        if (typeof(domain)=='undefined') domain = '.customtattoodesign.ca';
+        if (typeof(exdays)=='undefined') exdays = 365;
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + "; " + expires + ";domain="+domain+";path=/";
+      };
+
+      var getCookie = function (cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') c = c.substring(1);
+          if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+        }
+        return "";
+      };
+
+      var QueryString = function () {
+        var query_string = {};
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+          var pair = vars[i].split("=");
+          if (typeof query_string[pair[0]] === "undefined") {
+            query_string[pair[0]] = decodeURIComponent(pair[1]);
+          } else if (typeof query_string[pair[0]] === "string") {
+            var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+            query_string[pair[0]] = arr;
+          } else {
+            query_string[pair[0]].push(decodeURIComponent(pair[1]));
+          }
+        }
+        return query_string;
+      }();
+
+      var getAndSetCookie = function (name, value) {
+        if (typeof(value) == 'undefined') {
+          value = getCookie(name);
+        } else {
+          setCookie(name, value);
+        }
+
+        return value;
+      };
+
+      var getCheckboxValue = function(_ids) {
+        var _v = null;
+
+        _ids.forEach( function(id) {
+          var _el = document.getElementById(id);
+          if (_el == null ) return;
+          if (!_el.checked ) return;
+          _v = _el.value;
+        });
+        return _v && _v || '';
+      };
+
+      var _init = function () {
+        try {
+          ga(function() {
+            var trackers = ga.getAll();
+            if(trackers.length) {
+              var linkerParam = trackers[0].get('linkerParam');
+              console.log(linkerParam);
+            }
+          });
+          ga("set", "dimension1", getClientId());
+          var uid = getAndSetCookie('uid', QueryString.uid);
+          ga('set', '&uid', uid);
+          getAndSetCookie('qid', QueryString.qid);
+        }catch(e){}
+      };
+      var linkerParam;
+
+      var ready = function () {
+        _init();
+        var _b = document.getElementById('doSubmit');
+        _b.addEventListener( "click", function (e) {
+          try {
+            var _e = document.getElementById('inpEmailAddress').value,
+                _ev = document.getElementById('inpEmailAddressVerify').value;
+            if (_e !== _ev) return false;
+            var _p = {
+              email: _e,
+              first_name: document.getElementById('inpFirstName').value,
+              last_name: document.getElementById('inpLastName').value,
+              position: document.getElementById('inpPosition').value,
+              gender: getCheckboxValue( ['gendermale','genderfemale'] ),
+              has_color: ( getCheckboxValue( [ 'coloryes', 'colorno' ] ) == 'Yes'),
+              linker_param: getLinkerParam(),
+              _ga: getCookie('_ga'),
+              client_id: getClientId()
+            };
+
+            $.post('http://<%= @host %>:<%= @port %>/public/new_request.json',_p,function (_r) {
+                  var uid = getAndSetCookie('uid', _r.user_id);
+                  ga('set', '&uid', uid);
+                }, 'json'
+            );
+
+          } catch (e) {
+          }
+          return false;
+        });
+      };
+
+      $(document).ready(ready);
+    } catch (e) {
+    }
+  })();
 </script>
 </body>
 </html>
