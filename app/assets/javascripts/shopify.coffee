@@ -7,12 +7,6 @@ ready = ->
   $('.btn-url').each ->
     clip = new ZeroClipboard(this)
     clip.on "copy", (event) ->
-      console.log event
-      userId = $(event.target).data('userId')
-      clientId = $(event.target).data('clientId')
-      linkerParam = $(event.target).data('linkerParam')
-      _ga = $(event.target).data('ga')
-
       url = $(event.target).data('clipboardText')
       title = $(event.target).data('title')
 

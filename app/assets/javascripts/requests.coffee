@@ -43,17 +43,14 @@ filterSidebar = (filter) ->
   $("#variants .#{filter}").show()
 
 appendSidebarUids = (userId, clientId, linkerParam, _ga) ->
-  i = 0
   $('.btn-url').each ->
-    i += 1
     txt = $(this).data('clipboardText')
     txt = txt.replace /uid\=[\d]*/, "uid=#{userId}"
-    txt = txt.replace /cid\=[^&]*&/, "clientId=#{clientId}&"
+    txt = txt.replace /clientId\=[^&]*&/, "clientId=#{clientId}&"
     txt = txt.replace /linkerParam\=[^&]*&/, "linkerParam=#{linkerParam}&"
 
     #    txt = txt.replace /_ga\=[^&]*&/, "_ga=#{_ga}&"
     txt = txt.replace /_ga\=[^&]*&/, "_ga=#{linkerParam}&"
-    console.log(txt) if i == 10
 
     $(this).data('clipboardText', txt)
 
