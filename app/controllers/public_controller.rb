@@ -18,6 +18,9 @@ class PublicController < ApplicationController
 
   def new_request
     request_params
+    if Request.recent.where(user_id: @user.id, position: params[:position]).any?
+      Request.recent.where(user_id: @user.id, position: params[:position]).delete_all
+    end
     @request = @user.requests.create(request_params)
   end
 
@@ -29,7 +32,7 @@ class PublicController < ApplicationController
 
   def set_user_by_client_id
     if Request.where( client_id: params[:client_id] ).any?
-      user_id = Request.where( client_id: params[:client_id] ).first.user_id
+      user_id = Request.find_by_client_id( params[:client_id] ).user_id
       @user =  User.find(user_id)
     else
       render json: false
@@ -38,7 +41,7 @@ class PublicController < ApplicationController
 
   def set_user_by_email
     if User.where( email: params[:email] ).any?
-      @user =  User.where( email: params[:email] ).first
+      @user =  User.find_by_email( params[:email] )
     else
       password = SecureRandom.hex(8)
       @user = User.create( email: params[:email], password: password, password_confirmation: password )
