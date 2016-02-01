@@ -61,7 +61,9 @@
   ga('create', 'UA-34117074-2', 'customtattoodesign.ca',
       {
         'allowLinker' : 'true',
-        'cookieDomain':'customtattoodesign.ca'
+        'cookieDomain':'customtattoodesign.ca',
+        'linkerParam': <%= @linker_param.to_json.html_safe %>,
+        'clientId': <%= @client_id.to_json.html_safe %>
       });
   ga('require', 'linker');
   ga('linker:autoLink', ['shop.customtattoodesign.ca']);
