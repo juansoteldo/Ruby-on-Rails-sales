@@ -6,7 +6,7 @@ class PublicController < ApplicationController
   before_filter :set_user_by_client_id, only: [ :get_uid ]
 
   def redirect
-    @user = User.find(params[:uid])
+    @user_id = params[:uid]
     @client_id = params[:client_id]
     @client_id ||= params[:clientId]
     @linker_param = params[:linkerParam]
