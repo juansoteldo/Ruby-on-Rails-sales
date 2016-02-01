@@ -2,16 +2,18 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+@mouseOverTable = false
+
 @cartButtons = (value, row) ->
   '<div class="row">' +
     '<div class="col-md-5">' +
     '<button class="btn btn-xs btn-show-options btn-block" data-user-id="'+row.user.id+'" ' +
-    'data-user-id="'+row.email+'" data-client-id="'+row.client_id+'" data-ga="'+row._ga+'" ' +
+    'data-email="'+row.user.email+'" data-client-id="'+row.client_id+'" data-ga="'+row._ga+'" ' +
     'data-linker-param="'+row.linker_param+'"' +
     'data-class="deposit">Deposit</button>' +
     '</div><div class="col-md-2"></div><div class="col-md-5">' +
     '<button class="btn btn-xs btn-show-options btn-primary btn-block" data-user-id="'+row.id+'" ' +
-    'data-user-id="'+row.email+'" data-client-id="'+row.client_id+'" data-ga="'+row._ga+'" ' +
+    'data-email="'+row.user.email+'" data-client-id="'+row.client_id+'" data-ga="'+row._ga+'" ' +
     'data-linker-param="'+row.linker_param+'"' +
     'data-class="final">Final</button>' +
     '</div></div>'
@@ -58,6 +60,13 @@ ready = ->
   $('#request-table').on 'click', '.btn-hide-request', (e) ->
     id = $(e.target).data('id')
 
+  $(document).on 'mouseenter', '#request-table', (e) ->
+    console.log 'enter'
+    window.mouseOverTable = true
+
+  $(document).on 'mouseleave', '#request-table', (e) ->
+    console.log 'leave'
+    window.mouseOverTable = false
 
   $('#request-table').on 'click', '.btn-show-options', (e) ->
     e.preventDefault()
@@ -78,6 +87,10 @@ ready = ->
 
     filter_class = $(e.target).data('class')
     filterSidebar(filter_class)
+
+  setInterval ->
+    $('#request-table').bootstrapTable('refresh') unless @mouseOverTable
+  , 30000
 
 $(document).ready ready
 $(document).on 'page:load', ready
