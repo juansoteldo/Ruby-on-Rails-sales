@@ -11,6 +11,7 @@ ready = ->
       title = $(event.target).data('title')
 
       clipboard = event.clipboardData
+      clipboard.setData 'text/plain', url
       clipboard.setData 'text/html', "<a style='font-family: sans-serif;' href='#{url}'>#{title}</a>"
 
     clip.on "aftercopy", (event) ->
