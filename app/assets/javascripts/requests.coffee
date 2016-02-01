@@ -5,7 +5,7 @@
 @cartButtons = (value, row) ->
   '<div class="row">' +
     '<div class="col-md-5">' +
-    '<button class="btn btn-xs btn-show-options btn-block" data-user-id="'+row.id+'" ' +
+    '<button class="btn btn-xs btn-show-options btn-block" data-user-id="'+row.user.id+'" ' +
     'data-user-id="'+row.email+'" data-client-id="'+row.client_id+'" data-ga="'+row._ga+'" ' +
     'data-linker-param="'+row.linker_param+'"' +
     'data-class="deposit">Deposit</button>' +

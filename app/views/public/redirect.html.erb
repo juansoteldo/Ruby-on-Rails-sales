@@ -19,7 +19,8 @@
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires+";domain=.customtattoodesign.ca;path=/";
+    var host = '<%= Rails.env.development? && @host || 'customtattoodesign.ca' %>';
+    document.cookie = cname + "=" + cvalue + "; " + expires+";domain=."+host+";path=/";
   };
 
 
@@ -51,7 +52,7 @@
     return value;
   };
 
-  setCookie( '_ga', QueryString._ga );
+  setCookie( '_ga', "GA1.2."+QueryString._ga );
 
   var cid = QueryString.clientId+"";
   var uid = QueryString.uid+"";
@@ -60,8 +61,7 @@
   ga('create', 'UA-34117074-2', 'customtattoodesign.ca',
       {
         'allowLinker' : 'true',
-        'cookieDomain':'customtattoodesign.ca',
-        'clientId': <%= @client_id.to_json.html_safe %>
+        'cookieDomain':'customtattoodesign.ca'
       });
   ga('require', 'linker');
   ga('linker:autoLink', ['shop.customtattoodesign.ca']);
@@ -73,11 +73,11 @@
     ga('set', 'dimension2', uid);
     ga('send', 'pageview');
   });
-
+<% if Rails.env.production? %>
   setTimeout(function(){
     document.getElementById('redirectLink').click();
   }, 3000);
-
+<% end %>
 </script>
 </body>
 </html>
