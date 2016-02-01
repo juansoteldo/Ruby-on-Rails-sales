@@ -4,14 +4,14 @@
 
 #request-table tr {
   button {
-    display: none;
+    opacity: 0.1;
   }
   &.active {
     background-color: lightblue;
   }
   &:hover {
     button {
-      display: inherit;
+      opacity: 1;
     }
   }
 }

@@ -7,9 +7,17 @@ ready = ->
   $('.btn-url').each ->
     clip = new ZeroClipboard(this)
     clip.on "copy", (event) ->
+      console.log event
+      userId = $(event.target).data('userId')
+      clientId = $(event.target).data('clientId')
+      linkerParam = $(event.target).data('linkerParam')
+      _ga = $(event.target).data('ga')
+
+      url = $(event.target).data('clipboardText')
+      title = $(event.target).data('title')
+
       clipboard = event.clipboardData
-      clipboard.setData 'text/html', $(event.target).data('clipboardHtml');
-      #clipboard.setData 'text/plain', $(event.target).data('clipboardText');
+      clipboard.setData 'text/html', "<a style='font-family: sans-serif;' href='#{url}'>#{title}</a>"
 
     clip.on "aftercopy", (event) ->
       console.log event.data["text/html"]

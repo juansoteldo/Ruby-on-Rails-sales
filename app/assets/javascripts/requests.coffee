@@ -23,6 +23,7 @@
   value.email
 
 @hideButton = (value, row) ->
+  return ""
   "<button class='btn btn-sm btn-default btn-hide-request' data-id='#{value}'>hide</button>"
 
 @firstFormatter = (value, row) ->
@@ -42,14 +43,19 @@ filterSidebar = (filter) ->
   $("#variants .#{filter}").show()
 
 appendSidebarUids = (userId, clientId, linkerParam, _ga) ->
+  i = 0
   $('.btn-url').each ->
-    txt = $(this).data('clipboardHtml')
+    i += 1
+    txt = $(this).data('clipboardText')
     txt = txt.replace /uid\=[\d]*/, "uid=#{userId}"
     txt = txt.replace /cid\=[^&]*&/, "clientId=#{clientId}&"
     txt = txt.replace /linkerParam\=[^&]*&/, "linkerParam=#{linkerParam}&"
-#    txt = txt.replace /_ga\=[^&]*&/, "_ga=#{_ga}&"
+
+    #    txt = txt.replace /_ga\=[^&]*&/, "_ga=#{_ga}&"
     txt = txt.replace /_ga\=[^&]*&/, "_ga=#{linkerParam}&"
-    $(this).attr('data-clipboard-html', txt)
+    console.log(txt) if i == 10
+
+    $(this).data('clipboardText', txt)
 
 ready = ->
   $('#request-table').on 'click', '.btn-hide-request', (e) ->
@@ -58,14 +64,15 @@ ready = ->
 
   $('#request-table').on 'click', '.btn-show-options', (e) ->
     e.preventDefault()
-    row = $(e.target).closest('tr')
     userId = $(e.target).data('userId')
     clientId = $(e.target).data('clientId')
     linkerParam = $(e.target).data('linkerParam')
     _ga = $(e.target).data('ga')
-    console.log clientId
+
     appendSidebarUids(userId, clientId, linkerParam, _ga)
     $('#request-table tr.active').removeClass('active')
+
+    row = $(e.target).closest('tr')
     row.addClass 'active'
 
     email = $(e.target).data('email')

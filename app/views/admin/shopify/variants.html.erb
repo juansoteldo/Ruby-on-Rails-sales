@@ -24,7 +24,7 @@
                         </div>
                         <% url = "http://#{@host}:#{@port}/public/redirect/#{product.handle}/#{variant.id}?clientId=&linkerParam=&_ga=&uid=" %>
                         <div class="col col-md-4 col-sm-4">
-                          <button class="btn btn-sm btn-url" data-clipboard-html="<a style='font-family: sans-serif;' href='<%= url %>'><%= product.title %></a>"
+                          <button class="btn btn-sm btn-url" data-title="<%= product.title %>"
                                   data-clipboard-text="<%= url %>" title="Copy to clipboard"><%= product.is_deposit? && 'Deposit' || 'Final' %></button>
                         </div>
                       </div>
