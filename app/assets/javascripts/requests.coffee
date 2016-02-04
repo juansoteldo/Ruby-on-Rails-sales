@@ -19,7 +19,7 @@
     '</div></div>'
 
 @dateFormatter = (value) ->
-  moment(value).format('D MMM')
+  moment(value).format('D MMM h:mm a')
 
 @userFormatter = (value, row) ->
   value.email
