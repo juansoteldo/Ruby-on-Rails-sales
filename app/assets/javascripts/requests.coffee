@@ -49,7 +49,8 @@ appendSidebarUids = (userId, clientId, linkerParam, _ga) ->
     txt = $(this).data('clipboardText')
     txt = txt.replace /uid\=[\d]*/, "uid=#{userId}"
     txt = txt.replace /clientId\=[^&]*&/, "clientId=#{clientId}&"
-    txt = txt.replace /linkerParam\=[^&]*&/, "linkerParam=#{encodeURI(linkerParam)}&"
+    linkerParam = encodeURI(linkerParam.replace('_ga=',''))
+    txt = txt.replace /linkerParam\=[^&]*&/, "linkerParam=#{linkerParam}&"
 
     txt = txt.replace /_ga\=[^&]*&/, "_ga=#{_ga}&"
 
