@@ -46,10 +46,10 @@ filterSidebar = (filter) ->
 
 appendSidebarUids = (userId, clientId, linkerParam, _ga) ->
   $('.btn-url').each ->
-    txt = $(this).data('clipboardText')
+    txt = $(this).data('url')
     txt = txt.replace /uid\=[\d]*/, "uid=#{userId}"
     txt = txt.replace /clientId\=[^&]*&/, "clientId=#{clientId}&"
-    linkerParam = encodeURI(linkerParam.replace('_ga=',''))
+    linkerParam = encodeURI(linkerParam.replace('_ga=','')) if linkerParam
     txt = txt.replace /linkerParam\=[^&]*&/, "linkerParam=#{linkerParam}&"
 
     txt = txt.replace /_ga\=[^&]*&/, "_ga=#{_ga}&"

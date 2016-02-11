@@ -18,7 +18,7 @@ class PublicController < ApplicationController
     if @linker_param == nil or @linker_param == ''
       @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=unlisted&utm_source=crm&utm_medium=email"
     else
-      @url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@user_id}&_ga=#{@_ga}&cid=#{@client_id}"
+      @url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@user_id}&cid=#{@client_id}"
     end
   end
 
