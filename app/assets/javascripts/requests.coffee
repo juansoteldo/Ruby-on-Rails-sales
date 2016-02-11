@@ -61,11 +61,9 @@ ready = ->
     id = $(e.target).data('id')
 
   $(document).on 'mouseenter', '#request-table', (e) ->
-    console.log 'enter'
     window.mouseOverTable = true
 
   $(document).on 'mouseleave', '#request-table', (e) ->
-    console.log 'leave'
     window.mouseOverTable = false
 
   $('#request-table').on 'click', '.btn-show-options', (e) ->
