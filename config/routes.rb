@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   devise_for :admins
   devise_for :users
 
+
   match '*any' => 'application#options', :via => [:options]
+  get '/.well-known/acme-challenge/rpDwZCQvE7ToJ1z7sHWHNOPbIgOvN1h-4Qiwly4RsEk', to: 'public#letsencrypt'
   get 'public/redirect/:handle/:variant', to: 'public#redirect'
   post 'public/new_request'
   match 'public/get_uid', via: [:get, :post]
