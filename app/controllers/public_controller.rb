@@ -6,19 +6,21 @@ class PublicController < ApplicationController
   before_filter :set_user_by_client_id, only: [ :get_uid ]
 
   def redirect
-    @user_id = params[:uid]
-    @client_id = params[:client_id]
-    @client_id ||= params[:clientId]
-    @linker_param = params[:linkerParam]
-    @_ga = params[:_ga]
-
     @variant = params[:variant]
     @handle = params[:handle]
 
-    if @linker_param == nil or @linker_param == ''
-      @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=unlisted&utm_source=crm&utm_medium=email"
+    if params[:requestId] != nil && Request.where(id: params[:requestId] ).any?
+      @request = Request.find(params[:requestId])
+    end
+    if not @request and ( params[:_ga] and Request.where(_ga: params[:_ga]).any? )
+      @request = Request.find_by__ga(params[:_ga])
+    end
+
+    if @request
+      @request.update_columns( variant: @variant, handle: @handle, last_visited_at: Time.now )
+      @url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@request.user_id}&cid=#{@request.client_id}"
     else
-      @url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@user_id}&cid=#{@client_id}"
+      @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=unlisted&utm_source=crm&utm_medium=email"
     end
   end
 

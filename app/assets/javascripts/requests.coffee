@@ -7,14 +7,12 @@
 @cartButtons = (value, row) ->
   '<div class="row">' +
     '<div class="col-md-5">' +
-    '<button class="btn btn-xs btn-show-options btn-block" data-user-id="'+row.user.id+'" ' +
-    'data-email="'+row.user.email+'" data-client-id="'+row.client_id+'" data-ga="'+row._ga+'" ' +
-    'data-linker-param="'+row.linker_param+'"' +
+    '<button class="btn btn-xs btn-show-options btn-block"' +
+    'data-email="'+row.user.email+'" data-id="'+row.id+'"' +
     'data-class="deposit">Deposit</button>' +
     '</div><div class="col-md-2"></div><div class="col-md-5">' +
-    '<button class="btn btn-xs btn-show-options btn-primary btn-block" data-user-id="'+row.id+'" ' +
-    'data-email="'+row.user.email+'" data-client-id="'+row.client_id+'" data-ga="'+row._ga+'" ' +
-    'data-linker-param="'+row.linker_param+'"' +
+    '<button class="btn btn-xs btn-show-options btn-primary btn-block"' +
+    'data-email="'+row.user.email+'" data-id="'+row.id+'"' +
     'data-class="final">Final</button>' +
     '</div></div>'
 
@@ -22,7 +20,7 @@
   moment(value).format('D MMM h:mm a')
 
 @userFormatter = (value, row) ->
-  value.email
+  "<span title='#{row.client_id}'>#{value.email}</span>"
 
 @hideButton = (value, row) ->
   return ""
@@ -31,6 +29,11 @@
 @firstFormatter = (value, row) ->
   return '1st' if value
   ''
+
+@visitedFormatter = (value, row) ->
+  return '<span class="glyphicon glyphicon-eye-open"></span>' if value
+  ''
+
 
 @colorFormatter = (value, row) ->
   return "<img src='#{image_path('color-wheel.png')}' width='16' height='16'/>" if value
@@ -44,17 +47,15 @@ filterSidebar = (filter) ->
   $("#variants .deposit, #variants .final").hide()
   $("#variants .#{filter}").show()
 
-appendSidebarUids = (userId, clientId, linkerParam, _ga) ->
+appendSidebarUids = (el) ->
+  requestId = $(el).data('id')
+
   $('.btn-url').each ->
-    txt = $(this).data('url')
-    txt = txt.replace /uid\=[\d]*/, "uid=#{userId}"
-    txt = txt.replace /clientId\=[^&]*&/, "clientId=#{clientId}&"
-    linkerParam = encodeURI(linkerParam.replace('_ga=','')) if linkerParam
-    txt = txt.replace /linkerParam\=[^&]*&/, "linkerParam=#{linkerParam}&"
+    url = $(this).data('url')
+    if typeof(requestId) != 'undefined'
+      url = url.replace /requestId\=/, "requestId=#{requestId}"
 
-    txt = txt.replace /_ga\=[^&]*&/, "_ga=#{_ga}&"
-
-    $(this).data('clipboardText', txt)
+    $(this).data('clipboardText', url)
 
 ready = ->
   $('#request-table').on 'click', '.btn-hide-request', (e) ->
@@ -68,12 +69,9 @@ ready = ->
 
   $('#request-table').on 'click', '.btn-show-options', (e) ->
     e.preventDefault()
-    userId = $(e.target).data('userId')
-    clientId = $(e.target).data('clientId')
-    linkerParam = $(e.target).data('linkerParam')
-    _ga = $(e.target).data('ga')
 
-    appendSidebarUids(userId, clientId, linkerParam, _ga)
+
+    appendSidebarUids(e.target)
     $('#request-table tr.active').removeClass('active')
 
     row = $(e.target).closest('tr')

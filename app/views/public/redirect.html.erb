@@ -60,29 +60,30 @@
 
     return value;
   };
-
-  setCookie( '_ga', QueryString._ga );
-  console.log( '_ga=' + getCookie('_ga') );
-  var cid = QueryString.clientId+"";
-  var uid = QueryString.uid+"";
-
+  <% if @request %>
+    setCookie( '_ga', <%= @request._ga.to_json.html_safe %> );
+    console.log( '_ga=' + getCookie('_ga') );
+  <% end %>
 
   ga('create', 'UA-34117074-2', 'customtattoodesign.ca',
       {
         'allowLinker' : 'true',
-        'cookieDomain':'customtattoodesign.ca',
-        'linkerParam': <%= @linker_param.to_json.html_safe %>,
-        'clientId': <%= @client_id.to_json.html_safe %>
+        'cookieDomain':'customtattoodesign.ca'<% if @request %>,
+        'linkerParam': <%= @request.linker_param.to_json.html_safe %>,
+        'clientId': <%= @request.client_id.to_json.html_safe %>
+        <% end %>
       });
   ga('require', 'linker');
   ga('linker:autoLink', ['shop.customtattoodesign.ca']);
 
   ga(function(tracker) {
-    setCookie('cid', cid);
-    setCookie('uid', uid);
-    ga('set', 'dimension1', cid);
-    ga('set', 'dimension2', uid);
-    ga('send', 'pageview');
+    <% if @request %>
+      getAndSetCookie('cid', <%= @request.client_id.to_json.html_safe %>);
+      getAndSetCookie('uid', <%= @request.user_id.to_json.html_safe %>);
+      ga('set', 'dimension1', <%= @request.client_id.to_json.html_safe %>);
+      ga('set', 'dimension2', <%= @request.user_id.to_json.html_safe %>);
+      ga('send', 'pageview');
+    <% end %>
   });
 <% if Rails.env.production? %>
   setTimeout(function(){
@@ -90,5 +91,3 @@
   }, 3000);
 <% end %>
 </script>
-</body>
-</html>
