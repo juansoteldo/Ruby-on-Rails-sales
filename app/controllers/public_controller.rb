@@ -35,7 +35,8 @@ class PublicController < ApplicationController
   end
 
   def letsencrypt
-    render text: 'rpDwZCQvE7ToJ1z7sHWHNOPbIgOvN1h-4Qiwly4RsEk.12TMAWfXdIvgt6ql1dtZLJJfdL0YOluvbSDX4-5jhd8'
+    render text: 'dT9DAGnRrJMtsYSbsdtCoQjekQb9-NZnAYa6kH_yi44.12TMAWfXdIvgt6ql1dtZLJJfdL0YOluvbSDX4-5jhd8'
+
   end
 
   private
