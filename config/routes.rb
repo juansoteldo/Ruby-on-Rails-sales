@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'public/redirect/:handle/:variant', to: 'public#redirect'
   post 'public/new_request'
   match 'public/get_uid', via: [:get, :post]
+  match 'public/get_ids', via: [:get, :post]
 
   namespace :admin do
     resources :products
@@ -23,6 +24,7 @@ Rails.application.routes.draw do
 
     get 'test/quote_form' => 'test#quote_form', as: 'quote_form'
     get 'test/post_form' => 'test#post_form', as: 'post_form'
+    get 'test/cart' => 'test#cart', as: 'cart'
 
   end
 

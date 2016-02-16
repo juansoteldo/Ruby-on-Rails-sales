@@ -4,6 +4,7 @@ class PublicController < ApplicationController
   before_filter :validate_parameters, only: [:new_request]
   before_filter :set_user_by_email, only: [ :new_request ]
   before_filter :set_user_by_client_id, only: [ :get_uid ]
+  before_filter :set_request_by_email, only: [ :get_ids ]
 
   def redirect
     @variant = params[:variant]
@@ -36,12 +37,24 @@ class PublicController < ApplicationController
     render json: @user.id
   end
 
+  def get_ids
+
+  end
+
   def letsencrypt
     render text: 'eUpvbra_e3D3xwFDfnZvsVsFQPxvhZmZr2vmf6C0DmA.12TMAWfXdIvgt6ql1dtZLJJfdL0YOluvbSDX4-5jhd8'
 
   end
 
   private
+
+    def set_request_by_email
+      if Request.joins(:user).where( 'users.email = ?', params[:email] ).any?
+        @request = Request.joins(:user).where( 'users.email = ?', params[:email] ).first
+      else
+        render json: false
+      end
+    end
 
     def set_user_by_client_id
       if Request.where( client_id: params[:client_id] ).any?
