@@ -34,7 +34,7 @@ gem 'cancancan', '~> 1.10'
 gem 'shopify_api'
 gem 'freshdesk_api'
 
-gem 'puma'
+gem 'unicorn'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -46,16 +46,20 @@ gem 'puma'
 # gem 'capistrano-rails', group: :development
 gem 'rails_12factor', group: :production
 gem 'newrelic_rpm'
+gem 'dotenv-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'quiet_assets'
-  gem 'dotenv-rails'
 
   gem 'meta_request'
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
+  gem 'capistrano', '~> 3.1'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails', '~> 1.1'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
