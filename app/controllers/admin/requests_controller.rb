@@ -16,8 +16,8 @@ class Admin::RequestsController < Admin::BaseController
     if params[:search]
       term = params[:search].downcase
       @requests = @requests.
-          where( 'LOWER(users.email) LIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ?',
-                 "%#{term}%", "%#{term}%", "%#{term}%" )
+          where( 'LOWER(users.email) LIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ? OR requests.client_id LIKE ?',
+                 "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%" )
     end
 
     @requests_count = @requests.count
