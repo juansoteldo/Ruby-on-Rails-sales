@@ -15,7 +15,7 @@ timeout 600
 
 # listen on a Unix domain socket and/or a TCP port,
 
-listen ENV['LISTEN_PORT'] # listen to port 8080 on all TCP interfaces
+listen 3005 # listen to port 8080 on all TCP interfaces
 #listen "127.0.0.1:8080"  # listen to port 8080 on the loopback interface
 #listen "#{app_dir}/tmp/sockets/unicorn.sock"
 
