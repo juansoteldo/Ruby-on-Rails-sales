@@ -6,7 +6,7 @@ set :rbenv_ruby, '2.2.3'
 
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
-set :branch, :stable
+set :branch, :unicorn
 set :deploy_to, '/u/apps/ctd-worklist'
 # set :scm, :git
 
