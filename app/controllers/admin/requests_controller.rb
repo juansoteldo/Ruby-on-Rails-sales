@@ -10,7 +10,7 @@ class Admin::RequestsController < Admin::BaseController
 
     if params[:search]
       term = params[:search].downcase
-      @requests = @requests.
+      @requests = @requests.joins(:user).
           where( 'LOWER(users.email) LIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ?',
                  "%#{term}%", "%#{term}%", "%#{term}%" )
     end
