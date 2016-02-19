@@ -20,7 +20,7 @@ class PublicController < ApplicationController
     if @request and @request.client_id and @request.client_id != 'false'
       @request.update_columns( variant: @variant, handle: @handle, last_visited_at: Time.now )
       @url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@request.user_id}&cid=#{@request.client_id}"
-    elsif not @request.client_id or @request.client_id == 'false'
+    elsif @request
       @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=blocked&utm_source=crm&utm_medium=email"
     else
       @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=unlisted&utm_source=crm&utm_medium=email"
