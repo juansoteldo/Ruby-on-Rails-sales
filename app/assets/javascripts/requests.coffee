@@ -22,7 +22,7 @@
   moment(value).format('D MMM')
 
 @currencyFormatter = (value) ->
-  parseFloat(value).toFixed(2).replace /./g, (c, i, a) ->
+  value = parseFloat(value).toFixed(2).replace /./g, (c, i, a) ->
     if i and c != '.' and (a.length - i) % 3 == 0 then ',' + c else c
   value = '$'+value;
 

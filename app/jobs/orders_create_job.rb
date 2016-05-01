@@ -4,8 +4,8 @@ class OrdersCreateJob < ActiveJob::Base
   	Streak.api_key = ENV['STREAK_API_KEY']
     order = ShopifyAPI::Order.new(params[:webhook])
 		email = order.customer.email
-		is_deposit = order.line_items.any?{|line_item| line_item.title.include? "Deposit" }
-		is_final = order.line_items.any?{|line_item| line_item.title.include? "Final" }
+		is_deposit = order.line_items.any?{ |line_item| line_item.title.include? "Deposit" }
+		is_final = order.line_items.any?{ |line_item| line_item.title.include? "Final" }
 		
 		if order.note_attributes
 			order.note_attributes.each do |note_attr|
