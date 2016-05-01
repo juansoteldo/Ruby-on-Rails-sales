@@ -10,7 +10,6 @@ class WebhooksController < ApplicationController
 	private
   
  	def verify_webhook
- 		request.body.rewind
   	data = request.body.read
     hmac_header = request.headers['HTTP_X_SHOPIFY_HMAC_SHA256']
     digest  = OpenSSL::Digest::Digest.new('sha256')
