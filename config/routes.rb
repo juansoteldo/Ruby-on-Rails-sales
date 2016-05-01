@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   post 'public/new_request'
   match 'public/get_uid', via: [:get, :post]
   match 'public/get_user', via: [:get]
-
+  namespace :webhooks do
+    post 'orders_create' => :orders_create
+  end
   namespace :admin do
     resources :products
     resources :requests
