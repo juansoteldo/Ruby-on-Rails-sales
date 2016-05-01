@@ -31,5 +31,5 @@ class OrdersCreateJob < ActiveJob::Base
 		end
   # rescue Resque::TermException
   #   Resque.enqueue(self, key)
-  # end
+  end
 end
