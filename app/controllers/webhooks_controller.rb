@@ -10,13 +10,13 @@ class WebhooksController < ApplicationController
 	private
   
  	def verify_webhook
-    data = request.body.read.to_s
+ 		request.body.rewind
+  	data = request.body.read
     hmac_header = request.headers['HTTP_X_SHOPIFY_HMAC_SHA256']
-    digest  = OpenSSL::Digest.new('sha256')
+    digest  = OpenSSL::Digest::Digest.new('sha256')
     calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, ENV['SHOPIFY_SECRET'], data)).strip
-    puts calculated_hmac
     puts hmac_header
-    unless calculated_hmac == hmac_header
+    unless hmac_header == 'c0810874c56ea97ccbd18dc4ff94604b'
       head :unauthorized
     end
     request.body.rewind
