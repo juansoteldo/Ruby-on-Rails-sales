@@ -29,7 +29,7 @@ class OrdersCreateJob < ActiveJob::Base
       	request.update_attribute(:final_order_id, order.id)
       end
 		end
-  rescue Resque::TermException
-    Resque.enqueue(self, key)
-  end
+  # rescue Resque::TermException
+  #   Resque.enqueue(self, key)
+  # end
 end
