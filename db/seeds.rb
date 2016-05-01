@@ -7,6 +7,8 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 admin = Admin.create( email: 'wojtek@grabski.ca', password: 'testtest', password_confirmation: 'testtest' )
 user = User.create( email: 'wojtek@grabski.ca', password: 'testtest', password_confirmation: 'testtest' )
+salesperson1 = Salesperson.create( email: 'sales1@test.ca', password: 'testtest', password_confirmation: 'testtest' )
+salesperson2 = Salesperson.create( email: 'sales2@test.ca', password: 'testtest', password_confirmation: 'testtest' )
 
 request = user.requests.create(
     has_color: true,

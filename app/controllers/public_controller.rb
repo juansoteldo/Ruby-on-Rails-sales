@@ -2,7 +2,9 @@ class PublicController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   before_filter :validate_parameters, only: [:new_request]
-  before_filter :set_user_by_email, only: [ :new_request ]
+  before_filter :set_user_by_email, only: [ :new_request, :get_user ]
+  before_filter :set_salesperson_by_email, only: [ :get_user ]
+  before_filter :load_products, only: [ :get_user ]
   before_filter :set_user_by_client_id, only: [ :get_uid ]
 
   def redirect
@@ -11,6 +13,7 @@ class PublicController < ApplicationController
     @client_id ||= params[:clientId]
     @linker_param = params[:linkerParam]
     @_ga = params[:_ga]
+    @sales_id = params[:sales_id]
 
     @variant = params[:variant]
     @handle = params[:handle]
@@ -28,6 +31,9 @@ class PublicController < ApplicationController
     render json: @user.id
   end
 
+  def get_user
+  end
+
   private
 
   def set_user_by_client_id
@@ -39,6 +45,17 @@ class PublicController < ApplicationController
     end
   end
 
+  def set_salesperson_by_email
+    if params[:sales_email]
+      if Salesperson.where( email: params[:sales_email] ).any?
+        @salesperson =  Salesperson.find_by_email( params[:sales_email] )
+      else
+        password = SecureRandom.hex(8)
+        @salesperson = Salesperson.create( email: params[:sales_email], password: password, password_confirmation: password )
+      end
+    end
+  end
+
   def set_user_by_email
     if User.where( email: params[:email] ).any?
       @user =  User.find_by_email( params[:email] )
@@ -46,6 +63,10 @@ class PublicController < ApplicationController
       password = SecureRandom.hex(8)
       @user = User.create( email: params[:email], password: password, password_confirmation: password )
     end
+  end
+
+  def load_products
+    @groups = Shopify::Group.all
   end
 
   def validate_parameters

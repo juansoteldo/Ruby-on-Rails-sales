@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :salespeople
   devise_for :admins
   devise_for :users
 
@@ -6,10 +7,12 @@ Rails.application.routes.draw do
   get 'public/redirect/:handle/:variant', to: 'public#redirect'
   post 'public/new_request'
   match 'public/get_uid', via: [:get, :post]
+  match 'public/get_user', via: [:get]
 
   namespace :admin do
     resources :products
     resources :requests
+    resources :salespeople
 
     get 'shopify/products'
     get 'shopify/variants'
