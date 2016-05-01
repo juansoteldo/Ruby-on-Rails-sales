@@ -6,11 +6,15 @@ class OrdersCreateJob < ActiveJob::Base
 		email = order.customer.email
 		is_deposit = order.line_items.any?{|line_item| line_item.title.include? "Deposit" }
 		is_final = order.line_items.any?{|line_item| line_item.title.include? "Final" }
-		order.note_attributes.each do |note_attr|
-			if note_attr.name == "req_id"
-				@req_id = note_attr.value
+		
+		if order.note_attributes
+			order.note_attributes.each do |note_attr|
+				if note_attr.name == "req_id"
+					@req_id = note_attr.value
+				end
 			end
 		end
+		
 		if is_deposit
 			quoted_stage = ENV['QUOTE_STAGE']
 			deposited_stage = ENV['DEPOSIT_STAGE']
