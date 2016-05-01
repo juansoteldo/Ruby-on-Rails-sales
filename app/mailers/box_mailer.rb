@@ -1,4 +1,4 @@
-class BoxMailer < ApplicationMailer
+class BoxMailer < ActionMailer
 	default from: 'orders@customtattoodesign.ca'
  
   def reminder_email(email, first_name, last_name)
