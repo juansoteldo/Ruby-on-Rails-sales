@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   get 'public/redirect/:handle/:variant', to: 'public#redirect'
   post 'public/new_request'
   match 'public/get_uid', via: [:get, :post]
-  match 'public/get_user', via: [:get]
+  match 'public/get_links', via: [:get]
   namespace :webhooks do
     post 'orders_create' => :orders_create
   end

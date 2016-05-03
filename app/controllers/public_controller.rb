@@ -31,7 +31,7 @@ class PublicController < ApplicationController
     render json: @user.id
   end
 
-  def get_user
+  def get_links
   end
 
   private

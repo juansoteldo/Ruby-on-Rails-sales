@@ -19,7 +19,6 @@ class Admin::SalespeopleController < Admin::BaseController
       @date_range = "Since all time"
     end
     @salespeople = Salesperson.sales_by_date(@dates)
-    puts @salespeople
   end
 
   # GET /salespeople/1
