@@ -2,9 +2,9 @@ class PublicController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   before_filter :validate_parameters, only: [:new_request]
-  before_filter :set_user_by_email, only: [ :new_request, :get_user ]
-  before_filter :set_salesperson_by_email, only: [ :get_user ]
-  before_filter :load_products, only: [ :get_user ]
+  before_filter :set_user_by_email, only: [ :new_request, :get_links ]
+  before_filter :set_salesperson_by_email, only: [ :get_links ]
+  before_filter :load_products, only: [ :get_links ]
   before_filter :set_user_by_client_id, only: [ :get_uid ]
 
   def redirect
