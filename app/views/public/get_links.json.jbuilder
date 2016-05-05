@@ -1,4 +1,4 @@
-json.id @user.id
+json.id @user.id if @user
 json.requests @user.requests do |request|
 	json.id request.id
 	json.user_id request.user_id
