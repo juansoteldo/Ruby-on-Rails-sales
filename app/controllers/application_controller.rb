@@ -12,8 +12,12 @@ class ApplicationController < ActionController::Base
     # Because we want our front-end to send cookies to allow the API to be authenticated
     # (using 'withCredentials' in the XMLHttpRequest), we need to add some headers so
     # the browser will not reject the response
+    
     headers['Access-Control-Allow-Origin'] = request.headers['Origin'] || '*'
     headers['Access-Control-Allow-Credentials'] = 'true'
+    headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
+    headers['Access-Control-Request-Method'] = '*'
+    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
 
   def options
