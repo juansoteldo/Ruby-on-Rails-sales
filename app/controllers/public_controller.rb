@@ -1,5 +1,5 @@
 class PublicController < ApplicationController
-  #skip_before_filter :verify_authenticity_token
+  skip_before_filter :verify_authenticity_token
 
   before_filter :validate_parameters, only: [:new_request]
   before_filter :set_user_by_email, only: [ :new_request, :get_user ]
