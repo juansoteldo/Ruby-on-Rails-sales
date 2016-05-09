@@ -66,7 +66,9 @@ class PublicController < ApplicationController
   end
 
   def load_products
-    @groups = Shopify::Group.all
+    @groups = Shopify::Group.all.reject{ |group|
+      group.products.count == 0
+    }
   end
 
   def validate_parameters

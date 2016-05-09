@@ -17,6 +17,7 @@ json.groups @groups do |group|
 	json.id group.id
 	json.products group.products do |product|
 		json.id product.id
+		json.title product.title
 		json.is_deposit product.is_deposit?
 		json.variants product.variants do |variant|
 			json.price variant.price
