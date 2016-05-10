@@ -20,10 +20,11 @@ json.groups @groups do |group|
 		json.title product.title
 		json.is_deposit product.is_deposit?
 		json.variants product.variants do |variant|
+			json.id variant.id
 			json.price variant.price
 			json.has_color variant.has_color?
 			json.has_cover variant.has_cover_up?
-			json.url "http://#{@host}:#{@port}/public/redirect/#{product.handle}/#{variant.id}?clientId=&linkerParam=&_ga=&uid="
+			json.url "http://#{@host}/public/redirect/#{product.handle}/#{variant.id}?clientId=&linkerParam=&_ga=&uid="
 		end
 	end
 end

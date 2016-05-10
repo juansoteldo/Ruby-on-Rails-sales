@@ -13,7 +13,8 @@ class PublicController < ApplicationController
     @client_id ||= params[:clientId]
     @linker_param = params[:linkerParam]
     @_ga = params[:_ga]
-    @sales_id = params[:sales_id]
+    @sales_id = params[:salesid]
+    @req_id = params[:reqid]
 
     @variant = params[:variant]
     @handle = params[:handle]
