@@ -1,6 +1,6 @@
 desc "This task is called by the Heroku scheduler add-on"
 task :send_reminders => :environment do
-  puts "Sending Reminders"
+  puts "Sending Reminders update"
   Streak.api_key = ENV['STREAK_API_KEY']
   puts Streak.api_key
   quoted_stage = ENV['QUOTE_STAGE']
