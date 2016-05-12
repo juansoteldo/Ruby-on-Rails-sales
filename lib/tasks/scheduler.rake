@@ -18,6 +18,7 @@ task :send_reminders => :environment do
 		elsif time_sent == third
 			BoxMailer.reminder_email(email)
 		end
+    BoxMailer.reminder_email(email)
   end
   puts "done."
 end
