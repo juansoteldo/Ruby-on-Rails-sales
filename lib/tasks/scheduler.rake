@@ -8,15 +8,11 @@ task :send_reminders => :environment do
   boxes.each do |box|
   	time_sent = Time.at(box.last_email_received_timestamp.to_i/1000).to_date
   	first = 1.day.ago.to_date
-  	second = 3.days.ago.to_date
+  	second = 2.days.ago.to_date
   	third = 5.days.ago.to_date
   	email = box.last_email_from
-		if time_sent == first
-			BoxMailer.reminder_email(email)
-		elsif time_sent == second
-			BoxMailer.reminder_email(email)
-		elsif time_sent == third
-			BoxMailer.reminder_email(email)
+		if time_sent == second
+			BoxMailer.reminder_email(email).deliver_now
 		end
   end
   puts "done."
