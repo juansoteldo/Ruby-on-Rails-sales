@@ -33,6 +33,7 @@ class OrdersCreateJob < ActiveJob::Base
       	request.update_attribute(:final_order_id, order.id)
       end
 		end
+		BoxMailer.confirmation_email(email).deliver_now
   # rescue Resque::TermException
   #   Resque.enqueue(self, key)
   end
