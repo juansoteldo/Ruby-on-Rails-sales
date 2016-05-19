@@ -53,6 +53,7 @@ GEM
     bower-rails (0.10.0)
     builder (3.2.2)
     byebug (8.2.1)
+    callsite (0.0.11)
     cancancan (1.13.1)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
@@ -89,6 +90,7 @@ GEM
       deep_merge
       multi_json
       rest-client
+    git-version-bump (0.15.1)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     http-cookie (1.0.2)
@@ -106,6 +108,10 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
+    meta_request (0.3.4)
+      callsite (~> 0.0, >= 0.0.11)
+      rack-contrib (~> 1.1)
+      railties (>= 3.0.0, < 5.0.0)
     mime-types (2.99)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
@@ -120,6 +126,9 @@ GEM
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.6.4)
+    rack-contrib (1.4.0)
+      git-version-bump (~> 0.15)
+      rack (~> 1.4)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.3)
@@ -225,6 +234,7 @@ DEPENDENCIES
   freshdesk_api
   jbuilder (~> 2.0)
   jquery-rails
+  meta_request
   newrelic_rpm
   pg
   puma

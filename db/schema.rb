@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160511144740) do
+ActiveRecord::Schema.define(version: 20160211174353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,9 @@ ActiveRecord::Schema.define(version: 20160511144740) do
     t.datetime "updated_at",                    null: false
     t.string   "_ga"
     t.string   "linker_param"
+    t.string   "handle"
+    t.string   "variant"
+    t.datetime "last_visited_at"
   end
 
   add_index "requests", ["sku"], name: "index_requests_on_sku", using: :btree

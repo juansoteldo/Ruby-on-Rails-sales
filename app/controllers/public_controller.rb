@@ -6,6 +6,7 @@ class PublicController < ApplicationController
   before_filter :set_salesperson_by_email, only: [ :get_links ]
   before_filter :load_products, only: [ :get_links ]
   before_filter :set_user_by_client_id, only: [ :get_uid ]
+  before_filter :set_request_by_email, only: [ :get_ids ]
 
   def redirect
     @user_id = params[:uid]
@@ -18,6 +19,25 @@ class PublicController < ApplicationController
 
     @variant = params[:variant]
     @handle = params[:handle]
+
+    if params[:requestId] != nil && Request.where(id: params[:requestId] ).any?
+      @request = Request.find(params[:requestId])
+    end
+    if not @request and ( params[:_ga] and Request.where(_ga: params[:_ga]).any? )
+      @request = Request.find_by__ga(params[:_ga])
+    end
+
+    if @request and @request.client_id and @request.client_id != 'false'
+      @request.update_columns( variant: @variant, handle: @handle, last_visited_at: Time.now )
+      @url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@request.user_id}&cid=#{@request.client_id}&reqid=#{@request.id}"
+    elsif @request
+      @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=blocked&utm_source=crm&utm_medium=email&reqid=#{@request.id}"
+    else
+      @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=unlisted&utm_source=crm&utm_medium=email"
+    end
+    if @sales_id
+      @url = "#{@url}&salesid=#{@sales_id}"
+    end
   end
 
   def new_request
@@ -33,14 +53,22 @@ class PublicController < ApplicationController
   end
 
   def get_links
+  
+  end
+
+  def get_ids
+
+  end
+
+  def letsencrypt
+    render text: 'Xc1hbxgIYW1ARM_UzwSwnlKwjKtbdN8PBpoAasZIq9o.12TMAWfXdIvgt6ql1dtZLJJfdL0YOluvbSDX4-5jhd8'
   end
 
   private
 
-  def set_user_by_client_id
-    if Request.where( client_id: params[:client_id] ).any?
-      user_id = Request.find_by_client_id( params[:client_id] ).user_id
-      @user =  User.find(user_id)
+  def set_request_by_email
+    if Request.joins(:user).where( 'users.email = ?', params[:email] ).any?
+      @request = Request.joins(:user).where( 'users.email = ?', params[:email] ).first
     else
       render json: false
     end
@@ -66,6 +94,15 @@ class PublicController < ApplicationController
     end
   end
 
+  def set_user_by_client_id
+    if Request.where( client_id: params[:client_id] ).any?
+      user_id = Request.find_by_client_id( params[:client_id] ).user_id
+      @user =  User.find(user_id)
+    else
+      render json: false
+    end
+  end
+
   def load_products
     @groups = Shopify::Group.all.reject{ |group|
       group.products.count == 0
@@ -73,9 +110,9 @@ class PublicController < ApplicationController
   end
 
   def validate_parameters
-     [:position, :gender, :first_name, :last_name, :client_id ].each do |sym|
-        render( json: false ) if params[sym] == '' or params[sym] == false
-      end
+   [:position, :gender, :first_name, :last_name, :client_id ].each do |sym|
+      render( json: false ) if params[sym] == '' or params[sym] == false
+    end
   end
 
   def request_params
