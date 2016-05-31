@@ -32,10 +32,11 @@ gem 'bower-rails', '~> 0.10.0'
 gem 'zeroclipboard-rails'
 gem 'cancancan', '~> 1.10'
 gem 'shopify_api'
-gem 'freshdesk_api'
+gem 'streak-ruby'
+gem 'delayed_job'
+gem 'delayed_job_active_record'
 
 gem 'puma'
-
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

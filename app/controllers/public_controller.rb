@@ -2,11 +2,21 @@ class PublicController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   before_filter :validate_parameters, only: [:new_request]
-  before_filter :set_user_by_email, only: [ :new_request ]
+  before_filter :set_user_by_email, only: [ :new_request, :get_links ]
+  before_filter :set_salesperson_by_email, only: [ :get_links ]
+  before_filter :load_products, only: [ :get_links ]
   before_filter :set_user_by_client_id, only: [ :get_uid ]
   before_filter :set_request_by_email, only: [ :get_ids ]
 
   def redirect
+    @user_id = params[:uid]
+    @client_id = params[:client_id]
+    @client_id ||= params[:clientId]
+    @linker_param = params[:linkerParam]
+    @_ga = params[:_ga]
+    @sales_id = params[:salesid]
+    @req_id = params[:reqid]
+
     @variant = params[:variant]
     @handle = params[:handle]
 
@@ -19,11 +29,14 @@ class PublicController < ApplicationController
 
     if @request and @request.client_id and @request.client_id != 'false'
       @request.update_columns( variant: @variant, handle: @handle, last_visited_at: Time.now )
-      @url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@request.user_id}&cid=#{@request.client_id}"
+      @url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@request.user_id}&cid=#{@request.client_id}&reqid=#{@request.id}"
     elsif @request
-      @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=blocked&utm_source=crm&utm_medium=email"
+      @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=blocked&utm_source=crm&utm_medium=email&reqid=#{@request.id}"
     else
       @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=unlisted&utm_source=crm&utm_medium=email"
+    end
+    if @sales_id
+      @url = "#{@url}&salesid=#{@sales_id}"
     end
   end
 
@@ -39,54 +52,79 @@ class PublicController < ApplicationController
     render json: @user.id
   end
 
+  def get_links
+  
+  end
+
   def get_ids
 
   end
 
   def letsencrypt
     render text: 'Xc1hbxgIYW1ARM_UzwSwnlKwjKtbdN8PBpoAasZIq9o.12TMAWfXdIvgt6ql1dtZLJJfdL0YOluvbSDX4-5jhd8'
+  end
 
+  def widget
+    respond_to do |format|
+      format.js { render template: 'widget.coffee.erb', layout: false }
+    end
   end
 
   private
 
-    def set_request_by_email
-      if Request.joins(:user).where( 'users.email = ?', params[:email] ).any?
-        @request = Request.joins(:user).where( 'users.email = ?', params[:email] ).first
-      else
-        render json: false
-      end
+  def set_request_by_email
+    if Request.joins(:user).where( 'users.email = ?', params[:email] ).any?
+      @request = Request.joins(:user).where( 'users.email = ?', params[:email] ).first
+    else
+      render json: false
     end
+  end
 
-    def set_user_by_client_id
-      if Request.where( client_id: params[:client_id] ).any?
-        user_id = Request.find_by_client_id( params[:client_id] ).user_id
-        @user =  User.find(user_id)
-      else
-        render json: false
-      end
-    end
-
-    def set_user_by_email
-      if User.where( email: params[:email] ).any?
-        @user =  User.find_by_email( params[:email] )
+  def set_salesperson_by_email
+    if params[:sales_email]
+      if Salesperson.where( email: params[:sales_email] ).any?
+        @salesperson =  Salesperson.find_by_email( params[:sales_email] )
       else
         password = SecureRandom.hex(8)
-        @user = User.create( email: params[:email], password: password, password_confirmation: password )
+        @salesperson = Salesperson.create( email: params[:sales_email], password: password, password_confirmation: password )
       end
     end
+  end
 
-    def validate_parameters
-       [:position, :gender, :first_name, :last_name, :client_id ].each do |sym|
-          render( json: false ) if params[sym] == '' or params[sym] == false
-        end
+  def set_user_by_email
+    if User.where( email: params[:email] ).any?
+      @user =  User.find_by_email( params[:email] )
+    else
+      password = SecureRandom.hex(8)
+      @user = User.create( email: params[:email], password: password, password_confirmation: password )
     end
+  end
 
-    def request_params
-      params.permit( :client_id, :ticket_id, :quote_id, :position, :gender,
-                     :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga )
+  def set_user_by_client_id
+    if Request.where( client_id: params[:client_id] ).any?
+      user_id = Request.find_by_client_id( params[:client_id] ).user_id
+      @user =  User.find(user_id)
+    else
+      render json: false
     end
+  end
 
+  def load_products
+    @groups = Shopify::Group.all.reject{ |group|
+      group.products.count == 0
+    }
+  end
+
+  def validate_parameters
+   [:position, :gender, :first_name, :last_name, :client_id ].each do |sym|
+      render( json: false ) if params[sym] == '' or params[sym] == false
+    end
+  end
+
+  def request_params
+    params.permit( :client_id, :ticket_id, :quote_id, :position, :gender,
+                   :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :reqid, :salesid )
+  end
 end
 
 require 'securerandom'

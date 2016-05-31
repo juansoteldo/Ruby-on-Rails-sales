@@ -1,0 +1,6 @@
+.streak__listViewTable.groups tr td {
+  vertical-align: middle;
+}
+.streak__listViewTable.groups tr:nth-child(even) {
+  background: #eee;
+}

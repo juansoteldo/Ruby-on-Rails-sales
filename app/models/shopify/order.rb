@@ -23,9 +23,13 @@ class Shopify::Order < Shopify::Base
   end
 
   def self.shopify_orders params
-    Rails.cache.fetch(expires_in: 1.minutes) do
-      ShopifyAPI::Order.find(:all, params: params)
-    end
+      order_count    = ShopifyAPI::Order.count( :params => params )
+      nb_pages       = (order_count / params[:limit].to_f).ceil
+      orders         = []
+      1.upto(nb_pages) do |page|
+        params[:page] = page
+        orders = orders + ShopifyAPI::Order.find( :all, :params => params )
+      end
+      orders
   end
-
 end

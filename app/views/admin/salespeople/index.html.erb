@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+<div class="col-md-4">
+<div class="form-control">
+  <div id="reportrange" class="pull-left" style="">
+    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+    <span><% if @dates[:created_at_min] and @dates[:created_at_max] %><%= @dates[:created_at_min] %> - <%= @dates[:created_at_max] %><% end %></span> <b class="caret"></b>
+  </div>
+</div>
+</div>
+<table class="table" data-toggle="table" data-pagination="true" data-side-pagination="server"
+       data-url="salespeople.json" data-query-params="<% if @dates[:created_at_min] %>date_min=<%= @dates[:created_at_min] %><% end %><% if @dates[:created_at_max] %>&amp;date_max=<%= @dates[:created_at_max] %><% end %>" data-sort-order="asc" data-page-list="[25, 50]" data-search="true" id="request-table"
+       data-show-refresh="true" data-id-field="id">
+  <thead>
+    <tr>
+      <th data-field="date_range"></th>
+      <th data-field="email">Salesperson</th>
+      <th data-field="total_orders" >Total Orders</th>
+      <th data-field="total_sales" data-formatter="currencyFormatter">Total Sales</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  </tbody>
+</table>
+
+<br>

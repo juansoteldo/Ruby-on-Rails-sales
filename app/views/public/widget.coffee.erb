@@ -1,0 +1,147 @@
+API_ROOT = 'https://<%= request.host %>'
+
+Promise.all([
+  InboxSDK.load('1.0', 'sdk_ctdwidgets_b9b6ddaf9a')
+  InboxSDK.loadScript( API_ROOT + '/javascripts/jquery.1.12.4.min.js')
+]).then (results) ->
+  sdk = results[0]
+  sdk.Compose.registerComposeViewHandler (composeView) ->
+    subject = undefined
+    if boxIsOpen()
+      subject = boxSubject()
+      composeView.setSubject 'Re: ' + subject
+
+    subject = composeView.getSubject()
+    if subjectIsQuote(subject)
+
+# Need a delay because streak sets the recipients after the view is open
+      setTimeout (->
+        recipients = composeView.getToRecipients()
+        if recipients.length == 0 or recipients[0].emailAddress.toLowerCase() == 'katie@customtattoodesign.ca'
+          composeView.setToRecipients [ getEmailInSubject(subject) ]
+        return
+      ), 500
+      composeView.addButton
+        title: 'CTD Links'
+        iconUrl: API_ROOT + '/images/tattoo_machine-128.png'
+        onClick: showLinkList
+    return
+
+  getEmailInSubject = (subject) ->
+    if subject == ''
+      return
+    matches = subject.match(/.+\(([^)]+)\)/)
+    if matches
+      matches[1].toLowerCase()
+    else
+      false
+
+  boxIsOpen = ->
+    window.location.href.indexOf('#box') > -1
+
+  subjectIsQuote = (subject) ->
+    subject.match /.+\(([^)]+)\)/
+
+  boxSubject = ->
+    if !boxIsOpen()
+      return null
+    titles = $('.streak__thing_title')
+    titles = $.grep(titles, (n, i) ->
+      $(n).text().match /.+\(([^)]+)\)/
+    )
+    titles and titles[0].innerText or null
+
+  fillIds = (url, requestId, salesId) ->
+    if !requestId
+      return url
+    if url.indexOf('requestId') > -1
+      url = url.replace(/requestId\=[^&]*&/, 'requestId=' + requestId + '&')
+    else
+      url += '&requestId=' + requestId
+    if url.indexOf('salesId') > -1
+      url = url.replace(/salesId\=[^&]*&/, 'salesId=' + salesId + '&')
+    else
+      url += '&salesId=' + salesId
+    url
+
+  showLinkList = (event) ->
+    requesterEmail = getEmailInSubject(event.composeView.getSubject())
+    if !requesterEmail
+      return
+    salesEmail = sdk.User.getEmailAddress().toLowerCase()
+    if !salesEmail or salesEmail == ''
+      return
+    _id = 'list-' + Math.random().toString(36).substring(7)
+    $table = $('<table class="streak__listViewTable groups" id="' + _id + '">')
+    modal = sdk.Widgets.showModalView(el: $table.get(0))
+    url = API_ROOT + '/public/get_links.json?email=' + requesterEmail + '&sales_email=' + salesEmail
+    $.get url, (data) ->
+      `var url`
+      if data.requests.length == 0
+        return
+      requestId = data.requests[0].id
+      salesId = data.requests[0].sales_id
+      i = 0
+      while i < data.groups.length
+        group = data.groups[i]
+        product_list_wrap = $('<tr id="group-' + group.id + '" style="border-bottom: 1px solid gray;">').append('<td class="group-title">' + group.title.replace(' Design', '') + '</td>')
+        j = 0
+        while j < group.products.length
+          product = group.products[j]
+          variant_list_wrap = $('<table id="product-' + product.id + '" class="streak__listViewTable">')
+          variant_list = $('<tr class="streak__listViewRow">').appendTo(variant_list_wrap)
+          product_list_wrap.append variant_list_wrap
+          k = 0
+          while k < product.variants.length
+            variant = product.variants[k]
+            url = fillIds(variant.url.split('?')[0] + '?', requestId, salesId)
+            linkId = 'link' + product.id + k
+            link = $('<td>' + '<a href="+url+" id="' + linkId + '" style="display: none;"></a>' + '<button class="btn-url ' + (if product.is_deposit then 'T-I-atl' else 'T-I-KE') + '"' + 'data-url="' + url + '" title="Insert into email" data-title="' + product.title + '">' + (if variant.has_color then '<img style="max-width: 12px;" src="' + API_ROOT + '/images/color-wheel.png">' else '') + '<strong>' + (if variant.has_cover then '&nbsp;C' else '&nbsp;') + '</strong>&nbsp;' + variant.price + '</button></td>')
+            variant_list.append link
+            k++
+          j++
+        $table.append product_list_wrap
+        i++
+      $('.btn-url').click ->
+        `var url`
+        url = $(this).data('url')
+        title = $(this).data('title')
+        event.composeView.insertHTMLIntoBodyAtCursor '<a href="' + url + '">' + title + '</a>'
+        modal.close()
+        return
+      return
+    return
+
+  return
+
+String::hashCode = ->
+  hash = 0
+  i = undefined
+  chr = undefined
+  len = undefined
+  if @length == 0
+    return hash
+  i = 0
+  len = @length
+  while i < len
+    chr = @charCodeAt(i)
+    hash = (hash << 5) - hash + chr
+    hash |= 0
+    # Convert to 32bit integer
+    i++
+  hash
+
+loadCss = (url) ->
+  cssId = url.hashCode()
+  if !document.getElementById(cssId)
+    head = document.getElementsByTagName('head')[0]
+    link = document.createElement('link')
+    link.id = cssId
+    link.rel = 'stylesheet'
+    link.type = 'text/css'
+    link.href = url
+    link.media = 'all'
+    head.appendChild link
+  return
+
+loadCss API_ROOT + '/stylesheets/widget.css'
