@@ -11,7 +11,6 @@ task :send_reminders => :environment do
 		if time_sent == 0.days.ago.to_date
 			BoxMailer.reminder_email(email).deliver_now
 		end
-    BoxMailer.reminder_email(email).deliver_now
   end
   puts "done."
 end

@@ -81,8 +81,8 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
   :address              => "smtp.gmail.com",
   :port                 => 587,
-  :domain               => "customtatoodesign.ca",
-  :user_name            => "sales@customtatoodesign.ca",
+  :domain               => "ajaxinfinityscroll.com",
+  :user_name            => "support@ajaxinfinityscroll.com",
   :password             => ENV['GMAIL_PASSWORD'],
   :authentication       => 'plain',
   :enable_starttls_auto => true  }
