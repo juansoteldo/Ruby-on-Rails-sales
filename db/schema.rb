@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160211174353) do
+ActiveRecord::Schema.define(version: 20160531165814) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,10 +74,13 @@ ActiveRecord::Schema.define(version: 20160211174353) do
     t.string   "_ga"
     t.string   "linker_param"
     t.string   "handle"
-    t.string   "variant"
+    t.string   "quote_variant"
     t.datetime "last_visited_at"
+    t.string   "deposit_variant"
+    t.integer  "quoted_by_id"
   end
 
+  add_index "requests", ["quoted_by_id"], name: "index_requests_on_quoted_by_id", using: :btree
   add_index "requests", ["sku"], name: "index_requests_on_sku", using: :btree
   add_index "requests", ["user_id"], name: "index_requests_on_user_id", using: :btree
 

@@ -1,0 +1,1 @@
+json.extract! @request, :id, :quote_variant, :quoted_by_id
