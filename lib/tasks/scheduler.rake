@@ -7,7 +7,7 @@ task :send_reminders => :environment do
   boxes = Streak::Box.all(ENV['PIPE_ID']).select { |b| b.stage_key == quoted_stage and b.total_number_of_emails == 2 }
   boxes.each do |box|
   	time_sent = Time.at(box.last_email_received_timestamp.to_i/1000).to_date
-  	email = box.last_email_from
+  	email = box.first_email_from
 		if time_sent == 0.days.ago.to_date
 			BoxMailer.reminder_email(email).deliver_now
 		end
