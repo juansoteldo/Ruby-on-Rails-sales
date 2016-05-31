@@ -6,7 +6,7 @@ class PublicController < ApplicationController
   before_filter :set_salesperson_by_email, only: [ :get_links ]
   before_filter :load_products, only: [ :get_links ]
   before_filter :set_user_by_client_id, only: [ :get_uid ]
-  before_filter :set_request_by_email, only: [ :get_ids ]
+  before_filter :set_request_by_email, only: [ :get_ids, :get_links ]
 
   def redirect
     @user_id = params[:uid]
@@ -60,23 +60,25 @@ class PublicController < ApplicationController
 
   end
 
-  def letsencrypt
-    render text: 'Xc1hbxgIYW1ARM_UzwSwnlKwjKtbdN8PBpoAasZIq9o.12TMAWfXdIvgt6ql1dtZLJJfdL0YOluvbSDX4-5jhd8'
-  end
-
-  def widget
-    respond_to do |format|
-      format.js { render template: 'widget.coffee.erb', layout: false }
-    end
+  def set_link
+    @request = Request.find(params[:request_id])
+    @request.quote_variant = params[:variant_id]
+    @request.quoted_by_id = params[:salesperson_id]
+    @request.save!
   end
 
   private
 
   def set_request_by_email
-    if Request.joins(:user).where( 'users.email = ?', params[:email] ).any?
-      @request = Request.joins(:user).where( 'users.email = ?', params[:email] ).first
+    requests = Request.joins(:user).where( 'users.email LIKE ?', params[:email] )
+    if requests.any?
+      @request = requests.first
     else
-      render json: false
+      if Rails.env.development?
+        @request = Request.create( user: @user )
+      else
+        render json: false
+      end
     end
   end
 
