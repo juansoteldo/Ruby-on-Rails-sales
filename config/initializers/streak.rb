@@ -1,1 +1,1 @@
-Rails.application.config.streak_api_key = '7941e92da6247ab955aab91ec479a4a2'
+Rails.application.config.streak_api_key = '1719007045c443da81efc28777f0c12b'

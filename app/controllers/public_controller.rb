@@ -65,6 +65,24 @@ class PublicController < ApplicationController
     @request.quote_variant = params[:variant_id]
     @request.quoted_by_id = params[:salesperson_id]
     @request.save!
+    box_key = StreakAPI::Box.find_by_email(params[:email]).key
+    current_stage = StreakAPI::Box.get_stage(box_key)
+    if current_stage.name == "Contacted" || current_stage.name == "Lead"
+      StreakAPI::Box.set_stage(box_key, "Quoted")
+    end
+  end
+
+  def save_email
+    box = StreakAPI::Box.find_by_email(params[:recipient_email])
+    if box
+      box_key = box.key
+      current_stage = StreakAPI::Box.get_stage(box_key)
+      if current_stage.name == "Lead"
+        StreakAPI::Box.set_stage(box_key, "Contacted")
+      end
+      user = StreakAPI::User.find_by_email(params[:from_email])
+      StreakAPI::Box.add_follower(box_key, user.user_settings_key)
+    end
   end
 
   private

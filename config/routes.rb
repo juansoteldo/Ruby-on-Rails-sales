@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   match 'public/get_uid', via: [:get, :post]
   match 'public/get_links', via: [:get]
   match 'public/set_link', via: [:get]
+  match 'public/save_email', via: [:get]
 
   namespace :webhooks do
     post 'orders_create' => :orders_create
