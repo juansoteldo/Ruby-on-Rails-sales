@@ -2,8 +2,10 @@ class OrdersCreateJob < ActiveJob::Base
   queue_as :webhook
 
   def perform(params)
+    Streak.api_key = Rails.application.config.streak_api_key
+
     order = ShopifyAPI::Order.new(params[:webhook])
-    email = order.customer.email
+    email = order.customer.email.downcase
     is_deposit = order.line_items.any? { |line_item| line_item.title.include? "Deposit" }
     is_final = order.line_items.any? { |line_item| line_item.title.include? "Final" }
 
@@ -16,10 +18,11 @@ class OrdersCreateJob < ActiveJob::Base
     end
 
     if is_deposit
+      Streak.api_key = Rails.application.config.streak_api_key
 
       quoted_stage = ENV['QUOTE_STAGE']
       deposited_stage = ENV['DEPOSIT_STAGE']
-      boxes = StreakAPI::Box.all(ENV['STREAK_PIPELINE_ID']).select do |b|
+      boxes = Streak::Box.all(ENV['STREAK_PIPELINE_ID']).select do |b|
         b.email_addresses.include? email and b.stage_key == quoted_stage and b.total_number_of_sent_emails >= 1
       end
 
