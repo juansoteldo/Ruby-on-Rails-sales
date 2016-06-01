@@ -62,7 +62,7 @@ class PublicController < ApplicationController
 
   def set_link
     @request = Request.find(params[:request_id])
-    @request.quote_variant = params[:variant_id]
+    @request.variant = params[:variant_id]
     @request.quoted_by_id = params[:salesperson_id]
     @request.save!
     box_key = StreakAPI::Box.find_by_email(params[:email]).key
