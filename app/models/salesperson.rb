@@ -27,9 +27,30 @@ def self.all_with_shopify_orders(params)
     end
     return grouped_orders
 end
+
 def self.sales_by_date(params)
 	params[:limit] = 250 
 	self.all_with_shopify_orders(params)
 end
 
+  def streak_api_key
+    decipher = OpenSSL::Cipher::AES.new(128, :CBC)
+    decipher.decrypt
+    decipher.key = Rails.application.config.streak_api_cipher_random_key
+    decipher.iv = Rails.application.config.streak_api_cipher_random_iv
+
+    decipher.update(encrypted_streak_api_key) + decipher.final
+  end
+
+  def streak_api_key=(new_key)
+    cipher = OpenSSL::Cipher::AES.new(128, :CBC)
+    cipher.encrypt
+    cipher.key = Rails.application.config.streak_api_cipher_random_key
+    cipher.iv = Rails.application.config.streak_api_cipher_random_iv
+
+    self.encrypted_streak_api_key = cipher.update(new_key) + cipher.final
+  end
+
 end
+
+require 'openssl'
