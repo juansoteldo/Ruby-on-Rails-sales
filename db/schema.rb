@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160531165814) do
+ActiveRecord::Schema.define(version: 20160531191602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(version: 20160531165814) do
     t.string   "_ga"
     t.string   "linker_param"
     t.string   "handle"
-    t.string   "quote_variant"
+    t.string   "variant"
     t.datetime "last_visited_at"
     t.string   "deposit_variant"
     t.integer  "quoted_by_id"
