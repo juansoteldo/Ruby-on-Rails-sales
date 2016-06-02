@@ -73,6 +73,7 @@ class PublicController < ApplicationController
         StreakAPI::Box.set_stage(box_key, "Quoted")
       end
     end
+    head :ok
   end
 
   def save_email
@@ -86,6 +87,7 @@ class PublicController < ApplicationController
       user = StreakAPI::User.find_by_email(params[:from_email])
       StreakAPI::Box.add_follower(box_key, user.user_settings_key)
     end
+    head :ok
   end
 
   private
