@@ -77,6 +77,7 @@ class PublicController < ApplicationController
   end
 
   def save_email
+    @salesperson = Salesperson.find_by_email( params[:from_email] )
     box = StreakAPI::Box.find_by_email(params[:recipient_email])
     if box
       box_key = box.key
@@ -85,7 +86,7 @@ class PublicController < ApplicationController
         StreakAPI::Box.set_stage(box_key, "Contacted")
       end
       user = StreakAPI::User.find_by_email(params[:from_email])
-      StreakAPI::Box.add_follower(box_key, user.user_settings_key)
+      StreakAPI::Box.add_follower(@salesperson.streak_api_key, box_key, user.user_settings_key)
     end
     head :ok
   end
