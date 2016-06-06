@@ -18,8 +18,8 @@ class StreakAPI::Box < StreakAPI::Base
 		box = Streak::Box.find(box_id)
 		StreakAPI::Stage.find_by_pipeline_name("CTD Sales", key: box.stage_key)
 	end
-	def self.add_follower(box_id, follower_key)
-		Streak.api_key = Rails.application.config.streak_api_key
+	def self.add_follower(api_key, box_id, follower_key)
+		Streak.api_key = api_key
 		box = Streak::Box.find(box_id)
 		follower_keys = box.follower_keys | [follower_key]
 		Streak::Box.update(box_id, followerKeys: follower_keys)
