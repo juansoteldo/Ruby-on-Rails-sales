@@ -8,7 +8,9 @@ class StreakAPI::User < StreakAPI::Base
 	def self.find_by_email(email)
 		StreakAPI::Pipeline.user_keys.select{ |k|
 			user = Streak::User.find(k)
-			user.email == email
-		}.first
+			if user.email == email
+				return user
+			end
+		}
 	end
 end
