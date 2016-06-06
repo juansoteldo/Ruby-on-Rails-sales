@@ -54,3 +54,4 @@ end
 end
 
 require 'openssl'
+require 'base64'
