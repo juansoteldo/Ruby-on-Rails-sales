@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
 
   match '*any' => 'application#options', :via => [:options]
-  get 'public/redirect/:handle/:variant', to: 'public#redirect'
+  get 'public/redirect/:handle/:variant', to: 'public#redirect', as: :cart_redirect
   post 'public/new_request'
   match 'public/get_uid', via: [:get, :post]
   match 'public/get_links', via: [:get]
