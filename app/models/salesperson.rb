@@ -39,7 +39,7 @@ end
     decipher.key = Rails.application.config.streak_api_cipher_random_key
     decipher.iv = Rails.application.config.streak_api_cipher_random_iv
 
-    decipher.update(encrypted_streak_api_key) + decipher.final
+    decipher.update(Base64.decode64(encrypted_streak_api_key)) + decipher.final
   end
 
   def streak_api_key=(new_key)
@@ -48,9 +48,10 @@ end
     cipher.key = Rails.application.config.streak_api_cipher_random_key
     cipher.iv = Rails.application.config.streak_api_cipher_random_iv
 
-    self.encrypted_streak_api_key = cipher.update(new_key) + cipher.final
+    self.encrypted_streak_api_key = Base64.encode64( cipher.update(new_key) + cipher.final )
   end
 
 end
 
 require 'openssl'
+require 'base64'
