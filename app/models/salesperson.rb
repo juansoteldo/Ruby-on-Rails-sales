@@ -39,7 +39,7 @@ def self.all_with_shopify_orders_by_email(params)
     orders.map {|order|
       order.sales_id = ""
       if order.created_at.to_date < "Tue, 7 Jun 2016".to_date
-        order.sales_id = 1
+        order.sales_id = 6
       else
         order.note_attributes.each do |note_attr|
           if note_attr.name == "sales_id"
