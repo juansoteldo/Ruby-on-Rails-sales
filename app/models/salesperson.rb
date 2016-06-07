@@ -34,7 +34,7 @@ def self.all_with_shopify_orders_by_email(params)
     params[:fields] = 'customer,line_items,total_price,subtotal_price,note_attributes,created_at'
     orders = Shopify::Order.shopify_orders(params)
     orders = orders.select do |order|
-      order.line_items.any?{|li| li.title.include? 'Deposit' } and User.where(email: order.customer.email).joins(:requests).where(requests: {created_at: "Wed, 1 Jun 2016".to_date..Time.now}).any?
+      order.line_items.any?{|li| !li.title.include? 'Final' } and User.where(email: order.customer.email).joins(:requests).where(requests: {created_at: "Wed, 1 Jun 2016".to_date..Time.now}).any?
     end
     orders.map {|order|
       order.sales_id = ""
