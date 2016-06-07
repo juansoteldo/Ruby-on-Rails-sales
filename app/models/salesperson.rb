@@ -34,9 +34,21 @@ def self.all_with_shopify_orders_by_email(params)
     params[:fields] = 'customer,line_items,total_price,subtotal_price,note_attributes'
     orders = Shopify::Order.shopify_orders(params)
     orders = orders.select do |order|
+      if 
       order.line_items.any?{|li| li.title.include? 'Deposit' }
     end
-    orders.map {|order| order.sales_id = 1 }
+    orders.map {|order| 
+      if order.created_at.to_date < "Tue, 7 Jun 2016"
+        order.sales_id = 1
+      else
+        order.note_attributes.each do |note_attr|
+          if note_attr.name == "sales_id"
+            order.sales_id = note_attr.value
+          end
+        end
+      end
+      order
+    }
     grouped_orders = orders.group_by(&:sales_id).select{|id,orders| id != "" }.map do |id, orders|
       c = self.find(id.to_i)
       c.total_sales = orders.inject(0) {|sum,o| sum + o.total_price.to_f.round(2)}
