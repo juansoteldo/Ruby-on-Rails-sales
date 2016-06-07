@@ -2,7 +2,6 @@ class Admin::SalespeopleController < Admin::BaseController
   load_and_authorize_resource :request, class: Request
 
   before_action :set_request, only: [:show, :edit, :update, :destroy]
-  caches_action :index, :cache_path => Proc.new{|c| c.request.url}
   # GET /salespeople
   # GET /salespeople.json
   def index
