@@ -33,9 +33,9 @@ def self.all_with_shopify_orders_by_email(params)
     params[:create_at_min] = '2016-06-01T00:00:00-00:00'
     orders = Shopify::Order.shopify_orders(params)
     orders = orders.select do |order|
-      order.line_items.any?{|li| li.title.include? 'Deposit' } #and User.where(email: order.customer.email).any?
+      order.line_items.any?{|li| li.title.include? 'Deposit' }
     end
-    orders.map {|order| orders.sales_id = 1 }
+    orders.map {|order| order.sales_id = 1 }
     grouped_orders = orders.group_by(&:sales_id).select{|id,orders| id != "" }.map do |id, orders|
       c = self.find(id.to_i)
       c.total_sales = orders.inject(0) {|sum,o| sum + o.total_price.to_f.round(2)}
