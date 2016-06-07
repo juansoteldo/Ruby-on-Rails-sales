@@ -28,4 +28,13 @@ class StreakAPI::Stage < StreakAPI::Base
 			}
 		end
 	end
+	def self.find(param = {})
+		Streak.api_key = Rails.application.config.streak_api_key
+		param_key = param.keys.first.to_s
+		Streak::Stage.all(ENV['STREAK_PIPELINE_ID']).instance_values["values"].each{|key, val| 
+			if val.send(param_key).to_s == param[param_key.to_sym]
+				return val
+			end
+		}
+	end
 end

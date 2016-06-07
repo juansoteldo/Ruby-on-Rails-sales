@@ -28,9 +28,26 @@ def self.all_with_shopify_orders(params)
     return grouped_orders
 end
 
+def self.all_with_shopify_orders_by_email(params)
+    params = { limit: 250 } if !params
+    params[:create_at_min] = '2016-06-01T00:00:00-00:00'
+    orders = Shopify::Order.shopify_orders(params)
+    orders = orders.select do |order|
+      order.line_items.any?{|li| li.title.include? 'Deposit' } and User.where(email: order.customer.email).requests.any?
+    end
+    orders.map {|order| orders.sales_id = 1 }
+    grouped_orders = mapped_orders.group_by(&:sales_id).select{|id,orders| id != "" }.map do |id, orders|
+      c = self.find(id.to_i)
+      c.total_sales = orders.inject(0) {|sum,o| sum + o.total_price.to_f.round(2)}
+      c.orders = orders
+      c
+    end
+    return grouped_orders
+end
+
 def self.sales_by_date(params)
 	params[:limit] = 250 
-	self.all_with_shopify_orders(params)
+	self.all_with_shopify_orders_by_email(params)
 end
 
   def streak_api_key
