@@ -14,12 +14,13 @@ class PublicController < ApplicationController
     @client_id ||= params[:clientId]
     @linker_param = params[:linkerParam]
     @_ga = params[:_ga]
-    @sales_id = params[:salesid]
     @req_id = params[:reqid]
 
     @variant = params[:variant]
     @handle = params[:handle]
 
+    @sales_id = params[:salesId]
+    
     if params[:requestId] != nil && Request.where(id: params[:requestId] ).any?
       @request = Request.find(params[:requestId])
     end
