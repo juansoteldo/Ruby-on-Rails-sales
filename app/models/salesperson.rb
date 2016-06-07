@@ -65,6 +65,8 @@ def self.sales_by_date(params)
 end
 
   def streak_api_key
+    return '' if encrypted_streak_api_key.nil?
+
     decipher = OpenSSL::Cipher::AES.new(128, :CBC)
     decipher.decrypt
     decipher.key = Rails.application.config.streak_api_cipher_random_key

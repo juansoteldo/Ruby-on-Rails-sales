@@ -37,6 +37,7 @@ gem 'delayed_job'
 gem 'delayed_job_active_record'
 
 gem 'puma'
+gem "puma_worker_killer"
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
