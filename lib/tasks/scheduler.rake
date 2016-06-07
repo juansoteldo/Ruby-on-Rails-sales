@@ -2,7 +2,7 @@ desc "This task is called by the Heroku scheduler add-on"
 task :send_reminders => :environment do
   puts "Sending Reminders"
   quoted_stage = StreakAPI::Stage.find_by_pipline_name("Sales / CRM", {name: "Contacted"})
-  boxes = Streak::Box.all().select { |b| b.stage_key == quoted_stage.key and b.total_number_of_emails == 2 }
+  boxes = Streak::Box.all().select { |b| b.stage_key == quoted_stage.key }
   boxes.each do |box|
   	time_sent = Time.at(box.last_email_received_timestamp.to_i/1000).to_date
   	email = box.first_email_from
