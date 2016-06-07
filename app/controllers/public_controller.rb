@@ -20,7 +20,7 @@ class PublicController < ApplicationController
     @handle = params[:handle]
 
     @sales_id = params[:salesId]
-    
+
     if params[:requestId] != nil && Request.where(id: params[:requestId] ).any?
       @request = Request.find(params[:requestId])
     end
@@ -86,8 +86,8 @@ class PublicController < ApplicationController
       if current_stage.name == "Lead"
         StreakAPI::Box.set_stage(box_key, "Contacted")
       end
-      user = StreakAPI::User.find_by_email(params[:from_email])
-      StreakAPI::Box.add_follower(@salesperson.streak_api_key, box_key, user.user_settings_key)
+      user_key = StreakAPI::User.find_key_by_email(params[:from_email])
+      StreakAPI::Box.add_follower(@salesperson.streak_api_key, box_key, user_key)
     end
     head :ok
   end
