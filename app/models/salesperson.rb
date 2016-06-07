@@ -37,7 +37,7 @@ def self.all_with_shopify_orders_by_email(params)
       order.line_items.any?{|li| li.title.include? 'Deposit' }
     end
     orders.map {|order| 
-      if order.created_at.to_date < "Tue, 7 Jun 2016"
+      if DateTime.parse(order.created_at.to_date) < DateTime.parse("Tue, 7 Jun 2016")
         order.sales_id = 1
       else
         order.note_attributes.each do |note_attr|
@@ -48,13 +48,14 @@ def self.all_with_shopify_orders_by_email(params)
       end
       order
     }
-    grouped_orders = orders.group_by(&:sales_id).select{|id,orders| id != "" }.map do |id, orders|
+    grouped_orders = orders.group_by(&:sales_id)
+    salespeople = grouped_orders.select{|id,orders| id != "" }.map do |id, orders|
       c = self.find(id.to_i)
       c.total_sales = orders.inject(0) {|sum,o| sum + o.total_price.to_f.round(2)}
       c.orders = orders
       c
     end
-    return grouped_orders
+    return salespeople
 end
 
 def self.sales_by_date(params)
