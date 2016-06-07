@@ -37,7 +37,7 @@ def self.all_with_shopify_orders_by_email(params)
       order.line_items.any?{|li| li.title.include? 'Deposit' }
     end
     orders.map {|order| 
-      if DateTime.parse(order.created_at.to_date) < DateTime.parse("Tue, 7 Jun 2016")
+      if order.created_at.to_date < "Tue, 7 Jun 2016".to_date
         order.sales_id = 1
       else
         order.note_attributes.each do |note_attr|
