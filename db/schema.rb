@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160601171628) do
+ActiveRecord::Schema.define(version: 20160608155640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,16 @@ ActiveRecord::Schema.define(version: 20160601171628) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
+  create_table "delivered_emails", force: :cascade do |t|
+    t.integer  "request_id"
+    t.integer  "marketing_email_id"
+    t.datetime "sent_at"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "delivered_emails", ["request_id"], name: "index_delivered_emails_on_request_id", using: :btree
 
   create_table "requests", force: :cascade do |t|
     t.integer  "user_id"
@@ -123,5 +133,6 @@ ActiveRecord::Schema.define(version: 20160601171628) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["shopify_id"], name: "index_users_on_shopify_id", using: :btree
 
+  add_foreign_key "delivered_emails", "requests"
   add_foreign_key "requests", "users"
 end
