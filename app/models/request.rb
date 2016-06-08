@@ -1,5 +1,6 @@
 class Request < ActiveRecord::Base
   belongs_to :user
+  has_many :delivered_emails
 
   default_scope -> { includes(:user)}
 
