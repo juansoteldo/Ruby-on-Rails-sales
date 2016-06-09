@@ -1,13 +1,17 @@
 desc "This task is called by the Heroku scheduler add-on"
 task :send_reminders => :environment do
   puts "Sending Reminders"
+  orders = ShopifyAPI::Order.find( :all, :params => {created_at_min: 3.days.ago.beginning_of_day} )
+  emails = orders.map{ |ord| ord.customer.email }
   requests = Request.where("? <= created_at AND created_at <= ?", 2.days.ago.beginning_of_day, 2.days.ago.end_of_day)
   requests.each do |request|
-    delivered_emails = request.delivered_emails.where(marketing_email_id: 1)
-    unless delivered_emails.any?
+    unless request.delivered_emails.where(marketing_email_id: 1).any?
       email = request.user.email
-      BoxMailer.reminder_email(email).deliver_now
-      request.delivered_emails.create(sent_at: Time.now, marketing_email_id: 1, request_id: request.id)
+      unless emails.include? email
+        puts "#{email}"
+        #BoxMailer.reminder_email(email).deliver_now
+        #request.delivered_emails.create(sent_at: Time.now, marketing_email_id: 1, request_id: request.id)
+      end
     end
   end
   puts "done."
@@ -22,3 +26,4 @@ task :send_reminders => :environment do
   # end
 end
 #and !b.last_email_from.include? 'customtattoodesign.ca'
+#
