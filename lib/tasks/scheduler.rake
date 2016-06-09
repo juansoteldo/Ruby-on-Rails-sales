@@ -8,9 +8,8 @@ task :send_reminders => :environment do
     unless request.delivered_emails.where(marketing_email_id: 1).any?
       email = request.user.email
       unless emails.include? email
-        puts "#{email}"
-        #BoxMailer.reminder_email(email).deliver_now
-        #request.delivered_emails.create(sent_at: Time.now, marketing_email_id: 1, request_id: request.id)
+        BoxMailer.reminder_email(email).deliver_now
+        request.delivered_emails.create(sent_at: Time.now, marketing_email_id: 1, request_id: request.id)
       end
     end
   end
