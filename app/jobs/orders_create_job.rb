@@ -30,7 +30,7 @@ class OrdersCreateJob < ActiveJob::Base
       boxes.each do |box|
         Streak::Box.update(box.box_key, {stageKey: deposited_stage})
       end
-      if @req_id
+      if @req_id && @req_id != "undefined"
         request = Request.find(@req_id)
         request.update_attribute(:deposit_order_id, order.id)
       end
@@ -38,9 +38,10 @@ class OrdersCreateJob < ActiveJob::Base
     end
 
     if is_final
-      if @req_id
+      if @req_id && @req_id != "undefined"
         request = Request.find(@req_id)
         request.update_attribute(:final_order_id, order.id)
+        BoxMailer.final_confirmation_email(email).deliver_now
       end
     end
 
