@@ -9,4 +9,10 @@ class BoxMailer < ActionMailer::Base
     mail(to: email, bcc: 'sales@customtattoodesign.ca, KaylaMckee@customtattoodesign.ca', subject: 'Custom Tattoo Design - Order Confirmation')
   end
 
+  def final_confirmation_email(email)
+  	@user = User.find_by_email(email)
+  	@request = @user.requests.first
+    mail(to: email, bcc: 'sales@customtattoodesign.ca, KaylaMckee@customtattoodesign.ca', subject: 'Custom Tattoo Design - Order Confirmation')
+  end
+
 end

@@ -12,7 +12,7 @@ task :send_reminders => :environment do
         request.delivered_emails.create(sent_at: Time.now, marketing_email_id: 1, request_id: request.id)
       end
     end
-    sleep 2 
+    sleep 1
   end
   puts "done."
   # quoted_stage = StreakAPI::Stage.find_by_pipline_name("Sales / CRM", { name: "Contacted" })

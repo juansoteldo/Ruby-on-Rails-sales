@@ -14,22 +14,22 @@ class OrdersCreateJob < ActiveJob::Base
         if note_attr.name == "req_id"
           @req_id = note_attr.value
         end
+        if note_attr.name == "sales_id"
+          @sales_id = note_attr.value
+        end
       end
     end
 
     if is_deposit
       Streak.api_key = Rails.application.config.streak_api_key
-
       quoted_stage = ENV['QUOTE_STAGE']
       deposited_stage = ENV['DEPOSIT_STAGE']
       boxes = Streak::Box.all(ENV['STREAK_PIPELINE_ID']).select do |b|
-        b.email_addresses.include? email and b.stage_key == quoted_stage and b.total_number_of_sent_emails >= 1
+        b.email_addresses.include? email && b.stage_key == quoted_stage
       end
-
       boxes.each do |box|
         Streak::Box.update(box.box_key, {stageKey: deposited_stage})
       end
-
       if @req_id
         request = Request.find(@req_id)
         request.update_attribute(:deposit_order_id, order.id)
@@ -43,8 +43,10 @@ class OrdersCreateJob < ActiveJob::Base
         request.update_attribute(:final_order_id, order.id)
       end
     end
-    # rescue Resque::TermException
-    #   Resque.enqueue(self, key)
+
+    # if @sales_id && @req_id
+    #   Order.create(salesperson_id: @sales_id, total_price: , subtotal_price: , customer_email:,)
+    # end
   end
 end
 
