@@ -8,11 +8,6 @@ class Admin::RequestsController < Admin::BaseController
   def index
     @requests = Request.all.order( created_at: :desc )
 
-    if Rails.env.production?
-        @requests = @requests.joins(:user).
-            where( 'NOT (users.email LIKE ? OR users.email LIKE ?)', '%grabski.ca%', '%fluxinc.ca%')
-    end
-
     if params[:search]
       term = params[:search].downcase
       @requests = @requests.

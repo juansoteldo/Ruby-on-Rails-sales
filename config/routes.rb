@@ -1,17 +1,27 @@
 Rails.application.routes.draw do
+  devise_for :salespeople
   devise_for :admins
   devise_for :users
 
 
   match '*any' => 'application#options', :via => [:options]
-  get '/.well-known/acme-challenge/:challenge', to: 'public#letsencrypt'
-  get 'public/redirect/:handle/:variant', to: 'public#redirect'
+  get 'public/redirect/:handle/:variant', to: 'public#redirect', as: :cart_redirect
   post 'public/new_request'
   match 'public/get_uid', via: [:get, :post]
+  match 'public/get_links', via: [:get]
+  match 'public/set_link', via: [:get]
+  match 'public/save_email', via: [:get]
+
+  namespace :webhooks do
+    post 'orders_create' => :orders_create
+  end
+
+  match 'public/get_ids', via: [:get, :post]
 
   namespace :admin do
     resources :products
     resources :requests
+    resources :salespeople
 
     get 'shopify/products'
     get 'shopify/variants'
@@ -23,6 +33,7 @@ Rails.application.routes.draw do
 
     get 'test/quote_form' => 'test#quote_form', as: 'quote_form'
     get 'test/post_form' => 'test#post_form', as: 'post_form'
+    get 'test/cart' => 'test#cart', as: 'cart'
 
   end
 

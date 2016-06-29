@@ -13,7 +13,8 @@
     "bootstrap": "~3.3.6",
     "underscore.string": "~3.2.3",
     "clipboard": "~1.5.5",
-    "moment": "~2.11.1"
+    "moment": "~2.11.1",
+    "bootstrap-daterangepicker":"~2.1.19"
   },
   "authors": [
     "Wojtek Grabski <wojtek@grabski.ca>"

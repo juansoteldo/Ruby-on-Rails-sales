@@ -19,6 +19,11 @@
 @dateFormatter = (value) ->
   moment(value).format('D MMM h:mm a')
 
+@currencyFormatter = (value) ->
+  value = parseFloat(value).toFixed(2).replace /./g, (c, i, a) ->
+    if i and c != '.' and (a.length - i) % 3 == 0 then ',' + c else c
+  value = '$'+value;
+
 @userFormatter = (value, row) ->
   "<span title='#{row.client_id}'>#{value.email}</span>"
 
@@ -87,6 +92,5 @@ ready = ->
   setInterval ->
     $('#request-table').bootstrapTable('refresh') unless @mouseOverTable
   , 30000
-
 $(document).ready ready
 $(document).on 'page:load', ready
