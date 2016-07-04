@@ -22,7 +22,6 @@ class OrdersCreateJob < ActiveJob::Base
 
     if is_deposit
       Streak.api_key = Rails.application.config.streak_api_key
-      deposited_stage = ENV['DEPOSIT_STAGE']
       boxes = Streak::Box.all(ENV['STREAK_PIPELINE_ID']).select do |b|
         b.email_addresses.include? email
       end
