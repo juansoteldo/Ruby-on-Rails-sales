@@ -46,7 +46,9 @@ class PublicController < ApplicationController
     if Request.recent.where(user_id: @user.id, position: params[:position]).any?
       Request.recent.where(user_id: @user.id, position: params[:position]).delete_all
     end
-    @request = @user.requests.create(request_params)
+    @request = Request.create(request_params)
+    @request.save
+    @user.requests << @request
   end
 
   def get_uid
