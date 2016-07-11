@@ -22,6 +22,8 @@ set :linked_dirs, %w{bin log published_files tmp/pids tmp/cache tmp/sockets vend
 set :keep_releases, 20
 set :keep_assets, 2
 
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+
 namespace :deploy do
   def remote_file_exists?(full_path)
     'true' ==  capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip
