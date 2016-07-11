@@ -4,7 +4,7 @@
 # http://en.wikipedia.org/wiki/Cron
 
 # Example:
-set :output, Rails.root.join('log', 'cron_log.log')
+set :output, File.join( File.dirname(__FILE__), 'log/cron_log.log' )
 
 
 every 1.day, at: '9:30 am' do
