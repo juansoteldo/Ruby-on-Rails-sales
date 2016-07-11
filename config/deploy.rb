@@ -2,7 +2,7 @@ set :application, 'ctd-worklist'
 set :repo_url, 'ssh://git@bitbucket.org/fluxinc/ctd-worklist.git'
 
 set :rbenv_type, :user #:user # system # or :user, depends on your rbenv setup
-set :rbenv_ruby, '2.2.3'
+set :rbenv_ruby, '2.3.1'
 set :rbenv_path, '/home/deploy/.rbenv'
 
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
