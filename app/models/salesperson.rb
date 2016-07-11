@@ -30,7 +30,11 @@ attr_accessor :orders, :total_sales
 
 def self.all_with_shopify_orders_by_email(params)
     params = { limit: 250 } if !params
-    if params[:created_at_min].to_date < '2016-06-01T00:00:00-00:00'.to_date
+    if params[:created_at_min]
+      if params[:created_at_min].to_date < '2016-06-01T00:00:00-00:00'.to_date
+        params[:created_at_min] = '2016-06-01T00:00:00-00:00'
+      end
+    else
       params[:created_at_min] = '2016-06-01T00:00:00-00:00'
     end
     params[:fields] = 'customer,line_items,total_price,subtotal_price,note_attributes,created_at'
@@ -47,6 +51,9 @@ def self.all_with_shopify_orders_by_email(params)
           if note_attr.name == "sales_id"
             order.sales_id = note_attr.value
           end
+        end
+        if !order.sales_id
+          order.sales_id = 6
         end
       end
       order
