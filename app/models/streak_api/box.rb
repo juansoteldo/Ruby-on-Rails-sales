@@ -3,7 +3,7 @@ require 'streak_api/base'
 class StreakAPI::Box < StreakAPI::Base
 
 	def self.all
-		Rails.cache.fetch('streak_box/all', expires_in: 1.minutes) do
+		Rails.cache.fetch('streak_box/all', expires_in: 2.minutes) do
 			Streak.api_key = Rails.application.config.streak_api_key
 			Streak::Box.all()
 		end
@@ -17,7 +17,7 @@ class StreakAPI::Box < StreakAPI::Base
 	def self.find_by_email(email)
 		StreakAPI::Box.all.select{ |box|
 			box.name == email
-		}.first
+		}.last
 	end
 
 	def self.set_stage(box_id, stage_name)

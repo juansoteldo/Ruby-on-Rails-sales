@@ -19,10 +19,12 @@ class WebhooksController < ApplicationController
       head :unauthorized
     end
     request.body.rewind
-  end
+	end
+
 	def shop_domain
 	  request.headers['HTTP_X_SHOPIFY_SHOP_DOMAIN']
 	end
+
 	def webhook_params
 	  params.except(:controller, :action, :type)
 	end
