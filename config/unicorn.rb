@@ -15,9 +15,7 @@ timeout 600
 
 # listen on a Unix domain socket and/or a TCP port,
 
-listen 3005 # listen to port 8080 on all TCP interfaces
-#listen "127.0.0.1:8080"  # listen to port 8080 on the loopback interface
-#listen "#{app_dir}/tmp/sockets/unicorn.sock"
+listen 3000
 
 # Don't set user if you are already running as the user (will cause a massive chown loop of death)
 # This is for if you execute as root and become user.
