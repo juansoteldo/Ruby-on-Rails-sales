@@ -12,15 +12,21 @@ class BoxMailer < ActionMailer::Base
   def confirmation_email(email)
     mail(to: email,
          bcc: Rails.application.config.action_mailer_bcc,
-         subject: 'Custom Tattoo Design - Order Confirmation')
+         reply_to: 'leeroller@customtattoodesign.ca',
+         subject: 'Custom Tattoo Design - Order Confirmation',
+         display_name: 'Lee Roller')
   end
 
   def final_confirmation_email(email)
   	@user = User.find_by_email(email)
-  	if @user
-		@request = @user.requests.first
-		mail(to: email, bcc: 'sales@customtattoodesign.ca, KaylaMckee@customtattoodesign.ca', subject: 'Custom Tattoo Design - Thank You')
-	end
+  	return unless @user
+
+    @request = @user.requests.first
+    mail(to: email,
+         bcc: Rails.application.config.action_mailer_bcc,
+         reply_to: 'leeroller@customtattoodesign.ca',
+         subject: 'Custom Tattoo Design - Thank You',
+         display_name: 'Lee Roller')
   end
 
 end
