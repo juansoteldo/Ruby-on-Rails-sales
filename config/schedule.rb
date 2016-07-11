@@ -7,6 +7,6 @@
 set :output, File.join( File.dirname(__FILE__), 'log/cron_log.log' )
 
 
-every 1.day, at: '9:30 am' do
+every 1.day, at: '13:30' do
   rake 'send_reminders'
 end
