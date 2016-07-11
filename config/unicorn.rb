@@ -2,8 +2,8 @@
 #
 # This file should go in the config directory of your Rails app e.g. config/unicorn.rb
 
-app_dir = "/u/apps/ctd-worklist/current"
-worker_processes 2
+app_dir = "/u/apps/ctd/current"
+worker_processes 4
 working_directory app_dir
 
 # Load app into the master before forking workers for super-fast
