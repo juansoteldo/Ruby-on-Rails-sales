@@ -24,7 +24,7 @@ class OrdersCreateJob < ActiveJob::Base
       StreakAPI::Box.all.select do |b|
         b.email_addresses.include? email
       end.each do |box|
-        StreakAPI::Box.set_stage(box.box_key, "Deposited")
+        StreakAPI::Box.set_stage(box.key, "Deposited")
       end
 
       if @req_id && @req_id != "undefined"

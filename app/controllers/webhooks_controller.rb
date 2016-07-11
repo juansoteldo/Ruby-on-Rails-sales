@@ -1,7 +1,7 @@
 class WebhooksController < ApplicationController
 	skip_before_filter :verify_authenticity_token
 	before_action :verify_webhook
-	#ADD ENV VARIABLE SHOPIFY_SECRET
+
 	def orders_create
 		OrdersCreateJob.perform_later(webhook: webhook_params, shop: shop_domain)
 		head :ok

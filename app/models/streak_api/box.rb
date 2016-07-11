@@ -28,11 +28,6 @@ class StreakAPI::Box < StreakAPI::Base
 		Streak::Box.update(box_id, stageKey: new_stage.key)
 	end
 
-	def self.get_stage(box_id)
-		box = StreakAPI::Box.find(box_id)
-		StreakAPI::Stage.find(key: box.stage_key)
-	end
-
 	def self.add_follower(user_api_key, box_id, follower_key)
 		# has to be user specific
 		Streak.api_key = user_api_key

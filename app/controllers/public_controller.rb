@@ -68,10 +68,9 @@ class PublicController < ApplicationController
     @request.save!
     box = StreakAPI::Box.find_by_email(params[:email])
     if box
-      box_key = box.key
-      current_stage = StreakAPI::Box.get_stage(box_key)
+      current_stage = StreakAPI::Stage.find(key: box.stage_key)
       if current_stage.name == "Contacted" || current_stage.name == "Lead"
-        StreakAPI::Box.set_stage(box_key, "Quoted")
+        StreakAPI::Box.set_stage(box.key, "Quoted")
       end
     end
     head :ok
@@ -81,7 +80,7 @@ class PublicController < ApplicationController
     @salesperson = Salesperson.find_by_email( params[:from_email] )
     box = StreakAPI::Box.find_by_email(params[:recipient_email])
     if box
-      current_stage = StreakAPI::Box.get_stage(box.key)
+      current_stage = StreakAPI::Stage.find(key: box.stage_key)
 
       if current_stage.name == "Lead"
         StreakAPI::Box.set_stage(box.key, "Contacted")
