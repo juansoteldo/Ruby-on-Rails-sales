@@ -21,17 +21,17 @@ class OrdersCreateJob < ActiveJob::Base
     end
 
     if is_deposit
-      Streak.api_key = Rails.application.config.streak_api_key
-      boxes = Streak::Box.all(ENV['STREAK_PIPELINE_ID']).select do |b|
+      StreakAPI::Box.all.select do |b|
         b.email_addresses.include? email
+      end.each do |box|
+        StreakAPI::Box.set_stage(box.key, "Deposited")
       end
-      boxes.each do |box|
-        StreakAPI::Box.set_stage(box.box_key, "Deposited")
-      end
+
       if @req_id && @req_id != "undefined"
         request = Request.find(@req_id)
         request.update_attribute(:deposit_order_id, order.id)
       end
+
       BoxMailer.confirmation_email(email).deliver_now
     end
 

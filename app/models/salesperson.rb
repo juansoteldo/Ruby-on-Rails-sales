@@ -52,6 +52,9 @@ def self.all_with_shopify_orders_by_email(params)
             order.sales_id = note_attr.value
           end
         end
+        if !order.sales_id
+          order.sales_id = 6
+        end
       end
       order
     }
