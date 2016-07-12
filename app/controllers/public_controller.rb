@@ -46,8 +46,11 @@ class PublicController < ApplicationController
     if Request.recent.where(user_id: @user.id, position: params[:position]).any?
       Request.recent.where(user_id: @user.id, position: params[:position]).delete_all
     end
+
     @request = Request.create(request_params)
     @request.save
+
+    set_user_by_email if @user.nil?
     @user.requests << @request
   end
 
@@ -68,7 +71,9 @@ class PublicController < ApplicationController
     @request.variant = params[:variant_id]
     @request.quoted_by_id = params[:salesperson_id]
     @request.save!
-    box = StreakAPI::Box.find_by_email(params[:email])
+
+    email = params[:email].downcase
+    box = StreakAPI::Box.find_by_email( email )
     if box
       current_stage = StreakAPI::Stage.find(key: box.stage_key)
       if current_stage.name == "Contacted" || current_stage.name == "Lead"
@@ -79,8 +84,10 @@ class PublicController < ApplicationController
   end
 
   def save_email
-    @salesperson = Salesperson.find_by_email( params[:from_email] )
-    box = StreakAPI::Box.find_by_email(params[:recipient_email])
+    from_email = params[:from_email].downcase
+    recipient_email = params[:recipient_email]
+    @salesperson = Salesperson.find_by_email( from_email )
+    box = StreakAPI::Box.find_by_email(recipient_email)
     if box
       current_stage = StreakAPI::Stage.find(key: box.stage_key)
 
@@ -88,7 +95,7 @@ class PublicController < ApplicationController
         StreakAPI::Box.set_stage(box.key, "Contacted")
       end
 
-      user_key = StreakAPI::User.find_by_email(params[:from_email])
+      user_key = StreakAPI::User.find_by_email( from_email )
       StreakAPI::Box.add_follower(@salesperson.streak_api_key, box.key, user_key)
     end
     head :ok
@@ -97,7 +104,8 @@ class PublicController < ApplicationController
   private
 
   def set_request_by_email
-    requests = Request.joins(:user).where( 'users.email LIKE ?', params[:email] )
+    email = params[:email].downcase
+    requests = Request.joins(:user).where( 'users.email LIKE ?', email )
     if requests.any?
       @request = requests.first
     else
@@ -111,21 +119,23 @@ class PublicController < ApplicationController
 
   def set_salesperson_by_email
     if params[:sales_email]
-      if Salesperson.where( email: params[:sales_email] ).any?
-        @salesperson =  Salesperson.find_by_email( params[:sales_email] )
+      sales_email = params[:sales_email].downcase
+      if Salesperson.where( email: sales_email ).any?
+        @salesperson =  Salesperson.find_by_email( sales_email )
       else
         password = SecureRandom.hex(8)
-        @salesperson = Salesperson.create( email: params[:sales_email], password: password, password_confirmation: password )
+        @salesperson = Salesperson.create( email: sales_email, password: password, password_confirmation: password )
       end
     end
   end
 
   def set_user_by_email
-    if User.where( email: params[:email] ).any?
-      @user =  User.find_by_email( params[:email] )
+    email = params[:email].downcase
+    if User.where( email: email ).any?
+      @user =  User.find_by_email( email )
     else
       password = SecureRandom.hex(8)
-      @user = User.create( email: params[:email], password: password, password_confirmation: password )
+      @user = User.create( email: email, password: password, password_confirmation: password )
     end
   end
 
