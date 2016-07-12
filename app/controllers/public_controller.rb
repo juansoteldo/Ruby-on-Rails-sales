@@ -1,6 +1,7 @@
 class PublicController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
+  before_filter :normalize_email
   before_filter :validate_parameters, only: [:new_request]
   before_filter :set_user_by_email, only: [ :new_request, :get_links ]
   before_filter :set_salesperson_by_email, only: [ :get_links ]
@@ -72,8 +73,7 @@ class PublicController < ApplicationController
     @request.quoted_by_id = params[:salesperson_id]
     @request.save!
 
-    email = params[:email].downcase
-    box = StreakAPI::Box.find_by_email( email )
+    box = StreakAPI::Box.find_by_email( params[:email] )
     if box
       current_stage = StreakAPI::Stage.find(key: box.stage_key)
       if current_stage.name == "Contacted" || current_stage.name == "Lead"
@@ -84,7 +84,7 @@ class PublicController < ApplicationController
   end
 
   def save_email
-    from_email = params[:from_email].downcase
+    from_email = params[:from_email].downcase.strip
     recipient_email = params[:recipient_email]
     @salesperson = Salesperson.find_by_email( from_email )
     box = StreakAPI::Box.find_by_email(recipient_email)
@@ -104,8 +104,7 @@ class PublicController < ApplicationController
   private
 
   def set_request_by_email
-    email = params[:email].downcase
-    requests = Request.joins(:user).where( 'users.email LIKE ?', email )
+    requests = Request.joins(:user).where( 'users.email LIKE ?', params[:email] )
     if requests.any?
       @request = requests.first
     else
@@ -119,7 +118,8 @@ class PublicController < ApplicationController
 
   def set_salesperson_by_email
     if params[:sales_email]
-      sales_email = params[:sales_email].downcase
+      sales_email = params[:sales_email].downcase.strip
+
       if Salesperson.where( email: sales_email ).any?
         @salesperson =  Salesperson.find_by_email( sales_email )
       else
@@ -130,12 +130,11 @@ class PublicController < ApplicationController
   end
 
   def set_user_by_email
-    email = params[:email].downcase
-    if User.where( email: email ).any?
-      @user =  User.find_by_email( email )
+    if User.where( email: params[:email] ).any?
+      @user =  User.find_by_email( params[:email] )
     else
       password = SecureRandom.hex(8)
-      @user = User.create( email: email, password: password, password_confirmation: password )
+      @user = User.create( email: params[:email], password: password, password_confirmation: password )
     end
   end
 
@@ -163,6 +162,12 @@ class PublicController < ApplicationController
   def request_params
     params.permit( :client_id, :ticket_id, :quote_id, :position, :gender,
                    :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :reqid, :salesid )
+  end
+
+  def normalize_email
+    if params[:email]
+      params[:email] = params[:email].downcase.strip
+    end
   end
 end
 
