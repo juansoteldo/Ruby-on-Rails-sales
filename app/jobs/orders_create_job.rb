@@ -2,8 +2,6 @@ class OrdersCreateJob < ActiveJob::Base
   queue_as :webhook
 
   def perform(params)
-    Streak.api_key = Rails.application.config.streak_api_key
-
     order = ShopifyAPI::Order.new(params[:webhook])
     email = order.customer.email.downcase
     is_deposit = order.line_items.any? { |line_item| line_item.title.include? "Deposit" }
