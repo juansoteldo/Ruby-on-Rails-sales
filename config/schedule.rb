@@ -4,7 +4,7 @@
 # http://en.wikipedia.org/wiki/Cron
 
 # Example:
-set :output, File.join( File.dirname(__FILE__), 'log/cron_log.log' )
+set :output, File.join( File.dirname(__FILE__), '../log/cron.log' )
 
 
 every 1.day, at: '13:30' do
