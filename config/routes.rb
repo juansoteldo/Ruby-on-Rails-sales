@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :products
     resources :requests
-    resources :salespeople
+#    resources :salespeople
 
     get 'shopify/products'
     get 'shopify/variants'
