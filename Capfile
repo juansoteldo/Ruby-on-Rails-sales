@@ -22,7 +22,7 @@ require 'capistrano/rbenv'
 require 'capistrano/bundler'
 require 'capistrano/rails'
 require "whenever/capistrano"
-require 'capistrano/delayed_job'
+#require 'capistrano/delayed_job'
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.cap').each { |r| import r }
