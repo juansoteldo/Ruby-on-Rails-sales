@@ -60,7 +60,7 @@ class PublicController < ApplicationController
   end
 
   def get_links
-  
+
   end
 
   def get_ids
@@ -96,7 +96,11 @@ class PublicController < ApplicationController
       end
 
       user_key = StreakAPI::User.find_by_email( from_email )
-      StreakAPI::Box.add_follower(@salesperson.streak_api_key, box.key, user_key)
+      if user_key
+        StreakAPI::Box.add_follower(@salesperson.streak_api_key, box.key, user_key)
+      else
+        Rails.logger.erro ">>> Cannot get streak follower key for `#{from_email}`"
+      end
     end
     head :ok
   end
