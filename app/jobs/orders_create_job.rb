@@ -28,7 +28,7 @@ class OrdersCreateJob < ActiveJob::Base
       BoxMailer.confirmation_email(email).deliver_now
 
       StreakAPI::Box.query(email).each do |box|
-        StreakAPI::Box.set_stage(box.box_key, "Deposited")
+        StreakAPI::Box.set_stage(box.key, "Deposited")
       end
     end
 
