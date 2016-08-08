@@ -16,7 +16,7 @@ set :deploy_to, '/u/apps/ctd'
 # set :pty, true
 
 set :linked_files, %w{.env.production}
-set :linked_dirs, %w{bin log published_files tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :linked_dirs, %w{log published_files tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 set :keep_releases, 20
@@ -28,20 +28,20 @@ namespace :deploy do
   def remote_file_exists?(full_path)
     'true' ==  capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip
   end
-  
+
   def unicorn_is_running?
     'true' == capture("if [ \"`cat #{fetch(:unicorn_pid)}`\" ]; then echo 'true'; fi").strip
   end
-  
+
   set :rails_env, :production
   #set :unicorn_binary, "#{current_path}/bin/unicorn"
   set :unicorn_binary, "unicorn"
   set :unicorn_config, "#{current_path}/config/unicorn.rb"
-  set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"  
-  
+  set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"
+
   desc 'Start unicorn application'
     task :start do
-    on roles(:app), except: { no_release: true } do 
+    on roles(:app), except: { no_release: true } do
       within release_path do
         execute :bundle, "exec #{fetch(:unicorn_binary)} -c #{fetch(:unicorn_config)} -E #{fetch(:rails_env)} -D"
       end
@@ -50,7 +50,7 @@ namespace :deploy do
 
   desc 'Stop unicorn application'
     task :stop do
-      on roles(:app), except: { no_release: true } do 
+      on roles(:app), except: { no_release: true } do
       if remote_file_exists?(fetch(:unicorn_pid)) && unicorn_is_running?
         execute "kill -s KILL `cat #{fetch(:unicorn_pid)}`"
       end
@@ -59,7 +59,7 @@ namespace :deploy do
 
   desc 'Ask unicorn to stop'
     task :graceful_stop do
-      on roles(:app), except: { no_release: true } do 
+      on roles(:app), except: { no_release: true } do
         if remote_file_exists?(fetch(:unicorn_pid)) && unicorn_is_running?
           execute "kill -s QUIT `cat #{fetch(:unicorn_pid)}` || :"
         end
@@ -68,11 +68,11 @@ namespace :deploy do
 
   desc 'Reload unicorn'
     task :reload do
-      on roles(:app), except: { no_release: true } do 
+      on roles(:app), except: { no_release: true } do
         execute "kill -s USR2 `cat #{fetch(:unicorn_pid)}` || :"
     end
   end
-  
+
   desc 'Restart application'
     task :restart do
       on roles(:app), except: { no_release: true }, in: :sequence, wait: 15 do
@@ -84,7 +84,7 @@ namespace :deploy do
         end
       end
   end
-  
+
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       # Here we can do anything such as:
@@ -103,9 +103,9 @@ namespace :rails do
   task :console do
     on roles(:app) do |host| #does it for each host, bad.
       rails_env = fetch(:stage)
-      within release_path do 
+      within release_path do
         execute :bundle, "exec rails console #{rails_env}"
-      end  
+      end
     end
   end
 end
