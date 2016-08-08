@@ -25,9 +25,11 @@ class StreakAPI::Box < StreakAPI::Base
 
 	def self.find_by_email(email)
 		return unless email =~ /\A[^@]+@[^@]+\Z/
-		StreakAPI::Box.query(email).select{ |box|
+		box_id = StreakAPI::Box.query(email).select{ |box|
 			box.name.downcase == email.downcase
-		}.last
+		}.last.try(&:box_key)
+
+		box_id && Streak::Box.find(box_id) || nil
 	end
 
 	def self.set_stage(box_id, stage_name)
@@ -45,5 +47,4 @@ class StreakAPI::Box < StreakAPI::Base
 		follower_keys = box.follower_keys | [follower_key]
 		Streak::Box.update(box_id, followerKeys: follower_keys)
 	end
-
 end
