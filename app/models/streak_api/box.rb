@@ -9,14 +9,23 @@ class StreakAPI::Box < StreakAPI::Base
 		end
 	end
 
+	def self.query(query)
+		Rails.cache.fetch('streak_box/query'+query, expires_in: 30.seconds) do
+			Streak.api_key = Rails.application.config.streak_api_key
+			results = Streak::Search.query(query).results
+			results && results.boxes || [{}]
+		end
+	end
+
 	def self.find(box_id)
 		Streak.api_key = Rails.application.config.streak_api_key
 		Streak::Box.find(box_id)
 	end
 
 	def self.find_by_email(email)
-		StreakAPI::Box.all.select{ |box|
-			box.name == email
+		return unless email =~ /\A[^@]+@[^@]+\Z/
+		StreakAPI::Box.query(email).select{ |box|
+			box.try(:name) && box.name.downcase == email.downcase
 		}.last
 	end
 
