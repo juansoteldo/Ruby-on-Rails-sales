@@ -95,7 +95,9 @@ class PublicController < ApplicationController
         StreakAPI::Box.set_stage(box.key, "Contacted")
       end
 
-      user_key = StreakAPI::User.find_by_email( from_email )
+      user_key = Salesperson.where( email: from_email ).any? && Salesperson.find_by( email: from_email ).user_key || nil
+      user_key ||= StreakAPI::User.find_by_email( from_email )
+
       if user_key
         StreakAPI::Box.add_follower(@salesperson.streak_api_key, box.key, user_key)
       else

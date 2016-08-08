@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160608155640) do
+ActiveRecord::Schema.define(version: 20160808195552) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pg_stat_statements"
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -108,6 +109,7 @@ ActiveRecord::Schema.define(version: 20160608155640) do
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
     t.string   "encrypted_streak_api_key"
+    t.string   "user_key"
   end
 
   add_index "salespeople", ["email"], name: "index_salespeople_on_email", unique: true, using: :btree
