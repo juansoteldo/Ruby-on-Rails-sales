@@ -10,9 +10,10 @@ class StreakAPI::Box < StreakAPI::Base
 	end
 
 	def self.query(query)
-		Rails.cache.fetch('streak_box/query'+query, expires_in: 30.seconds) do
+		Rails.cache.fetch('streak_box/query/'+query, expires_in: 10.seconds) do
 			Streak.api_key = Rails.application.config.streak_api_key
 			results = Streak::Search.query(query).results
+			puts "Ran query with '#{query}', got #{results && results.boxes.count || '0'} boxes"
 			results && results.boxes || [{}]
 		end
 	end
