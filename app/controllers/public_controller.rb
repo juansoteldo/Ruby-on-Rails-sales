@@ -99,7 +99,7 @@ class PublicController < ApplicationController
       if user_key
         StreakAPI::Box.add_follower(@salesperson.streak_api_key, box.key, user_key)
       else
-        Rails.logger.erro ">>> Cannot get streak follower key for `#{from_email}`"
+        Rails.logger.error ">>> Cannot get streak follower key for `#{from_email}`"
       end
     end
     head :ok
