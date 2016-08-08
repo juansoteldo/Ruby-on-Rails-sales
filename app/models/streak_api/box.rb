@@ -26,7 +26,7 @@ class StreakAPI::Box < StreakAPI::Base
 	def self.find_by_email(email)
 		return unless email =~ /\A[^@]+@[^@]+\Z/
 		StreakAPI::Box.query(email).select{ |box|
-			box.try(:name) && box.name.downcase == email.downcase
+			box.name.downcase == email.downcase
 		}.last
 	end
 
