@@ -19,11 +19,6 @@ class OrdersCreateJob < ActiveJob::Base
     end
 
     if is_deposit
-      StreakAPI::Box.all.select do |b|
-        b.email_addresses.include? email
-      end.each do |box|
-        StreakAPI::Box.set_stage(box.key, "Deposited")
-      end
 
       if @req_id && @req_id != "undefined"
         request = Request.find(@req_id)
@@ -31,6 +26,10 @@ class OrdersCreateJob < ActiveJob::Base
       end
 
       BoxMailer.confirmation_email(email).deliver_now
+
+      StreakAPI::Box.query(email).each do |box|
+        StreakAPI::Box.set_stage(box.key, "Deposited")
+      end
     end
 
     if is_final
