@@ -1,0 +1,15 @@
+csv << [ 'Created At', 'E-Mail', 'First Time?', 'Gender', 'Color?', 'Cover Up?', 'Position', 'Large?', 'Shopify Oder', 'Subtotal'  ]
+@requests.each do |request|
+  csv << [
+      request.created_at,
+      request.user.email,
+      request.is_first_time,
+      request.gender,
+      request.has_color,
+      request.has_cover_up,
+      request.position,
+      request.large,
+      request.deposit_order_id,
+      request.sub_total
+  ]
+end

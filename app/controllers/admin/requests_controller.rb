@@ -14,6 +14,8 @@ class Admin::RequestsController < Admin::BaseController
           where( 'LOWER(users.email) LIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ? OR requests.client_id LIKE ?',
                  "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%" )
     end
+    @requests = @requests.where('requests.created_at > ?', Date.strptime(params[:after])) if params[:after]
+    @requests = @requests.where('requests.created_at < ?', Date.strptime(params[:before])) if params[:before]
 
     @requests_count = @requests.count
     @requests = @requests.limit(params[:limit]) if params[:limit]
