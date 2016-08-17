@@ -114,11 +114,7 @@ class PublicController < ApplicationController
     if requests.any?
       @request = requests.first
     else
-      if Rails.env.development?
-        @request = Request.create( user: @user )
-      else
-        render json: false
-      end
+      @request = Request.create( user: @user )
     end
   end
 
