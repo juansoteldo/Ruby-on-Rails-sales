@@ -35,6 +35,7 @@ gem 'shopify_api'
 gem 'streak-ruby'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
+gem 'daemons'
 gem 'unicorn'
 
 # Use ActiveModel has_secure_password
