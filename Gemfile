@@ -59,6 +59,7 @@ group :development, :test do
   gem 'meta_request'
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
+  gem 'capistrano3-delayed-job', '~> 1.0'
   gem 'capistrano', '~> 3.1'
   gem 'capistrano-rbenv'
   gem 'capistrano-bundler'
