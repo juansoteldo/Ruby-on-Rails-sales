@@ -50,6 +50,8 @@ gem 'newrelic_rpm'
 gem 'dotenv-rails'
 gem 'whenever'
 gem 'tunemygc'
+gem 'state_machines'
+gem 'state_machines-activerecord'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

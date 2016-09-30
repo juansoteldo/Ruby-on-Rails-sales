@@ -9,6 +9,10 @@ class Shopify::Variant < Shopify::Base
     is_gift_card? && false || (@source.option2 == 'yes')
   end
 
+  def is_temporary?
+    is_gift_card? && false || (@source.option3 == 'yes')
+  end
+
   def is_gift_card?
     fulfillment_service == 'gift_card'
   end

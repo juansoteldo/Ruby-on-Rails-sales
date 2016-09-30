@@ -203,6 +203,13 @@ GEM
     sshkit (1.8.1)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    state_machines (0.4.0)
+    state_machines-activemodel (0.4.0)
+      activemodel (>= 4.1, < 5.1)
+      state_machines (>= 0.4.0)
+    state_machines-activerecord (0.4.0)
+      activerecord (>= 4.1, < 5.1)
+      state_machines-activemodel (>= 0.3.0)
     streak-ruby (0.0.2)
       multi_json
       rest-client
@@ -265,6 +272,8 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   shopify_api
   spring
+  state_machines
+  state_machines-activerecord
   streak-ruby
   tunemygc
   turbolinks

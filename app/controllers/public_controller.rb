@@ -1,6 +1,8 @@
 class PublicController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
+  before_filter :disable_cache, only: [:get_links]
+
   before_filter :normalize_email
   before_filter :validate_parameters, only: [:new_request]
   before_filter :set_user_by_email, only: [ :new_request, :get_links ]
@@ -9,19 +11,8 @@ class PublicController < ApplicationController
   before_filter :set_user_by_client_id, only: [ :get_uid ]
   before_filter :set_request_by_email, only: [ :get_ids, :get_links ]
 
+
   def redirect
-    @user_id = params[:uid]
-    @client_id = params[:client_id]
-    @client_id ||= params[:clientId]
-    @linker_param = params[:linkerParam]
-    @_ga = params[:_ga]
-    @req_id = params[:reqid]
-
-    @variant = params[:variant]
-    @handle = params[:handle]
-
-    @sales_id = params[:salesId]
-
     if params[:requestId] != nil && Request.where(id: params[:requestId] ).any?
       @request = Request.find(params[:requestId])
     end
@@ -29,16 +20,18 @@ class PublicController < ApplicationController
       @request = Request.find_by__ga(params[:_ga])
     end
 
+    @url = 'http://shop.customtattoodesign.ca/products/'
+
     if @request and @request.client_id and @request.client_id != 'false'
-      @request.update_columns( variant: @variant, handle: @handle, last_visited_at: Time.now )
-      @url ="http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&uid=#{@request.user_id}&cid=#{@request.client_id}&reqid=#{@request.id}"
+      @request.update_columns( variant: params[:variant], handle: params[:handle], last_visited_at: Time.now )
+      @url += "#{params[:handle]}?variant=#{params[:variant]}&uid=#{@request.user_id}&cid=#{@request.client_id}&reqid=#{@request.id}"
     elsif @request
-      @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=blocked&utm_source=crm&utm_medium=email&reqid=#{@request.id}"
+      @url += "#{params[:handle]}?variant=#{params[:variant]}&utm_campaign=blocked&utm_source=crm&utm_medium=email&reqid=#{@request.id}"
     else
-      @url = "http://shop.customtattoodesign.ca/products/#{@handle}?variant=#{@variant}&utm_campaign=unlisted&utm_source=crm&utm_medium=email"
+      @url += "#{params[:handle]}?variant=#{params[:variant]}&utm_campaign=unlisted&utm_source=crm&utm_medium=email"
     end
-    if @sales_id
-      @url = "#{@url}&salesid=#{@sales_id}"
+    if params[:salesId]
+      @url += "&salesid=#{params[:salesId]}"
     end
   end
 
@@ -170,6 +163,12 @@ class PublicController < ApplicationController
     if params[:email]
       params[:email] = params[:email].downcase.strip
     end
+  end
+
+  def disable_cache
+    response.headers["Cache-Control"] = "no-cache, no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 end
 

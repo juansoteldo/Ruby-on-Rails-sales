@@ -1,4 +1,5 @@
 json.user_id @user.id
+
 json.requests @user.requests do |request|
 	json.id request.id
 	json.user_id request.user_id
@@ -12,6 +13,7 @@ json.requests @user.requests do |request|
 	json.has_color request.has_color
 	json.has_cover request.has_cover_up
 end
+
 json.groups @groups do |group|
 	json.title group.title
 	json.id group.id

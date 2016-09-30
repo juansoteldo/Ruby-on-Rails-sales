@@ -1,31 +1,37 @@
 class BoxMailer < ActionMailer::Base
 	default from: 'orders@customtattoodesign.ca'
- 
-  def reminder_email(email)
-    mail(to: email,
+
+  def marketing_email( request, marketing_email = MarketingEmail.find(1) )
+    @request = request
+    mail(to: request.user.email,
          bcc: Rails.application.config.action_mailer_bcc,
-         subject: 'Lee Roller Owner / Custom Tattoo Design',
-         reply_to: 'leeroller@customtattoodesign.ca',
+         subject: marketing_email.subject_line,
+         from: marketing_email.from,
+         display_name: marketing_email.from.gsub(/\<.+\>/, ''),
+         template_path: marketing_email.template_path,
+         template_name: marketing_email.template_name
+    )
+  end
+
+  def confirmation_email(request)
+    return unless request.user
+    @request = request
+
+    mail(to: request.user.email,
+         bcc: Rails.application.config.action_mailer_bcc,
+         from: 'leeroller@customtattoodesign.ca',
+         subject: 'Thank you, Let\'s Get Started! Custom Tattoo Design',
          display_name: 'Lee Roller')
   end
 
-  def confirmation_email(email)
+  def final_confirmation_email(request)
+  	return unless request.user
+
+    @request = request
     mail(to: email,
          bcc: Rails.application.config.action_mailer_bcc,
-         reply_to: 'leeroller@customtattoodesign.ca',
-         subject: 'Custom Tattoo Design - Order Confirmation',
-         display_name: 'Lee Roller')
-  end
-
-  def final_confirmation_email(email)
-  	@user = User.find_by_email(email)
-  	return unless @user
-
-    @request = @user.requests.first
-    mail(to: email,
-         bcc: Rails.application.config.action_mailer_bcc,
-         reply_to: 'leeroller@customtattoodesign.ca',
-         subject: 'Custom Tattoo Design - Thank You',
+         from: 'leeroller@customtattoodesign.ca',
+         subject: 'Thank you for your business Custom Tattoo Design',
          display_name: 'Lee Roller')
   end
 

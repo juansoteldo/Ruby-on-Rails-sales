@@ -1,28 +1,44 @@
-desc "This task is called by the Heroku scheduler add-on"
+desc 'This task is called by cron'
 task :send_reminders => :environment do
-  puts "Sending Reminders"
-  orders = ShopifyAPI::Order.find( :all, :params => {created_at_min: 3.days.ago.beginning_of_day} )
-  emails = orders.map{ |ord| ord.customer.email.downcase }
-  requests = Request.where("? <= created_at AND created_at <= ?", 2.days.ago.beginning_of_day, 2.days.ago.end_of_day)
+  puts 'Sending Reminders'
+
+  counts = MarketingEmail.all.map do |me|
+    { id: me.id, name: me.template_name, count: 0 }
+  end
+
+  maximum_age = MarketingEmail.all.order( :days_after_state_change ).last.days_after_state_change
+  cutoff = [maximum_age.days.ago.beginning_of_day, Time.parse('2016-9-20  00:00:00 GMT-4' )].max
+  maximum_age = ((Time.zone.now - cutoff)/1.day).to_i
+
+  puts "Fetching orders for last #{((Time.zone.now - cutoff)/1.day).to_i} days"
+
+  orders = Shopify::Order.find( { created_at_min: maximum_age.days.ago.beginning_of_day, limit: 250 } )
+  puts "Updating requests for #{orders.count} orders"
+  orders.each do |order|
+    order.update_request
+  end
+
+  requests = Request.joins(:user).where('state_changed_at BETWEEN ? AND ?', cutoff, Time.zone.now.beginning_of_day)
+  puts "Processing #{requests.count} requests"
   requests.each do |request|
-    unless request.delivered_emails.where(marketing_email_id: 1).any?
-      email = request.user.email.downcase
-      unless emails.include? email
-        BoxMailer.reminder_email(email).deliver_now
-        request.delivered_emails.create(sent_at: Time.now, marketing_email_id: 1, request_id: request.id)
-      end
-    end
+    days = (request.time_since_state_change / 1.day).to_i
+    marketing_emails = MarketingEmail.order('days_after_state_change').where( 'days_after_state_change < ? AND state LIKE ?', days, "%#{request.state}%" )
+
+    next unless marketing_emails.any?
+    next if request.delivered_emails.where(marketing_email_id: marketing_emails.last.id).any?
+    marketing_email = marketing_emails.last
+    #puts "Sending #{marketing_email.template_name} to #{request.user.email} relating to their #{request.state.upcase} request"
+    counts[counts.find_index{|c| c[:id] == marketing_email.id }][:count] += 1
+    BoxMailer.marketing_email(request, marketing_email).deliver_now
+    request.delivered_emails.create(
+      marketing_email_id: marketing_email.id, request_id: request.id, sent_at: Time.now
+    )
   end
   puts "done."
-  # quoted_stage = StreakAPI::Stage.find_by_pipline_name("Sales / CRM", { name: "Contacted" })
-  # boxes = Streak::Box.all().select { |b| b.stage_key == quoted_stage.key }
-  # boxes.each do |box|
-  # 	time_sent = Time.at(box.last_email_received_timestamp.to_i/1000).to_date
-  # 	email = box.first_email_from
-		# if time_sent == 2.days.ago.to_date
-		# 	BoxMailer.reminder_email(email).deliver_now
-		# end
-  # end
+  counts.each do |count|
+    puts "#{count[:name]}: #{count[:count]}"
+  end
+
 end
 #and !b.last_email_from.include? 'customtattoodesign.ca'
 #
