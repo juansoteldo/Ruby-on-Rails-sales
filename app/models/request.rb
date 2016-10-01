@@ -64,7 +64,8 @@ class Request < ActiveRecord::Base
       StreakAPI::Box.query(user.email).each do |box|
         StreakAPI::Box.set_stage(box.key, 'Deposited')
       end
-    rescue
+    rescue Exception => e
+      Rails.logger.error "Cannot update streak box for request #{self.id} (#{e})"
     end
 
   end
