@@ -5,7 +5,7 @@ class Shopify::Order < Shopify::Base
     if has_request_id?
       request = Request.where(id:request_id).first
     else
-      request = Request.joins(:user).where(email: self.customer.email.downcase ).first
+      request = Request.joins(:user).where('users.email = ?', self.customer.email.downcase ).first
     end
 
     return unless request
