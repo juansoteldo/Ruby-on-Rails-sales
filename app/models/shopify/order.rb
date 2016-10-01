@@ -22,7 +22,6 @@ class Shopify::Order < Shopify::Base
 
     if has_salesperson_id? and request.quoted_by_id.nil?
       request.update_attribute :quoted_by_id, salesperson_id
-      request.quote if request.can_quote?
     end
   end
 
