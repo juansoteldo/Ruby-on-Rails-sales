@@ -42,6 +42,10 @@ class Request < ActiveRecord::Base
     state == 'deposited' && deposit_order_id || state == 'completed' && final_order_id || nil
   end
 
+  def days_since_state_change
+    (time_since_state_change / 1.day).to_i
+  end
+
   def time_since_state_change
     (Time.zone.now - self.state_changed_at)
   end
