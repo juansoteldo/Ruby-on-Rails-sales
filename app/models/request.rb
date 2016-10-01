@@ -68,4 +68,8 @@ class Request < ActiveRecord::Base
     end
 
   end
+
+  def update_state_stamp
+    self.state_changed_at = Time.zone.now
+  end
 end
