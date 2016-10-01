@@ -9,7 +9,6 @@ class Request < ActiveRecord::Base
   scope :recent, -> { where('created_at > ?', 5.minutes.ago)}
 
   state_machine :state, initial: :fresh do
-    after_transition on: any, do: :update_state_stamp
     after_transition on: :convert, do: :perform_deposit_actions
     after_transition on: :complete, do: :perform_complete_actions
 
@@ -68,9 +67,5 @@ class Request < ActiveRecord::Base
       Rails.logger.error "Cannot update streak box for request #{self.id} (#{e})"
     end
 
-  end
-
-  def update_state_stamp
-    self.update_attribute :state_changed_at, Time.zone.now
   end
 end
