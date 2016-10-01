@@ -134,7 +134,7 @@ class PublicController < ApplicationController
   end
 
   def set_user_by_client_id
-    if Request.where( client_id: params[:client_id] ).any?
+    if params[:client_id] && Request.where( client_id: params[:client_id] ).any?
       user_id = Request.find_by_client_id( params[:client_id] ).user_id
       @user =  User.find(user_id)
     else
