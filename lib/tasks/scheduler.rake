@@ -1,5 +1,7 @@
 desc 'This task is called by cron'
 task :send_reminders => :environment do
+  include ActionView::Helpers::DateHelper
+
   puts 'Sending Reminders'
 
   counts = MarketingEmail.all.map do |me|
@@ -18,18 +20,25 @@ task :send_reminders => :environment do
     order.update_request
   end
 
-  requests = Request.joins(:user).where('requests.created_at < ? AND state_changed_at BETWEEN ? AND ?',
+  requests = Request.joins(:user).where('requests.created_at > ? AND state_changed_at BETWEEN ? AND ?',
                                         cutoff, cutoff, Time.zone.now.beginning_of_day)
   puts "Processing #{requests.count} requests"
   requests.each do |request|
+    puts "  Examining request #{request.id}, it's #{time_ago_in_words(request.state_changed_at)} old, and is `#{request.state}`"
     marketing_emails = MarketingEmail.order('days_after_state_change').
-        where( 'days_after_state_change < ? AND state LIKE ?',
-               request.days_since_state_change, "%#{request.state}%" )
+        where( 'days_after_state_change * 24 < ? AND state LIKE ?',
+               request.hours_since_state_change, "%#{request.state}%" )
 
     next unless marketing_emails.any?
-    next if request.delivered_emails.where(marketing_email_id: marketing_emails.last.id).any?
+    puts "    #{marketing_emails.count} marketing emails are appropriate"
+    delivered_emails = request.delivered_emails.where(marketing_email_id: marketing_emails.last.id)
+    if delivered_emails.any?
+      puts "    The email has already been sent at #{delivered_emails.last.created_at}"
+      next
+    end
 
     marketing_email = marketing_emails.last
+    puts "    Sending marketing email `#{marketing_email.template_name}` to `#{request.user.email}`"
     BoxMailer.marketing_email(request, marketing_email).deliver_now
     request.delivered_emails.create(
       marketing_email_id: marketing_email.id, request_id: request.id, sent_at: Time.now
@@ -42,3 +51,6 @@ task :send_reminders => :environment do
   end
 
 end
+
+require 'action_view'
+require 'action_view/helpers'

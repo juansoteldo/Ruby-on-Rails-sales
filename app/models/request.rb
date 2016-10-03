@@ -45,6 +45,10 @@ class Request < ActiveRecord::Base
     (time_since_state_change / 1.day).to_i
   end
 
+  def hours_since_state_change
+    (time_since_state_change / 1.hour).to_i
+  end
+
   def time_since_state_change
     (Time.zone.now - self.state_changed_at)
   end
