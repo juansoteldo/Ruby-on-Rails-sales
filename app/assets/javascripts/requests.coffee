@@ -16,6 +16,9 @@
     'data-class="final">Final</button>' +
     '</div></div>'
 
+@isNullFormatter = (value) ->
+  value == null && '' || 'X'
+
 @dateFormatter = (value) ->
   moment(value).format('D MMM h:mm a')
 

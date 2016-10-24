@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+
+<h3>E-Mails Just Sent</h3>
+<table>
+  <% @counts.each do |count| %>
+      <tr>
+        <td><%= count[:name] %></td>
+        <td><%= count[:count] %></td>
+      </tr>
+  <% end %>
+</table>
+</body>
