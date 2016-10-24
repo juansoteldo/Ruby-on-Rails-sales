@@ -49,7 +49,7 @@ task :send_reminders => :environment do
   counts.each do |count|
     puts "#{count[:name]}: #{count[:count]}"
   end
-  AdminMailer.daily_blast_counts counts
+  AdminMailer.daily_blast_counts(counts).deliver_now
 
 end
 
