@@ -49,8 +49,6 @@ class ApplicationController < ActionController::Base
     @port = request.port || 80
   end
 
-  acts_as_token_authentication_handler_for User
-
   # Security note: controllers with no-CSRF protection must disable the Devise fallback,
   # see #49 for details.
   # acts_as_token_authentication_handler_for User, fallback: :none
