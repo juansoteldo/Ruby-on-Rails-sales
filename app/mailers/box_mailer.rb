@@ -1,10 +1,13 @@
 class BoxMailer < ActionMailer::Base
 	default from: 'orders@customtattoodesign.ca'
-
+  layout 'marketing_email'
   def marketing_email( request, marketing_email = MarketingEmail.find(1) )
     @request = request
+    bcc = Rails.application.config.action_mailer_bcc
+    bcc ||= []
+
     mail(to: request.user.email,
-         bcc: Rails.application.config.action_mailer_bcc,
+         bcc: bcc,
          subject: marketing_email.subject_line,
          from: marketing_email.from,
          display_name: marketing_email.from.gsub(/\<.+\>/, ''),

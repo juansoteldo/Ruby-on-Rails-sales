@@ -1,7 +1,7 @@
 class Admin::RequestsController < Admin::BaseController
   load_and_authorize_resource :request, class: Request
 
-  before_action :set_request, only: [:show, :edit, :update, :destroy]
+  before_action :set_request, only: [:show, :edit, :update, :destroy, :opt_out]
 
   # GET /requests
   # GET /requests.json
@@ -25,6 +25,20 @@ class Admin::RequestsController < Admin::BaseController
   # GET /requests/1
   # GET /requests/1.json
   def show
+  end
+
+  def opt_out
+    user = @request.user
+    user.opted_out = true
+    respond_to do |format|
+      if user.save
+        format.html { redirect_to admin_requests_path, notice: 'Opted out this user.' }
+        format.json { render :show, status: :opted_out, location: admin_requests_path }
+      else
+        format.html { redirect_to admin_requests_path, notice: 'Cannot opt this user out.' }
+        format.json { render json: user.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   # GET /requests/new

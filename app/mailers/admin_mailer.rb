@@ -3,9 +3,10 @@ class AdminMailer < ActionMailer::Base
 
   def daily_blast_counts( counts )
     @counts = counts
-    mail(to: 'brittany@customtattoodesign.ca',
-         bcc: [ 'wojtek@grabski.ca', 'leeroller@customattoodesign.ca' ],
-         subject: 'Marketing E-Mail Status Report'
+    recipients = Rails.application.config.marketing_email_recipients
+    recipients ||= []
+    mail(to: recipients,
+         subject: 'Daily Marketing E-Mail Report'
     )
   end
 

@@ -28,7 +28,12 @@
   value = '$'+value;
 
 @userFormatter = (value, row) ->
-  "<span title='#{row.client_id}'>#{value.email}</span>"
+  if row.user.opted_out
+    opt_out_text = " <a class='small' href='#'><strike>opt out</strike></a>"
+  else
+    opt_out_text = " <a class='small' href='/admin/requests/#{row.id}/opt_out' target='_blank'>opt out</a>"
+
+  "<span title='#{row.client_id}'>#{value.email}#{opt_out_text}</span>"
 
 @hideButton = (value, row) ->
   return ""

@@ -6,7 +6,7 @@ json.rows do
                   :deposit_order_id
     json.user do
       if request.user
-        json.extract!(request.user, :id, :email)
+        json.extract!(request.user, :id, :email, :opted_out)
       else
         json.id 0
         json.email 'Unmatched'

@@ -30,6 +30,11 @@ task :send_reminders => :environment do
                request.hours_since_state_change, "%#{request.state}%" )
 
     next unless marketing_emails.any?
+    if request.user.opted_out
+      puts 'User has opted out, skipping.'
+      next
+    end
+
     puts "    #{marketing_emails.count} marketing emails are appropriate"
     delivered_emails = request.delivered_emails.where(marketing_email_id: marketing_emails.last.id)
     if delivered_emails.any?

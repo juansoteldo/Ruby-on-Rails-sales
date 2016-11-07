@@ -18,6 +18,7 @@ gem 'coffee-rails', '~> 4.1.0'
 # gem 'therubyracer', platforms: :ruby
 
 gem 'devise'
+gem 'simple_token_authentication', '~> 1.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -52,6 +53,7 @@ gem 'whenever'
 gem 'tunemygc'
 gem 'state_machines'
 gem 'state_machines-activerecord'
+gem 'ruby-progressbar'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
