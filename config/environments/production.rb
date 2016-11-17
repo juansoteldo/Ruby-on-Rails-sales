@@ -81,7 +81,7 @@ Rails.application.configure do
   config.action_mailer_bcc = []
   config.marketing_email_recipients = %w(
     wojtek@grabski.ca
-    leeroller@customattoodesign.ca
+    leeroller@customtattoodesign.ca
     brittany@customtattoodesign.ca
     johnd@customtattoodesign.ca
   )
