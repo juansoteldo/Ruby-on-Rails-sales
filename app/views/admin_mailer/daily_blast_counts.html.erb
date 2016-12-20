@@ -5,8 +5,7 @@
 </head>
 <body>
 <%
-  yesterday_count = Request.where( 'created_at between ? and ?',
-                                   1.day.ago.beginning_of_day, 1.day.ago.end_of_day).count
+  yesterday_count = Request.where( 'created_at between ? and ?', 1.day.ago.beginning_of_day, 1.day.ago.end_of_day).count
   two_days_ago_count = Request.where( 'created_at between ? and ?',
                                       2.day.ago.beginning_of_day, 2.day.ago.end_of_day).count
   one_week_ago_count = Request.where( 'created_at between ? and ?',
