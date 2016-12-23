@@ -3,7 +3,7 @@ task :send_reminders => :environment do
   puts "Sending Reminders"
   orders = ShopifyAPI::Order.find( :all, :params => {created_at_min: 3.days.ago.beginning_of_day} )
   emails = orders.map{ |ord| ord.customer.email.downcase }
-  requests = Request.where("? <= created_at AND created_at <= ?", 2.days.ago.beginning_of_day, 2.days.ago.end_of_day)
+  requests = Request.where("? <= created_at AND created_at <= ?", 2.days.ago.beginning_of_day, 2.days.ago.end_of_day).where("quoted_by_id IS NOT NULL")
   requests.each do |request|
     unless request.delivered_emails.where(marketing_email_id: 1).any?
       email = request.user.email.downcase
