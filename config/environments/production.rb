@@ -77,18 +77,14 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-  :address              => "smtp.gmail.com",
-  :port                 => 587,
-  :domain               => "customtattoodesign.ca",
-  :user_name            => "sales@customtattoodesign.ca",
-  :password             => ENV['GMAIL_PASSWORD'],
-  :authentication       => 'plain',
-  :enable_starttls_auto => true  }
-
+  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer_bcc = []
+  config.marketing_email_recipients = %w(
+    wojtek@grabski.ca
+    leeroller@customtattoodesign.ca
+    brittany@customtattoodesign.ca
+    johnd@customtattoodesign.ca
+  )
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
-
-  config.action_mailer_bcc = []
 end

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<%
+  yesterday_count = Request.where( 'created_at between ? and ?', 1.day.ago.beginning_of_day, 1.day.ago.end_of_day).count
+  two_days_ago_count = Request.where( 'created_at between ? and ?',
+                                      2.day.ago.beginning_of_day, 2.day.ago.end_of_day).count
+  one_week_ago_count = Request.where( 'created_at between ? and ?',
+                                      8.day.ago.beginning_of_day, 8.day.ago.end_of_day).count
+%>
+<h3>Submit Counts</h3>
+<table>
+  <tr>
+    <td>Yesterday:</td>
+    <td><%= yesterday_count %></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Two days ago:</td>
+    <td><%= two_days_ago_count %></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Yesterday last week:</td>
+    <td><%= one_week_ago_count %></td>
+  </tr>
+</table>
+<h3>E-Mails Just Sent</h3>
+<table>
+  <% @counts.each do |count| %>
+      <tr>
+        <td><%= count[:name] %></td>
+        <td><%= count[:count] %></td>
+      </tr>
+  <% end %>
+</table>
+</body>

@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   devise_for :admins
   devise_for :users
 
-
   match '*any' => 'application#options', :via => [:options]
   get 'public/redirect/:handle/:variant', to: 'public#redirect', as: :cart_redirect
   post 'public/new_request'
@@ -11,6 +10,7 @@ Rails.application.routes.draw do
   match 'public/get_links', via: [:get]
   match 'public/set_link', via: [:get]
   match 'public/save_email', via: [:get]
+  get 'public/opt_out/:id', to: 'marketing#opt_out', as: :opt_out
 
   namespace :webhooks do
     post 'orders_create' => :orders_create
@@ -20,8 +20,11 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :products
-    resources :requests
-    resources :salespeople
+    resources :requests do
+      member do
+        match :opt_out, via: [:get, :post]
+      end
+    end
 
     get 'shopify/products'
     get 'shopify/variants'

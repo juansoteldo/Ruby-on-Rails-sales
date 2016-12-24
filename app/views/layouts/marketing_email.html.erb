@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<%= yield %>
+
+<p>
+  <em>
+    Please <%= link_to 'click here', opt_out_path(@request, params: { user_email: @request.user.email, user_token: @request.user.authentication_token  }) %> if you do not with to receive any more of our emails.
+  </em>
+</p>
+
+</body>
