@@ -7,7 +7,7 @@ set :rbenv_path, '/home/deploy/.rbenv'
 
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
-set :branch, :unicorn
+set :branch, :master
 set :deploy_to, '/u/apps/ctd'
 # set :scm, :git
 
