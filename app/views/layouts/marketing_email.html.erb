@@ -1,3 +1,15 @@
+<%-
+
+unsub_path = opt_out_path(@request, params: {
+  user_email: @request.user.email,
+  user_token: @request.user.authentication_token
+})
+
+unsub_path.slice!("http://")
+
+unsub_url = 'http://api.customtattodesign.ca/' + unsub_path
+
+-%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +20,7 @@
 
 <p>
   <em>
-    Please <%= link_to 'click here', opt_out_path(@request, params: { user_email: @request.user.email, user_token: @request.user.authentication_token  }) %> if you do not wish to receive any more of our emails.
+    Please <%= link_to 'click here', unsub_url %> if you do not wish to receive any more of our emails.
   </em>
 </p>
 
