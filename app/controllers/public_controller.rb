@@ -85,7 +85,10 @@ class PublicController < ApplicationController
       current_stage = StreakAPI::Stage.find(key: box.stage_key)
 
       if current_stage.name == "Leads"
-        StreakAPI::Box.set_stage(box.key, "Contacted")
+        Rails.logger.info "FLUX: Try to change stage..."
+        Rails.logger.info "FLUX: Result = #{StreakAPI::Box.set_stage(box.key, "Contacted")}"
+      else
+        Rails.logger.info "FLUX: Not changing stage, current = `#{current_stage.name}'"
       end
 
       user_key = Salesperson.where( email: from_email ).any? && Salesperson.find_by( email: from_email ).user_key || nil
