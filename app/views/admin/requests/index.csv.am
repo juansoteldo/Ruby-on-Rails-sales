@@ -1,7 +1,7 @@
 csv << [ 'Created At', 'E-Mail', 'Opted Out', 'First Time?', 'Gender', 'Color?', 'Cover Up?', 'Position', 'Large?', 'Shopify Oder', 'Subtotal'  ]
 @requests.each do |request|
   csv << [
-      request.created_at,
+      request.created_at.in_time_zone('EST'),
       request.user.email,
       request.user.opted_out,
       request.is_first_time,
