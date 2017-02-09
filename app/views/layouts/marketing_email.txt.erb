@@ -1,2 +1,15 @@
-Please click the following link if you do not with to receive any more of our emails:
-<%= link_to opt_out_path(@request) %>
+<%-
+
+unsub_path = opt_out_path(@request, params: {
+  user_email: @request.user.email,
+  user_token: @request.user.authentication_token
+})
+
+unsub_path.slice!("http://")
+
+unsub_url = 'http://api.customtattoodesign.ca/' + unsub_path
+
+-%>
+Please click the following link if you do not wish to receive any more of our emails:
+
+<%= link_to unsub_url %>
