@@ -41,10 +41,14 @@ class StreakAPI::Box < StreakAPI::Base
 	end
 
 	def self.add_follower(user_api_key, box_id, follower_key)
-		# has to be user specific
-		Streak.api_key = user_api_key
-		box = Streak::Box.find(box_id)
-		follower_keys = box.follower_keys | [follower_key]
-		Streak::Box.update(box_id, followerKeys: follower_keys)
+		begin
+			# has to be user specific
+			Streak.api_key = user_api_key
+			box = Streak::Box.find(box_id)
+			follower_keys = box.follower_keys | [follower_key]
+			Streak::Box.update(box_id, followerKeys: follower_keys)
+		rescue
+			Rails.logger.warn "Could not add follower with key `#{follower_key}` to box `#{box_id}`"
+		end
 	end
 end
