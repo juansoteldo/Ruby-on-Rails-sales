@@ -26,6 +26,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :salespeople
+
     get 'shopify/products'
     get 'shopify/variants'
     get 'shopify/customers'

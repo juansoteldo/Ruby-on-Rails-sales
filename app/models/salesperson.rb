@@ -1,3 +1,6 @@
+require 'openssl'
+require 'base64'
+
 class Salesperson < ActiveRecord::Base
 
   # Include default devise modules. Others available are:
@@ -5,30 +8,15 @@ class Salesperson < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-attr_accessor :orders, :total_sales
+  # Called by devise to allow users to be deactivated
+  # http://www.rubydoc.info/github/plataformatec/devise/master/Devise/Models/Authenticatable
+  def active_for_authentication?
+   super && is_active?
+  end
 
-# def self.all_with_shopify_orders(params)
-# 		params = { limit: 250 } if !params
-# 		orders = Shopify::Order.shopify_orders(params)
-#     mapped_orders = orders.map do |order|
-#       order.sales_id = ""
-#       order.note_attributes.each do |note_attr|
-#         if note_attr.name == "sales_id"
-#           order.sales_id = note_attr.value
-#         end
-#       end
-#       order
-#     end
-#     grouped_orders = mapped_orders.group_by(&:sales_id).select{|id,orders| id != "" }.map do |id, orders|
-#       c = self.find(id.to_i)
-#       c.total_sales = orders.inject(0) {|sum,o| sum + o.total_price.to_f.round(2)}
-#       c.orders = orders
-#       c
-#     end
-#     return grouped_orders
-# end
+  attr_accessor :orders, :total_sales
 
-def self.all_with_shopify_orders_by_email(params)
+  def self.all_with_shopify_orders_by_email(params)
     params = { limit: 250 } if !params
     if params[:created_at_min]
       if params[:created_at_min].to_date < '2016-06-01T00:00:00-00:00'.to_date
@@ -66,12 +54,12 @@ def self.all_with_shopify_orders_by_email(params)
       c
     end
     return salespeople
-end
+  end
 
-def self.sales_by_date(params)
-	params[:limit] = 250 
-	self.all_with_shopify_orders_by_email(params)
-end
+  def self.sales_by_date(params)
+    params[:limit] = 250
+    self.all_with_shopify_orders_by_email(params)
+  end
 
   def streak_api_key
     return '' if encrypted_streak_api_key.nil?
@@ -85,6 +73,8 @@ end
   end
 
   def streak_api_key=(new_key)
+    return if new_key.blank?
+
     cipher = OpenSSL::Cipher::AES.new(128, :CBC)
     cipher.encrypt
     cipher.key = Rails.application.config.streak_api_cipher_random_key
@@ -94,6 +84,3 @@ end
   end
 
 end
-
-require 'openssl'
-require 'base64'

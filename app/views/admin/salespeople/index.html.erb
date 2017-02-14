@@ -1,26 +1,36 @@
-<p id="notice"><%= notice %></p>
-<div class="col-md-4">
-<div class="form-control">
-  <div id="reportrange" class="pull-left" style="">
-    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
-    <span><% if @dates[:created_at_min] and @dates[:created_at_max] %><%= @dates[:created_at_min] %> - <%= @dates[:created_at_max] %><% end %></span> <b class="caret"></b>
-  </div>
+<div class="page-header">
+  <%= link_to "New salesperson", [:new, :admin, :salesperson],
+    class: "btn btn-primary btn-sm pull-right" %>
+  <h2>Salespeople</h2>
 </div>
-</div>
-<table class="table" data-toggle="table" data-pagination="true" data-side-pagination="server"
-       data-url="salespeople.json" data-query-params="<% if @dates[:created_at_min] %>date_min=<%= @dates[:created_at_min] %><% end %><% if @dates[:created_at_max] %>&amp;date_max=<%= @dates[:created_at_max] %><% end %>" data-sort-order="asc" data-page-list="[25, 50]" data-search="true" id="request-table"
-       data-show-refresh="true" data-id-field="id">
+
+<table class="table" style="margin-top: 4rem;">
   <thead>
     <tr>
-      <th data-field="date_range"></th>
-      <th data-field="email">Salesperson</th>
-      <th data-field="total_orders" >Total Orders</th>
-      <th data-field="total_sales" data-formatter="currencyFormatter">Total Sales</th>
+      <th>Email</th>
+      <th>Streak API Key?</th>
+      <th>User Key?</th>
+      <th>Active?</th>
+      <th>Admin?</th>
     </tr>
   </thead>
-
-  <tbody>
-  </tbody>
+  <% @salespeople.each do |salesperson| %>
+    <tr>
+      <td>
+        <%= link_to salesperson.email, [:edit, :admin, salesperson] %>
+      </td>
+      <td>
+        <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.streak_api_key.present? %>
+      </td>
+      <td>
+        <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.user_key.present? %>
+      </td>
+      <td>
+        <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.is_active? %>
+      </td>
+      <td>
+        <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.admin? %>
+      </td>
+    </tr>
+  <% end %>
 </table>
-
-<br>

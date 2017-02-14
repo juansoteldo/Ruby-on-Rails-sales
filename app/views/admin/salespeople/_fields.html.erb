@@ -1,0 +1,47 @@
+<div class="form-group">
+  <%= f.label :email %>
+  <%= f.email_field :email, class: "form-control" %>
+  <%= render "error_message", f: f, key: :email %>
+</div>
+
+<% if f.object.new_record? %>
+
+  <div class="form-group">
+    <%= f.label :password %>
+    <%= f.password_field :password, class: "form-control" %>
+    <%= render "error_message", f: f, key: :password %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation, class: "form-control" %>
+    <%= render "error_message", f: f, key: :password_confirmation %>
+  </div>
+
+<% end %>
+
+<div class="form-group">
+  <%= f.label :streak_api_key, "Streak API key" %>
+  <%= f.text_field :streak_api_key, class: "form-control" %>
+  <%= render "error_message", f: f, key: :streak_api_key %>
+</div>
+
+<div class="form-group">
+  <%= f.label :user_key %>
+  <%= f.text_field :user_key, class: "form-control" %>
+  <%= render "error_message", f: f, key: :user_key %>
+</div>
+
+<div class="form-group">
+  <%= f.check_box :is_active %>
+  <%= f.label :is_active, "User is active?" %>
+  <%= render "error_message", f: f, key: :email %>
+</div>
+
+<div class="form-group">
+  <%= f.check_box :admin %>
+  <%= f.label :admin, "Admin?" %>
+  <%= render "error_message", f: f, key: :admin %>
+</div>
+
+<%= f.submit "Save", class: "btn btn-primary" %>

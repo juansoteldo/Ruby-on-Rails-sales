@@ -1,38 +1,59 @@
 class Admin::SalespeopleController < Admin::BaseController
-  load_and_authorize_resource :request, class: Request
 
-  before_action :set_request, only: [:show, :edit, :update, :destroy]
-  # GET /salespeople
-  # GET /salespeople.json
+  before_action :require_admin
+
   def index
-    @dates = {}
-    @dates[:created_at_max] = params[:date_max] if params[:date_max]
-    @dates[:created_at_min] = params[:date_min] if params[:date_min]
-    if params[:date_max] and params[:date_min]
-      @date_range = "#{params[:date_min]} - #{params[:date_max]}"
-    elsif params[:date_max]
-      @date_range = "Before #{params[:date_max]}"
-    elsif params[:date_min] 
-      @date_range = "Since #{params[:date_min]}"
-    else
-      @date_range = "Since all time"
-    end
-    @salespeople = Salesperson.sales_by_date(@dates)
+    @salespeople = Salesperson.all
   end
 
-  # GET /salespeople/1
-  # GET /salespeople/1.json
-  def show
+  def new
+    @salesperson = Salesperson.new
+  end
+
+  def create
+    @salesperson = Salesperson.new salesperson_params
+
+    if salesperson.save
+      redirect_to [:admin, :salespeople], notice: "Salesperson created"
+    else
+      render :new
+    end
+  end
+
+  def edit
+  end
+
+  def update
+    if salesperson.update_attributes salesperson_params
+      redirect_to [:admin, :salespeople], notice: "Salesperson updated"
+    else
+      render :edit
+    end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_request
-      @request = Request.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def request_params
-      params.require(:request).permit(:user_id, :token, :is_first_time, :gender, :has_color, :position, :notes, :quote_id, :client_id, :ticket_id)
+  def require_admin
+    unless current_salesperson && current_salesperson.admin?
+      redirect_to [:admin, :root], notice: "Access denied"
     end
+  end
+
+  helper_method :salesperson
+
+  def salesperson
+    @salesperson ||= Salesperson.find params[:id]
+  end
+
+  def salesperson_params
+    params.require(:salesperson).permit(
+      :email,
+      :password,
+      :password_confirmation,
+      :streak_api_key,
+      :user_key,
+      :is_active,
+      :admin
+    )
+  end
 end

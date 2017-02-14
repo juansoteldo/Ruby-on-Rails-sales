@@ -8,8 +8,10 @@
   <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 </head>
 <body>
+  <%= render "layouts/navbar" %>
+
   <div class="container toggled" id="wrapper">
-    <% if current_admin and in_admin_panel? %>
+    <% if current_salesperson and in_admin_panel? %>
         <div id="sidebar-wrapper">
       <ul class="sidebar-nav">
         <li class="sidebar-brand">
