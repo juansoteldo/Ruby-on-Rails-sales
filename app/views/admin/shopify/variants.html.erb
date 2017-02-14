@@ -22,7 +22,7 @@
                         <div class="col col-md-4 col-sm-3">
                           <%= variant.price %>
                         </div>
-                        <% url = "http://#{@host}/public/redirect/#{product.handle}/#{variant.id}?requestId=" %>
+                        <% url = "http://#{@host}/public/redirect/#{product.handle}/#{variant.id}?salespersonId=#{current_salesperson.id}&requestId=" %>
                         <div class="col col-md-4 col-sm-4">
                           <button class="btn btn-sm btn-url" data-title="<%= product.title %>" data-url="<%= url %>"
                                   data-clipboard-text="<%= url %>" title="Copy to clipboard"><%= product.is_deposit? && 'Deposit' || 'Final' %></button>

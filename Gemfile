@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.3'
+gem 'rails', '4.2.6'
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 
@@ -47,7 +47,6 @@ gem 'unicorn'
 gem 'newrelic_rpm'
 gem 'dotenv-rails'
 gem 'whenever'
-gem 'tunemygc'
 gem 'state_machines'
 gem 'state_machines-activerecord'
 gem 'ruby-progressbar'
