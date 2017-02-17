@@ -1,0 +1,14 @@
+<div class="card card-raised">
+  <div class="content container-fluid">
+    <h1>Adding a new salesperson</h1>
+    <ol class="">
+      <li>Make them a G-Mail account, add them to the Streak enterprise, and have them install the Streak Extension.</li>
+      <li><a href="<%= CTD::CHROME_EXTENSION_URL %>" >Download our own Chrome extension from here</a>, save it, unzip it, turn on developer mode in Chrome, and Install the extension.  Make sure it's enabled.</li>
+      <li>Log into G-Mail as the user, click the Streak icon at top right, then click Developer</li>
+      <li>Generate an API key, and then select it and copy it to the clipboard.</li>
+      <li>Add the user's email address as a Salesperon in the <%= link_to 'Salespeople Page', admin_salespeople_path %>.  Don't forget to make them active.</li>
+      <li>Paste their API key into the Streak API Key box, and then save.</li>
+      <li>Ask the salesperson to log in and test.</li>
+    </ol>
+  </div>
+</div>

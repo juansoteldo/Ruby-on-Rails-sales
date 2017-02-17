@@ -1,0 +1,64 @@
+
+
+//overwrite table responsive for 768px screens
+
+@media (min-width: 768px){
+    .navbar> .container-fluid .navbar-brand{
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 767px){
+
+    .main-panel{
+        .content{
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
+    .fileinput{
+        display: block;
+    }
+
+    .card{
+        .card-header{
+            &.card-header-text{
+                display: block;
+            }
+        }
+    }
+
+    .navbar-form{
+        .form-group{
+            margin-bottom: 0;
+        }
+    }
+
+    .table-responsive{
+        border: none;
+    }
+
+    .modal-small{
+        width: auto;
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+}
+
+@media (min-width: 992px){
+    .table-full-width{
+        margin-left: -20px;
+        margin-right: -20px;
+    }
+    .table-responsive{
+        overflow: auto;
+    }
+
+}
+
+@media all and (max-width: 490px){
+    .nav-center .nav-pills-icons{
+        max-width: 211px;
+    }
+}

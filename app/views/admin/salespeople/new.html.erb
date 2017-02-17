@@ -2,6 +2,10 @@
   <h3>New Salesperson</h3>
 </div>
 
+<div class="lead">
+  <%= link_to 'Read this first!', how_to_admin_salespeople_path, target: '_blank' %>
+</div>
+
 <%= form_for [:admin, salesperson] do |f| %>
   <%= render "fields", f: f %>
 <% end %>

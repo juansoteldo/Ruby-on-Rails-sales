@@ -26,7 +26,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :salespeople
+    resources :salespeople do
+      collection do
+        get :how_to
+      end
+    end
 
     get 'shopify/products'
     get 'shopify/variants'

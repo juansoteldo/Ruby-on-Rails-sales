@@ -46,12 +46,10 @@ GEM
     autoprefixer-rails (6.7.2)
       execjs
     bcrypt (3.1.11)
-    binding_of_caller (0.7.2)
-      debug_inspector (>= 0.0.1)
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
-    bower-rails (0.10.0)
+    bower-rails (0.11.0)
     builder (3.2.3)
     byebug (9.0.6)
     callsite (0.0.11)
@@ -73,9 +71,9 @@ GEM
       capistrano (~> 3.1)
       sshkit (~> 1.3)
     chronic (0.10.2)
-    coffee-rails (4.1.1)
+    coffee-rails (4.2.1)
       coffee-script (>= 2.2.0)
-      railties (>= 4.0.0, < 5.1.x)
+      railties (>= 4.0.0, < 5.2.x)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
@@ -176,7 +174,6 @@ GEM
       thor (>= 0.18.1, < 2.0)
     raindrops (0.17.0)
     rake (12.0.0)
-    rdoc (4.3.0)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
     rest-client (2.0.0)
@@ -191,9 +188,6 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    sdoc (0.4.2)
-      json (~> 1.7, >= 1.7.7)
-      rdoc (~> 4.0)
     shopify_api (4.3.5)
       activeresource (>= 3.0.0)
       rack
@@ -241,11 +235,10 @@ GEM
       raindrops (~> 0.7)
     warden (1.2.7)
       rack (>= 1.0)
-    web-console (2.3.0)
-      activemodel (>= 4.0)
-      binding_of_caller (>= 0.7.2)
-      railties (>= 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
+    web-console (3.3.0)
+      activemodel (>= 4.2)
+      debug_inspector
+      railties (>= 4.2)
     whenever (0.9.7)
       chronic (>= 0.6.3)
     zeroclipboard-rails (0.1.2)
@@ -256,20 +249,20 @@ PLATFORMS
 
 DEPENDENCIES
   bootstrap-sass (~> 3.3.6)
-  bower-rails (~> 0.10.0)
+  bower-rails (~> 0.11.0)
   byebug
   cancancan (~> 1.10)
   capistrano (~> 3.1)
   capistrano-bundler
   capistrano-rails (~> 1.1)
   capistrano-rbenv
-  coffee-rails (~> 4.1.0)
+  coffee-rails (~> 4.2)
   daemons
   delayed_job
   delayed_job_active_record
   devise
   dotenv-rails
-  jbuilder (~> 2.0)
+  jbuilder (~> 2.5)
   jquery-rails
   meta_request
   newrelic_rpm
@@ -278,17 +271,16 @@ DEPENDENCIES
   rails (= 4.2.6)
   ruby-progressbar
   sass-rails (~> 5.0)
-  sdoc (~> 0.4.0)
   shopify_api
   simple_token_authentication (~> 1.0)
   spring
   state_machines
   state_machines-activerecord
   streak-ruby
-  turbolinks
+  turbolinks (~> 5)
   uglifier (>= 1.3.0)
   unicorn
-  web-console (~> 2.0)
+  web-console
   whenever
   zeroclipboard-rails
 
