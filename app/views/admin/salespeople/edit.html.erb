@@ -1,7 +1,11 @@
-<div class="page-header">
+<div class="heading">
   <h3>Edit Salesperson</h3>
 </div>
 
-<%= form_for [:admin, salesperson] do |f| %>
-  <%= render "fields", f: f %>
-<% end %>
+<div class="card card-raised">
+<div class="content">
+  <%= form_for [:admin, salesperson] do |f| %>
+      <%= render "fields", f: f %>
+  <% end %>
+</div>
+</div>

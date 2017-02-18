@@ -1,8 +1,7 @@
 @openSidebar = (collapse) ->
-  $("#wrapper").removeClass("toggled")
-  $("#variants .collapse").removeClass("in") if collapse
+  $(".sidebar").collapse collapse && 'hide' || 'show'
+  $('div.group').collapse 'hide'
 
 @closeSidebar = (collapse) ->
-  $("#wrapper").addClass("toggled")
-  $("#variants .collapse").removeClass("in") if collapse
+  $(".sidebar").collapse collapse && 'hide' || 'show'
 

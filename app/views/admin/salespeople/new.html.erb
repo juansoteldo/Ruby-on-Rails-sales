@@ -1,4 +1,4 @@
-<div class="page-header">
+<div class="heading">
   <h3>New Salesperson</h3>
 </div>
 
@@ -6,6 +6,10 @@
   <%= link_to 'Read this first!', how_to_admin_salespeople_path, target: '_blank' %>
 </div>
 
+<div class="card card-raised">
+  <div class="content">
 <%= form_for [:admin, salesperson] do |f| %>
   <%= render "fields", f: f %>
 <% end %>
+  </div>
+</div>

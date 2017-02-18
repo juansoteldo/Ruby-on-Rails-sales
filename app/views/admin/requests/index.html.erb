@@ -1,5 +1,9 @@
+<div class="card card-raised">
+  <div class="card-content">
+
+
 <p id="notice"><%= notice %></p>
-<table class="table" data-toggle="table" data-pagination="true" data-side-pagination="server"
+<table class="table small" data-toggle="table" data-pagination="true" data-side-pagination="server"
        data-url="requests.json" data-page-list="[25, 50]" data-search="true" id="request-table"
        data-show-refresh="true" data-id-field="id">
   <thead>
@@ -9,12 +13,12 @@
       <th data-field="user" data-formatter="userFormatter"></th>
       <th data-field="is_first_time" data-formatter="firstFormatter">1<sup>st</sup></th>
       <th data-field="gender">Sex</th>
-      <th data-field="has_color" data-formatter="colorFormatter">Color?</th>
-      <th data-field="has_cover_up" data-formatter="coverFormatter"></th>
+      <th data-field="has_color" data-formatter="colorFormatter" class="td-actions text-center">Color?</th>
+      <th data-field="has_cover_up" data-formatter="coverFormatter" class="text-center"></th>
       <th data-field="position">Position</th>
-      <th data-field="cliend_id" data-formatter="isNullFormatter">GID</th>
-      <th data-field="last_visited_at" data-formatter="visitedFormatter">Seen?</th>
-      <th data-formatter="cartButtons">
+      <th data-field="cliend_id" data-formatter="isNullFormatter" class="text-center">GID</th>
+      <th data-field="last_visited_at" data-formatter="visitedFormatter" class="text-center">Seen?</th>
+      <th data-formatter="cartButtons" class=" td-actions">
         <div class="row">
           <div class="col-md-5">
             <button class="btn btn-xs btn-show-options btn-default btn-block" data-user-id="" data-email="" data-client-id=""
@@ -33,5 +37,6 @@
   <tbody>
   </tbody>
 </table>
+  </div>
 
-<br>
+</div>

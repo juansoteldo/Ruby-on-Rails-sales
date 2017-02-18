@@ -14,6 +14,10 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require bootstrap-table
+//= require bootstrap-datepicker
+//= require material.min
+//= require material-dashboard
+//= require nouislider.min
 //= require underscore.string
 //= require zeroclipboard
 //= require moment

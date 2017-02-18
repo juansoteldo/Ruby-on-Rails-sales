@@ -24,13 +24,6 @@ class Shopify::Product < Shopify::Base
     handle.include?('deposit')
   end
 
-  def css_classes
-    classes = []
-    classes << 'final' if is_final_payment?
-    classes << 'deposit' if is_deposit?
-    classes.join(' ')
-  end
-
   def variants
     @source.variants.map{|v| Shopify::Variant.new(v)}
   end

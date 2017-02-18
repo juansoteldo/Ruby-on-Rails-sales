@@ -1,41 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CtdWorklist</title>
+  <title>Custom Tattoo Design</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lato|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
   <%= csrf_meta_tags %>
   <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 </head>
 <body>
-  <%= render "layouts/navbar" %>
+<% if in_admin_panel? %>
+<div class="sidebar collapse" data-color="primary" data-background-color="gray"  data-image="../assets/img/sidebar-1.jpg">
+  <div class="sidebar-wrapper">
+    <ul class="nav sidebar-nav">
+      <li class="sidebar-brand">
 
-  <div class="container toggled" id="wrapper">
-    <% if current_salesperson and in_admin_panel? %>
-        <div id="sidebar-wrapper">
-      <ul class="sidebar-nav">
-        <li class="sidebar-brand">
-          <a href="#" id="variants-user">
-          </a>
-          <a href="#" id="variants-title">
-           Products
-          </a>
+        <div href="#" id="variants-user" class="text-center">
+        </div>
 
-        </li>
-        <%= render template: 'admin/shopify/variants' %>
-      </ul>
-    </div>
-    <% end %>
-    <div id="page-content-wrapper">
-    <%= yield %>
-    </div>
-
-    <footer>
-      <% if current_admin %>
-          <%= link_to "Admin sign out", destroy_admin_session_path, :method => :delete %>
-      <% end %>
-    </footer>
-
+      </li>
+      <%= render template: 'admin/shopify/variants' %>
+    </ul>
   </div>
+  <div class="sidebar-background" style="background-image: url(../assets/img/sidebar-1.jpg) "></div>
+</div>
+<% end %>
+<div class="container-fluid main-panel in">
+  <% if in_admin_panel? %>
+    <%= render "layouts/navbar" %>
+  <% end %>
+  <div class="content">
+    <div class="container-fluid">
+      <%= yield %>
+    </div>
+  </div>
+  <footer>
+    <% if current_admin %>
+        <%= link_to "Admin sign out", destroy_admin_session_path, :method => :delete %>
+    <% end %>
+  </footer>
+</div>
+
 </body>
 </html>

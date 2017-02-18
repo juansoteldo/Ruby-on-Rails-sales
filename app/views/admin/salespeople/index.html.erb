@@ -1,8 +1,11 @@
-<div class="page-header">
+<div class="heading">
   <%= link_to "New salesperson", [:new, :admin, :salesperson],
     class: "btn btn-primary btn-sm pull-right" %>
   <h2>Salespeople</h2>
 </div>
+
+<div class="card card-raised">
+  <div class="content">
 
 <table class="table" style="margin-top: 4rem;">
   <thead>
@@ -34,3 +37,5 @@
     </tr>
   <% end %>
 </table>
+  </div>
+</div>

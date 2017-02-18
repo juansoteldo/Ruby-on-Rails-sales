@@ -265,6 +265,10 @@
         @include sidebar-background-color($gray-base, $white-color);
     }
 
+    &[data-background-color="gray"]{
+        @include sidebar-background-color($gray-darker, $white-color);
+    }
+
     &[data-active-color="purple"]{
         @include set-background-color-button($brand-primary);
     }

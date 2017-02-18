@@ -49,7 +49,7 @@
 
 
 @colorFormatter = (value, row) ->
-  return "<img src='#{image_path('color-wheel.png')}' width='16' height='16'/>" if value
+  return "<img src='#{image_path('color-wheel.png')}' width='16' height='16' style='width: 16px;'/>" if value
   ''
 
 @coverFormatter = (value, row) ->
@@ -100,5 +100,6 @@ ready = ->
   setInterval ->
     $('#request-table').bootstrapTable('refresh') unless @mouseOverTable
   , 30000
+
 $(document).ready ready
 $(document).on 'page:load', ready
