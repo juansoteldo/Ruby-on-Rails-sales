@@ -22,6 +22,7 @@
 //= require zeroclipboard
 //= require moment
 //= require bootstrap-daterangepicker
+//= require js-routes
 //= require_tree .
 
 $(document).ready(function() {

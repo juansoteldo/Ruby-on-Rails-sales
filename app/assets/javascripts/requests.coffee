@@ -29,11 +29,19 @@
 
 @userFormatter = (value, row) ->
   if row.user.opted_out
-    opt_out_text = " <a class='small' href='#'><strike>opt out</strike></a>"
-  else
-    opt_out_text = " <a class='small' href='/admin/requests/#{row.id}/opt_out' target='_blank'>opt out</a>"
+    button = """
+    <a class=" btn-xs btn-simple btn-danger btn" href="#{Routes.opt_in_admin_request_path(row.id)}"><i class="material-icons">do_not_disturb_on</i></a>
+    """
+    email = "<strike>#{value.email}</strike>"
 
-  "<span title='#{row.client_id}'>#{value.email}#{opt_out_text}</span>"
+  else
+    button = """
+    <a class="small btn-xs btn-success btn-simple btn" href="#{Routes.opt_out_admin_request_path(row.id)}" data-confirm="Are you sure you want to opt out #{value.email}?"><i class="material-icons">email</i></a>
+    """
+    email = value.email
+
+  "<span title='#{row.client_id}'>#{email} <span class=\"pull-right\">#{button}</span></span>"
+
 
 @hideButton = (value, row) ->
   return ""

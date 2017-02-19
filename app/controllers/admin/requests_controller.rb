@@ -40,6 +40,20 @@ class Admin::RequestsController < Admin::BaseController
     end
   end
 
+  def opt_in
+    user = @request.user
+    user.opted_out = false
+    respond_to do |format|
+      if user.save
+        format.html { redirect_to admin_requests_path, notice: 'Opted in this user.' }
+        format.json { render :show, status: :opted_in, location: admin_requests_path }
+      else
+        format.html { redirect_to admin_requests_path, notice: 'Cannot opt this user in.' }
+        format.json { render json: user.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   # GET /requests/new
   def new
     @request = Request.new

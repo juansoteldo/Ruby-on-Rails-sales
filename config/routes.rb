@@ -22,7 +22,8 @@ Rails.application.routes.draw do
     resources :products
     resources :requests do
       member do
-        match :opt_out, via: [:get, :post]
+        match :opt_out, via: [:all], as: :opt_out
+        match :opt_in, via: [:all], as: :opt_in
       end
     end
 
