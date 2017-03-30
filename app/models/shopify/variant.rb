@@ -26,8 +26,12 @@ class Shopify::Variant < Shopify::Base
   end
 
   def self.shopify_sources
-    Rails.cache.fetch(expires_in: 5.minutes) do
-      ShopifyAPI::Variant.all
+    if Rails.env.development?
+      ShopifyAPI::Variant.all params: { limit: 200 }
+    else
+      Rails.cache.fetch(expires_in: 5.minutes) do
+        ShopifyAPI::Variant.all params: { limit: 200 }
+      end
     end
   end
 end
