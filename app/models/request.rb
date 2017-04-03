@@ -73,6 +73,16 @@ class Request < ActiveRecord::Base
 
   end
 
+  def subtotal
+    return sub_total if sub_total
+    return 0 if deposit_order_id.nil?
+
+    order = Shopify::Order.find(deposit_order_id).first
+    return 0 unless order
+    self.update_column :sub_total, order.subtotal_price
+    sub_total.to_f
+  end
+
   def update_state_stamp
     self.state_changed_at = Time.zone.now
   end

@@ -15,6 +15,9 @@
       <th>User Key?</th>
       <th>Active?</th>
       <th>Admin?</th>
+      <% @statistic_parameters.each do |key, values| %>
+        <th class="text-right"><%= t key %></th>
+      <% end %>
     </tr>
   </thead>
   <% @salespeople.each do |salesperson| %>
@@ -34,6 +37,14 @@
       <td>
         <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.admin? %>
       </td>
+      <% @statistic_parameters.each do |key, values| %>
+          <td class="text-right">
+            <% if SalesTotal.where(salesperson: salesperson, sold_on: values[:range] ).any? %>
+              <%= number_to_currency sales_total( salesperson, values[:range] ), unit: '', precision: 0 %>
+              <% if sales_count salesperson, values[:range] %>(<%= sales_count salesperson, values[:range] %>)<% end %>
+            <% end %>
+          </td>
+      <% end %>
     </tr>
   <% end %>
 </table>

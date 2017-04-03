@@ -8,6 +8,13 @@ class Salesperson < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  has_many :requests, foreign_key: 'quoted_by_id', class_name: 'Request'
+  has_many :sales_totals
+
+  def deposited_requests
+    requests.where.not( deposit_order_id: nil )
+  end
+
   # Called by devise to allow users to be deactivated
   # http://www.rubydoc.info/github/plataformatec/devise/master/Devise/Models/Authenticatable
   def active_for_authentication?
@@ -16,48 +23,34 @@ class Salesperson < ActiveRecord::Base
 
   attr_accessor :orders, :total_sales
 
-  def self.all_with_shopify_orders_by_email(params)
-    params = { limit: 250 } if !params
-    if params[:created_at_min]
-      if params[:created_at_min].to_date < '2016-06-01T00:00:00-00:00'.to_date
-        params[:created_at_min] = '2016-06-01T00:00:00-00:00'
+  def self.with_sales(params)
+
+    salespeople = Salesperson.all.to_a.map do |salesperson|
+      params.each do |key, value|
+        salesperson.class.send(:attr_accessor, "#{key}_sales") unless instance_variable_defined?("@#{key}_sales")
+        salesperson.class.send(:attr_accessor, "#{key}_count") unless instance_variable_defined?("@#{key}_count")
+        salesperson.instance_variable_set "@#{key}_sales", nil
+        salesperson.instance_variable_set "@#{key}_count", nil
       end
-    else
-      params[:created_at_min] = '2016-06-01T00:00:00-00:00'
+      salesperson
     end
-    params[:fields] = 'customer,line_items,total_price,subtotal_price,note_attributes,created_at'
-    orders = Shopify::Order.shopify_orders(params)
-    orders = orders.select do |order|
-      order.line_items.any?{|li| !li.title.include? 'Final' } and User.where(email: order.customer.email).joins(:requests).where(requests: {created_at: "Wed, 1 Jun 2016".to_date..Time.now}).any?
-    end
-    orders.map {|order|
-      order.sales_id = ""
-      if order.created_at.to_date < "Tue, 7 Jun 2016".to_date
-        order.sales_id = 6
-      else
-        order.note_attributes.each do |note_attr|
-          if note_attr.name == "sales_id"
-            order.sales_id = note_attr.value
-          end
-        end
-        if !order.sales_id
-          order.sales_id = 6
-        end
+
+    params.each do |key, param|
+      grouped_orders = Shopify::Order.attributed(param).group_by(&:sales_id)
+      grouped_orders.select{|id, orders| id != "" }.map do |id, orders|
+        salesperson = salespeople.find{|s| s.id == id }
+        sales = orders.inject(0) {|sum,o| sum + o.total_price.to_f.round(2)}
+        salesperson.instance_variable_set "@#{key}_sales", sales
+        salesperson.instance_variable_set "@#{key}_count", orders.count
+        salesperson.orders = orders
+        salespeople << salesperson unless salespeople.find{|s| s.id == id }
       end
-      order
-    }
-    grouped_orders = orders.group_by(&:sales_id)
-    salespeople = grouped_orders.select{|id,orders| id != "" }.map do |id, orders|
-      c = self.find(id.to_i)
-      c.total_sales = orders.inject(0) {|sum,o| sum + o.total_price.to_f.round(2)}
-      c.orders = orders
-      c
     end
-    return salespeople
+    salespeople
   end
 
   def self.sales_by_date(params)
-    params[:limit] = 250
+    params[:limit] ||= 250
     self.all_with_shopify_orders_by_email(params)
   end
 

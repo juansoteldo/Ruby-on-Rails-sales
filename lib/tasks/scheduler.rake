@@ -1,4 +1,9 @@
-desc 'This task is called by cron'
+desc 'Updates total sales'
+task :update_sales_totals => :environment do
+  CTD::SalesUpdater.update
+end
+
+  desc 'This task is called by cron'
 task :send_reminders => :environment do
   include ActionView::Helpers::DateHelper
 

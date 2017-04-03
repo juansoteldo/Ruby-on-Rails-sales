@@ -11,12 +11,8 @@ class Shopify::Product < Shopify::Base
   end
 
   def self.shopify_sources
-    if Rails.env.development?
+    Rails.cache.fetch(expires_in: 1.minutes) do
       ShopifyAPI::Product.all params: { limit: 200 }
-    else
-      Rails.cache.fetch(expires_in: 1.minutes) do
-        ShopifyAPI::Product.all params: { limit: 200 }
-      end
     end
   end
 

@@ -23,7 +23,17 @@
             <li>
               <%= link_to "Salespeople", [:admin, :salespeople] %>
             </li>
+            <% else %>
+                <li>
+                  <a href="#" title="Not including today">
+                    <% range = (Time.now.beginning_of_month..Time.now)
+                       if sales_total( current_salesperson, range ) == 0 %>
+                        Sales This Month: <%= number_to_currency sales_total( current_salesperson, range), precision: 0 %>
+                    <% end %>
+                  </a>
+                </li>
           <% end %>
+
         <% end %>
       </ul>
 

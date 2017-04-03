@@ -1,6 +1,8 @@
 require 'shopify/base'
 
 class Shopify::Order < Shopify::Base
+  DEFAULT_SALESPERSON_EMAIL = 'brittany@customtattoodesign.ca'
+
   def update_request
     if has_request_id?
       request = Request.where(id:request_id).first
@@ -64,23 +66,91 @@ class Shopify::Order < Shopify::Base
   def self.find(params)
     digest = Digest::SHA256.base64digest params.inspect
     Rails.cache.fetch('shopify/orders/' + digest, expires_in: 5.minutes) do
-      ShopifyAPI::Order.find( :all, params: params ).map{ |c| self.new(c) }
+      ShopifyAPI::Order.all(  params: params ).map{ |c| self.new(c) }
     end
   end
 
-  def self.all(*params)
-    self.shopify_orders(params).map{ |order| self.new(order) }
+  def self.all(params)
+    self.find_in_batches(params).map{ |order| self.new(order) }
   end
 
-  def self.shopify_orders params
-      order_count    = ShopifyAPI::Order.count( :params => params )
+  def self.count params
+    digest = Digest::SHA256.base64digest params.inspect
+    Rails.cache.fetch('shopify/orders/count/' + digest, expires_in: 5.minutes) do
+      ShopifyAPI::Order.count( params: params )
+    end
+  end
+
+  def self.find_in_batches params
+      order_count    = Shopify::Order.count params
       nb_pages       = (order_count / params[:limit].to_f).ceil
       orders         = []
       1.upto(nb_pages) do |page|
         params[:page] = page
-        orders = orders + ShopifyAPI::Order.find( :all, :params => params )
+        orders = orders + ShopifyAPI::Order.all(params: params )
       end
       orders
+  end
+
+  def default_salesperson
+
+  end
+
+  def note_attribute(name)
+    note_attributes.each do |note_attr|
+      if note_attr.name == name
+        return note_attr.value
+      end
+    end
+    nil
+  end
+
+  MIN_DATE = '2016-06-01T00:00:00-00:00'.to_time
+  def self.attributed params
+    digest = Digest::SHA256.base64digest params.inspect
+    Rails.cache.fetch('shopify/orders/attributed/' + digest, expires_in: 6.hours) do
+      params[:limit] ||= "250"
+
+      params[:created_at_min] ||= MIN_DATE
+      params[:created_at_max] ||= 1.day.ago.end_of_day
+
+      params[:created_at_min] = [ params[:created_at_min], MIN_DATE.dup ].max
+      params[:created_at_max] = params[:created_at_max]
+
+      params[:fields] = 'customer,line_items,total_price,subtotal_price,note_attributes,created_at'
+
+      orders = Shopify::Order.all(params)
+      orders = orders.select do |order|
+        order.line_items.any?{|li| !li.title.include? 'Final' } and
+            ( order.note_attribute('sales_id') or
+                User.where(email: order.customer.email).joins(:requests).
+                where(requests: { created_at: "Wed, 1 Jun 2016".to_date..Time.now } ).any? )
+      end
+
+      default_salesperson = Salesperson.find_by( email: DEFAULT_SALESPERSON_EMAIL )
+      sale_cutoff = (MIN_DATE.dup - 120.days)
+      orders = orders.reject do |order|
+        order.created_at < params[:created_at_min] or order.created_at > params[:created_at_max]
+      end.map do |order|
+        order.sales_id = nil
+        if order.created_at.to_date < "Tue, 7 Jun 2016".to_date
+          order.sales_id = 6
+        else
+          noted_id = order.note_attribute('sales_id')
+
+          if noted_id
+            order.sales_id = noted_id.to_i
+          else
+            requests = Request.where(created_at: (sale_cutoff..Time.now) ).where.not(quoted_by_id: nil).
+                joins(:user).where( users: { email: order.customer.email } )
+            order.sales_id = requests.first.quoted_by_id if requests.any?
+          end
+          order.sales_id ||= default_salesperson.id
+        end
+        order
+      end
+      orders
+    end
   end
 
   private
