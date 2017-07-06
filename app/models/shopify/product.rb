@@ -3,7 +3,7 @@ require 'shopify/base'
 class Shopify::Product < Shopify::Base
 
   def self.find(id)
-    self.shopify_sources.select{|i| i.id = id }.map{ |i| self.new(i) }
+    self.shopify_sources.select{|i| i.id == id }.map{ |i| self.new(i) }
   end
 
   def self.all
@@ -35,8 +35,6 @@ class Shopify::Product < Shopify::Base
   def group_title
     title.sub( 'Final Payment', '' ).sub( 'Deposit', '').strip
   end
-
-
 end
 
 require 'shopify_api'

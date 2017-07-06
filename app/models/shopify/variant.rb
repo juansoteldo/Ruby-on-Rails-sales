@@ -18,7 +18,7 @@ class Shopify::Variant < Shopify::Base
   end
 
   def self.find(id)
-    self.shopify_sources.select{|i| i.id = id }.map{ |i| self.new(i) }
+    self.shopify_sources.select{|i| i.id == id }.map{ |i| self.new(i) }
   end
 
   def self.all
