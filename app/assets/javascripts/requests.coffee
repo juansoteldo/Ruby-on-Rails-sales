@@ -19,6 +19,14 @@
 @isNullFormatter = (value) ->
   value == null && '' || 'X'
 
+@imagesFormatter = (images, row) ->
+  result = ""
+  i = 1
+  $(images).each ->
+    result += "<a href='#{this.url}' data-lightbox='request-#{row.id}' >#{i}</a>"
+    i++
+  result
+
 @dateFormatter = (value) ->
   moment(value).format('D MMM h:mm a')
 

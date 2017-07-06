@@ -1,13 +1,13 @@
 class PublicController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
-  before_filter :disable_cache, only: [:get_links]
+  before_action :disable_cache, only: [:get_links]
 
-  before_filter :normalize_email
-  before_filter :validate_parameters, only: [:new_request]
-  before_filter :set_user_by_email, only: [ :new_request, :get_links ]
-  before_filter :set_salesperson_by_email, only: [ :get_links ]
-  before_filter :load_products, only: [ :get_links ]
+  before_action :normalize_email
+  before_action :validate_parameters, only: [:new_request]
+  before_action :set_user_by_email, only: [:new_request, :get_links]
+  before_action :set_salesperson_by_email, only: [ :get_links ]
+  before_action :load_products, only: [ :get_links ]
   before_filter :set_user_by_client_id, only: [ :get_uid ]
   before_filter :set_request_by_email, only: [ :get_ids, :get_links ]
 

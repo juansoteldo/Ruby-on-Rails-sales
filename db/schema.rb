@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170403180752) do
+ActiveRecord::Schema.define(version: 20170705053915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,6 +74,15 @@ ActiveRecord::Schema.define(version: 20170403180752) do
   add_index "marketing_emails", ["days_after_state_change"], name: "index_marketing_emails_on_days_after_state_change", using: :btree
   add_index "marketing_emails", ["state"], name: "index_marketing_emails_on_state", using: :btree
 
+  create_table "request_images", force: :cascade do |t|
+    t.integer  "request_id"
+    t.string   "file"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "request_images", ["request_id"], name: "index_request_images_on_request_id", using: :btree
+
   create_table "requests", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "first_name",       default: ""
@@ -104,6 +113,7 @@ ActiveRecord::Schema.define(version: 20170403180752) do
     t.integer  "quoted_by_id"
     t.string   "state",            default: "fresh"
     t.datetime "state_changed_at"
+    t.text     "description"
   end
 
   add_index "requests", ["quoted_by_id"], name: "index_requests_on_quoted_by_id", using: :btree
@@ -167,6 +177,7 @@ ActiveRecord::Schema.define(version: 20170403180752) do
   add_index "users", ["shopify_id"], name: "index_users_on_shopify_id", using: :btree
 
   add_foreign_key "delivered_emails", "requests"
+  add_foreign_key "request_images", "requests"
   add_foreign_key "requests", "users"
   add_foreign_key "sales_totals", "salespeople"
 end

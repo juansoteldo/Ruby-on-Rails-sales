@@ -13,6 +13,12 @@ json.rows do
       end
 
     end
+
+    json.images do
+      json.array!(request.images) do |image|
+        json.url image.file.url
+      end
+    end
     json.url admin_request_url(request, format: :json)
   end
 end

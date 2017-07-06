@@ -6,15 +6,16 @@
   },
   "vendor": {
     "name": "bower-rails generated vendor assets",
-    "dependencies": {}
-  },
-  "dependencies": {
-    "bootstrap-table": "~1.10.0",
-    "bootstrap": "~3.3.6",
-    "underscore.string": "~3.2.3",
-    "clipboard": "~1.5.5",
-    "moment": "~2.11.1",
-    "bootstrap-daterangepicker":"~2.1.19"
+    "dependencies": {
+      "bootstrap-table": "~1.10.0",
+      "bootstrap": "~3.3.6",
+      "underscore.string": "~3.2.3",
+      "clipboard": "~1.5.5",
+      "moment": "~2.11.1",
+      "bootstrap-daterangepicker": "~2.1.19",
+      "jQuery-One-Page-Nav": "^3.0.0",
+      "lightbox2": "^2.9.0"
+    }
   },
   "authors": [
     "Wojtek Grabski <wojtek@grabski.ca>"
@@ -27,5 +28,8 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "resolutions": {
+    "jquery": "1.9.1 - 2"
+  }
 }

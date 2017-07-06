@@ -23,6 +23,7 @@
 //= require moment
 //= require bootstrap-daterangepicker
 //= require js-routes
+//= require lightbox2/dist/js/lightbox
 //= require_tree .
 
 $(document).ready(function() {
