@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   namespace :webhooks do
     post 'orders_create' => :orders_create
+    post 'requests_create' => :requests_create
   end
 
   match 'public/get_ids', via: [:get, :post]
@@ -45,6 +46,7 @@ Rails.application.routes.draw do
     get 'test/post_form' => 'test#post_form', as: 'post_form'
     get 'test/cart' => 'test#cart', as: 'cart'
 
+    mount DelayedJobWeb, at: "/delayed_job"
   end
 
   get '/admin' => 'content#admin', as: 'admin_root'

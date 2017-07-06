@@ -1,6 +1,7 @@
 class Request < ActiveRecord::Base
   belongs_to :user
   has_many :delivered_emails
+  has_many :images, class_name: "RequestImage"
 
   before_create :update_state_stamp
 
@@ -51,6 +52,29 @@ class Request < ActiveRecord::Base
 
   def time_since_state_change
     (Time.zone.now - self.state_changed_at)
+  end
+
+  def art_sample_1=(file)
+    add_wp_image(file)
+  end
+
+  def art_sample_2=(file)
+    add_wp_image(file)
+  end
+
+  def art_sample_3=(file)
+    add_wp_image(file)
+  end
+
+  def add_wp_image(file)
+    return if file.empty?
+    logger.info "Adding #{file}"
+    if File.exists?(file)
+      images.create file: File.new(file)
+    else
+      raise "Request Image can't be found"
+      false
+    end
   end
 
   private

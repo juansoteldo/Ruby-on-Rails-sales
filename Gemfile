@@ -36,8 +36,9 @@ gem 'shopify_api'
 gem 'streak-ruby'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
+gem "delayed_job_web"
 gem 'daemons'
-gem 'unicorn'
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -46,13 +47,18 @@ gem 'unicorn'
 # gem 'capistrano-rails', group: :development
 group :production do
   gem 'newrelic_rpm'
+  gem 'unicorn'
 end
 
+gem 'config'
 gem 'dotenv-rails'
 gem 'whenever'
 gem 'state_machines'
 gem 'state_machines-activerecord'
 gem 'ruby-progressbar'
+gem 'carrierwave'
+gem 'mini_magick'
+gem 'fog-aws'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -72,5 +78,7 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem "letter_opener"
+  gem "puma"
 end
 

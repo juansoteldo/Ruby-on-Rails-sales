@@ -37,8 +37,7 @@
     "tag": "3.2.3",
     "commit": "75dce37d010d1f7442a7971d0315fb8c781a07c4"
   },
-  "_source": "git://github.com/epeli/underscore.string.git",
+  "_source": "https://github.com/epeli/underscore.string.git",
   "_target": "~3.2.3",
-  "_originalSource": "underscore.string",
-  "_direct": true
+  "_originalSource": "underscore.string"
 }

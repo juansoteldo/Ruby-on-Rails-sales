@@ -5,7 +5,7 @@ class Admin::RequestsController < Admin::BaseController
   # GET /requests
   # GET /requests.json
   def index
-    @requests = Request.joins(:user).order( created_at: :desc )
+    @requests = Request.joins(:user).includes(:images).order( created_at: :desc )
 
     if params[:search]
       term = params[:search].downcase
