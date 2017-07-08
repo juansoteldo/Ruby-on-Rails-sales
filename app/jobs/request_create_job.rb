@@ -11,7 +11,6 @@ class RequestCreateJob < ActiveJob::Base
   end
 
   def make_request!
-    request_params
 
     @request = Request.recent.where(user_id: @user.id, position: params[:position]).first_or_create
     @request.update request_params
@@ -29,11 +28,12 @@ class RequestCreateJob < ActiveJob::Base
 
 
   def set_user_by_email
-    if User.where( email: params[:email] ).any?
-      @user =  User.find_by_email( params[:email] )
+    return unless params[:email].present?
+    if User.where(email: params[:email]).any?
+      @user =  User.find_by_email params.delete(:email)
     else
       password = SecureRandom.hex(8)
-      @user = User.create( email: params[:email], password: password, password_confirmation: password )
+      @user = User.create email: params.delete(:email), password: password, password_confirmation: password
     end
   end
 
