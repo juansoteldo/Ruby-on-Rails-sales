@@ -78,7 +78,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.action_mailer.delivery_method = :sendmail
-  config.action_mailer_bcc = []
+#  config.action_mailer_bcc = []
   config.marketing_email_recipients = %w(
     wojtek@grabski.ca
     leeroller@customtattoodesign.ca

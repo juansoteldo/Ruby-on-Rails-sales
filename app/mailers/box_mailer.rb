@@ -3,7 +3,7 @@ class BoxMailer < ActionMailer::Base
   layout 'marketing_email'
   def marketing_email( request, marketing_email = MarketingEmail.find(1) )
     @request = request
-    bcc = Rails.application.config.action_mailer_bcc
+#    bcc = Rails.application.config.action_mailer_bcc
     bcc ||= []
 
     mail(to: request.user.email,
@@ -21,7 +21,7 @@ class BoxMailer < ActionMailer::Base
     @request = request
 
     mail(to: request.user.email,
-         bcc: Rails.application.config.action_mailer_bcc,
+#         bcc: Rails.application.config.action_mailer_bcc,
          from: 'leeroller@customtattoodesign.ca',
          subject: 'Thank you, Let\'s Get Started! Custom Tattoo Design',
          display_name: 'Lee Roller')
@@ -32,7 +32,7 @@ class BoxMailer < ActionMailer::Base
 
     @request = request
     mail(to: email,
-         bcc: Rails.application.config.action_mailer_bcc,
+#         bcc: Rails.application.config.action_mailer_bcc,
          from: 'leeroller@customtattoodesign.ca',
          subject: 'Thank you for your business Custom Tattoo Design',
          display_name: 'Lee Roller')
