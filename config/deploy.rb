@@ -70,7 +70,7 @@ namespace :deploy do
   end
 
   after :finishing, 'deploy:cleanup'
-
+  after :finished, 'airbrake:deploy'
 end
 
 namespace :rails do

@@ -42,6 +42,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
+    airbrake (6.2.0)
+      airbrake-ruby (~> 2.3)
+    airbrake-ruby (2.3.0)
     airbrussh (1.1.2)
       sshkit (>= 1.6.1, != 1.7.0)
     arel (6.0.4)
@@ -299,6 +302,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  airbrake (~> 6.2)
   bootstrap-sass (~> 3.3.6)
   bower-rails (~> 0.11.0)
   byebug
