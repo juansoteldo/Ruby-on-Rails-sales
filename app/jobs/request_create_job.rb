@@ -5,7 +5,7 @@ class RequestCreateJob < ActiveJob::Base
     @params = new_params
     normalize_email
 
-    raise "empty email" if params[:email].empty?
+    raise "empty email" if params[:email].nil? || params[:email].empty?
 
     set_user_by_email
     params.delete :email
@@ -28,7 +28,7 @@ class RequestCreateJob < ActiveJob::Base
 
 
   def set_user_by_email
-    return if params[:email].empty?
+    return if params[:email].nil?
     if User.where(email: params[:email]).any?
       @user =  User.find_by_email params.delete(:email)
     else
@@ -39,6 +39,7 @@ class RequestCreateJob < ActiveJob::Base
 
   def normalize_email
     params[:email] = params[:email].downcase.strip unless params[:email].nil?
+    params[:email]
   end
 end
 
