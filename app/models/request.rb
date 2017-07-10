@@ -78,6 +78,12 @@ class Request < ActiveRecord::Base
       logger.error ">>> Cannot add image to request #{file}"
       logger.error e.message
       logger.error e.backtrace.join("\n")
+    ensure
+      begin
+        File.unlink file if File.exists?(file)
+      rescue
+
+      end
     end
   end
 
