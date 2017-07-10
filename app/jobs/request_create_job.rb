@@ -12,7 +12,7 @@ class RequestCreateJob < ActiveJob::Base
 
   def make_request!
     @request = Request.recent.where(user_id: @user.id, position: params[:position]).first_or_create
-    @request.update request_params
+    @request.update @params
     @request.save!
 
     set_user_by_email if @user.nil?
@@ -34,13 +34,6 @@ class RequestCreateJob < ActiveJob::Base
       password = SecureRandom.hex(8)
       @user = User.create email: params.delete(:email), password: password, password_confirmation: password
     end
-  end
-
-  def request_params
-    params.permit(:client_id, :position, :gender,
-                  :has_color, :is_first_time, :first_name, :last_name,
-                  :linker_param, :_ga, :art_sample_1, :art_sample_2,
-                  :art_sample_3, :description)
   end
 
   def parameters_valid?
