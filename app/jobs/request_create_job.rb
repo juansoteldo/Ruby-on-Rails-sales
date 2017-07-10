@@ -8,6 +8,7 @@ class RequestCreateJob < ActiveJob::Base
     raise "empty email" if params[:email].empty?
 
     set_user_by_email
+    params.delete :email
     make_request!
   end
 
