@@ -16,7 +16,7 @@ set :deploy_to, '/u/apps/ctd'
 # set :pty, true
 
 set :linked_files, %w{.env.production}
-set :linked_dirs, %w{log published_files tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :linked_dirs, %w{log published_files tmp/pids tmp/cache tmp/sockets tmp/uploads vendor/bundle public/system}
 
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 set :keep_releases, 20
@@ -70,7 +70,6 @@ namespace :deploy do
   end
 
   after :finishing, 'deploy:cleanup'
-  after :finished, 'airbrake:deploy'
 end
 
 namespace :rails do
