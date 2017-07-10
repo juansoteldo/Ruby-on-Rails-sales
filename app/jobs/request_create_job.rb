@@ -4,11 +4,10 @@ class RequestCreateJob < ActiveJob::Base
   def perform(new_params)
     @params = new_params
     normalize_email
-    if parameters_valid?
-      set_user_by_email
+    raise "invalid parameters: #{@params.inspect}" unless parameters_valid?
 
-      make_request!
-    end
+    set_user_by_email
+    make_request!
   end
 
   def make_request!
@@ -44,7 +43,7 @@ class RequestCreateJob < ActiveJob::Base
                   :art_sample_3, :description)
   end
 
-  def validate_parameters
+  def parameters_valid?
     %i(position gender first_name last_name email).each do |sym|
       return false if params[sym] == '' or params[sym] == false
     end
