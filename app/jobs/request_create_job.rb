@@ -4,7 +4,8 @@ class RequestCreateJob < ActiveJob::Base
   def perform(new_params)
     @params = new_params
     normalize_email
-    raise "invalid parameters: #{@params.inspect}" unless parameters_valid?
+
+    raise "empty email" if params[:email].empty?
 
     set_user_by_email
     make_request!
@@ -15,7 +16,6 @@ class RequestCreateJob < ActiveJob::Base
     @request.update @params
     @request.save!
 
-    set_user_by_email if @user.nil?
     @user.requests << @request
   end
 
@@ -27,7 +27,7 @@ class RequestCreateJob < ActiveJob::Base
 
 
   def set_user_by_email
-    return unless params[:email].present?
+    return if params[:email].empty?
     if User.where(email: params[:email]).any?
       @user =  User.find_by_email params.delete(:email)
     else
@@ -36,15 +36,8 @@ class RequestCreateJob < ActiveJob::Base
     end
   end
 
-  def parameters_valid?
-    %i(position gender first_name last_name email).each do |sym|
-      return false if params[sym] == '' or params[sym] == false
-    end
-    true
-  end
-
   def normalize_email
-    params[:email] = params[:email].downcase.strip if params[:email].present?
+    params[:email] = params[:email].downcase.strip unless params[:email].nil?
   end
 end
 
