@@ -68,15 +68,12 @@ class Request < ActiveRecord::Base
 
   def add_wp_image(file)
     return if file.empty?
-    logger.info "Adding #{file}"
     begin
-      if File.exists?(file)
-        images.create file: File.new(file)
-        File.unlink file
-      else
-        raise "Request Image can't be found"
-        false
-      end
+      return unless File.exists?(file)
+      return if images.where("file LIKE ?", "%#{File.basename(file)}%").any?
+      logger.info "Adding #{file}"
+      images.create file: File.new(file)
+      File.unlink file
     rescue
       logger.error ">>> Cannot add image to request #{file}"
     end
