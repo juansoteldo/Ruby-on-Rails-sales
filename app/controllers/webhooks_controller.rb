@@ -3,7 +3,7 @@ class WebhooksController < ApplicationController
   before_action :verify_shopify_webhook, only: [:orders_create]
 
   def requests_create
-    RequestCreateJob.perform_now(wpcf7_params)
+    RequestCreateJob.perform_later(wpcf7_params)
     head :ok
   end
 
