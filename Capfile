@@ -23,7 +23,6 @@ require 'capistrano/bundler'
 require 'capistrano/rails'
 require 'whenever/capistrano'
 require "capistrano/scm/git"
-require 'airbrake/capistrano/tasks'
 
 install_plugin Capistrano::SCM::Git
 
