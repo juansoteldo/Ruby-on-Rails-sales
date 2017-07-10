@@ -38,14 +38,13 @@ class PublicController < ApplicationController
   def new_request
     request_params
     if Request.recent.where(user_id: @user.id, position: params[:position]).any?
-      Request.recent.where(user_id: @user.id, position: params[:position]).delete_all
+      @request = Request.recent.where(user_id: @user.id, position: params[:position]).first
+      @request.update(request_params.reject{|_, v| v.blank?})
+    else
+      @request = Request.create(request_params)
+      @request.save
+      @user.requests << @request
     end
-
-    @request = Request.create(request_params)
-    @request.save
-
-    set_user_by_email if @user.nil?
-    @user.requests << @request
   end
 
   def get_uid
