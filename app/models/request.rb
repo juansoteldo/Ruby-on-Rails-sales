@@ -7,6 +7,8 @@ class Request < ActiveRecord::Base
 
   default_scope -> { includes(:user)}
 
+  auto_strip_attributes :first_name, :last_name, :position
+
   scope :recent, -> { where('created_at > ?', 5.minutes.ago)}
 
   state_machine :state, initial: :fresh do

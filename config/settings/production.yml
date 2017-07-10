@@ -1,1 +1,2 @@
-wp_cf7_tmp_folder: "/home/ctd/public_html/customtattoodesign.ca/wp-content/uploads/wpcf7_uploads/"
+api:
+  token: <%= ENV.fetch "API_TOKEN", "you have to define this" %>

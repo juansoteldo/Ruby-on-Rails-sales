@@ -49,6 +49,7 @@ group :production do
   gem 'unicorn'
 end
 
+gem "auto_strip_attributes", "~> 2.1"
 gem 'config'
 gem 'dotenv-rails'
 gem 'whenever'
