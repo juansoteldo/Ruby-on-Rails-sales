@@ -4,14 +4,14 @@ class RequestCreateJob < ActiveJob::Base
   def perform(new_params)
     @params = new_params
     normalize_email
-    validate_parameters
-    set_user_by_email
+    if parameters_valid?
+      set_user_by_email
 
-    make_request!
+      make_request!
+    end
   end
 
   def make_request!
-
     @request = Request.recent.where(user_id: @user.id, position: params[:position]).first_or_create
     @request.update request_params
     @request.save!
@@ -45,15 +45,14 @@ class RequestCreateJob < ActiveJob::Base
   end
 
   def validate_parameters
-    [:position, :gender, :first_name, :last_name, :client_id ].each do |sym|
-      render( json: false ) if params[sym] == '' or params[sym] == false
+    %i(position gender first_name last_name email).each do |sym|
+      return false if params[sym] == '' or params[sym] == false
     end
+    true
   end
 
   def normalize_email
-    if params[:email]
-      params[:email] = params[:email].downcase.strip
-    end
+    params[:email] = params[:email].downcase.strip if params[:email].present?
   end
 end
 
