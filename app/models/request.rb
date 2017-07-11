@@ -72,14 +72,22 @@ class Request < ActiveRecord::Base
     return if file.empty?
     begin
       return unless File.exists?(file)
-      return if images.where("file LIKE ?", "%#{File.basename(file)}%").any?
+      if images.where("file LIKE ?", "%#{File.basename(file)}%").any?
+        File.unlink file
+        return
+      end
       logger.info "Adding #{file}"
       images.create file: File.new(file)
-      File.unlink file
     rescue => e
       logger.error ">>> Cannot add image to request #{file}"
       logger.error e.message
       logger.error e.backtrace.join("\n")
+    ensure
+      begin
+        File.unlink file if File.exists?(file)
+      rescue
+        logger.error "Cannot delete image file at #{file}"
+      end
     end
   end
 
