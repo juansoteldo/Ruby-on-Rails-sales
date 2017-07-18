@@ -1,20 +1,19 @@
 class RequestCreateJob < ActiveJob::Base
   queue_as :webhook
 
-  def perform(new_params)
-    @params = new_params
-    normalize_email
-
-    raise "empty email" if params[:email].nil? || params[:email].empty?
+  def perform(params)
+    @params = params.compact_empties
 
     set_user_by_email
-    params.delete :email
+    @params.delete :email
+
     make_request!
   end
 
   def make_request!
+
     @request = Request.recent.where(user_id: @user.id, position: params[:position]).first_or_create
-    @request.update @params
+    @request.update! @params.compact
     @request.save!
 
     @user.requests << @request
@@ -27,7 +26,9 @@ class RequestCreateJob < ActiveJob::Base
   end
 
   def set_user_by_email
-    return if params[:email].nil?
+    normalize_email
+    raise "empty email" if params[:email].nil? || params[:email].empty?
+
     if User.where(email: params[:email]).any?
       @user =  User.find_by_email params.delete(:email)
     else
@@ -36,9 +37,8 @@ class RequestCreateJob < ActiveJob::Base
     end
   end
 
-  def normalize_email
-    params[:email] = params[:email].downcase.strip unless params[:email].nil?
-    params[:email]
+  def normalized_email
+    params[:email].downcase.strip
   end
 end
 
