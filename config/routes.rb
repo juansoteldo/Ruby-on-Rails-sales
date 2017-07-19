@@ -12,6 +12,10 @@ Rails.application.routes.draw do
   match 'public/save_email', via: [:get]
   get 'public/opt_out/:id', to: 'marketing#opt_out', as: :opt_out
 
+  namespace :api do
+    resources :requests, only: [:index, :show]
+  end
+
   namespace :webhooks do
     post 'orders_create' => :orders_create
     post 'requests_create' => :requests_create
@@ -46,7 +50,7 @@ Rails.application.routes.draw do
     get 'test/post_form' => 'test#post_form', as: 'post_form'
     get 'test/cart' => 'test#cart', as: 'cart'
 
-    mount DelayedJobWeb, at: "/delayed_job"
+    mount DelayedJobWeb, at: "/delayed_job", :constraints => AdminConstraint.new
   end
 
   get '/admin' => 'content#admin', as: 'admin_root'

@@ -138,7 +138,6 @@ GEM
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
-    git-version-bump (0.15.1)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
     http-cookie (1.0.3)
@@ -190,8 +189,7 @@ GEM
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.6.8)
-    rack-contrib (1.4.0)
-      git-version-bump (~> 0.15)
+    rack-contrib (1.5.0)
       rack (~> 1.4)
     rack-protection (1.5.3)
       rack

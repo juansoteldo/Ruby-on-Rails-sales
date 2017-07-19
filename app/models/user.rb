@@ -6,4 +6,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :requests
+
+  auto_strip_attributes :email
+
 end
