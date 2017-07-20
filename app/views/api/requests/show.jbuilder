@@ -10,6 +10,6 @@ json.email @request.user.email
 
 json.images do
   json.array! @request.images do |image|
-
+    json.url image.file.url
   end
 end
