@@ -4,7 +4,8 @@ class Api::BaseController < ApplicationController
     private
 
     def authenticate_token!
-      render text: "unauthorized" unless params[:token].present? &&
-          params[:token] == ENV.fetch("API_TOKEN","You have to set this")
+      @token = ENV.fetch("API_TOKEN","You have to set this")
+
+      render text: "unauthorized" unless params[:token].present? && params[:token] == @token
     end
 end
