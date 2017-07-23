@@ -1,4 +1,4 @@
-Hello again <%= @request.first_name.titleize %>,
+Hello again <%= @request.first_name.try(:titleize) %>,
 
 Just wanted to give you a quick update on Custom Tattoo Design. Our whole family here is growing rapidly and people are going crazy about our new team.
 

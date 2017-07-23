@@ -4,7 +4,7 @@
   <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
 </head>
 <body>
-<p>Hi <%= @request.first_name.titleize %>,</p>
+<p>Hi <%= @request.first_name.try(:titleize) %>,</p>
 <p>
   Thank you for deciding to work with Custom Tattoo Design! We put together this quick one page article so that you
   know exactly what to expect over the next few days. One of the best parts of working with Custom Tattoo Design is

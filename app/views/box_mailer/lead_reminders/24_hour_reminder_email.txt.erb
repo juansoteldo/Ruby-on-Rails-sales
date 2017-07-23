@@ -1,4 +1,4 @@
-Hello <%= @request.first_nam.titleize %>,
+Hello <%= @request.first_name.try(:titleize) %>,
 
 I noticed you were on our site and you sent us a design request for a free quote.  Whether it was price, timing or something we did you decided not to do your design with us.  If you don't mind letting me know what’s keeping you from working with us, I will do my best to help you.  I'm so passionate about my business and each customer that I want to make sure I have done everything I can to help.
 

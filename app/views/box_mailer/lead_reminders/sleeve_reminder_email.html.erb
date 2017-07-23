@@ -1,5 +1,5 @@
 
-  <p>Hi <%= @request.first_name.titleize %>,</p>
+  <p>Hi <%= @request.first_name.try(:titleize) %>,</p>
 
   <p>
     Thank you for visiting our site, I appreciate the opportunity to work with you on your new sleeve idea. I did
@@ -18,7 +18,7 @@
 
   <p>
     I take improving my business very seriously and I am always appreciative of feedback. If your reason for not
-		moving forward is something I can help with, I’d love to hear it. 
+		moving forward is something I can help with, I’d love to hear it.
   </p>
 
   <p>
@@ -34,4 +34,3 @@
     Founder/CEO<br/>
     Custom Tattoo Design
   </p>
-  

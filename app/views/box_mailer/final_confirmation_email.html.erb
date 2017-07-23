@@ -4,7 +4,7 @@
 	<meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
 </head>
 <body>
-<p>Hi <%= @request.first_name.titleize %>,</p>
+<p>Hi <%= @request.first_name.try(:titleize) %>,</p>
 
 <p>
   I noticed your final design has been completed. I think the final product looks great and I wanted to personally say

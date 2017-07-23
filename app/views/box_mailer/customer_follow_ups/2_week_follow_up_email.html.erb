@@ -1,4 +1,4 @@
-<p>Hello again <%= @request.first_name.titleize %>,</p>
+<p>Hello again <%= @request.first_name.try(:titleize) %>,</p>
 
 <p>
   I hope your experience with us Custom Tattoo design has been great so far. We send a 2 minute survey out to all our

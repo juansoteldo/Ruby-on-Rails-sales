@@ -1,5 +1,5 @@
 
-<p>Hi <%= @request.first_name.titleize %>,</p>
+<p>Hi <%= @request.first_name.try(:titleize) %>,</p>
 
 <p>
   We’ve hired on some amazing new artists and I wanted to let you know. If you’re interested in getting a design by
