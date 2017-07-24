@@ -13,7 +13,7 @@
         $.post("<%= j deposit_redirect_path(request_id: @request.id, order_id: params[:order_id], format: :json) %>", function(response) {
             if (response) {
                 clearInterval(timer);
-                window.location = <%= @crm_url.to_json.html_safe %>;
+                window.location = <%= crm_start_url(@request).to_json.html_safe %>;
             } else {
                 console.log("Waiting for confirmation from Shopify");
             }

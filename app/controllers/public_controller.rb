@@ -13,7 +13,6 @@ class PublicController < ApplicationController
   before_action :set_request_by_id, only: [:deposit_redirect]
   before_action :set_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
 
-
   def redirect
     @request = Request.find(params[:requestId]) if params[:requestId].present? && Request.find(params[:requestId])
     @request ||= Request.find_by__ga(params[:_ga]) if params[:_ga] && Request.where(_ga: params[:_ga]).any?
@@ -46,8 +45,6 @@ class PublicController < ApplicationController
     @order.update_request
 
     if @request
-      @crm_url = ENV.fetch "CRM_URL", "https://crm.customtattoodesign.ca"
-      @crm_url += "/preview/jobs/new?request_id=" + @request.id.to_s
       respond_to do |format|
         format.json { render json: (!@request.deposit_order_id.nil?)}
         format.html {}

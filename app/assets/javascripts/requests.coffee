@@ -26,6 +26,12 @@
     result += "<a href='#{this.url}' data-lightbox='request-#{row.id}' >#{i}</a>"
     i++
   result
+@depositedFormatter = (value, row) ->
+  console.log value
+  if value
+    "<a href='#{row.crm_url}' target='_blank'><span class='glyphicon glyphicon-usd'></span></a>"
+  else
+    "&nbsp;"
 
 @dateFormatter = (value) ->
   moment(value).format('D MMM h:mm a')
