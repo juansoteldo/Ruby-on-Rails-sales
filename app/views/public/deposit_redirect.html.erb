@@ -20,7 +20,7 @@
         });
     };
 
-    <% if Rails.env.development? %>
-      var timer = setInterval(getDepositStatus, 5000);
+    <% if Rails.env.production? %>
+      var timer = setInterval(getDepositStatus, 3000);
     <% end %>
 </script>
