@@ -1,4 +1,4 @@
-Hi <%= @request.first_name.titleize %>,
+Hi <%= @request.first_name.try(:titleize) %>,
 
 I noticed your final design has been completed. I think the final product looks great and I wanted to personally say thank you for your business and your time. We will have your final documents over to you as soon as possible.
 

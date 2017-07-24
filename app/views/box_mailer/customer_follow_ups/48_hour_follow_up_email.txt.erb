@@ -1,8 +1,8 @@
-Dear <%= @request.first_name.titleize %>,
+Dear <%= @request.first_name.try(:titleize) %>,
 
 My name is Kayla and I’m the Customer Service Manager at Custom Tattoo Design. Thank you for choosing us for your design. I thought you might want a few tips when it comes to working with us and some insight into our process.
 
-- Share your feedback: When you get back your first sketch, you’ll hopefully love it! But sometimes adjustments need to be made. This is just a part of the design process. The best thing you can do is be as clear as you can when discussing what you like and don’t like about a design. This will help your artist get the changes right the first time so you can get your tattoo design done quickly and beautifully. Don’t be scared to share criticism, we're professionals and being blunt just helps make the process easier and better for you.  We’re all nice people we get it :) 
+- Share your feedback: When you get back your first sketch, you’ll hopefully love it! But sometimes adjustments need to be made. This is just a part of the design process. The best thing you can do is be as clear as you can when discussing what you like and don’t like about a design. This will help your artist get the changes right the first time so you can get your tattoo design done quickly and beautifully. Don’t be scared to share criticism, we're professionals and being blunt just helps make the process easier and better for you.  We’re all nice people we get it :)
 
 - Try and respond in a reasonable time: You’re excited. You’re eager. You’re also busy and making time to respond to your artist can sometimes get pushed lower on the priority list. But creating a one of a kind, custom tattoo design is a collaborative process and the faster you can provide feedback to your artist, the quicker you’ll get your design completed.
 
@@ -14,6 +14,6 @@ If you have any other questions about the design process, feel free to reach out
 
 Sincerely,
 
-Kayla Mckee 
+Kayla Mckee
 Customer Service Manager
 Custom Tattoo Design

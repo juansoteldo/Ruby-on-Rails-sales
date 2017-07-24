@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :requests, only: [:index, :show]
+    resources :request_images, only: [:show]
   end
 
   namespace :webhooks do

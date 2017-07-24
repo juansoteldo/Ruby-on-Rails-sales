@@ -1,2 +1,0 @@
-api:
-  token: <%= ENV.fetch "API_TOKEN", "you have to define this" %>

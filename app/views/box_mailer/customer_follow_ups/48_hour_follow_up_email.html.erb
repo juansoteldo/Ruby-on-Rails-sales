@@ -1,5 +1,5 @@
 
-  <p>Dear <%= @request.first_name.titleize %>,</p>
+  <p>Dear <%= @request.first_name.try(:titleize) %>,</p>
 
   <p>
 		My name is Kayla and I’m the Customer Service Manager at Custom Tattoo Design. Thank you for choosing us for your
