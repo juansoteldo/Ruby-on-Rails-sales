@@ -114,7 +114,7 @@ class PublicController < ApplicationController
   def set_request_by_email
     return if @request
     requests = Request.joins(:user).where('users.email LIKE ?', params[:email])
-    @request = requests.any? ? request.first : Request.create( user: @user )
+    @request = requests.any? ? requests.first : Request.create( user: @user )
   end
 
   def set_shopify_order
