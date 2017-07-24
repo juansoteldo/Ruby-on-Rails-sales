@@ -1,0 +1,10 @@
+AllCops:
+  TargetRubyVersion: 2.3.4
+  TargetRailsVersion: 5.0
+Metrics/LineLength:
+  Max: 120
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+Style/SymbolArray:
+  Enabled: true
+  EnforcedStyle: brackets

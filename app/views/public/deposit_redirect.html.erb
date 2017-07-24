@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="col text-center">
+    <h4 class="text-muted">CUSTOM TATTOO SHOP</h4>
+    <br>
+    <h1 class="text-info">Thanks for your deposit!<br/><small>Taking you to start your design ...</small></h1>
+
+    <a class="btn btn-default btn-sm" id="redirectLink" href="<%= @crm_url %>">click here if nothing happens after 60 seconds</a>
+  </div>
+</div>
+<h2></h2>
+<script>
+    var getDepositStatus = function(){
+        $.post("<%= j deposit_redirect_path(request_id: @request.id, order_id: params[:order_id], format: :json) %>", function(response) {
+            if (response) {
+                clearInterval(timer);
+                window.location = <%= @crm_url.to_json.html_safe %>;
+            } else {
+                console.log("Waiting for confirmation from Shopify");
+            }
+        });
+    };
+
+    <% if Rails.env.development? %>
+      var timer = setInterval(getDepositStatus, 5000);
+    <% end %>
+</script>
