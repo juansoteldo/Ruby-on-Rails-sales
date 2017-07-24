@@ -95,12 +95,12 @@ class Request < ActiveRecord::Base
 
   def perform_complete_actions
     puts "Sending final confirmation email to #{user.email}"
-    BoxMailer.final_confirmation_email(self).deliver_now
+    BoxMailer.final_confirmation_email(self).deliver_later
   end
 
   def perform_deposit_actions
     puts "Sending confirmation email to #{user.email}"
-    BoxMailer.confirmation_email(self).deliver_now
+    BoxMailer.confirmation_email(self).deliver_later
     begin
       StreakAPI::Box.query(user.email).each do |box|
         StreakAPI::Box.set_stage(box.key, 'Deposited')

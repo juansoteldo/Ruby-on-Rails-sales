@@ -1,4 +1,6 @@
 class BoxMailer < ActionMailer::Base
+  add_template_helper(ApplicationHelper)
+
 	default from: 'orders@customtattoodesign.ca'
   layout 'marketing_email'
   def marketing_email( request, marketing_email = MarketingEmail.find(1) )
