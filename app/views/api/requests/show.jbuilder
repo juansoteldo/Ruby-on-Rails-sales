@@ -1,1 +1,1 @@
-json.partial! "_request", request: @request, include_images: true
+json.partial! "request", request: @request, include_images: true
