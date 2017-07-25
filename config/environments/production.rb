@@ -88,9 +88,4 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
 
-  config.after_initialize do
-    # Standard logger with Airbrake integration:
-    # https://github.com/airbrake/airbrake#logger
-    Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
-  end
 end
