@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170705053915) do
+ActiveRecord::Schema.define(version: 20170725020548) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,8 +114,12 @@ ActiveRecord::Schema.define(version: 20170705053915) do
     t.string   "state",            default: "fresh"
     t.datetime "state_changed_at"
     t.text     "description"
+    t.datetime "deposited_at"
   end
 
+  add_index "requests", ["client_id"], name: "index_requests_on_client_id", using: :btree
+  add_index "requests", ["created_at"], name: "index_requests_on_created_at", using: :btree
+  add_index "requests", ["deposit_order_id"], name: "index_requests_on_deposit_order_id", using: :btree
   add_index "requests", ["quoted_by_id"], name: "index_requests_on_quoted_by_id", using: :btree
   add_index "requests", ["sku"], name: "index_requests_on_sku", using: :btree
   add_index "requests", ["user_id"], name: "index_requests_on_user_id", using: :btree

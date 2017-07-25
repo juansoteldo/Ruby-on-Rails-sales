@@ -16,12 +16,13 @@ class Shopify::Order < Shopify::Base
 
     if request.can_convert? && is_deposit?
       request.convert
-      request.update_attribute(:deposit_order_id, @source.id)
-      request.update_attribute(:state_changed_at, @source.created_at)
+      request.update_attributes deposit_order_id: @source.id,
+                                state_changed_at: @source.created_at,
+                                deposited_at: Time.now
     elsif request.can_complete? && is_final?
       request.complete
-      request.update_attribute(:final_order_id, @source.id)
-      request.update_attribute(:state_changed_at, @source.created_at)
+      request.update_attributes final_order_id: @source.id,
+                                state_changed_at: @source.created_at
     end
 
     if has_salesperson_id? && request.quoted_by_id.nil?
