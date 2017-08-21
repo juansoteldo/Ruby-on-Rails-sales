@@ -10,6 +10,7 @@ class Api::RequestsController < Api::BaseController
   private
 
   def set_request
-    @request = Request.find params[:id]
+    @request = Request.includes(:user).where(id: params[:id]).first
+    raise "not-found" unless @request
   end
 end
