@@ -27,7 +27,7 @@ gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.5"
 # bundle exec rake doc:rails generates the API under doc/api.
 #gem "sdoc", "~> 0.4.0", group: :doc
-
+gem "honeybadger", "~> 3.1"
 gem "js-routes"
 gem "bower-rails", "~> 0.11.0"
 gem "zeroclipboard-rails"
