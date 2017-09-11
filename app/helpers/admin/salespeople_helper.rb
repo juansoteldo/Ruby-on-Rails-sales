@@ -1,4 +1,11 @@
   module Admin::SalespeopleHelper
+    def conversion_rate(salesperson, period)
+      total_requests = salesperson.deposited_requests.where( created_at: period ).count
+      deposited_requests = salesperson.requests.where(created_at: period).count
+
+      deposited_requests.to_f / total_requests.to_f
+    end
+
     def value_of_requests(salesperson, period)
       requests = salesperson.deposited_requests.where( created_at: period )
       sum = requests.map do |r|

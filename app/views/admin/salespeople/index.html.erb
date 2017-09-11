@@ -41,7 +41,10 @@
           <td class="text-right">
             <% if SalesTotal.where(salesperson: salesperson, sold_on: values[:range] ).any? %>
               <%= number_to_currency sales_total( salesperson, values[:range] ), unit: '', precision: 0 %>
-              <% if sales_count salesperson, values[:range] %>(<%= sales_count salesperson, values[:range] %>)<% end %>
+              <% if sales_count salesperson, values[:range] %>
+                    (<%= sales_count salesperson, values[:range] %> - <%= number_to_percentage conversion_rate(salesperson, values[:range]), precision: 0 %>)
+                <% end %>
+
             <% end %>
           </td>
       <% end %>
