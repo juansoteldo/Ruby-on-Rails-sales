@@ -23,6 +23,10 @@ class Salesperson < ActiveRecord::Base
 
   attr_accessor :orders, :total_sales
 
+  def claim_requests_with_email(email)
+    Requests.joins(:user).where( "email = ?", recipient_email.downcase.strip).update_attributes contacted_by_id: self.id
+  end
+
   def self.with_sales(params)
 
     salespeople = Salesperson.all.to_a.map do |salesperson|
@@ -68,12 +72,16 @@ class Salesperson < ActiveRecord::Base
   def streak_api_key=(new_key)
     return if new_key.blank?
 
+    self.encrypted_streak_api_key = Salesperson.encrypt_streak_api_key(new_key)
+  end
+
+  def self.encrypt_streak_api_key(new_key)
     cipher = OpenSSL::Cipher::AES.new(128, :CBC)
     cipher.encrypt
     cipher.key = Rails.application.config.streak_api_cipher_random_key
     cipher.iv = Rails.application.config.streak_api_cipher_random_iv
 
-    self.encrypted_streak_api_key = Base64.encode64( cipher.update(new_key) + cipher.final )
+    Base64.encode64( cipher.update(new_key) + cipher.final )
   end
 
 end

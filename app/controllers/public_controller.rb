@@ -82,6 +82,8 @@ class PublicController < ApplicationController
     from_email = params[:from_email].downcase.strip
     recipient_email = params[:recipient_email]
     @salesperson = Salesperson.find_by_email(from_email)
+    @salesperson.claim_requests_with_email(recipient_email)
+
     box = StreakAPI::Box.find_by_email(recipient_email)
     if box
       current_stage = StreakAPI::Stage.find(key: box.stage_key)
@@ -90,7 +92,7 @@ class PublicController < ApplicationController
         StreakAPI::Box.set_stage(box.key, 'Contacted')
       end
 
-      user_key = Salesperson.where(email: from_email).any? && Salesperson.find_by(email: from_email).user_key || nil
+      user_key = @salesperson&.user_key
       user_key ||= StreakAPI::User.find_by_email(from_email)
 
       if user_key
