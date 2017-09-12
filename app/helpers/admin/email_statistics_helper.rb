@@ -39,4 +39,17 @@ module Admin::EmailStatisticsHelper
     percent_of(Ahoy::Message.where.not(opened_at: nil).count, Ahoy::Message.count)
   end
 
+  def total_click_rate
+     percent_of(Ahoy::Message.where.not(clicked_at: nil).count, Ahoy::Message.count)
+  end
+
+  def message_clicked(mailer_type)
+    Ahoy::Message.where(utm_campaign: mailer_type).where.not(clicked_at: nil)
+  end
+
+  def click_percentage_of(mailer_type)
+    percent_of(message_clicked(mailer_type).count ,all_message_of(mailer_type).count)
+  end
+
+
 end

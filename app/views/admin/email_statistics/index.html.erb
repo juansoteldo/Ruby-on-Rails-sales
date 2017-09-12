@@ -1,42 +1,32 @@
-<div class="heading">
-  <h2>Email Statistics</h2>
-  <b> unopened rate</b> - <%= total_email_unopened_rate %>% <br>
-  <b> open rate</b> - <%= total_email_open_rate %>% 
-</div>
-
 <div class="row">
-  <% box_mailer_types.each do |mailer_type| %>
-    <div class="col-md-3">
-      <div class="card">
-        <div class="content well-lg">
-          <h2 class="text-center"><%= capitalize_and_split(mailer_type) %></h2>
-          <hr/>
-          <div class="row">
-            <div class="col-md-12">
-              <h4>Opened (<%= open_percentage_of(mailer_type) %>%)</h4>
-              <% message_opened(mailer_type).each do |message| %>
-                <div class="row">
-                  <div class="col-md-offset-1">
-                    email: <%= message.to %>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <h4>Unopened (<%= unopened_percentage_of(mailer_type) %>%)</h4>
-              <% message_unopened(mailer_type).each do |message| %>
-                <div class="row">
-                  <div class="col-md-offset-1">
-                    email: <%= message.to %>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="card">
+    <div class="card-header" data-background-color="grey">
+      <h2 class="title">Email Statistics</h2>
+      <p class="category"><b>unopened rate</b> - <%= total_email_unopened_rate %>% </p>
+      <p class="category"><b>open rate</b> - <%= total_email_open_rate %>% </p>
+      <p class="category"><b>click rate</b> - <%= total_click_rate %>% </p>
     </div>
-  <% end %>  
+    <div class="card-content table-responsive table-full-width">
+      <table class="table">
+        <thead class="text-danger">
+          <th>Email Type</th>
+          <th>Open Rate</th>
+          <th>Click Rate</th>
+          <th>Unopened Rate</th>
+        </thead>
+        <tbody>
+        <% box_mailer_types.each do |mailer_type| %>
+          <tr>
+            <td class="text-primary"><%= capitalize_and_split(mailer_type) %></td>
+            <td><%= open_percentage_of(mailer_type) %>%</td>
+            <td><%= click_percentage_of(mailer_type) %>%</td>    
+            <td><%= unopened_percentage_of(mailer_type) %>%</td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
 </div>
+    
