@@ -1,9 +1,9 @@
   module Admin::SalespeopleHelper
     def conversion_rate(salesperson, period)
-      total_requests = salesperson.deposited_requests.where( created_at: period ).count
-      deposited_requests = salesperson.requests.where(created_at: period).count
+      total_requests = salesperson.requests.where( requests: { created_at: period } ).count
+      deposited_requests = salesperson.deposited_requests.where(requests: { created_at: period }).count
 
-      deposited_requests.to_f / total_requests.to_f
+      number_to_percentage(deposited_requests.to_f / total_requests.to_f * 100, precision: 0)
     end
 
     def value_of_requests(salesperson, period)
