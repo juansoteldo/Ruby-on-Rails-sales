@@ -14,11 +14,11 @@ class CreateAhoyMessages < ActiveRecord::Migration
       # t.text :content
 
       # optional
-      # t.string :utm_source
-      # t.string :utm_medium
+      t.string :utm_source
+      t.string :utm_medium
       # t.string :utm_term
       # t.string :utm_content
-      # t.string :utm_campaign
+      t.string :utm_campaign
 
       # timestamps
       t.timestamp :sent_at

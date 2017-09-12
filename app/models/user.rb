@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :requests
+  has_many :messages, class_name: "Ahoy::Message"
 
   auto_strip_attributes :email
 
