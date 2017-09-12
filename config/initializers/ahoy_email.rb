@@ -1,6 +1,6 @@
 class EmailSubscriber
   def open(event)
-    #event[:controller].ahoy.track "Email opened", message_id: event[:message].id
+    
   end
 
   def click(event)
