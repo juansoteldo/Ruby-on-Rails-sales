@@ -9,6 +9,7 @@ class Salesperson < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :requests, foreign_key: 'quoted_by_id', class_name: 'Request'
+  has_many :contacted_requests, foreign_key: 'contacted_by_id', class_name: 'Request'
   has_many :sales_totals
 
   def deposited_requests
