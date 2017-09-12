@@ -11,11 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170725020548) do
+ActiveRecord::Schema.define(version: 20170912081329) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "pg_stat_statements"
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -69,6 +68,7 @@ ActiveRecord::Schema.define(version: 20170725020548) do
     t.string  "from",                    default: "orders@customtattoodesign.ca"
     t.string  "template_path",           default: "box_mailer"
     t.string  "subject_line",            default: "Lee Roller Owner / Custom Tattoo Design"
+    t.integer "version",                 default: 1
   end
 
   add_index "marketing_emails", ["days_after_state_change"], name: "index_marketing_emails_on_days_after_state_change", using: :btree
