@@ -9,7 +9,7 @@ class BoxMailer < ActionMailer::Base
     bcc ||= []
 
     track user: @request.user
-
+    track utm_content: marketing_email.template_name
     mail(to: request.user.email,
          bcc: bcc,
          subject: marketing_email.subject_line,

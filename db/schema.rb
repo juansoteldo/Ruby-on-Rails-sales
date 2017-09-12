@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170912083427) do
+ActiveRecord::Schema.define(version: 20170912155549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20170912083427) do
     t.datetime "sent_at"
     t.datetime "opened_at"
     t.datetime "clicked_at"
+    t.string   "utm_content"
   end
 
   add_index "ahoy_messages", ["token"], name: "index_ahoy_messages_on_token", using: :btree

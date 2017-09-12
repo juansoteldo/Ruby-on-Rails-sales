@@ -15,14 +15,23 @@
           <th>Unopened Rate</th>
         </thead>
         <tbody>
-        <% box_mailer_types.each do |mailer_type| %>
-          <tr>
-            <td class="text-primary"><%= capitalize_and_split(mailer_type) %></td>
-            <td><%= open_percentage_of(mailer_type) %>%</td>
-            <td><%= click_percentage_of(mailer_type) %>%</td>    
-            <td><%= unopened_percentage_of(mailer_type) %>%</td>
-          </tr>
-        <% end %>
+          <% box_mailer_types_without_marketing_email.each do |mailer_type| %>
+            <tr>
+              <td class="text-primary"><%= capitalize_and_split(mailer_type) %></td>
+              <td><%= open_percentage_of(mailer_type) %>%</td>
+              <td><%= click_percentage_of(mailer_type) %>%</td>    
+              <td><%= unopened_percentage_of(mailer_type) %>%</td>
+            </tr>
+          <% end %>
+          
+          <% MarketingEmail.template_names.each do |template_name| %>
+            <tr>
+              <td class="text-primary"><%= capitalize_and_split(template_name) %></td>
+              <td><%= open_percentage_of("marketing_email", template_name) %>%</td>
+              <td><%= click_percentage_of("marketing_email", template_name) %>%</td>    
+              <td><%= unopened_percentage_of("marketing_email", template_name) %>%</td>
+            </tr>
+          <% end %>
         </tbody>
       </table>
 
