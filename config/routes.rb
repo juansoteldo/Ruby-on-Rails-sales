@@ -40,6 +40,8 @@ Rails.application.routes.draw do
       end
     end
 
+    get "/email_statistics" => "email_statistics#index"
+
     get "shopify/products"
     get "shopify/variants"
     get "shopify/customers"
@@ -56,5 +58,7 @@ Rails.application.routes.draw do
   end
 
   get "/admin" => "content#admin", as: "admin_root"
+
+
   root to: redirect("/404.html")
 end

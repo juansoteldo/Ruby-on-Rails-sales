@@ -19,17 +19,22 @@
           <li>
             <%= link_to "Requests", [:admin, :requests] %>
           </li>
+
           <% if current_salesperson.admin? %>
             <li>
               <%= link_to "Salespeople", [:admin, :salespeople] %>
             </li>
-            <% end %>
-            <% if SalesTotal.where( salesperson: current_salesperson, sold_on: this_month ).any? %>
-                <li>
-                  <a href="#" title="Not including today">
-                    Sales This Month: <%= number_to_currency sales_total( current_salesperson, this_month), precision: 0 %>
-                  </a>
-                </li>
+            <li>
+              <%= link_to "Email Statistics", admin_email_statistics_path %>
+            </li>
+          <% end %>
+
+          <% if SalesTotal.where( salesperson: current_salesperson, sold_on: this_month ).any? %>
+            <li>
+              <a href="#" title="Not including today">
+                Sales This Month: <%= number_to_currency sales_total( current_salesperson, this_month), precision: 0 %>
+              </a>
+            </li>
           <% end %>
 
         <% end %>

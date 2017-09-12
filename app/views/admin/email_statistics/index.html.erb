@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="title">Email Statistics</h2>
+      <p class="category"><b>Last 30 days</b> - <%= total_email_open_rate([30.days.ago.beginning_of_day..Time.now]) %> </p>
+    </div>
+    <div class="card-content table-responsive">
+      <table class="table">
+        <thead class="text-danger">
+          <th>Email Type</th>
+          <th>Today</th>
+          <th>Yesterday</th>
+          <th>2 days ago</th>
+          <th>3 days ago</th>
+        </thead>
+        <tbody>
+          <% box_mailer_types_without_marketing_email.each do |mailer_type| %>
+            <tr>
+              <td class="text-primary"><%= capitalize_and_split(mailer_type) %></td>
+              <td><%= open_percentage_of(mailer_type, nil, [Time.now.beginning_of_day..Time.now]) %></td>
+              <td><%= open_percentage_of(mailer_type, nil, [1.days.ago.beginning_of_day..1.days.ago.end_of_day]) %></td>
+              <td><%= open_percentage_of(mailer_type, nil, [2.days.ago.beginning_of_day..2.days.ago.end_of_day]) %></td>
+              <td><%= open_percentage_of(mailer_type, nil, [3.days.ago.beginning_of_day..3.days.ago.end_of_day]) %></td>
+            </tr>
+          <% end %>
+
+          <% MarketingEmail.template_names.each do |template_name| %>
+            <tr>
+              <td class="text-primary"><%= capitalize_and_split(template_name) %></td>
+              <td><%= open_percentage_of("marketing_email", template_name, [Time.now.beginning_of_day..Time.now]) %></td>
+              <td><%= open_percentage_of("marketing_email", template_name, [1.days.ago.beginning_of_day..1.days.ago.end_of_day]) %></td>
+              <td><%= open_percentage_of("marketing_email", template_name, [2.days.ago.beginning_of_day..2.days.ago.end_of_day]) %></td>
+              <td><%= open_percentage_of("marketing_email", template_name, [3.days.ago.beginning_of_day..3.days.ago.end_of_day]) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>

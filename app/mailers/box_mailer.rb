@@ -8,6 +8,8 @@ class BoxMailer < ActionMailer::Base
 #    bcc = Rails.application.config.action_mailer_bcc
     bcc ||= []
 
+    track user: @request.user
+    track utm_content: marketing_email.template_name
     mail(to: request.user.email,
          bcc: bcc,
          subject: marketing_email.subject_line,
@@ -22,6 +24,8 @@ class BoxMailer < ActionMailer::Base
     return unless request.user
     @request = request
 
+    track user: @request.user
+
     mail(to: request.user.email,
 #         bcc: Rails.application.config.action_mailer_bcc,
          from: 'leeroller@customtattoodesign.ca',
@@ -33,6 +37,9 @@ class BoxMailer < ActionMailer::Base
   	return unless request.user
 
     @request = request
+
+    track user: @request.user
+
     mail(to: email,
 #         bcc: Rails.application.config.action_mailer_bcc,
          from: 'leeroller@customtattoodesign.ca',
