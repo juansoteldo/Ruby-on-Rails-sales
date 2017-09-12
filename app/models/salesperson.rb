@@ -25,7 +25,7 @@ class Salesperson < ActiveRecord::Base
   attr_accessor :orders, :total_sales
 
   def claim_requests_with_email(email)
-    Request.joins(:user).where( "email = ?", email.downcase.strip).update_attributes contacted_by_id: self.id
+    Request.joins(:user).where( "email = ?", email.downcase.strip).update_all contacted_by_id: self.id
   end
 
   def self.with_sales(params)
