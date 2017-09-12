@@ -1,0 +1,42 @@
+<div class="heading">
+  <h2>Email Statistics</h2>
+  <b> unopened rate</b> - <%= total_email_unopened_rate %>% <br>
+  <b> open rate</b> - <%= total_email_open_rate %>% 
+</div>
+
+<div class="row">
+  <% box_mailer_types.each do |mailer_type| %>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="content well-lg">
+          <h2 class="text-center"><%= capitalize_and_split(mailer_type) %></h2>
+          <hr/>
+          <div class="row">
+            <div class="col-md-12">
+              <h4>Opened (<%= open_percentage_of(mailer_type) %>%)</h4>
+              <% message_opened(mailer_type).each do |message| %>
+                <div class="row">
+                  <div class="col-md-offset-1">
+                    email: <%= message.to %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <h4>Unopened (<%= unopened_percentage_of(mailer_type) %>%)</h4>
+              <% message_unopened(mailer_type).each do |message| %>
+                <div class="row">
+                  <div class="col-md-offset-1">
+                    email: <%= message.to %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>  
+</div>
