@@ -4,6 +4,9 @@ class Admin::SalespeopleController < Admin::BaseController
 
   def index
     @statistic_parameters = {
+        3.months.ago.strftime("%B").to_sym => {
+            range: ( 3.month.ago.beginning_of_month..3.month.ago.end_of_month)
+        },
         2.months.ago.strftime("%B").to_sym => {
           range: ( 2.month.ago.beginning_of_month..2.month.ago.end_of_month)
         },

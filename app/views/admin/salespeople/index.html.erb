@@ -26,8 +26,8 @@
         <% index = 1
            @statistic_parameters.each do |key, values|
              index += 1%>
-            <th class="text-right <%= (index % 2 == 0) ? 'bg-gray' : '' %>">Sales ($)</th>
-            <th class="text-right <%= (index % 2 == 0) ? 'bg-gray' : '' %>">Ratio</th>
+            <th class="text-right <%= (index % 2 == 0) ? 'bg-gray' : '' %>">Sales</th>
+            <th class="text-right <%= (index % 2 == 0) ? 'bg-gray' : '' %>">CR</th>
         <% end %>
       </tr>
       </thead>
@@ -55,13 +55,13 @@
                 <td class="text-right  <%= (index % 2 == 0) ? 'bg-gray' : '' %>">
                   <% if SalesTotal.where(salesperson: salesperson, sold_on: values[:range] ).any? &&
                       sales_total(salesperson, values[:range] ).positive? %>
-                      <%= number_to_currency sales_total( salesperson, values[:range] ), unit: '', precision: 0 %>
+                      <%= number_to_currency sales_total( salesperson, values[:range] ), precision: 0 %>
+                      (<%= sales_count(salesperson, values[:range]) %>)
                   <% end %>
                 </td>
                 <td class="text-right  <%= (index % 2 == 0) ? 'bg-gray' : '' %>">
                   <% if SalesTotal.where(salesperson: salesperson, sold_on: values[:range] ).any? %>
                       <% if sales_count(salesperson, values[:range]).positive? %>
-                          <%= sales_count(salesperson, values[:range]) %> /
                           <%= conversion_rate(salesperson, values[:range]) %>
                       <% end %>
 
