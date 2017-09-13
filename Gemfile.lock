@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/OnFrontiers/streak-ruby.git
+  remote: https://github.com/OnFrontiers/streak-ruby.git
   revision: ab281d9748d04f7840e76dcb1cb7283e1bd48d07
   specs:
     streak-ruby (0.0.5)
