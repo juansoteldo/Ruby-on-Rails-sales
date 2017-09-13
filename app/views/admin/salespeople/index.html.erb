@@ -10,17 +10,15 @@
     <table class="table table-responsive" style="margin-top: 4rem;">
       <thead>
       <tr>
-        <th colspan="5"></th>
+        <th colspan="3"></th>
         <% index = 1
            @statistic_parameters.each do |key, values|
              index += 1 %>
-            <th class="text-center  <%= (index % 2 == 0) ? 'bg-gray' : '' %>" colspan="2"><%= t key %></th>
+            <th class="text-center <%= (index % 2 == 0) ? 'bg-gray' : '' %>" colspan="2"><%= t key %></th>
         <% end %>
       </tr>
       <tr>
         <th>Email</th>
-        <th>Streak API Key?</th>
-        <th>User Key?</th>
         <th>Active?</th>
         <th>Admin?</th>
         <% index = 1
@@ -36,16 +34,10 @@
             <td>
               <%= link_to salesperson.email, [:edit, :admin, salesperson] %>
             </td>
-            <td>
-              <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.streak_api_key.present? %>
-            </td>
-            <td>
-              <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.user_key.present? %>
-            </td>
-            <td>
+            <td class="text-center">
               <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.is_active? %>
             </td>
-            <td>
+            <td class="text-center">
               <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.admin? %>
             </td>
             <%
