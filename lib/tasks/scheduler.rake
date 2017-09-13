@@ -3,7 +3,7 @@ task :update_sales_totals => :environment do
   CTD::SalesUpdater.update
 end
 
-  desc 'This task is called by cron'
+desc 'This task is called by cron'
 task :send_reminders => :environment do
   include ActionView::Helpers::DateHelper
 
@@ -51,7 +51,7 @@ task :send_reminders => :environment do
     puts "    Sending marketing email `#{marketing_email.template_name}` to `#{request.user.email}`"
     BoxMailer.marketing_email(request, marketing_email).deliver_now
     request.delivered_emails.create(
-      marketing_email_id: marketing_email.id, request_id: request.id, sent_at: Time.now
+        marketing_email_id: marketing_email.id, request_id: request.id, sent_at: Time.now
     )
     counts[counts.find_index{|c| c[:id] == marketing_email.id }][:count] += 1
   end

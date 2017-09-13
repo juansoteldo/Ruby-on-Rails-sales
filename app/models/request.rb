@@ -10,7 +10,8 @@ class Request < ActiveRecord::Base
   auto_strip_attributes :first_name, :last_name, :position
 
   scope :recent, (-> { where "created_at > ?", 5.minutes.ago })
-  scope :deposited, (->{ where "deposited_at IS NOT NULL" })
+  scope :deposited, (->{ where.not deposited_at: nil })
+  scope :quoted_or_contacted_by, (->(salesperson_id){ where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
 
   state_machine :state, initial: :fresh do
     after_transition on: :convert, do: :perform_deposit_actions

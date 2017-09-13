@@ -8,12 +8,14 @@ class Salesperson < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :requests, foreign_key: 'quoted_by_id', class_name: 'Request'
-  has_many :contacted_requests, foreign_key: 'contacted_by_id', class_name: 'Request'
   has_many :sales_totals
 
+  def requests
+    Request.quoted_or_contacted_by(self.id)
+  end
+
   def deposited_requests
-    requests.where.not( deposit_order_id: nil )
+    requests.deposited
   end
 
   # Called by devise to allow users to be deactivated
@@ -24,8 +26,9 @@ class Salesperson < ActiveRecord::Base
 
   attr_accessor :orders, :total_sales
 
-  def claim_requests_with_email(email)
-    Request.joins(:user).where( "email = ?", email.downcase.strip).update_all contacted_by_id: self.id
+  def claim_requests_with_email(email, after = 3.months.ago)
+    Request.joins(:user).where( "email = ? AND requests.created_at > ? AND requests.contacted_by_id IS NULL", email, after)
+        .update_all contacted_by_id: self.id
   end
 
   def self.with_sales(params)

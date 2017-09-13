@@ -6,7 +6,14 @@ class StreakAPI::Box < StreakAPI::Base
   def self.all
     Rails.cache.fetch("streak_box/all", expires_in: 2.minutes) do
       Streak.api_key = Rails.application.config.streak_api_key
-      Streak::Box.all
+      Streak::Box.all(ENV['STREAK_PIPELINE_ID'])
+    end
+  end
+
+  def self.all_with_limits(params = { limit: "10", page: "1" } )
+    Rails.cache.fetch("streak_box/all/#{params[:limit]}/#{params[:page]}", expires_in: 2.minutes) do
+      Streak.api_key = Rails.application.config.streak_api_key
+      Streak::Box.all ENV['STREAK_PIPELINE_ID'], params
     end
   end
 

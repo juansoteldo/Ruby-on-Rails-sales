@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170912155549) do
+ActiveRecord::Schema.define(version: 20170912190308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pg_stat_statements"
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -134,6 +135,7 @@ ActiveRecord::Schema.define(version: 20170912155549) do
     t.datetime "state_changed_at"
     t.text     "description"
     t.datetime "deposited_at"
+    t.integer  "contacted_by_id"
   end
 
   add_index "requests", ["client_id"], name: "index_requests_on_client_id", using: :btree
@@ -148,6 +150,7 @@ ActiveRecord::Schema.define(version: 20170912155549) do
     t.integer "salesperson_id"
     t.decimal "order_total",    default: 0.0
     t.integer "order_count",    default: 0
+    t.integer "box_count",      default: 0
   end
 
   add_index "sales_totals", ["salesperson_id"], name: "index_sales_totals_on_salesperson_id", using: :btree
