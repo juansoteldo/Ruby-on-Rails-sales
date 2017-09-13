@@ -1,56 +1,75 @@
 <div class="heading">
   <%= link_to "New salesperson", [:new, :admin, :salesperson],
-    class: "btn btn-primary btn-sm pull-right" %>
+              class: "btn btn-primary btn-sm pull-right" %>
   <h2>Salespeople</h2>
 </div>
 
 <div class="card card-raised">
   <div class="content">
 
-<table class="table" style="margin-top: 4rem;">
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>Streak API Key?</th>
-      <th>User Key?</th>
-      <th>Active?</th>
-      <th>Admin?</th>
-      <% @statistic_parameters.each do |key, values| %>
-        <th class="text-right"><%= t key %></th>
-      <% end %>
-    </tr>
-  </thead>
-  <% @salespeople.each do |salesperson| %>
-    <tr>
-      <td>
-        <%= link_to salesperson.email, [:edit, :admin, salesperson] %>
-      </td>
-      <td>
-        <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.streak_api_key.present? %>
-      </td>
-      <td>
-        <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.user_key.present? %>
-      </td>
-      <td>
-        <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.is_active? %>
-      </td>
-      <td>
-        <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.admin? %>
-      </td>
-      <% @statistic_parameters.each do |key, values| %>
-          <td class="text-right">
-            <% if SalesTotal.where(salesperson: salesperson, sold_on: values[:range] ).any? %>
-              <%= number_to_currency sales_total( salesperson, values[:range] ), unit: '', precision: 0 %>
-              <% if sales_count salesperson, values[:range] %>
-                    (<%= sales_count(salesperson, values[:range]) %>/<%= salesperson.requests.where( created_at: values[:range]).count %> -
-                    <%= conversion_rate(salesperson, values[:range]) %>)
-                <% end %>
+    <table class="table table-responsive" style="margin-top: 4rem;">
+      <thead>
+      <tr>
+        <th colspan="5"></th>
+        <% index = 1
+           @statistic_parameters.each do |key, values|
+             index += 1 %>
+            <th class="text-center  <%= (index % 2 == 0) ? 'bg-gray' : '' %>" colspan="2"><%= t key %></th>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Email</th>
+        <th>Streak API Key?</th>
+        <th>User Key?</th>
+        <th>Active?</th>
+        <th>Admin?</th>
+        <% index = 1
+           @statistic_parameters.each do |key, values|
+             index += 1%>
+            <th class="text-right <%= (index % 2 == 0) ? 'bg-gray' : '' %>">Sales ($)</th>
+            <th class="text-right <%= (index % 2 == 0) ? 'bg-gray' : '' %>">Ratio</th>
+        <% end %>
+      </tr>
+      </thead>
+      <% @salespeople.each do |salesperson| %>
+          <tr>
+            <td>
+              <%= link_to salesperson.email, [:edit, :admin, salesperson] %>
+            </td>
+            <td>
+              <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.streak_api_key.present? %>
+            </td>
+            <td>
+              <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.user_key.present? %>
+            </td>
+            <td>
+              <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.is_active? %>
+            </td>
+            <td>
+              <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.admin? %>
+            </td>
+            <%
+              index = 1
+              @statistic_parameters.each do |key, values|
+                index += 1%>
+                <td class="text-right  <%= (index % 2 == 0) ? 'bg-gray' : '' %>">
+                  <% if SalesTotal.where(salesperson: salesperson, sold_on: values[:range] ).any? &&
+                      sales_total(salesperson, values[:range] ).positive? %>
+                      <%= number_to_currency sales_total( salesperson, values[:range] ), unit: '', precision: 0 %>
+                  <% end %>
+                </td>
+                <td class="text-right  <%= (index % 2 == 0) ? 'bg-gray' : '' %>">
+                  <% if SalesTotal.where(salesperson: salesperson, sold_on: values[:range] ).any? %>
+                      <% if sales_count(salesperson, values[:range]).positive? %>
+                          <%= sales_count(salesperson, values[:range]) %> /
+                          <%= conversion_rate(salesperson, values[:range]) %>
+                      <% end %>
 
+                  <% end %>
+                </td>
             <% end %>
-          </td>
+          </tr>
       <% end %>
-    </tr>
-  <% end %>
-</table>
+    </table>
   </div>
 </div>
