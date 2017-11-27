@@ -11,6 +11,7 @@ class Request < ActiveRecord::Base
 
   scope :recent, (-> { where "created_at > ?", 5.minutes.ago })
   scope :deposited, (->{ where.not deposited_at: nil })
+  scope :valid, (-> { where.not user_id: nil })
   scope :quoted_or_contacted_by, (->(salesperson_id){ where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
 
   state_machine :state, initial: :fresh do

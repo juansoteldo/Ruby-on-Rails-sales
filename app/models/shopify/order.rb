@@ -88,6 +88,7 @@ class Shopify::Order < Shopify::Base
 
   def self.find_in_batches(params)
     order_count = Shopify::Order.count params
+    params[:limit] ||= 250
     nb_pages       = (order_count / params[:limit].to_f).ceil
     orders         = []
     1.upto(nb_pages) do |page|
