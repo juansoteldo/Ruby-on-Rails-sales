@@ -12,6 +12,6 @@ every 1.day, at: '13:30' do
 end
 
 
-every 1.day, at: '00:00' do
+every 1.day, at: '03:00' do
   rake 'update_sales_totals'
 end
