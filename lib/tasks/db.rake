@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :db do
   desc "Terminate Postgres users to enable db:drop"
   task pg_terminate: :environment do
