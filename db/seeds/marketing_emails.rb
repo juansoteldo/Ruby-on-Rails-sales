@@ -33,5 +33,5 @@ MarketingEmail.create(state: "deposited,completed", days_after_state_change: 14,
 MarketingEmail.create(state: "fresh", days_after_state_change: 1,
                       from: "Lee Roller <leeroller@customtattoodesign.ca>",
                       subject_line: "Any questions I can help with?",
-                      template_name: "24_unquoted_email", template_path: "box_mailer/lead_reminders",
+                      template_name: "24_hour_unquoted_reminder_email", template_path: "box_mailer/lead_reminders",
                       version: 1)
