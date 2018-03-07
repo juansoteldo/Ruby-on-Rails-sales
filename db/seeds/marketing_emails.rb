@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-MarketingEmail.create(state: "fresh", days_after_state_change: 1,
+MarketingEmail.create(state: "quoted", days_after_state_change: 1,
                       from: "Lee Roller <leeroller@customtattoodesign.ca>",
                       subject_line: "Lee Roller Custom Tattoo Design/Owner",
                       template_name: "24_hour_reminder_email", template_path: "box_mailer/lead_reminders",
