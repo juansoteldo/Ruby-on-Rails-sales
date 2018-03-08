@@ -43,6 +43,16 @@ class Request < ActiveRecord::Base
     end
   end
 
+  def salesperson
+    @salesperson ||= Salesperson.find(quoted_by_id) if quoted_by_id
+    @salesperson ||= Salesperson.find(contacted_by_id) if contacted_by_id
+    @salesperson
+  end
+
+  def converted?
+    ["deposited,completed"].include?(state)
+  end
+
   def relevant_order_id
     state == 'deposited' && deposit_order_id || state == 'completed' && final_order_id || nil
   end
