@@ -23,7 +23,7 @@ class BoxMailer < ActionMailer::Base
          bcc: bcc,
          subject: marketing_email.subject_line,
          from: marketing_email.from,
-         reply_to: reply_to.to_s,
+         reply_to: reply_to,
          display_name: marketing_email.from.gsub(/\<.+\>/, ""),
          template_path: marketing_email.template_path,
          template_name: marketing_email.template_name)
