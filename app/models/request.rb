@@ -4,6 +4,7 @@ class Request < ActiveRecord::Base
   has_many :images, class_name: "RequestImage"
 
   before_create :update_state_stamp
+  after_create :opt_in_user
 
   default_scope -> { includes(:user)}
 
@@ -105,6 +106,10 @@ class Request < ActiveRecord::Base
   end
 
   private
+
+  def opt_in_user
+    user.update presales_opt_in: true, crm_opt_in: true
+  end
 
   def perform_complete_actions
     puts "Sending final confirmation email to #{user.email}"

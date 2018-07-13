@@ -3,7 +3,9 @@
 
 
 <p id="notice"><%= notice %></p>
-<table class="table small" data-toggle="table" data-pagination="true" data-side-pagination="server"
+    <div class="table-condensed">
+
+<table class="table table-sales small" data-toggle="table" data-pagination="true" data-side-pagination="server"
        data-url="requests.json" data-page-list="[25, 50]" data-search="true" id="request-table"
        data-show-refresh="true" data-id-field="id">
   <thead>
@@ -24,12 +26,12 @@
         <div class="row">
           <div class="col-md-5">
             <button class="btn btn-xs btn-show-options btn-default btn-block" data-user-id="" data-email="" data-client-id=""
-                    data-linker-param="" data-class="deposit" data-ga="">Blank Deposit</button>
+                    data-linker-param="" data-class="deposit" data-ga="">Deposit</button>
           </div>
           <div class="col-md-2"></div>
           <div class="col-md-5">
           <button class="btn btn-xs btn-show-options btn-default btn-block" data-user-id="" data-email="" data-client-id=""
-                  data-linker-param="" data-class="final" data-ga="">Blank Final</button>
+                  data-linker-param="" data-class="final" data-ga="">Final</button>
           </div>
         </div>
       </th>
@@ -39,6 +41,7 @@
   <tbody>
   </tbody>
 </table>
+    </div>
   </div>
 
 </div>

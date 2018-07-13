@@ -65,6 +65,7 @@ GEM
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
+    bootstrap_form (2.7.0)
     bower-rails (0.11.0)
     builder (3.2.3)
     byebug (9.1.0)
@@ -348,6 +349,7 @@ GEM
       railties (>= 4.2)
     whenever (0.10.0)
       chronic (>= 0.6.3)
+    will_paginate (3.1.6)
     zeroclipboard-rails (0.1.2)
       railties (>= 3.1)
 
@@ -358,6 +360,7 @@ DEPENDENCIES
   ahoy_email
   auto_strip_attributes (~> 2.1)
   bootstrap-sass (~> 3.3.6)
+  bootstrap_form (~> 2.7)
   bower-rails (~> 0.11.0)
   byebug
   cancancan (~> 1.10)
@@ -403,7 +406,8 @@ DEPENDENCIES
   unicorn
   web-console
   whenever
+  will_paginate (~> 3.1.0)
   zeroclipboard-rails
 
 BUNDLED WITH
-   1.16.0
+   1.16.2

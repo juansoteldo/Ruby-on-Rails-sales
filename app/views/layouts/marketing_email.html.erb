@@ -1,13 +1,8 @@
 <%-
 
-unsub_path = opt_out_path(@request, params: {
-  user_email: @request.user.email,
-  user_token: @request.user.authentication_token
-})
-
+unsub_path = email_preferences_path(email: @request.user.email)
 unsub_path.slice!("http://")
-
-unsub_url = 'http://api.customtattoodesign.ca/' + unsub_path
+unsub_url = "http://#{CTD::URL_HOST}#{unsub_path}"
 
 -%>
 <!DOCTYPE html>

@@ -2,11 +2,11 @@ json.total @requests_count
 json.rows do
   json.array!(@requests) do |request|
     json.extract! request, :created_at, :id, :user_id, :token, :is_first_time, :gender,
-                  :has_color, :position, :client_id, :ticket_id, :linker_param, :_ga, :last_visited_at, :deposit_variant,
-                  :deposit_order_id
+                  :has_color, :position, :client_id, :ticket_id, :linker_param, :_ga, :last_visited_at,
+                  :deposit_variant, :deposit_order_id
     json.user do
       if request.user
-        json.extract!(request.user, :id, :email, :opted_out)
+        json.extract!(request.user, :id, :email, :presales_opt_in, :marketing_opt_in, :crm_opt_in)
       else
         json.id 0
         json.email 'Unmatched'

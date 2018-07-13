@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  get "email_preferences", to: "email_preferences#edit"
+  resources :email_preferences, only: [:update]
   devise_for :salespeople
   devise_for :admins
   devise_for :users
@@ -26,6 +29,7 @@ Rails.application.routes.draw do
   match "public/get_ids", via: [:get, :post]
 
   namespace :admin do
+    resources :users, only: [:index]
     resources :products
     resources :requests do
       member do

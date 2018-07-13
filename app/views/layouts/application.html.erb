@@ -14,19 +14,19 @@
 </head>
 <body>
 <% if in_admin_panel? %>
-<div class="sidebar collapse" data-color="primary" data-background-color="gray"  data-image="../assets/img/sidebar-1.jpg">
-  <div class="sidebar-wrapper">
-    <ul class="nav sidebar-nav">
-      <li class="sidebar-brand">
-        <div id="variants-user" class="text-primary text-center"></div>
-      </li>
-      <%= render template: 'admin/shopify/variants' %>
-    </ul>
+  <div class="sidebar collapse" data-color="primary" data-background-color="gray"  data-image="../assets/img/sidebar-1.jpg">
+    <div class="sidebar-wrapper">
+      <ul class="nav sidebar-nav">
+        <li class="sidebar-brand">
+          <div id="variants-user" class="text-primary text-center"></div>
+        </li>
+        <%= render template: 'admin/shopify/variants' %>
+      </ul>
+    </div>
+    <div class="sidebar-background"></div>
   </div>
-  <div class="sidebar-background" style="background-image: url(../assets/img/sidebar-1.jpg) "></div>
-</div>
 <% end %>
-<div class="container-fluid main-panel in">
+<div class="container-fluid <%= in_admin_panel? && 'main-panel' %> in">
   <% if in_admin_panel? %>
     <%= render "layouts/navbar" %>
   <% end %>

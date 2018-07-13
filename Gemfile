@@ -8,6 +8,7 @@ gem "pg", "~> 0.15"
 # Use SCSS for stylesheets
 gem "sass-rails", "~> 5.0"
 gem "bootstrap-sass", "~> 3.3.6"
+gem "bootstrap_form", "~> 2.7"
 
 # Use Uglifier as compressor for JavaScript assets
 gem "uglifier", ">= 1.3.0"
@@ -61,6 +62,7 @@ gem "ruby-progressbar"
 gem "carrierwave"
 gem "mini_magick"
 gem "fog-aws"
+gem 'will_paginate', '~> 3.1.0'
 
 group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console

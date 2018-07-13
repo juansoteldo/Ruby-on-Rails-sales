@@ -27,7 +27,6 @@
     i++
   result
 @depositedFormatter = (value, row) ->
-  console.log value
   if value
     "<a href='#{row.crm_url}' target='_blank'><span class='glyphicon glyphicon-usd'></span></a>"
   else

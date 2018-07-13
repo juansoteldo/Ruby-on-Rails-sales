@@ -39,11 +39,6 @@ task send_reminders: :environment do |_task, args|
                                              request.hours_since_state_change, "%#{request.state}%")
 
     next unless marketing_emails.any?
-    if request.user.opted_out
-      puts "User has opted out, skipping."
-      next
-    end
-
     puts "    #{marketing_emails.count} marketing emails are appropriate"
     delivered_emails = request.delivered_emails.where(marketing_email_id: marketing_emails.last.id)
     if delivered_emails.any?
@@ -52,11 +47,12 @@ task send_reminders: :environment do |_task, args|
     end
 
     marketing_email = marketing_emails.last
-    BoxMailer.marketing_email(request, marketing_email).deliver_now
-    request.delivered_emails.create(
-      marketing_email_id: marketing_email.id, request_id: request.id, sent_at: Time.now
-    )
-    puts "    Sent marketing email `#{marketing_email.template_name}` to `#{request.user.email}`"
+    delivered_email = request.delivered_emails.create marketing_email_id: marketing_email.id, request_id: request.id
+    status = delivered_email.sent_at ?
+                 "Sent marketing email `#{marketing_email.template_name}` to `#{request.user.email}`"
+                 : "User has opted out, skipping."
+    puts "    #{status}"
+    next if delivered_email.sent_at.nil?
     counts[counts.find_index { |c| c[:id] == marketing_email.id }][:count] += 1
   end
   puts "Done."

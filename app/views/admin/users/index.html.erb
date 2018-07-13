@@ -1,0 +1,25 @@
+<h2>Listing Customers</h2>
+<table class="table table-striped table-sales">
+  <thead>
+  <tr>
+    <th>Email</th>
+    <th>Sales</th>
+    <th>Marketing</th>
+    <th>CRM</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @users.each do |user| %>
+    <tr>
+      <td><%= user.email %></td>
+      <td><%= user.presales_opt_in && "&check;".html_safe || "" %></td>
+      <td><%= user.marketing_opt_in && "&check;".html_safe || "" %></td>
+      <td><%= user.crm_opt_in && "&check;".html_safe || "" %></td>
+      <td><%= link_to 'Change', email_preferences_path(email: user.email), target: "_blank" %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= will_paginate @users %>
