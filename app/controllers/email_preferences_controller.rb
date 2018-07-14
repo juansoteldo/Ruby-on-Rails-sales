@@ -7,7 +7,6 @@ class EmailPreferencesController < ApplicationController
   # PATCH/PUT /email_preferences/1
   # PATCH/PUT /email_preferences/1.json
   def update
-    raise "invalid-request" unless @user
     if @user.update(email_preference_params)
       redirect_to email_preferences_path(email: @user.email), notice: 'Email preferences were successfully updated.'
     else
@@ -23,6 +22,7 @@ class EmailPreferencesController < ApplicationController
       email = email.to_s.downcase
       raise "invalid-email" unless email =~ Devise.email_regexp
       @user = User.where("LOWER(email) = ?", email).first
+      head :bad_request unless @user
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
