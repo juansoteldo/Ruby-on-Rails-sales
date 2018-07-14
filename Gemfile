@@ -3,7 +3,7 @@ source "https://rubygems.org"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails"
 gem "rails", "4.2.10"
 # Use sqlite3 as the database for Active Record
-gem "pg", "~> 0.15"
+gem 'pg', '~> 0.18'
 
 # Use SCSS for stylesheets
 gem "sass-rails", "~> 5.0"
@@ -48,7 +48,6 @@ gem "ahoy_email"
 # gem "capistrano-rails", group: :development
 
 group :production do
-  gem "newrelic_rpm"
   gem "unicorn"
 end
 
