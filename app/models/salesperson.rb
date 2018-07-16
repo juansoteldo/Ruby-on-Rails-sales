@@ -61,31 +61,4 @@ class Salesperson < ActiveRecord::Base
     params[:limit] ||= 250
     self.all_with_shopify_orders_by_email(params)
   end
-
-  def streak_api_key
-    return '' if encrypted_streak_api_key.nil?
-
-    decipher = OpenSSL::Cipher::AES.new(128, :CBC)
-    decipher.decrypt
-    decipher.key = Rails.application.config.streak_api_cipher_random_key
-    decipher.iv = Rails.application.config.streak_api_cipher_random_iv
-
-    decipher.update(Base64.decode64(encrypted_streak_api_key)) + decipher.final
-  end
-
-  def streak_api_key=(new_key)
-    return if new_key.blank?
-
-    self.encrypted_streak_api_key = Salesperson.encrypt_streak_api_key(new_key)
-  end
-
-  def self.encrypt_streak_api_key(new_key)
-    cipher = OpenSSL::Cipher::AES.new(128, :CBC)
-    cipher.encrypt
-    cipher.key = Rails.application.config.streak_api_cipher_random_key
-    cipher.iv = Rails.application.config.streak_api_cipher_random_iv
-
-    Base64.encode64( cipher.update(new_key) + cipher.final )
-  end
-
 end
