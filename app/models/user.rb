@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   auto_strip_attributes :email
 
   def opted_out
-    !presales_opt_in || !marketing_opt_in || !crm_opt_in
+    !presales_opt_in && !marketing_opt_in
   end
 
   def opted_out=(value)
