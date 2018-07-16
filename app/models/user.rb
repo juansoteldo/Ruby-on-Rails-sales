@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   end
 
   def opted_out=(value)
-    update(presales_opt_in: !value, marketing_opt_in: !value)
-    update(crm_opt_in: !value) unless value
+    assign_attributes(presales_opt_in: !value, marketing_opt_in: !value)
+    assign_attributes(crm_opt_in: !value) unless value
   end
 end
