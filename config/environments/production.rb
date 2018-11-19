@@ -80,7 +80,6 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :sendmail
 #  config.action_mailer_bcc = []
   config.marketing_email_recipients = %w(
-    wojtek@grabski.ca
     leeroller@customtattoodesign.ca
     brittany@customtattoodesign.ca
     johnd@customtattoodesign.ca
