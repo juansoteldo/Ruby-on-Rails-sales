@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   post "public/new_request"
   match "public/get_uid", via: [:get, :post]
   match "public/get_links", via: [:get]
+  match "public/get_last_request", via: [:get]
+  match "public/update_last_request", via: [:post]
   match "public/set_link", via: [:get]
   match "public/save_email", via: [:get]
   get "public/opt_out/:id", to: "marketing#opt_out", as: :opt_out

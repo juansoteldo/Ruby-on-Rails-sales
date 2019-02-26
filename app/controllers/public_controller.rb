@@ -4,14 +4,15 @@ class PublicController < ApplicationController
   before_action :disable_cache, only: [:get_links]
 
   before_action :normalize_email
-  before_action :validate_parameters, only: [:new_request]
-  before_action :set_user_by_email, only: %i(new_request get_links)
+  before_action :validate_parameters, only: [:new_request, :update_last_request]
+  before_action :set_user_by_email, only: [:new_request, :get_links, :get_last_request, :update_last_request]
   before_action :set_salesperson_by_email, only: [:get_links]
   before_action :load_products, only: [:get_links]
   before_action :set_user_by_client_id, only: [:get_uid]
   before_action :set_shopify_order, only: [:deposit_redirect]
   before_action :set_request_by_id, only: [:deposit_redirect]
   before_action :set_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
+  before_action :set_last_request_by_email, only: [:get_last_request, :update_last_request]
 
   def redirect
     @request = Request.find(params[:requestId]) if params[:requestId].present? && Request.find(params[:requestId])
@@ -30,15 +31,18 @@ class PublicController < ApplicationController
   end
 
   def new_request
-    request_params
     if Request.recent.where(user_id: @user.id, position: params[:position]).any?
       @request = Request.recent.where(user_id: @user.id, position: params[:position]).first
       @request.update(request_params.reject { |_, v| v.blank? })
     else
-      @request = Request.create(request_params)
+      @request = Request.new(request_params)
+      @request.user = @user
       @request.save
-      @user.requests << @request
     end
+  end
+
+  def update_last_request
+    @request.update_attributes(request_params)
   end
 
   def deposit_redirect
@@ -105,6 +109,8 @@ class PublicController < ApplicationController
     head :ok
   end
 
+  def get_last_request; end
+
   private
 
   def set_request_by_id
@@ -115,6 +121,10 @@ class PublicController < ApplicationController
     return if @request
     requests = Request.joins(:user).where('users.email LIKE ?', params[:email])
     @request = requests.any? ? requests.first : Request.create( user: @user )
+  end
+
+  def set_last_request_by_email
+    @request = @user.requests.last
   end
 
   def set_shopify_order
@@ -168,7 +178,7 @@ class PublicController < ApplicationController
 
   def request_params
     params.permit(:client_id, :ticket_id, :quote_id, :position, :gender,
-                   :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :reqid, :salesid)
+                   :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :reqid, :salesid, :description)
   end
 
   def normalize_email
