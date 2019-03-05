@@ -1,4 +1,5 @@
 class Admin::RequestsController < Admin::BaseController
+  skip_before_filter :verify_authenticity_token, only: [:edit, :update]
   load_and_authorize_resource :request, class: Request
   before_action :set_request, only: [:show, :edit, :update, :destroy, :opt_out]
 
@@ -60,8 +61,7 @@ class Admin::RequestsController < Admin::BaseController
   end
 
   # GET /requests/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /requests
   # POST /requests.json
@@ -84,7 +84,8 @@ class Admin::RequestsController < Admin::BaseController
   def update
     respond_to do |format|
       if @request.update(request_params)
-        format.html { redirect_to @request, notice: 'Request was successfully updated.' }
+        flash[:notice] = 'Request was successfully updated.'
+        format.html { render :edit }
         format.json { render :show, status: :ok, location: @request }
       else
         format.html { render :edit }
@@ -111,6 +112,8 @@ class Admin::RequestsController < Admin::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def request_params
-      params.require(:request).permit(:user_id, :token, :is_first_time, :gender, :has_color, :position, :notes, :quote_id, :client_id, :ticket_id)
+      params.require(:request).permit(:user_id, :token,
+                                      :is_first_time, :gender, :has_color, :position, :notes, :description,
+                                      :quote_id, :client_id, :ticket_id)
     end
 end

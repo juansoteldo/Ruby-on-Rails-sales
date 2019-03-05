@@ -4,15 +4,14 @@ class PublicController < ApplicationController
   before_action :disable_cache, only: [:get_links]
 
   before_action :normalize_email
-  before_action :validate_parameters, only: [:new_request, :update_last_request]
-  before_action :set_user_by_email, only: [:new_request, :get_links, :get_last_request, :update_last_request]
+  before_action :validate_parameters, only: [:new_request]
+  before_action :set_user_by_email, only: [:new_request, :get_links]
   before_action :set_salesperson_by_email, only: [:get_links]
   before_action :load_products, only: [:get_links]
   before_action :set_user_by_client_id, only: [:get_uid]
   before_action :set_shopify_order, only: [:deposit_redirect]
   before_action :set_request_by_id, only: [:deposit_redirect]
   before_action :set_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
-  before_action :set_last_request_by_email, only: [:get_last_request, :update_last_request]
 
   def redirect
     @request = Request.find(params[:requestId]) if params[:requestId].present? && Request.find(params[:requestId])
@@ -39,10 +38,6 @@ class PublicController < ApplicationController
       @request.user = @user
       @request.save
     end
-  end
-
-  def update_last_request
-    @request.update_attributes(request_params)
   end
 
   def deposit_redirect
@@ -108,8 +103,6 @@ class PublicController < ApplicationController
     end
     head :ok
   end
-
-  def get_last_request; end
 
   private
 

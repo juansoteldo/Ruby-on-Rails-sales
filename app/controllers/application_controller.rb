@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
 
     headers['Access-Control-Allow-Origin'] = request.headers['Origin'] || '*'
     headers['Access-Control-Allow-Credentials'] = 'true'
+    headers['X-Frame-Options'] = 'allow-from https://mail.google.com'
   end
 
 

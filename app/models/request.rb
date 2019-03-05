@@ -15,6 +15,27 @@ class Request < ActiveRecord::Base
   scope :valid, (-> { where.not user_id: nil })
   scope :quoted_or_contacted_by, (->(salesperson_id){ where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
 
+  TATTOO_POSITIONS = [
+      "Calf",
+      "Chest",
+      "Foot",
+      "Fore Arm",
+      "Full Back",
+      "Full Sleeve",
+      "Half Sleeve",
+      "Leg",
+      "Lower Back",
+      "Ribs",
+      "Stomach",
+      "Upper Arm",
+      "Upper Back",
+      "Lower Arm",
+      "Hip",
+      "Wrist",
+      "Ankle",
+      "Other"
+  ]
+
   state_machine :state, initial: :fresh do
     after_transition on: :convert, do: :perform_deposit_actions
     after_transition on: :complete, do: :perform_complete_actions
@@ -108,7 +129,7 @@ class Request < ActiveRecord::Base
   private
 
   def opt_in_user
-    user.update presales_opt_in: true, crm_opt_in: true
+    user&.update presales_opt_in: true, crm_opt_in: true
   end
 
   def perform_complete_actions

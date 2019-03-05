@@ -10,11 +10,9 @@ Rails.application.routes.draw do
   get "public/redirect/:handle/:variant", to: "public#redirect", as: :cart_redirect
   post "public/new_request"
   match "public/get_uid", via: [:get, :post]
-  match "public/get_links", via: [:get]
-  match "public/get_last_request", via: [:get]
-  match "public/update_last_request", via: [:post]
-  match "public/set_link", via: [:get]
-  match "public/save_email", via: [:get]
+  get "public/get_links"
+  get "public/set_link"
+  get "public/save_email"
   get "public/opt_out/:id", to: "marketing#opt_out", as: :opt_out
   match "public/thanks", via: [:get, :post], to: "public#deposit_redirect", as: :deposit_redirect
 
