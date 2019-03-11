@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class Api::BaseController < ApplicationController
-    before_action :authenticate_token!
+  before_action :authenticate_token!
 
-    private
+  private
 
-    def authenticate_token!
-      @token = ENV.fetch("API_TOKEN","You have to set this")
+  def authenticate_token!
+    @token = ENV.fetch("API_TOKEN","You have to set this")
 
-      render text: "unauthorized" unless params[:token].present? && params[:token] == @token
-    end
+    render text: "unauthorized" unless params[:token].present? && params[:token] == @token
+  end
 end

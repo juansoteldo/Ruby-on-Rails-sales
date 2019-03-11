@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class MarketingController < ApplicationController
   acts_as_token_authentication_handler_for User
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   def opt_out
     @user = User.find(current_user.id)

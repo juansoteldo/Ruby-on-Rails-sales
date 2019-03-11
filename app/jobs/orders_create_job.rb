@@ -1,4 +1,4 @@
-class OrdersCreateJob < ActiveJob::Base
+class OrdersCreateJob < ApplicationJob
   queue_as :webhook
 
   def perform(params)

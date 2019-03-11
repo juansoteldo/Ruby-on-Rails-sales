@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'streak-ruby'
 
 class StreakAPI::Base

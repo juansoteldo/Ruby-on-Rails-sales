@@ -1,4 +1,4 @@
-class UpdateEventJob < ActiveJob::Base
+class UpdateEventJob < ApplicationJob
   queue_as :webhook
 
   def perform(params)

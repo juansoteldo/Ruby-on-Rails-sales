@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Hash
   def compact(opts={})
     inject({}) do |new_hash, (k,v)|

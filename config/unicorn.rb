@@ -19,7 +19,7 @@ listen 3000
 
 # Don't set user if you are already running as the user (will cause a massive chown loop of death)
 # This is for if you execute as root and become user.
-#user 'example.co.uk', 'example.co.uk'
+# user 'example.co.uk', 'example.co.uk'
 
 pid "#{app_dir}/tmp/pids/unicorn.pid"
 stderr_path "#{app_dir}/log/unicorn.stderr.log"

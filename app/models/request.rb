@@ -1,4 +1,6 @@
-class Request < ActiveRecord::Base
+# frozen_string_literal: true
+
+class Request < ApplicationRecord
   belongs_to :user
   has_many :delivered_emails
   has_many :images, class_name: "RequestImage"

@@ -1,21 +1,22 @@
-class Admin::SalespeopleController < Admin::BaseController
+# frozen_string_literal: true
 
+class Admin::SalespeopleController < Admin::BaseController
   before_action :require_admin
 
   def index
     @statistic_parameters = {
-        3.months.ago.strftime("%B").to_sym => {
-            range: ( 3.month.ago.beginning_of_month..3.month.ago.end_of_month)
-        },
-        2.months.ago.strftime("%B").to_sym => {
-          range: ( 2.month.ago.beginning_of_month..2.month.ago.end_of_month)
-        },
-        1.months.ago.strftime("%B").to_sym => {
-            range: (1.month.ago.beginning_of_month..1.month.ago.end_of_month)
-        },
-        Time.zone.now.strftime("%B").to_sym => {
-            range: (Time.zone.now.beginning_of_month..Time.zone.now)
-        }
+      3.months.ago.strftime("%B").to_sym => {
+        range: (3.month.ago.beginning_of_month..3.month.ago.end_of_month),
+      },
+      2.months.ago.strftime("%B").to_sym => {
+        range: (2.month.ago.beginning_of_month..2.month.ago.end_of_month),
+      },
+      1.months.ago.strftime("%B").to_sym => {
+        range: (1.month.ago.beginning_of_month..1.month.ago.end_of_month),
+      },
+      Time.zone.now.strftime("%B").to_sym => {
+        range: (Time.zone.now.beginning_of_month..Time.zone.now),
+      },
     }
     @salespeople = Salesperson.all
   end

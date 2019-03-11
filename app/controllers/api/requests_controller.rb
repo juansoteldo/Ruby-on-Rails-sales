@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::RequestsController < Api::BaseController
   before_action :set_request, only: [:show]
 

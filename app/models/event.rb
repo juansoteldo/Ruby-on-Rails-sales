@@ -1,4 +1,6 @@
-class Event < ActiveRecord::Base
+# frozen_string_literal: true
+
+class Event < ApplicationRecord
   belongs_to :user
   belongs_to :request
 
@@ -35,10 +37,6 @@ class Event < ActiveRecord::Base
     event.starts_at = DateTime.parse(payload[:event][:start_time])
     event.ends_at = DateTime.parse(payload[:event][:end_time])
     event
-  end
-
-  def source
-    @source ||= read_attribute(:source).deep_transform_keys!(&:to_sym)
   end
 
   def invitee

@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class EventsController < ApplicationController
   before_action :set_event, only: [:show]
 
   # To test:
   # /events/create?assigned_to=CTD%20Sales&event_type_uuid=HECE4MVOPUJJBV7R
   #   &event_type_name=Tattoo%20Consulatation&event_start_time=2019-03-06T14:00:00-05:00
-  #   &event_end_time=2019-03-06T14:15:00-05:00&invitee_uuid=GDB2G722G65N5PKI&invitee_first_name=Wojtek
-  #   &invitee_last_name=Grabski&invitee_email=wojtek%40grabski.ca&answer_1=%2B14165546355&answer_2=WhatsApp
+  #   &event_end_time=2019-03-06T14:15:00-05:00&invitee_uuid=GDB2G722G65N5PKI&invitee_first_name=John
+  #   &invitee_last_name=Smith&invitee_email=john%40example.com&answer_1=%2B14165551212&answer_2=WhatsApp
 
   def create
     event = Event.from_params(event_params)

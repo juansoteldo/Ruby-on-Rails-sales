@@ -1,7 +1,8 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails"
-gem "rails", "4.2.10"
+gem "rails", "5.2.2"
+gem "bootsnap"
 # Use sqlite3 as the database for Active Record
 gem 'pg', '~> 0.18'
 
@@ -31,7 +32,6 @@ gem "jbuilder", "~> 2.5"
 #gem "sdoc", "~> 0.4.0", group: :doc
 
 gem "ahoy_email"
-gem "bower-rails", "~> 0.11.0"
 gem "cancancan", "~> 1.10"
 gem "daemons"
 gem "delayed_job"
@@ -57,6 +57,11 @@ group :production do
   gem "unicorn"
 end
 
+group :development, :test do
+  gem "puma"
+end
+
+
 gem "auto_strip_attributes", "~> 2.1"
 gem "config"
 gem "dotenv-rails"
@@ -72,22 +77,26 @@ gem 'will_paginate', '~> 3.1.0'
 group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console
   gem "byebug"
-  gem "quiet_assets"
 
-  gem "ruby-debug-ide"
-  gem "debase"
-
-  gem "meta_request"
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem "web-console"
   gem "capistrano", "~> 3.1"
   gem "capistrano-rbenv"
   gem "capistrano-bundler"
   gem "capistrano-rails", "~> 1.1"
 
+  gem "rubocop", require: false
+  gem "rubocop-airbnb", require: false
+
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"
+end
+
+group :development do
+  gem "debase"
+  gem "web-console"
   gem "letter_opener"
-  gem "puma"
+  gem "ruby-debug-ide"
+  gem "meta_request"
+  gem "listen"
 end
 
