@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Event < ApplicationRecord
-  belongs_to :user
-  belongs_to :request
+  belongs_to :user, optional: true
+  belongs_to :request, optional: true
 
   before_save :ensure_user
   before_save :create_request
@@ -18,7 +18,6 @@ class Event < ApplicationRecord
   end
 
   def self.from_params(params)
-    params = params.with_indifferent_access
     event = Event.joins(:user).where(users: { email: params[:invitee_email] }).first
     event ||= Event.new uuid: params[:event_uuid] || SecureRandom.hex(16)
     event.source = params

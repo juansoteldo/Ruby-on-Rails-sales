@@ -25,7 +25,7 @@ class EventsController < ApplicationController
   end
 
   def event_params
-    params.permit :assigned_to, :event_type_uuid, :event_type_name, :event_start_time, :event_end_time,
-                  :invitee_uuid, :invitee_first_name, :invitee_last_name, :invitee_email, :answer_1, :answer_2
+    params.permit(:assigned_to, :event_type_uuid, :event_type_name, :event_start_time, :event_end_time,
+                  :invitee_uuid, :invitee_first_name, :invitee_last_name, :invitee_email, :answer_1, :answer_2).to_h
   end
 end

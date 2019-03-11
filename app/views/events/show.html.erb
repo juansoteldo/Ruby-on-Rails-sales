@@ -23,7 +23,7 @@
       </tr>
       <tr>
         <th class="text-right">We'll Call Using</th>
-        <td class="text-left"><%= @event.source[:answer_2] %></td>
+        <td class="text-left"><%= @event.source[:answer_2].sub("\n", "<br>").html_safe %></td>
       </tr>
       </tbody>
     </table>
