@@ -3,7 +3,7 @@ inherit_from:
   - .rubocop_airbnb.yml
 
 AllCops:
-  TargetRubyVersion: 2.4.4
+  TargetRubyVersion: 2.5.3
   TargetRailsVersion: 5.2.2
   Include:
     - Rakefile
