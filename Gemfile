@@ -80,9 +80,10 @@ group :development, :test do
 
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem "capistrano", "~> 3.1"
-  gem "capistrano-rbenv"
   gem "capistrano-bundler"
-  gem "capistrano-rails", "~> 1.1"
+  gem "capistrano-rails"
+  gem "capistrano-rails-console", require: false
+  gem "capistrano-rbenv"
 
   gem "rubocop", require: false
   gem "rubocop-airbnb", require: false
