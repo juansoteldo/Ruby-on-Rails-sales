@@ -2,6 +2,7 @@ class Request < ActiveRecord::Base
   belongs_to :user
   has_many :delivered_emails
   has_many :images, class_name: "RequestImage"
+  has_one :event
 
   before_create :update_state_stamp
   after_create :opt_in_user

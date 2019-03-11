@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col text-center">
+    <h4 class="text-muted">CUSTOM TATTOO DESIGN</h4>
+    <br>
+    <h1 class="text-info">Thanks for making your appointment!</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <h2 class="text-center">Appointment Details</h2>
+    <table class="table table-responsive">
+      <tbody>
+      <tr>
+        <th class="text-right">Time</th>
+        <td class="text-left" id="eventStartTime">
+          <%= @event.starts_at.strftime("%A, %B #{@event.starts_at.day.ordinalize}") %><br>
+          <%= @event.starts_at.strftime("%H:%M %Z") %>
+        </td>
+      </tr>
+      <tr>
+        <th class="text-right">Your Number</th>
+        <td class="text-left"><%= @event.user.phone_number.phony_formatted(format: :international) %></td>
+      </tr>
+      <tr>
+        <th class="text-right">We'll Call Using</th>
+        <td class="text-left"><%= @event.source[:answer_2] %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="row">
+  <div class="col text-center">
+    <br>
+    <br>
+    <a class="btn btn-default" href="https://customtattoodesign.ca/gallery/">Back to Our Gallery</a>
+  </div>
+</div>

@@ -26,22 +26,27 @@ gem "jquery-rails"
 gem "turbolinks", "~> 5"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.5"
+
 # bundle exec rake doc:rails generates the API under doc/api.
 #gem "sdoc", "~> 0.4.0", group: :doc
-gem "honeybadger", "~> 3.1"
-gem "js-routes"
+
+gem "ahoy_email"
 gem "bower-rails", "~> 0.11.0"
-gem "zeroclipboard-rails"
 gem "cancancan", "~> 1.10"
-gem "shopify_api"
-gem "simple_form"
-gem "streak-ruby", git: "https://github.com/OnFrontiers/streak-ruby.git"
+gem "daemons"
 gem "delayed_job"
 gem "delayed_job_active_record"
 gem "delayed_job_web"
-gem "daemons"
+gem "draper"
 gem "figaro"
-gem "ahoy_email"
+gem "honeybadger", "~> 3.1"
+gem "js-routes"
+gem "zeroclipboard-rails"
+gem "phony_rails"
+gem "shopify_api"
+gem "simple_form"
+gem "streak-ruby", git: "https://github.com/OnFrontiers/streak-ruby.git"
+
 # Use ActiveModel has_secure_password
 # gem "bcrypt", "~> 3.1.7"
 

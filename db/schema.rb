@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180716184311) do
+ActiveRecord::Schema.define(version: 20190305031207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,20 @@ ActiveRecord::Schema.define(version: 20180716184311) do
 
   add_index "delivered_emails", ["marketing_email_id"], name: "index_delivered_emails_on_marketing_email_id", using: :btree
   add_index "delivered_emails", ["request_id"], name: "index_delivered_emails_on_request_id", using: :btree
+
+  create_table "events", force: :cascade do |t|
+    t.string   "uuid"
+    t.integer  "user_id"
+    t.integer  "request_id"
+    t.string   "source_type"
+    t.string   "source"
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+  end
+
+  add_index "events", ["request_id"], name: "index_events_on_request_id", using: :btree
+  add_index "events", ["starts_at"], name: "index_events_on_starts_at", using: :btree
+  add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
 
   create_table "marketing_emails", force: :cascade do |t|
     t.string  "state"
@@ -197,6 +211,9 @@ ActiveRecord::Schema.define(version: 20180716184311) do
     t.boolean  "presales_opt_in",                   default: true
     t.boolean  "marketing_opt_in",                  default: true
     t.boolean  "crm_opt_in",                        default: true
+    t.string   "phone_number"
+    t.string   "timezone"
+    t.string   "uuid"
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
@@ -205,6 +222,7 @@ ActiveRecord::Schema.define(version: 20180716184311) do
   add_index "users", ["shopify_id"], name: "index_users_on_shopify_id", using: :btree
 
   add_foreign_key "delivered_emails", "requests"
+  add_foreign_key "events", "users"
   add_foreign_key "request_images", "requests"
   add_foreign_key "requests", "users"
   add_foreign_key "sales_totals", "salespeople"

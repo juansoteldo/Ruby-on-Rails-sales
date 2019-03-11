@@ -16,6 +16,9 @@ Rails.application.routes.draw do
   get "public/opt_out/:id", to: "marketing#opt_out", as: :opt_out
   match "public/thanks", via: [:get, :post], to: "public#deposit_redirect", as: :deposit_redirect
 
+  get "/events/create", to: "events#create"
+  resources :events, only: [:show]
+
   namespace :api do
     resources :requests, only: [:index, :show]
     resources :request_images, only: [:show]
@@ -25,6 +28,7 @@ Rails.application.routes.draw do
   namespace :webhooks do
     post "orders_create" => :orders_create
     post "requests_create" => :requests_create
+    post "calendly" => :calendly
   end
 
   match "public/get_ids", via: [:get, :post]
@@ -38,6 +42,8 @@ Rails.application.routes.draw do
         match :opt_in, via: [:all], as: :opt_in
       end
     end
+
+    resources :events, only: [:index]
 
     resources :salespeople do
       collection do

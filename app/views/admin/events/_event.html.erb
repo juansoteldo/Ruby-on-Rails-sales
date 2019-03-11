@@ -1,0 +1,5 @@
+<tr>
+  <td><%= event.starts_at %></td>
+  <td><%= distance_of_time_in_words(event.starts_at, event.ends_at) %></td>
+  <td><%= event.request.inspect %></td>
+</tr>
