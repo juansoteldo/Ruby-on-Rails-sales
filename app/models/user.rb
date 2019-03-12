@@ -1,4 +1,6 @@
-class User < ActiveRecord::Base
+# frozen_string_literal: true
+
+class User < ApplicationRecord
   acts_as_token_authenticatable
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -6,9 +8,11 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :requests
+  has_many :events
   has_many :messages, class_name: "Ahoy::Message"
 
   auto_strip_attributes :email
+  phony_normalize :phone_number, default_country_code: 'US'
 
   def opted_out
     !presales_opt_in && !marketing_opt_in

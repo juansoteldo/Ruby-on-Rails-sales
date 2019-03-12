@@ -1,7 +1,12 @@
-class Request < ActiveRecord::Base
-  belongs_to :user
+# frozen_string_literal: true
+
+class Request < ApplicationRecord
+  include Tokenable
+
+  belongs_to :user, optional: true
   has_many :delivered_emails
   has_many :images, class_name: "RequestImage"
+  has_one :event
 
   before_create :update_state_stamp
   after_create :opt_in_user
@@ -14,6 +19,27 @@ class Request < ActiveRecord::Base
   scope :deposited, (->{ where.not deposited_at: nil })
   scope :valid, (-> { where.not user_id: nil })
   scope :quoted_or_contacted_by, (->(salesperson_id){ where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
+
+  TATTOO_POSITIONS = [
+      "Calf",
+      "Chest",
+      "Foot",
+      "Fore Arm",
+      "Full Back",
+      "Full Sleeve",
+      "Half Sleeve",
+      "Leg",
+      "Lower Back",
+      "Ribs",
+      "Stomach",
+      "Upper Arm",
+      "Upper Back",
+      "Lower Arm",
+      "Hip",
+      "Wrist",
+      "Ankle",
+      "Other"
+  ]
 
   state_machine :state, initial: :fresh do
     after_transition on: :convert, do: :perform_deposit_actions
@@ -108,7 +134,7 @@ class Request < ActiveRecord::Base
   private
 
   def opt_in_user
-    user.update presales_opt_in: true, crm_opt_in: true
+    user&.update presales_opt_in: true, crm_opt_in: true
   end
 
   def perform_complete_actions

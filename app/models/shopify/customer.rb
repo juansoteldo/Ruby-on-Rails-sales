@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'shopify/base'
 
 class Shopify::Customer < Shopify::Base

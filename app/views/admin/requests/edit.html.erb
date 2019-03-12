@@ -1,10 +1,14 @@
-<div class="card">
-  <div class="card-content">
-    <h1>Editing Request</h1>
+<% unless in_admin_panel? %>
+  <%= render 'form' %>
+<% else %>
+  <div class="card">
+    <div class="card-content">
+      <h1>Editing Request</h1>
 
-    <%= render 'form' %>
+      <%= render 'form' %>
 
-    <%= link_to 'Show', [:admin, @request] %> |
-    <%= link_to 'Back', admin_requests_path %>
+      <%= link_to 'Show', [:admin, @request] %> |
+      <%= link_to 'Back', admin_requests_path %>
+    </div>
   </div>
-</div>
+<% end %>

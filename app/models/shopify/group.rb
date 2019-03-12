@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'shopify/product'
 
 class Shopify::Group

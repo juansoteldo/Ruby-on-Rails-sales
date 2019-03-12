@@ -1,4 +1,4 @@
-class AddStateToRequests < ActiveRecord::Migration
+class AddStateToRequests < ActiveRecord::Migration[4.2]
   def up
     add_column :requests, :state, :string, index: true, default: 'fresh'
     add_column :requests, :state_changed_at, :datetime, index: true

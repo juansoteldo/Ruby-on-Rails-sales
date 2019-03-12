@@ -1,4 +1,6 @@
-class DeliveredEmail < ActiveRecord::Base
+# frozen_string_literal: true
+
+class DeliveredEmail < ApplicationRecord
   belongs_to :request
   belongs_to :marketing_email
 

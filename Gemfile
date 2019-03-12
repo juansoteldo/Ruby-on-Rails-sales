@@ -1,7 +1,8 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails"
-gem "rails", "4.2.10"
+gem "rails", "5.2.2"
+gem "bootsnap"
 # Use sqlite3 as the database for Active Record
 gem 'pg', '~> 0.18'
 
@@ -26,21 +27,26 @@ gem "jquery-rails"
 gem "turbolinks", "~> 5"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.5"
+
 # bundle exec rake doc:rails generates the API under doc/api.
 #gem "sdoc", "~> 0.4.0", group: :doc
-gem "honeybadger", "~> 3.1"
-gem "js-routes"
-gem "bower-rails", "~> 0.11.0"
-gem "zeroclipboard-rails"
+
+gem "ahoy_email"
 gem "cancancan", "~> 1.10"
-gem "shopify_api"
-gem "streak-ruby", git: "https://github.com/OnFrontiers/streak-ruby.git"
+gem "daemons"
 gem "delayed_job"
 gem "delayed_job_active_record"
 gem "delayed_job_web"
-gem "daemons"
+gem "draper"
 gem "figaro"
-gem "ahoy_email"
+gem "honeybadger", "~> 3.1"
+gem "js-routes"
+gem "zeroclipboard-rails"
+gem "phony_rails"
+gem "shopify_api"
+gem "simple_form"
+gem "streak-ruby", git: "https://github.com/OnFrontiers/streak-ruby.git"
+
 # Use ActiveModel has_secure_password
 # gem "bcrypt", "~> 3.1.7"
 
@@ -51,37 +57,44 @@ group :production do
   gem "unicorn"
 end
 
+group :development, :test do
+  gem "puma"
+end
+
+
 gem "auto_strip_attributes", "~> 2.1"
 gem "config"
 gem "dotenv-rails"
 gem "whenever"
 gem "state_machines"
 gem "state_machines-activerecord"
-gem "ruby-progressbar"
+
 gem "carrierwave"
-gem "mini_magick"
 gem "fog-aws"
+gem "mini_magick"
 gem 'will_paginate', '~> 3.1.0'
 
 group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console
   gem "byebug"
-  gem "quiet_assets"
 
-  gem "ruby-debug-ide"
-  gem "debase"
-
-  gem "meta_request"
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem "web-console"
   gem "capistrano", "~> 3.1"
-  gem "capistrano-rbenv"
   gem "capistrano-bundler"
-  gem "capistrano-rails", "~> 1.1"
+  gem "capistrano-rails"
+  gem "capistrano-rails-console", require: false
+  gem "capistrano-rbenv"
+
+  gem "rubocop", require: false
+  gem "rubocop-airbnb", require: false
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"
+end
+
+group :development do
   gem "letter_opener"
-  gem "puma"
+  gem "listen"
+  gem "web-console"
 end
 

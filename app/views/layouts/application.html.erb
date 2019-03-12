@@ -27,11 +27,16 @@
   </div>
 <% end %>
 <div class="container-fluid <%= in_admin_panel? && 'main-panel' %> in">
-  <% if in_admin_panel? %>
+  <% if in_admin_panel? && params[:layout].to_s != "0" %>
     <%= render "layouts/navbar" %>
   <% end %>
   <div class="content">
     <div class="container-fluid">
+      <% flash.each do |key, value| %>
+        <div class="<%= flash_class(key) %>">
+          <%= value %>
+        </div>
+      <% end %>
       <%= yield %>
     </div>
   </div>

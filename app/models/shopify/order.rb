@@ -108,6 +108,7 @@ class Shopify::Order < Shopify::Base
   end
 
   MIN_DATE = "2016-06-01T00:00:00-00:00".to_time
+
   def self.attributed(params)
     digest = Digest::SHA256.base64digest params.inspect
     Rails.cache.fetch("shopify/orders/attributed/" + digest, expires_in: 6.hours) do
@@ -125,8 +126,8 @@ class Shopify::Order < Shopify::Base
       orders = orders.select do |order|
         order.line_items.any? { |li| !li.title.include? "Final" } &&
           (order.note_attribute("sales_id") ||
-              User.where(email: order.customer.email).joins(:requests)
-              .where(requests: { created_at: "Wed, 1 Jun 2016".to_date..Time.now }).any?)
+              User.where(email: order.customer.email).joins(:requests).
+              where(requests: { created_at: "Wed, 1 Jun 2016".to_date..Time.now }).any?)
       end
 
       default_salesperson = Salesperson.find_by(email: DEFAULT_SALESPERSON_EMAIL)
@@ -143,8 +144,8 @@ class Shopify::Order < Shopify::Base
           if noted_id
             order.sales_id = noted_id.to_i
           else
-            requests = Request.where(created_at: (sale_cutoff..Time.now)).where.not(quoted_by_id: nil)
-                              .joins(:user).where(users: { email: order.customer.email })
+            requests = Request.where(created_at: (sale_cutoff..Time.now)).where.not(quoted_by_id: nil).
+              joins(:user).where(users: { email: order.customer.email })
             order.sales_id = requests.first.quoted_by_id if requests.any?
           end
           order.sales_id ||= default_salesperson.id

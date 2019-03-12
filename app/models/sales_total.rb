@@ -1,3 +1,5 @@
-class SalesTotal < ActiveRecord::Base
-  belongs_to :salesperson
+# frozen_string_literal: true
+
+class SalesTotal < ApplicationRecord
+  belongs_to :salesperson, optional: true
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BoxMailerPreview < ActionMailer::Preview
   def marketing_email
     BoxMailer.marketing_email random_request

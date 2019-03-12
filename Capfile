@@ -14,7 +14,9 @@ require "capistrano/deploy"
 #   https://github.com/capistrano/bundler
 #   https://github.com/capistrano/rails/tree/master/assets
 #   https://github.com/capistrano/rails/tree/master/migrations
-#
+require "capistrano/scm/git"
+install_plugin Capistrano::SCM::Git
+
 # require "capistrano/rvm"
 # require "capistrano/chruby"
 
@@ -22,12 +24,12 @@ require "capistrano/rbenv"
 require "capistrano/bundler"
 require "capistrano/rails"
 require "whenever/capistrano"
-require "capistrano/scm/git"
-
-install_plugin Capistrano::SCM::Git
+require "capistrano/rails/assets"
+require "capistrano/rails/migrations"
+require "capistrano/rails/console"
+require 'capistrano/honeybadger'
 
 # Loads custom tasks from "lib/capistrano/tasks" if you have any defined.
 Dir.glob("lib/capistrano/tasks/*.cap").each { |r| import r }
 
 
-require 'capistrano/honeybadger'

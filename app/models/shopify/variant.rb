@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'shopify/base'
 
 class Shopify::Variant < Shopify::Base

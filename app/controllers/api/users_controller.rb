@@ -1,12 +1,10 @@
+# frozen_string_literal: true
+
 class Api::UsersController < Api::BaseController
   before_action :set_user, only: [:show, :update]
 
   def index
-    if params[:email].to_s.empty?
-      @users = User.none
-    else
-      @users = User.where(email: params[:email])
-    end
+    params[:email].to_s.empty? ? @users = User.none : @users = User.where(email: params[:email])
   end
 
   def show; end

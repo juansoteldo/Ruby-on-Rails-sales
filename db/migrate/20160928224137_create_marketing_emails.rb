@@ -1,4 +1,4 @@
-class CreateMarketingEmails < ActiveRecord::Migration
+class CreateMarketingEmails < ActiveRecord::Migration[4.2]
   def up
     create_table :marketing_emails do |t|
       t.string :state, index: true
@@ -10,8 +10,6 @@ class CreateMarketingEmails < ActiveRecord::Migration
     end
 
     add_index :delivered_emails, :marketing_email_id
-
-    require Rails.root.join 'db/seeds/marketing_emails'
   end
 
   def down

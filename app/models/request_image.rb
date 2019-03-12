@@ -1,5 +1,7 @@
-class RequestImage < ActiveRecord::Base
-  belongs_to :request
+# frozen_string_literal: true
+
+class RequestImage < ApplicationRecord
+  belongs_to :request, optional: true
 
   mount_uploader :file, RequestImageUploader
 

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class AdminAbility
   include CanCan::Ability
 
-  def initialize admin
+  def initialize(admin)
     can :manage, :all
   end
 end

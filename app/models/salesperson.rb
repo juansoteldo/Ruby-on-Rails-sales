@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'openssl'
 require 'base64'
 
-class Salesperson < ActiveRecord::Base
-
+class Salesperson < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -11,7 +12,7 @@ class Salesperson < ActiveRecord::Base
   has_many :sales_totals
 
   def requests
-    Request.quoted_or_contacted_by(self.id)
+    Request.quoted_or_contacted_by(id)
   end
 
   def deposited_requests
@@ -21,18 +22,17 @@ class Salesperson < ActiveRecord::Base
   # Called by devise to allow users to be deactivated
   # http://www.rubydoc.info/github/plataformatec/devise/master/Devise/Models/Authenticatable
   def active_for_authentication?
-   super && is_active?
+    super && is_active?
   end
 
   attr_accessor :orders, :total_sales
 
   def claim_requests_with_email(email, after = 3.months.ago)
-    Request.joins(:user).where( "email = ? AND requests.created_at > ? AND requests.contacted_by_id IS NULL", email, after)
-        .update_all contacted_by_id: self.id
+    Request.joins(:user).where("email = ? AND requests.created_at > ? AND requests.contacted_by_id IS NULL", email, after).
+      update_all contacted_by_id: id
   end
 
   def self.with_sales(params)
-
     salespeople = Salesperson.all.to_a.map do |salesperson|
       params.each do |key, value|
         salesperson.class.send(:attr_accessor, "#{key}_sales") unless instance_variable_defined?("@#{key}_sales")
@@ -45,13 +45,13 @@ class Salesperson < ActiveRecord::Base
 
     params.each do |key, param|
       grouped_orders = Shopify::Order.attributed(param).group_by(&:sales_id)
-      grouped_orders.select{|id, orders| id != "" }.map do |id, orders|
-        salesperson = salespeople.find{|s| s.id == id }
-        sales = orders.inject(0) {|sum,o| sum + o.total_price.to_f.round(2)}
+      grouped_orders.select { |id, orders| id != "" }.map do |id, orders|
+        salesperson = salespeople.find { |s| s.id == id }
+        sales = orders.inject(0) { |sum, o| sum + o.total_price.to_f.round(2) }
         salesperson.instance_variable_set "@#{key}_sales", sales
         salesperson.instance_variable_set "@#{key}_count", orders.count
         salesperson.orders = orders
-        salespeople << salesperson unless salespeople.find{|s| s.id == id }
+        salespeople << salesperson unless salespeople.find { |s| s.id == id }
       end
     end
     salespeople
@@ -59,6 +59,6 @@ class Salesperson < ActiveRecord::Base
 
   def self.sales_by_date(params)
     params[:limit] ||= 250
-    self.all_with_shopify_orders_by_email(params)
+    all_with_shopify_orders_by_email(params)
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MarketingEmail < ActiveRecord::Base
+class MarketingEmail < ApplicationRecord
   has_many :delivered_emails
 
   def self.template_names

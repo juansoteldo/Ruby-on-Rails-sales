@@ -1,7 +1,7 @@
 set :application, 'ctd-worklist'
 set :repo_url, 'ssh://git@bitbucket.org/fluxinc/ctd-worklist.git'
 
-set :rbenv_type, :user #:user # system # or :user, depends on your rbenv setup
+set :rbenv_type, :user
 set :rbenv_path, '/home/deploy/.rbenv'
 set :rbenv_ruby, "2.4.4"
 
@@ -12,27 +12,27 @@ set :deploy_to, '/u/apps/ctd'
 # set :scm, :git
 
 # set :format, :pretty
-#set :log_level, :debug
+# set :log_level, :debug
 # set :pty, true
 
-set :linked_files, %w{.env.production}
-set :linked_dirs, %w{log published_files tmp/pids tmp/cache tmp/sockets tmp/uploads vendor/bundle public/system}
+set :linked_files, ['.env.production']
+set :linked_dirs, ['log', 'published_files', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'tmp/uploads', 'vendor/bundle', 'public/system']
 
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 set :keep_releases, 20
 set :keep_assets, 2
 
-set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 
 set :delayed_job_workers, 2
 
 namespace :deploy do
   def remote_file_exists?(full_path)
-    'true' ==  capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip
+    'true' == capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip
   end
 
   set :rails_env, :production
-  #set :unicorn_binary, "#{current_path}/bin/unicorn"
+  # set :unicorn_binary, "#{current_path}/bin/unicorn"
   set :unicorn_binary, "unicorn"
   set :unicorn_config, "#{current_path}/config/unicorn.rb"
   set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"
@@ -56,7 +56,6 @@ namespace :deploy do
     on roles(:app), in: :sequence, wait: 1 do
       execute :sudo, "/sbin/stop api"
       execute :sudo, "/sbin/stop api-worker"
-
     end
   end
 
@@ -65,7 +64,7 @@ namespace :deploy do
       # Here we can do anything such as:
       # within release_path do
       #   execute :rake, 'cache:clear'
-      #end
+      # end
     end
   end
 
@@ -75,7 +74,7 @@ end
 namespace :rails do
   desc "Open the rails console on each of the remote servers"
   task :console do
-    on roles(:app) do |host| #does it for each host, bad.
+    on roles(:app) do |host| # does it for each host, bad.
       rails_env = fetch(:stage)
       within release_path do
         execute :bundle, "exec rails console #{rails_env}"
@@ -83,4 +82,3 @@ namespace :rails do
     end
   end
 end
-

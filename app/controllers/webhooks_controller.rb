@@ -1,6 +1,13 @@
+# frozen_string_literal: true
+
 class WebhooksController < ApplicationController
-  skip_before_filter :verify_authenticity_token
+  skip_before_action :verify_authenticity_token
   before_action :verify_shopify_webhook, only: [:orders_create]
+
+  def calendly
+    UpdateEventJob.perform_later(params)
+    head :ok
+  end
 
   def requests_create
     RequestCreateJob.perform_later(wpcf7_params)

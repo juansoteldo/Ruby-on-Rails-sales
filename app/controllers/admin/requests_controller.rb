@@ -1,17 +1,20 @@
+# frozen_string_literal: true
+
 class Admin::RequestsController < Admin::BaseController
+  skip_before_action :verify_authenticity_token, only: [:edit, :update]
   load_and_authorize_resource :request, class: Request
   before_action :set_request, only: [:show, :edit, :update, :destroy, :opt_out]
 
   # GET /requests
   # GET /requests.json
   def index
-    @requests = Request.joins(:user).includes(:images).order( created_at: :desc )
+    @requests = Request.joins(:user).includes(:images).order(created_at: :desc)
 
     if params[:search]
       term = params[:search].downcase
       @requests = @requests.
-          where( 'LOWER(users.email) LIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ? OR requests.client_id LIKE ?',
-                 "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%" )
+        where('LOWER(users.email) LIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ? OR requests.client_id LIKE ?',
+              "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")
     end
     @requests = @requests.where('requests.created_at > ?', Date.strptime(params[:after])) if params[:after]
     @requests = @requests.where('requests.created_at < ?', Date.strptime(params[:before])) if params[:before]
@@ -60,8 +63,7 @@ class Admin::RequestsController < Admin::BaseController
   end
 
   # GET /requests/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /requests
   # POST /requests.json
@@ -84,7 +86,8 @@ class Admin::RequestsController < Admin::BaseController
   def update
     respond_to do |format|
       if @request.update(request_params)
-        format.html { redirect_to @request, notice: 'Request was successfully updated.' }
+        flash[:notice] = 'Request was successfully updated.'
+        format.html { render :edit }
         format.json { render :show, status: :ok, location: @request }
       else
         format.html { render :edit }
@@ -104,13 +107,16 @@ class Admin::RequestsController < Admin::BaseController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_request
-      @request = Request.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def request_params
-      params.require(:request).permit(:user_id, :token, :is_first_time, :gender, :has_color, :position, :notes, :quote_id, :client_id, :ticket_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_request
+    @request = Request.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def request_params
+    params.require(:request).permit(:user_id, :token,
+                                    :is_first_time, :gender, :has_color, :position, :notes, :description,
+                                    :quote_id, :client_id, :ticket_id)
+  end
 end

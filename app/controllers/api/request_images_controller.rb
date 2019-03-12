@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::RequestImagesController < Api::BaseController
   before_action :set_request_image, only: [:show]
 
