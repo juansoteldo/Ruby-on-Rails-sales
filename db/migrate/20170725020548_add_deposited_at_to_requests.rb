@@ -1,4 +1,4 @@
-class AddDepositedAtToRequests < ActiveRecord::Migration
+class AddDepositedAtToRequests < ActiveRecord::Migration[4.2]
   def up
     add_column :requests, :deposited_at, :datetime, index: true
     add_index :requests, :deposit_order_id

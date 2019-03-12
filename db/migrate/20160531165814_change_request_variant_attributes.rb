@@ -1,4 +1,4 @@
-class ChangeRequestVariantAttributes < ActiveRecord::Migration
+class ChangeRequestVariantAttributes < ActiveRecord::Migration[4.2]
   def change
     rename_column :requests, :variant, :quote_variant
     add_column :requests, :deposit_variant, :string

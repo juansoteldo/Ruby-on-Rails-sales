@@ -1,4 +1,4 @@
-class CreateDeliveredEmails < ActiveRecord::Migration
+class CreateDeliveredEmails < ActiveRecord::Migration[4.2]
   def change
     create_table :delivered_emails do |t|
       t.references :request, index: true, foreign_key: true
