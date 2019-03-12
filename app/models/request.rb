@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Request < ApplicationRecord
+  include Tokenable
+
   belongs_to :user, optional: true
   has_many :delivered_emails
   has_many :images, class_name: "RequestImage"
