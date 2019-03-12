@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   resources :events, only: [:show]
 
   namespace :api do
-    resources :requests, only: [:index, :show]
+    resources :requests, only: [:index, :show, :update]
     resources :request_images, only: [:show]
     resources :users, only: [:index, :show]
   end

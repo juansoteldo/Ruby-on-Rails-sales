@@ -6,8 +6,15 @@ class Api::BaseController < ApplicationController
   private
 
   def authenticate_token!
-    @token = ENV.fetch("API_TOKEN","You have to set this")
+    render text: "unauthorized" unless globally_authenticated
+    session[:globally_authenticated] = true
+  end
 
-    render text: "unauthorized" unless params[:token].present? && params[:token] == @token
+  def globally_authenticated
+    @globally_authenticated ||= params[:token].present? && params[:token] == global_token
+  end
+
+  def global_token
+    @global_token ||= ENV.fetch("API_TOKEN","You have to set this")
   end
 end
