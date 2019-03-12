@@ -1,15 +1,16 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  user: one
-  token: MyString
+fresh:
+  user_id: NULL
+  first_name: John
+  last_name: Smith
+  token: <%= SecureRandom.base64 %>
   is_first_time: false
-  gender: MyString
+  gender: Male
   has_color: false
-  has_cover_up: true
-  position: MyString
-  notes: MyString
-  qid: MyString
-  requesting_cid: MyString
-  ticket_url: MyString
-
+  has_cover_up: false
+  position: Chest
+  large: ""
+  notes: NULL
+  sku: NULL
+  state: "fresh"
