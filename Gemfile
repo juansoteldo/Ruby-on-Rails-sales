@@ -68,10 +68,10 @@ gem "dotenv-rails"
 gem "whenever"
 gem "state_machines"
 gem "state_machines-activerecord"
-gem "ruby-progressbar"
+
 gem "carrierwave"
-gem "mini_magick"
 gem "fog-aws"
+gem "mini_magick"
 gem 'will_paginate', '~> 3.1.0'
 
 group :development, :test do
@@ -93,11 +93,8 @@ group :development, :test do
 end
 
 group :development do
-  gem "debase"
-  gem "web-console"
   gem "letter_opener"
-  gem "ruby-debug-ide"
-  gem "meta_request"
   gem "listen"
+  gem "web-console"
 end
 

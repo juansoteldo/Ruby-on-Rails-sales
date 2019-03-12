@@ -1,4 +1,4 @@
-class CreateEmailPreferences < ActiveRecord::Migration
+class CreateEmailPreferences < ActiveRecord::Migration[4.2]
   def up
     add_column :users, :presales_opt_in, :boolean, default: true
     add_column :users, :marketing_opt_in, :boolean, default: true

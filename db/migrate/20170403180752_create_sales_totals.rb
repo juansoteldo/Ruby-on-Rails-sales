@@ -1,4 +1,4 @@
-class CreateSalesTotals < ActiveRecord::Migration
+class CreateSalesTotals < ActiveRecord::Migration[4.2]
   def change
     create_table :sales_totals do |t|
       t.date :sold_on, index: true

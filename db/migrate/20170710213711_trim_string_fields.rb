@@ -1,4 +1,4 @@
-class TrimStringFields < ActiveRecord::Migration
+class TrimStringFields < ActiveRecord::Migration[4.2]
   def up
     execute "UPDATE requests SET
            first_name = TRIM(first_name),
