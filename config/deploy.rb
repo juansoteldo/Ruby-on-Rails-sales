@@ -15,7 +15,6 @@ set :deploy_to, '/u/apps/ctd'
 # set :log_level, :debug
 # set :pty, true
 
-set :linked_files, ['.env.production']
 set :linked_dirs, ['log', 'published_files', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'tmp/uploads', 'vendor/bundle', 'public/system']
 
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }

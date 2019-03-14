@@ -81,7 +81,7 @@
           var _p = {
             client_id: <%= Rails.env.development? && 12345.to_json || '_gcid()' %>
           };
-          $.post('http://<%= @host %>:<%= @port %>/public/get_uid.json',_p,function (_r) {
+          $.post('<%= CTD::APP_URL %>/public/get_uid.json',_p,function (_r) {
                 if (!_r) return;
                 var uid = _gs('uid', _r, 2);
                 ga('set', '&uid', uid);

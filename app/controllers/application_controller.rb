@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
   before_action :add_allow_credentials_headers
   before_action :cors_preflight_check
-  before_action :set_hostname
 
   after_action :cors_set_access_control_headers
 
@@ -42,11 +41,6 @@ class ApplicationController < ActionController::Base
 
   def options
     head :status => 200, :'Access-Control-Allow-Headers' => 'accept, content-type'
-  end
-
-  def set_hostname
-    @host = request.host || 'api.customtattoodesign.ca'
-    @port = request.port || 80
   end
 
   # Security note: controllers with no-CSRF protection must disable the Devise fallback,

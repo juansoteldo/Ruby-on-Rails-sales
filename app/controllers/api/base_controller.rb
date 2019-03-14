@@ -11,10 +11,10 @@ class Api::BaseController < ApplicationController
   end
 
   def globally_authenticated
-    @globally_authenticated ||= params[:token].present? && params[:token] == global_token
+    @globally_authenticated ||= params[:token].present? && params[:token] == global_api_token
   end
 
-  def global_token
-    @global_token ||= ENV.fetch("API_TOKEN","You have to set this")
+  def global_api_token
+    @global_api_token ||= ENV.fetch("GLOBAL_API_TOKEN","You have to set this")
   end
 end

@@ -26,7 +26,7 @@ json.groups @groups do |group|
 			json.price variant.price
 			json.has_color variant.has_color?
 			json.has_cover variant.has_cover_up?
-			json.url "http://#{@host}/public/redirect/#{product.handle}/#{variant.id}?clientId=&linkerParam=&requestId=&_ga=&uid="
+			json.url "#{CTD::APP_URL}/public/redirect/#{product.handle}/#{variant.id}?clientId=&linkerParam=&requestId=&_ga=&uid="
 		end
 	end
 end

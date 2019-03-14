@@ -18,7 +18,7 @@
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
-    var host = '<%= Rails.env.development? && @host || 'customtattoodesign.ca' %>';
+    var host = '<%= Rails.env.development? && CTD::APP_URL || 'customtattoodesign.ca' %>';
     document.cookie = cname + "=" + cvalue + "; " + expires+";domain=."+host+";path=/";
   };
 
@@ -85,7 +85,7 @@
       ga('send', 'pageview');
     <% end %>
   });
-<% if Rails.env.production? %>
+<% unless Rails.env.development? %>
   setTimeout(function(){
     document.getElementById('redirectLink').click();
   }, 3000);

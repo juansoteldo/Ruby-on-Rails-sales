@@ -13,8 +13,6 @@
 ActiveRecord::Schema.define(version: 2019_03_12_151441) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
-  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "admins", id: :serial, force: :cascade do |t|
@@ -114,7 +112,6 @@ ActiveRecord::Schema.define(version: 2019_03_12_151441) do
     t.integer "user_id"
     t.string "first_name", default: ""
     t.string "last_name", default: ""
-    t.string "token"
     t.boolean "is_first_time"
     t.string "gender"
     t.boolean "has_color"
@@ -143,12 +140,12 @@ ActiveRecord::Schema.define(version: 2019_03_12_151441) do
     t.text "description"
     t.datetime "deposited_at"
     t.integer "contacted_by_id"
+    t.uuid "token"
     t.index ["client_id"], name: "index_requests_on_client_id"
     t.index ["created_at"], name: "index_requests_on_created_at"
     t.index ["deposit_order_id"], name: "index_requests_on_deposit_order_id"
     t.index ["quoted_by_id"], name: "index_requests_on_quoted_by_id"
     t.index ["sku"], name: "index_requests_on_sku"
-    t.index ["token"], name: "index_requests_on_token", unique: true
     t.index ["user_id"], name: "index_requests_on_user_id"
   end
 

@@ -8,9 +8,8 @@ module ApplicationHelper
   end
 
   def crm_start_url(request)
-    crm_url = ENV.fetch "CRM_URL", "https://crm.customtattoodesign.ca"
-    crm_url += "/preview/jobs/new?request_id=" + request.id.to_s
-    crm_url
+    crm_url = CTD::CRM_URL
+    crm_url + "/preview/jobs/new?request_id=" + request.id.to_s
   end
 
   def flash_class(level)

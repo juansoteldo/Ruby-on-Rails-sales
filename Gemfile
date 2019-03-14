@@ -53,7 +53,7 @@ gem "streak-ruby", git: "https://github.com/OnFrontiers/streak-ruby.git"
 # Use Capistrano for deployment
 # gem "capistrano-rails", group: :development
 
-group :production do
+group :production, :staging do
   gem "unicorn"
 end
 
