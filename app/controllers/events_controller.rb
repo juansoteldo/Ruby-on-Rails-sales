@@ -21,7 +21,7 @@ class EventsController < ApplicationController
   private
 
   def set_event
-    @event = Event.find_by_uuid!(params[:id])
+    @event = Event.find_by_uuid!(params[:id])&.decorate
   end
 
   def event_params
