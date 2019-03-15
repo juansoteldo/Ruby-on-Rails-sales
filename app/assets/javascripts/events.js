@@ -25,11 +25,7 @@
     $.ajax({
       type: 'PATCH',
       url: Routes.api_request_path(request.id, { uuid: request.uuid }),
-      data: patch,
-      success: function(result) {
-        console.log(result);
-      }
-      /* success and error handling omitted for brevity */
+      data: patch
     });
   };
 
@@ -48,8 +44,7 @@
     } else {
       iterations += 1;
       if (iterations === 5) return;
-      console.log("waiting");
-      setTimeout(runWhenAnalyticsLoaded, 500);
+      setTimeout(() => runWhenAnalyticsLoaded(method), 500);
     }
   };
 
