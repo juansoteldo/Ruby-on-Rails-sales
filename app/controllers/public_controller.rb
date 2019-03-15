@@ -57,7 +57,7 @@ class PublicController < ApplicationController
   end
 
   def get_uid
-    render json: @user.id
+    render json: @user&.id
   end
 
   def get_links; end
@@ -144,7 +144,9 @@ class PublicController < ApplicationController
   end
 
   def set_user_by_client_id
-    render(json: false) && return unless params[:client_id]
+    if params[:client_id].blank?
+      render(json: false) && return
+    end
 
     @user = User.joins(:requests).where(requests: { client_id: params[:client_id] }).first
   end

@@ -28,6 +28,13 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     assert User.exists?(body.to_i)
   end
 
+  test "should not get uid based on missing client id" do
+    get get_uid_path(format: :json)
+    assert_response :success
+    body = @response.body
+    assert_not JSON.parse(body)
+  end
+
   test "should get links for existing user" do
     get get_links_path(email: @existing_request.user.email, sales_email: @salesperson.email, format: :json)
     assert_response :success
