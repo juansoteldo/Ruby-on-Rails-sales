@@ -38,7 +38,7 @@ class WebhooksController < ApplicationController
   end
 
   def shopify_params
-    params.except(:controller, :action, :type)
+    params.except(:controller, :action, :type).to_unsafe_h
   end
 
   def wpcf7_params

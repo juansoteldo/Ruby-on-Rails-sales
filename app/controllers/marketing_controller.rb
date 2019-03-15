@@ -7,7 +7,7 @@ class MarketingController < ApplicationController
   def opt_out
     @user = User.find(current_user.id)
     @user.update marketing_opt_in: false, presales_opt_in: false
-    redirect_to email_preferences_path(email: @user.email)
+    redirect_to email_preferences_url(email: @user.email)
   end
 
 end

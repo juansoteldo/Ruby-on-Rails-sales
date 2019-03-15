@@ -1,6 +1,6 @@
 <%-
 
-unsub_path = email_preferences_path(email: @request.user.email)
+unsub_path = email_preferences_url(email: @request.user.email)
 unsub_path.slice!("http://")
 unsub_url = "http://#{CTD::APP_HOST}#{unsub_path}"
 

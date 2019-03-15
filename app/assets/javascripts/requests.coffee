@@ -43,7 +43,7 @@
 @userFormatter = (value, row) ->
   if row.user.opted_out
     button = """
-    <a class=" btn-xs btn-simple btn-danger btn" href="#{Routes.email_preferences_path()}?email=#{value.email}" target="_blank"><i class="material-icons">do_not_disturb_on</i></a>
+    <a class=" btn-xs btn-simple btn-danger btn" href="#{Routes.email_preferences_url()}?email=#{value.email}" target="_blank"><i class="material-icons">do_not_disturb_on</i></a>
     """
     email = "<strike>#{value.email}</strike>"
 
