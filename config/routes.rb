@@ -8,12 +8,12 @@ Rails.application.routes.draw do
 
   match "*any" => "application#options", :via => [:options]
 
-  get "/public/redirect/:handle/:variant", to: "public#redirect", as: :cart_redirect
+  get "/public/redirect/:handle/:variant", to: "public#redirect", as: :cart_redirect, defaults: { format: 'html' }
   post "/public/new_request", as: :new_request
-  match "/public/get_uid", via: [:get, :post], as: :get_uid
-  get "/public/get_links", as: :get_links
-  get "/public/set_link", as: :set_link
-  get "/public/save_email", as: :save_email
+  match "/public/get_uid", via: [:get, :post], as: :get_uid, defaults: { format: 'json' }
+  get "/public/get_links", as: :get_links, defaults: { format: 'json' }
+  get "/public/set_link", as: :set_link, defaults: { format: 'json' }
+  get "/public/save_email", as: :save_email, defaults: { format: 'json' }
   get "public/opt_out/:id", to: "marketing#opt_out", as: :opt_out
   match "public/thanks", via: [:get, :post], to: "public#deposit_redirect", as: :deposit_redirect
 

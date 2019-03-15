@@ -16,6 +16,7 @@ class PublicController < ApplicationController
   before_action :set_or_create_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
 
   def redirect
+    request.format = 'html'
     @request = Request.find(params[:requestId]) if params[:requestId].present? && Request.find(params[:requestId])
     @request ||= Request.find_by__ga(params[:_ga]) if params[:_ga] && Request.where(_ga: params[:_ga]).any?
 
@@ -57,12 +58,17 @@ class PublicController < ApplicationController
   end
 
   def get_uid
+    request.format = 'json'
     render json: @user&.id
   end
 
-  def get_links; end
+  def get_links
+    request.format = 'json'
+  end
 
-  def get_ids; end
+  def get_ids
+    request.format = 'json'
+  end
 
   def set_link
     head 404 unless @request
