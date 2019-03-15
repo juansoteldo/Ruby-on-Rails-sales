@@ -84,7 +84,7 @@ group :development, :test do
   gem "capistrano-rails"
   gem "capistrano-rails-console", require: false
   gem "capistrano-rbenv"
-
+  gem 'capistrano-nvm', require: false
   gem "rubocop", require: false
   gem "rubocop-airbnb", require: false
 

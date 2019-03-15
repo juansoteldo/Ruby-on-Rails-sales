@@ -5,6 +5,10 @@ set :rbenv_type, :user
 set :rbenv_path, '/home/deploy/.rbenv'
 set :rbenv_ruby, "2.5.3"
 
+set :nvm_type, :user # or :system, depends on your nvm setup
+set :nvm_node, 'v8.15.1'
+set :nvm_map_bins, %w{node npm yarn}
+
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
 set :branch, :master
