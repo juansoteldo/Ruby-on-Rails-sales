@@ -39,7 +39,7 @@
   let iterations = 0;
 
   const runWhenAnalyticsLoaded = function(method) {
-    if (window._gaq && window._gaq._getTracker) {
+    if (getTrackerClientId() !== 'false') {
       method.call();
     } else {
       iterations += 1;

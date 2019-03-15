@@ -39,3 +39,6 @@
 
 <%= content_tag :div, class: "event_info", data: { request: @event.request, event: @event } do %>
 <% end %>
+<script>
+  <%= render partial: "public/analytics.js.erb", locals: { request: @event.request } %>
+</script>
