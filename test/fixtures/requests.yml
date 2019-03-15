@@ -1,25 +1,58 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  user_id: 
-  token: MyString
+fresh:
+  user: one
+  first_name: John
+  last_name: Smith
   is_first_time: false
-  gender: MyString
+  gender: Male
   has_color: false
   position: MyString
   notes: MyString
-  qid: MyString
-  requesting_cid: MyString
-  ticket_url: MyString
+  client_id: MyString
+  state: fresh
 
-two:
-  user_id: 
-  token: MyString
+quoted:
+  user: one
+  first_name: Jane
+  last_name: Doe
   is_first_time: false
-  gender: MyString
+  gender: Female
   has_color: false
   position: MyString
   notes: MyString
-  qid: MyString
-  requesting_cid: MyString
-  ticket_url: MyString
+  client_id: MyString
+  state: quoted
+
+# t.integer "user_id"
+# t.string "first_name", default: ""
+# t.string "last_name", default: ""
+# t.boolean "is_first_time"
+# t.string "gender"
+# t.boolean "has_color"
+# t.boolean "has_cover_up"
+# t.string "position"
+# t.string "large"
+# t.string "notes"
+# t.string "sku"
+# t.string "deposit_order_id"
+# t.string "final_order_id"
+# t.string "sub_total"
+# t.string "request_id"
+# t.string "client_id"
+# t.string "ticket_id"
+# t.datetime "created_at", null: false
+# t.datetime "updated_at", null: false
+# t.string "_ga"
+# t.string "linker_param"
+# t.string "handle"
+# t.string "variant"
+# t.datetime "last_visited_at"
+# t.string "deposit_variant"
+# t.integer "quoted_by_id"
+# t.string "state", default: "fresh"
+# t.datetime "state_changed_at"
+# t.text "description"
+# t.datetime "deposited_at"
+# t.integer "contacted_by_id"
+# t.uuid "uuid", default: -> { "uuid_generate_v4()" }

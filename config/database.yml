@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: ctd-worklist
+  database: ctd-worklist-development
 
 test:
   <<: *default

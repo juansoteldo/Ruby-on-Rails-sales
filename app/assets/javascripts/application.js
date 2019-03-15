@@ -30,13 +30,17 @@
 //= require_tree .
 
 $(document).ready(function() {
-	function applyCallback(start, end) {
-	  $('#reportrange span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
-	  var min_date = start.format('YYYY-MM-DD');
-	  var max_date = end.format('YYYY-MM-DD');
-	  window.location.href = 'salespeople?date_min='+ min_date +'&date_max='+max_date;
+  const $reportRange = $('#reportrange');
+
+	const applyCallback = function(start, end) {
+	  const format = 'YYYY-MM-DD';
+	  $('span', $reportRange).html(start.format(format) + ' - ' + end.format(format));
+    const minDate = start.format(format);
+    const maxDate = end.format(format);
+	  window.location.href = `salespeople?date_min=${minDate}&date_max=${maxDate}`;
 	}
-	$('#reportrange').daterangepicker({
+
+  $reportRange.daterangepicker({
 	  ranges: {
 	     'Today': [moment(), moment()],
 	     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -46,9 +50,10 @@ $(document).ready(function() {
 	     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
 	  }
 	});
-	$('#reportrange').on('apply.daterangepicker', function(ev, picker) {
-		var start = picker.startDate;
-		var end = picker.endDate;
+
+  $reportRange.on('apply.daterangepicker', function(ev, picker) {
+		const start = picker.startDate;
+    const end = picker.endDate;
 		applyCallback(start, end);
-	})
+	});
 });

@@ -4,8 +4,8 @@
 
   const getTrackerClientId = function() {
     try {
-      var trackers = ga.getAll();
-      var i, len;
+      const trackers = ga.getAll();
+      let i, len;
       for (i = 0, len = trackers.length; i < len; i += 1) {
         if (trackers[i].get('trackingId') === 'UA-34117074-2') {
           return trackers[i].get('clientId');
@@ -24,7 +24,7 @@
     };
     $.ajax({
       type: 'PATCH',
-      url: Routes.api_request_path(request.id, { token: request.token }),
+      url: Routes.api_request_path(request.id, { uuid: request.uuid }),
       data: patch,
       success: function(result) {
         console.log(result);

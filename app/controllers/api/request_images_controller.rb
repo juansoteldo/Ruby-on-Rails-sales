@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::RequestImagesController < Api::BaseController
+  skip_before_action :authenticate_token!, only: [:show]
   before_action :set_request_image, only: [:show]
 
   def show
@@ -11,6 +12,11 @@ class Api::RequestImagesController < Api::BaseController
   private
 
   def set_request_image
-    @request_image = RequestImage.find params[:id]
+    if globally_authenticated
+      @request_image = RequestImages.find(params[:id])
+    else
+      @request_image = RequestImage.joins(:request).where("request_images.id = ? AND requests.uuid = ?", params[:id], params[:uuid]).first
+    end
+    raise "not-found" unless @request_image
   end
 end

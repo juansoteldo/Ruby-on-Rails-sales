@@ -2,8 +2,8 @@
 
 one:
   request_id: 
-  image: MyString
+  file: NULL
 
 two:
   request_id: 
-  image: MyString
+  file: NULL

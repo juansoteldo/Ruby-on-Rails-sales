@@ -25,7 +25,7 @@ class Api::RequestsController < Api::BaseController
     if globally_authenticated
       @request = Request.includes(:user).where(id: params[:id]).first
     else
-      @request = Request.includes(:user).where(id: params[:id], token: params[:token]).first
+      @request = Request.includes(:user).where(id: params[:id], uuid: params[:uuid]).first
     end
     raise "not-found" unless @request
   end

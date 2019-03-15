@@ -12,8 +12,8 @@ class PublicController < ApplicationController
   before_action :load_products, only: [:get_links]
   before_action :set_user_by_client_id, only: [:get_uid]
   before_action :set_shopify_order, only: [:deposit_redirect]
-  before_action :set_request_by_id, only: [:deposit_redirect]
-  before_action :set_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
+  before_action :set_request_by_id, only: [:set_link, :deposit_redirect]
+  before_action :set_or_create_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
 
   def redirect
     @request = Request.find(params[:requestId]) if params[:requestId].present? && Request.find(params[:requestId])
@@ -65,19 +65,10 @@ class PublicController < ApplicationController
   def get_ids; end
 
   def set_link
-    @request = Request.find(params[:request_id])
-    @request.variant = params[:variant_id]
-    @request.quoted_by_id = params[:salesperson_id]
-    @request.state = "quoted" if @request.state == "fresh"
-    @request.save!
+    head 404 unless @request
+    head 422 unless @request.user.email == params[:email]
+    @request.quote_from_params! request_link_params
 
-    box = StreakAPI::Box.find_by_email(params[:email])
-    if box
-      current_stage = StreakAPI::Stage.find(key: box.stage_key)
-      if current_stage.name == 'Contacted' || current_stage.name == 'Leads'
-        StreakAPI::Box.set_stage(box.key, 'Quoted')
-      end
-    end
     head :ok
   end
 
@@ -110,14 +101,21 @@ class PublicController < ApplicationController
 
   private
 
+  def request_link_params
+    params.require(:variant_id)
+    params.require(:salesperson_id)
+    params.permit :variant_id, :salesperson_id
+  end
+
   def set_request_by_id
     @request = Request.joins(:user).where(id: params[:request_id]).first if params[:request_id].present?
   end
 
-  def set_request_by_email
+  def set_or_create_request_by_email
     return if @request
-    requests = Request.joins(:user).where('users.email LIKE ?', params[:email])
-    @request = requests.any? ? requests.first : Request.create(user: @user)
+    head 422 unless params[:email] =~ URI::MailTo::EMAIL_REGEXP
+    @request = Request.joins(:user).where('users.email LIKE ?', params[:email]).first
+    @request ||= Request.create(user: @user)
   end
 
   def set_last_request_by_email
@@ -133,11 +131,13 @@ class PublicController < ApplicationController
   def set_salesperson_by_email
     @salesperson = Salesperson.find_by_email(params[:sales_email].downcase.strip) unless params[:sales_email].to_s.empty?
     @salesperson ||= Salesperson.find_by_email(params[:from_email].downcase.strip) unless params[:sales_email].to_s.empty?
+    head 400 unless @salesperson
   end
 
   def set_or_create_user_by_email
-    users = User.where(email: params[:email])
-    return users.first if users.any?
+    head 422 unless params[:email] =~ URI::MailTo::EMAIL_REGEXP
+    @user = User.find_by_email(params[:email])
+    return if @user
 
     password = SecureRandom.hex(8)
     @user = User.create(email: params[:email], password: password, password_confirmation: password)

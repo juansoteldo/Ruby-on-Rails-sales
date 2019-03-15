@@ -7,16 +7,18 @@ Rails.application.routes.draw do
   devise_for :users
 
   match "*any" => "application#options", :via => [:options]
-  get "public/redirect/:handle/:variant", to: "public#redirect", as: :cart_redirect
-  post "public/new_request"
-  match "public/get_uid", via: [:get, :post]
-  get "public/get_links"
-  get "public/set_link"
-  get "public/save_email"
+
+  get "/public/redirect/:handle/:variant", to: "public#redirect", as: :cart_redirect
+  post "/public/new_request", as: :new_request
+  match "/public/get_uid", via: [:get, :post], as: :get_uid
+  get "/public/get_links", as: :get_links
+  get "/public/set_link", as: :set_link
+  get "/public/save_email", as: :save_email
   get "public/opt_out/:id", to: "marketing#opt_out", as: :opt_out
   match "public/thanks", via: [:get, :post], to: "public#deposit_redirect", as: :deposit_redirect
 
   get "/events/create", to: "events#create"
+
   resources :events, only: [:show]
 
   namespace :api do

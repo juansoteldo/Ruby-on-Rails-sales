@@ -13,7 +13,7 @@ if include_images
     json.array! request.images do |image|
       json.filename File.basename(image.file.path)
       json.content_type image.file.content_type
-      json.url api_request_image_url(image, token: @token )
+      json.url api_request_image_url(image, uuid: request.uuid )
     end
     end
 end
