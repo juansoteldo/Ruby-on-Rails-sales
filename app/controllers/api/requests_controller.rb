@@ -2,7 +2,7 @@
 
 class Api::RequestsController < Api::BaseController
   before_action :set_request, only: [:show, :update]
-  skip_before_action :authenticate_token!, only: [:update]
+  skip_before_action :authenticate_token!, only: [:show, :update]
 
   def index
     days = params[:days].present? ? params[:days].to_i : 60
@@ -27,7 +27,7 @@ class Api::RequestsController < Api::BaseController
     else
       @request = Request.includes(:user).where(id: params[:id], uuid: params[:uuid]).first
     end
-    raise "not-found" unless @request
+    head 404 unless @request
   end
 
   def request_params

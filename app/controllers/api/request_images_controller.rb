@@ -17,6 +17,6 @@ class Api::RequestImagesController < Api::BaseController
     else
       @request_image = RequestImage.joins(:request).where("request_images.id = ? AND requests.uuid = ?", params[:id], params[:uuid]).first
     end
-    head 404 unless @request_image&.file&.exists?
+    head 404 unless @request_image&.file&.file&.exists?
   end
 end
