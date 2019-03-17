@@ -11,6 +11,7 @@ json.email request.user.email
 if include_images
   json.images do
     json.array! request.images do |image|
+      next unless image.file.exists?
       json.filename File.basename(image.file.path)
       json.content_type image.file.content_type
       json.url api_request_image_url(image, uuid: request.uuid )
