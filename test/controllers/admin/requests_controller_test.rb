@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class Admin::RequestsControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
   setup do
     @existing_request = requests(:fresh)
     @deposited_request = requests(:deposited)
@@ -13,7 +14,8 @@ class Admin::RequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not show requests without token" do
+    sign_in admins(:one)
     get admin_requests_path
-    assert_response 401
+    assert_response 200
   end
 end
