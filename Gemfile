@@ -32,6 +32,7 @@ gem "jbuilder", "~> 2.5"
 #gem "sdoc", "~> 0.4.0", group: :doc
 
 gem "ahoy_email"
+gem "aws-sdk-s3", require: false
 gem "cancancan", "~> 1.10"
 gem "daemons"
 gem "delayed_job"
@@ -60,7 +61,6 @@ end
 group :development, :test do
   gem "puma"
 end
-
 
 gem "auto_strip_attributes", "~> 2.1"
 gem "config"

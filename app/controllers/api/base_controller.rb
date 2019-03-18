@@ -6,11 +6,12 @@ class Api::BaseController < ApplicationController
   private
 
   def authenticate_token!
-    render text: "unauthorized" unless globally_authenticated
+    head 401 unless globally_authenticated
     session[:globally_authenticated] = true
   end
 
   def globally_authenticated
+
     @globally_authenticated ||= params[:token].present? && params[:token] == global_api_token
   end
 

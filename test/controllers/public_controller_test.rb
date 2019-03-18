@@ -76,8 +76,8 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     product = Shopify::Product.find(variant.product_id).first
     get cart_redirect_path(product.handle, variant.id, requestId: @existing_request.id)
     assert_response :success
-    assert @response.body.includes(product.handle)
-    assert @response.body.include?(variant.id)
+    assert @response.body.include?(product.handle)
+    assert @response.body.include?(variant.id.to_s)
     assert @response.body.include?(@existing_request.client_id)
   end
 

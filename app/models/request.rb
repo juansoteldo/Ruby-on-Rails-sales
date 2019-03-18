@@ -107,37 +107,35 @@ class Request < ApplicationRecord
   end
 
   def art_sample_1=(file)
-    add_wp_image(file)
+    add_image_from_path(file)
+    File.unlink(file) if File.exist?(file)
   end
 
   def art_sample_2=(file)
-    add_wp_image(file)
+    add_image_from_path(file)
+    File.unlink(file) if File.exist?(file)
   end
 
   def art_sample_3=(file)
-    add_wp_image(file)
+    add_image_from_path(file)
+    File.unlink(file) if File.exist?(file)
   end
 
-  def add_wp_image(file)
+  def add_image_from_path(file)
     return if file.empty?
+
     begin
-      return unless File.exists?(file)
-      if images.where("file LIKE ?", "%#{File.basename(file)}%").any?
-        File.unlink file
-        return
-      end
+      return unless File.exist?(file)
+
       logger.info "Adding #{file}"
-      images.create file: File.new(file)
+      image = RequestImage.from_path(file)
+      image.request_id = id
+      image.save!
     rescue => e
+      raise(e) if Rails.env.test?
       logger.error ">>> Cannot add image to request #{file}"
       logger.error e.message
       logger.error e.backtrace.join("\n")
-    ensure
-      begin
-        File.unlink file if File.exists?(file)
-      rescue
-        logger.error "Cannot delete image file at #{file}"
-      end
     end
   end
 

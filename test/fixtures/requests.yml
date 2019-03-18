@@ -24,6 +24,21 @@ quoted:
   client_id: MyString
   state: quoted
 
+deposited:
+  user: one
+  first_name: Jane
+  last_name: Doe
+  is_first_time: false
+  gender: Female
+  has_color: false
+  position: MyString
+  notes: MyString
+  client_id: MyString
+  state: deposited
+  created_at: <%= Time.now - 30.minutes %>
+  deposited_at: <%= Time.now - 15.minutes %>
+
+
 # t.integer "user_id"
 # t.string "first_name", default: ""
 # t.string "last_name", default: ""

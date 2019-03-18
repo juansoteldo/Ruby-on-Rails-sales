@@ -6,5 +6,38 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+  def clear_requests_for(email)
+    RequestImage.joins(:user).where(email: email).each &:destroy!
+    Request.joins(:user).where(email: email).each &:destroy!
+    User.where(email: email).each &:destroy!
+  end
+
+  def wpcf7_params
+    {
+      first_name: "John",
+      last_name: "Smith",
+      email: "johnsmith@example.com",
+      position: "Sleeve",
+    }
+  end
+
+  def file_fixture_copy(name)
+    src_file = file_fixture(name)
+    extname = File.extname(name)
+    basename = File.basename(src_file, extname)
+    path = Tempfile.new(basename).path
+    FileUtils.cp src_file, path
+    Pathname.new(path)
+  end
+
+
+  def request_with_image(path)
+    request = requests(:deposited)
+    request.add_image_from_path(path)
+    request
+  end
+
+  def content_type(path)
+    `file -Ib #{path}`.gsub(/\n/,"").split(";")[0]
+  end
 end

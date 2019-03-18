@@ -12,9 +12,8 @@ class RequestCreateJob < ApplicationJob
     @request = Request.recent.where(user_id: @user.id,
                                     position: params[:position]).first_or_create
     @request.assign_attributes params
+    @request.user_id = @user.id
     @request.save!
-
-    @user.requests << @request
   end
 
   private
@@ -29,8 +28,8 @@ class RequestCreateJob < ApplicationJob
       @user =  User.find_by_email params.delete(:email)
     else
       password = SecureRandom.hex(8)
-      @user = User.create email: params.delete(:email),
-                          password: password, password_confirmation: password
+      @user = User.create! email: params.delete(:email),
+                           password: password, password_confirmation: password
     end
   end
 

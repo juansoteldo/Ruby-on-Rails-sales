@@ -38,13 +38,13 @@ class WebhooksController < ApplicationController
   end
 
   def shopify_params
-    params.except(:controller, :action, :type).to_unsafe_h
+    params.to_unsafe_h.except(:controller, :action, :type)
   end
 
   def wpcf7_params
-    params.except(:controller, :action, :type).permit(:client_id, :position, :gender,
-                             :has_color, :is_first_time, :first_name, :last_name,
-                             :linker_param, :_ga, :art_sample_1, :art_sample_2,
-                             :art_sample_3, :description, :email)
+    params.except(:controller, :action, :type).permit(
+        :client_id, :position, :gender, :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :art_sample_1, :art_sample_2,
+        :art_sample_3, :description, :email
+    )
   end
 end
