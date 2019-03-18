@@ -1,5 +1,6 @@
 class RequestImageDecorator < Draper::Decorator
   delegate_all
+  include CtdWorklist::Application.routes.url_helpers
 
   # Define presentation-specific methods here. Helpers are accessed through
   # `helpers` (aka `h`). You can override attributes, for example:
