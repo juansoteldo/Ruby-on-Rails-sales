@@ -1,6 +1,7 @@
 class RequestImageDecorator < Draper::Decorator
   delegate_all
   include CtdWorklist::Application.routes.url_helpers
+  include ActionView::Helpers::UrlHelper
 
   # Define presentation-specific methods here. Helpers are accessed through
   # `helpers` (aka `h`). You can override attributes, for example:
@@ -46,6 +47,7 @@ class RequestImageDecorator < Draper::Decorator
   end
 
   def url
+    Rails.application.config.default_url_options[:host] = ENV["APP_HOST"]
     if file.attached?
       url_for(file)
     elsif carrier_wave_file&.file&.exists?
