@@ -17,7 +17,8 @@ json.rows do
 
     json.images do
       json.array!(request.images.decorate) do |image|
-        json.url image.url
+        next unless image.file&.attached?
+        json.url url_for(image.file)
       end
     end
     json.url admin_request_url(request, format: :json)
