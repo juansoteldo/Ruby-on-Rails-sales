@@ -6,10 +6,6 @@ class Api::RequestImagesControllerTest < ActionDispatch::IntegrationTest
     @test_request = request_with_image(@image_path)
   end
 
-  teardown do
-    File.unlink(@image_path) if File.exist?(@image_path)
-  end
-
   test "should show image for request" do
     get api_request_image_path(@test_request.images.first.id, uuid: @test_request.uuid)
     assert_response 200

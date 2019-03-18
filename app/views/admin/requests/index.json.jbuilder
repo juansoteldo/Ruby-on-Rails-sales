@@ -17,6 +17,7 @@ json.rows do
 
     json.images do
       json.array!(request.images.decorate) do |image|
+        next unless image.exists?
         json.url api_request_image_url(image, uuid: request.uuid )
       end
     end

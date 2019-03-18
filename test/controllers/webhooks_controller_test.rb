@@ -7,10 +7,6 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     @image_file = file_fixture_copy("test.jpg")
   end
 
-  teardown do
-    File.unlink(@image_file) if File.exist?(@image_file)
-  end
-
   test "webhook call should create request using job" do
     perform_enqueued_jobs do
       post "/webhooks/requests_create", params: wpcf7_params

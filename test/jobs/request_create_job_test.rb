@@ -9,11 +9,6 @@ class RequestCreateJobTest < ActiveJob::TestCase
     User.where(email: wpcf7_params[:email]).delete_all
   end
 
-  teardown do
-    File.unlink(@image_file) if File.exist?(@image_file)
-    File.unlink(@image_file2) if File.exist?(@image_file2)
-  end
-
   test "should add a new request with an image" do
     art_samples = {
         art_sample_1: @image_file

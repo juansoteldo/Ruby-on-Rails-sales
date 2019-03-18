@@ -23,9 +23,9 @@ class ActiveSupport::TestCase
 
   def file_fixture_copy(name)
     src_file = file_fixture(name)
-    extname = File.extname(name)
-    basename = File.basename(src_file, extname)
-    path = Tempfile.new(basename).path
+    extname = File.extname(name).to_s
+    FileUtils.mkdir_p(Rails.root.join("tmp", "storage"))
+    path = Rails.root.join("tmp", "storage", "#{Time.now.to_i}#{extname}")
     FileUtils.cp src_file, path
     Pathname.new(path)
   end

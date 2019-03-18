@@ -3,7 +3,7 @@ require 'test_helper'
 class PublicControllerTest < ActionDispatch::IntegrationTest
   setup do
     @existing_request = requests(:fresh)
-    @salesperson = salespeople(:one)
+    @salesperson = salespeople(:active)
   end
 
   test "should get new_request" do
