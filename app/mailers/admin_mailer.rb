@@ -1,6 +1,6 @@
-class AdminMailer < ActionMailer::Base
-  default from: 'mailer@customtattoodesign.ca'
+# frozen_string_literal: true
 
+class AdminMailer < ApplicationMailer
   def daily_blast_counts( counts )
     @counts = counts
     recipients = Rails.application.config.marketing_email_recipients
