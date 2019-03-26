@@ -16,7 +16,8 @@ class Api::RequestImagesController < Api::BaseController
     if globally_authenticated
       @request_image = RequestImage.find(params[:id])&.decorate
     else
-      @request_image = RequestImage.joins(:request).where("request_images.id = ? AND requests.uuid = ?", params[:id], params[:uuid]).first&.decorate
+      @request_image = RequestImage.joins(:request).
+        where("request_images.id = ? AND requests.uuid = ?", params[:id], params[:uuid]).first&.decorate
     end
     head 404 unless @request_image&.exists?
   end

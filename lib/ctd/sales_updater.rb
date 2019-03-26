@@ -2,8 +2,11 @@
 
 module CTD
   class SalesUpdater
+    MONTHS = Rails.env.test? ? 1 : 3
+    MONTHS_TEXT = ActionController::Base.helpers.pluralize(MONTHS, "month")
+
     def self.update
-      range = 3.month.ago.beginning_of_month..Time.now.end_of_day
+      range = MONTHS.month.ago.beginning_of_month..Time.now.end_of_day
 
       SalesTotal.where(sold_on: range).delete_all
       update_sales_totals(range)
@@ -15,10 +18,10 @@ module CTD
         created_at_min: range.begin,
         created_at_max: range.end,
       }
-      puts "Loading attributed streak orders for last three months"
+      console_log "Loading attributed streak orders for last #{MONTHS_TEXT}"
       orders = Shopify::Order.attributed params
 
-      puts "Calculating sales totals for #{orders.count} orders"
+      console_log "Calculating sales totals for #{orders.count} orders"
       orders.each do |order|
         # request = Request.find(order.request_id.to_i) if order.request_id.is_a?(String)
         # request ||= Request.joins(:user).where(users: { email: order.customer.email } ).last
@@ -35,7 +38,7 @@ module CTD
 
     def self.update_conversion_rates(date_range)
       epoch_range = date_range.begin.to_i..date_range.end.to_i
-      puts "Updating box counts from last 3 months"
+      console_log "Updating box counts from last #{MONTHS_TEXT}"
       done = false
       page = 1
       total_boxes = 0
@@ -63,12 +66,16 @@ module CTD
                                          salesperson_id: salesperson.id).first_or_create
           sales_total.update_attribute :box_count, sales_total.box_count + 1
         end
-        puts "Processed #{page * 1000} boxes, last was on #{Time.at(boxes.last.creation_timestamp / 1000).to_date}"
+        console_log "Processed #{page * 1000} boxes, last was on #{Time.at(boxes.last.creation_timestamp / 1000).to_date}"
         page += 1
 
       end
       final_count = Request.where.not(contacted_by_id: nil).count
-      puts "Updated salespeople for #{final_count - initial_count} requests based on #{total_boxes} boxes"
+      console_log "Updated salespeople for #{final_count - initial_count} requests based on #{total_boxes} boxes"
+    end
+
+    def self.console_log(message)
+      puts "#{Time.now.to_s} #{message}"
     end
   end
 end

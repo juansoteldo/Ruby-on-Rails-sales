@@ -10,6 +10,6 @@ class Admin::TestController < Admin::BaseController
   end
 
   def cart
-      render layout: 'blank'
+    render layout: 'blank'
   end
 end

@@ -35,12 +35,12 @@ class ApplicationController < ActionController::Base
       headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-Prototype-Version, Token'
       headers['Access-Control-Max-Age'] = '1728000'
 
-      render :text => '', :content_type => 'text/plain'
+      head :ok, content_type: 'text/plain'
     end
   end
 
   def options
-    head :status => 200, :'Access-Control-Allow-Headers' => 'accept, content-type'
+    head  :ok, 'Access-Control-Allow-Headers': 'accept, content-type'
   end
 
   # Security note: controllers with no-CSRF protection must disable the Devise fallback,

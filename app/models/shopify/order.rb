@@ -76,7 +76,7 @@ class Shopify::Order < Shopify::Base
   end
 
   def self.all(params)
-    find_in_batches(params).map { |order| new(order) }
+    find_in_batches(params).map(&method(:new))
   end
 
   def self.count(params)
@@ -94,6 +94,7 @@ class Shopify::Order < Shopify::Base
     1.upto(nb_pages) do |page|
       params[:page] = page
       orders += ShopifyAPI::Order.all(params: params)
+      sleep 0.51
     end
     orders
   end
