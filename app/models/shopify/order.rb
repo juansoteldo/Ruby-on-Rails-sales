@@ -94,7 +94,7 @@ class Shopify::Order < Shopify::Base
     1.upto(nb_pages) do |page|
       params[:page] = page
       orders += ShopifyAPI::Order.all(params: params)
-      sleep 0.51
+      sleep 0.55
     end
     orders
   end
