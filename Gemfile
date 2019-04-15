@@ -32,6 +32,7 @@ gem "jbuilder", "~> 2.5"
 #gem "sdoc", "~> 0.4.0", group: :doc
 
 gem "ahoy_email"
+gem "aws-sdk-s3", require: false
 gem "cancancan", "~> 1.10"
 gem "daemons"
 gem "delayed_job"
@@ -53,14 +54,13 @@ gem "streak-ruby", git: "https://github.com/OnFrontiers/streak-ruby.git"
 # Use Capistrano for deployment
 # gem "capistrano-rails", group: :development
 
-group :production do
+group :production, :staging do
   gem "unicorn"
 end
 
 group :development, :test do
   gem "puma"
 end
-
 
 gem "auto_strip_attributes", "~> 2.1"
 gem "config"
@@ -84,7 +84,7 @@ group :development, :test do
   gem "capistrano-rails"
   gem "capistrano-rails-console", require: false
   gem "capistrano-rbenv"
-
+  gem 'capistrano-nvm', require: false
   gem "rubocop", require: false
   gem "rubocop-airbnb", require: false
 

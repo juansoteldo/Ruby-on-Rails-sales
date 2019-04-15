@@ -25,7 +25,7 @@ class WebhooksController < ApplicationController
     data = request.body.read
     hmac_header = request.headers['HTTP_X_SHOPIFY_HMAC_SHA256']
     digest = OpenSSL::Digest::Digest.new('sha256')
-    calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, ENV['WEBHOOK_SIGNING'], data)).strip
+    calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, ENV['SHOPIFY_WEB_HOOK_KEY'], data)).strip
     puts hmac_header
     unless hmac_header == calculated_hmac
       head :unauthorized
@@ -38,13 +38,13 @@ class WebhooksController < ApplicationController
   end
 
   def shopify_params
-    params.except(:controller, :action, :type)
+    params.to_unsafe_h.except(:controller, :action, :type)
   end
 
   def wpcf7_params
-    params.except(:controller, :action, :type).permit(:client_id, :position, :gender,
-                             :has_color, :is_first_time, :first_name, :last_name,
-                             :linker_param, :_ga, :art_sample_1, :art_sample_2,
-                             :art_sample_3, :description, :email)
+    params.except(:controller, :action, :type).permit(
+        :client_id, :position, :gender, :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :art_sample_1, :art_sample_2,
+        :art_sample_3, :description, :email
+    )
   end
 end

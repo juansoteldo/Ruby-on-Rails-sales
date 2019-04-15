@@ -42,6 +42,7 @@ class Request < ApplicationRecord
   state_machine :state, initial: :fresh do
     after_transition on: :convert, do: :perform_deposit_actions
     after_transition on: :complete, do: :perform_complete_actions
+    after_transition on: :quote, do: :perform_quote_actions
 
     event :convert do
       transition fresh: :deposited, quoted: :deposited
@@ -68,10 +69,21 @@ class Request < ApplicationRecord
     end
   end
 
+  def quote_from_params!(params)
+    return unless fresh?
+    self.variant = params[:variant_id]
+    self.quoted_by_id ||= params[:salesperson_id]
+    save! && quote!
+  end
+
   def salesperson
     @salesperson ||= Salesperson.find(quoted_by_id) if quoted_by_id
     @salesperson ||= Salesperson.find(contacted_by_id) if contacted_by_id
     @salesperson
+  end
+
+  def fresh?
+    state == "fresh"
   end
 
   def converted?
@@ -95,37 +107,35 @@ class Request < ApplicationRecord
   end
 
   def art_sample_1=(file)
-    add_wp_image(file)
+    add_image_from_path(file)
+    File.unlink(file) if File.exist?(file)
   end
 
   def art_sample_2=(file)
-    add_wp_image(file)
+    add_image_from_path(file)
+    File.unlink(file) if File.exist?(file)
   end
 
   def art_sample_3=(file)
-    add_wp_image(file)
+    add_image_from_path(file)
+    File.unlink(file) if File.exist?(file)
   end
 
-  def add_wp_image(file)
+  def add_image_from_path(file)
     return if file.empty?
+
     begin
-      return unless File.exists?(file)
-      if images.where("file LIKE ?", "%#{File.basename(file)}%").any?
-        File.unlink file
-        return
-      end
+      return unless File.exist?(file)
+
       logger.info "Adding #{file}"
-      images.create file: File.new(file)
+      image = RequestImage.from_path(file)
+      image.request_id = id
+      image.save!
     rescue => e
+      raise(e) if Rails.env.test?
       logger.error ">>> Cannot add image to request #{file}"
       logger.error e.message
       logger.error e.backtrace.join("\n")
-    ensure
-      begin
-        File.unlink file if File.exists?(file)
-      rescue
-        logger.error "Cannot delete image file at #{file}"
-      end
     end
   end
 
@@ -140,11 +150,34 @@ class Request < ApplicationRecord
     BoxMailer.final_confirmation_email(self).deliver_later
   end
 
+  def perform_quote_actions
+    begin
+      box = streak_boxes.last
+      return unless box
+
+      current_stage = StreakAPI::Stage.find(key: box.stage_key)
+      return unless current_stage.name == 'Contacted' || current_stage.name == 'Leads'
+
+      StreakAPI::Box.set_stage(box.key, 'Quoted')
+    rescue Exception => e
+      Rails.logger.error "Cannot update streak box for request #{self.id} (#{e})"
+    end
+  end
+
+  def streak_boxes
+    StreakAPI::Box.query(user.email).map do |box|
+      Streak::Box.find(box.box_key)
+    end.select do |box|
+      box_created_at = Time.strptime(box.creation_timestamp.to_s,'%Q')
+      (box_created_at - created_at) < 2.days
+    end
+  end
+
   def perform_deposit_actions
     puts "Sending confirmation email to #{user.email}"
     BoxMailer.confirmation_email(self).deliver_later
     begin
-      StreakAPI::Box.query(user.email).each do |box|
+      streak_boxes.each do |box|
         StreakAPI::Box.set_stage(box.key, 'Deposited')
       end
     rescue Exception => e

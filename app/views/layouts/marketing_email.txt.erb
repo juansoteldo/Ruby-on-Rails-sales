@@ -1,8 +1,8 @@
 <%-
 
-unsub_path = email_preferences_path(email: @request.user.email)
+unsub_path = email_preferences_url(email: @request.user.email)
 unsub_path.slice!("http://")
-unsub_url = "http://#{CTD::URL_HOST}#{unsub_path}"
+unsub_url = "http://#{CTD::APP_HOST}#{unsub_path}"
 
 -%>
 Please click the following link if you do not wish to receive any more of our emails:

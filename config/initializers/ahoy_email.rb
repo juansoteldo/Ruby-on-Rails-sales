@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+AhoyEmail.api = true
+
 class EmailSubscriber
   def open(event); end
 

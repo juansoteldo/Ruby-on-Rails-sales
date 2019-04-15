@@ -11,19 +11,19 @@
     <table class="table table-responsive">
       <tbody>
       <tr>
-        <th class="text-right">Time</th>
-        <td class="text-left" id="eventStartTime">
+        <td class="text-right col-xs-6">Time</td>
+        <th class="text-left col-xs-6" id="eventStartTime">
           <%= @event.starts_at.strftime("%A, %B #{@event.starts_at.day.ordinalize}") %><br>
           <%= @event.starts_at.strftime("%H:%M %Z") %>
-        </td>
+        </th>
       </tr>
       <tr>
-        <th class="text-right">Your Number</th>
-        <td class="text-left"><%= @event.user.phone_number.phony_formatted(format: :international) %></td>
+        <td class="text-right">Your Number</td>
+        <th class="text-left"><%= @event.user.phone_number.phony_formatted(format: :international) %></th>
       </tr>
       <tr>
-        <th class="text-right">We'll Call Using</th>
-        <td class="text-left"><%= @event.source[:answer_2].sub("\n", "<br>").html_safe %></td>
+        <td class="text-right">We'll Call Using</td>
+        <th class="text-left"><%= @event.contact_methods.join("<br>").html_safe %></th>
       </tr>
       </tbody>
     </table>
@@ -33,6 +33,12 @@
   <div class="col text-center">
     <br>
     <br>
-    <a class="btn btn-default" href="https://customtattoodesign.ca/gallery/">Back to Our Gallery</a>
+    <a class="btn btn-primary" href="https://customtattoodesign.ca/">Back to Our Web Site</a>
   </div>
 </div>
+
+<%= content_tag :div, class: "event_info", data: { request: @event.request, event: @event } do %>
+<% end %>
+<script>
+  <%= render partial: "public/analytics.js.erb", locals: { request: @event.request } %>
+</script>

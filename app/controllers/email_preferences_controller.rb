@@ -10,7 +10,7 @@ class EmailPreferencesController < ApplicationController
   # PATCH/PUT /email_preferences/1.json
   def update
     if @user.update(email_preference_params)
-      redirect_to email_preferences_path(email: @user.email), notice: 'Email preferences were successfully updated.'
+      redirect_to email_preferences_url(email: @user.email), notice: 'Email preferences were successfully updated.'
     else
       render :edit
     end

@@ -800,7 +800,7 @@
               client_id: getClientId()
             };
 
-            $.post('http://<%= @host %>:<%= @port %>/public/new_request.json',_p,function (_r) {
+            $.post('<%= CTD::APP_URL %>/public/new_request.json',_p,function (_r) {
                   var uid = getAndSetCookie('uid', _r.user_id);
                   ga('set', '&uid', uid);
                 }, 'json'

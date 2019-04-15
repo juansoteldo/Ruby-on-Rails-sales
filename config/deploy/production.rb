@@ -1,3 +1,4 @@
+set :linked_files, ['.env.production']
 set :stage, :production
 set :rails_env, :production
 

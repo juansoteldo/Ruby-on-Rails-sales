@@ -26,8 +26,7 @@ class Admin::RequestsController < Admin::BaseController
 
   # GET /requests/1
   # GET /requests/1.json
-  def show
-  end
+  def show; end
 
   def opt_out
     user = @request.user

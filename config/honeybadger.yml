@@ -1,2 +1,2 @@
 ---
-api_key: 'eb907642'
+api_key: <%= ENV.fetch("HONEYBADGER_KEY", "eb907642") %>

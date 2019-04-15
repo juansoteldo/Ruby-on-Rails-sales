@@ -20,6 +20,7 @@ class Api::UsersController < Api::BaseController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_user
     @user = User.where(email: params[:email]).first_or_create

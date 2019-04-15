@@ -21,8 +21,7 @@ class StreakAPI::Box < StreakAPI::Base
     Rails.cache.fetch("streak_box/query/" + query, expires_in: 10.seconds) do
       Streak.api_key = Rails.application.config.streak_api_key
       results = Streak::Search.query(query).results
-      puts "Ran query with '#{query}', got #{results && results.boxes.count || '0'} boxes"
-      results && results.boxes || [{}]
+      results&.boxes || [{}]
     end
   end
 
@@ -45,7 +44,7 @@ class StreakAPI::Box < StreakAPI::Base
     new_stage = StreakAPI::Stage.find(name: stage_name)
 
     Streak.api_key = Rails.application.config.streak_api_key
-    Streak::Box.update(box_id, stageKey: new_stage.key)
+    Streak::Box.update(box_id, stageKey: new_stage.key) unless Rails.env.test?
   end
 
   def self.add_follower(user_api_key, box_id, follower_key)

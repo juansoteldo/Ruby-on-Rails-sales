@@ -5,5 +5,5 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
-  email: "admin@customtattoodesign.test"
+  email: admin@example.com
   password: "testpwd"

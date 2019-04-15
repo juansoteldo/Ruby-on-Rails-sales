@@ -7,29 +7,29 @@
 <div class="card card-raised">
   <div class="content">
     <div class="table-responsive">
-    <table class="table table-striped table-sales" style="margin-top: 4rem;">
-      <thead>
-      <tr>
-        <th colspan="3"></th>
-        <% index = 1
-           @statistic_parameters.each do |key, values|
-             index += 1 %>
+      <table class="table table-striped table-sales" style="margin-top: 4rem;">
+        <thead>
+        <tr>
+          <th colspan="3"></th>
+          <% index = 1
+             @statistic_parameters.each do |key, values|
+               index += 1 %>
             <th class="text-center <%= (index % 2 == 0) ? 'bg-gray' : '' %>" colspan="2"><%= t key %></th>
-        <% end %>
-      </tr>
-      <tr>
-        <th>Email</th>
-        <th>Active?</th>
-        <th>Admin?</th>
-        <% index = 1
-           @statistic_parameters.each do |key, values|
-             index += 1%>
+          <% end %>
+        </tr>
+        <tr>
+          <th>Email</th>
+          <th>Active?</th>
+          <th>Admin?</th>
+          <% index = 1
+             @statistic_parameters.each do |key, values|
+               index += 1%>
             <th class="text-right <%= (index % 2 == 0) ? 'bg-gray' : '' %>">Sales</th>
             <th class="text-right <%= (index % 2 == 0) ? 'bg-gray' : '' %>">CR</th>
-        <% end %>
-      </tr>
-      </thead>
-      <% @salespeople.each do |salesperson| %>
+          <% end %>
+        </tr>
+        </thead>
+        <% @salespeople.each do |salesperson| %>
           <tr>
             <td>
               <%= link_to salesperson.email, [:edit, :admin, salesperson] %>
@@ -44,25 +44,23 @@
               index = 1
               @statistic_parameters.each do |key, values|
                 index += 1%>
-                <td class="text-right  <%= (index % 2 == 0) ? 'bg-gray' : '' %>">
-                  <% if SalesTotal.where(salesperson: salesperson, sold_on: values[:range] ).any? &&
-                      sales_total(salesperson, values[:range] ).positive? %>
-                      <%= number_to_currency sales_total( salesperson, values[:range] ), precision: 0 %>
-                      (<%= sales_count(salesperson, values[:range]) %>)
+              <td class="text-right  <%= (index % 2 == 0) ? 'bg-gray' : '' %>">
+                <% if sales_total(salesperson, values[:range]) && sales_total(salesperson, values[:range] ).positive? %>
+                  <%= number_to_currency sales_total( salesperson, values[:range] ), precision: 0 %>
+                  (<%= sales_count(salesperson, values[:range]) %>)
+                <% end %>
+              </td>
+              <td class="text-right  <%= (index % 2 == 0) ? 'bg-gray' : '' %>">
+                <% if sales_total(salesperson, values[:range]) %>
+                  <% if sales_count(salesperson, values[:range]).positive? %>
+                    <%= conversion_rate(salesperson, values[:range]) %>
                   <% end %>
-                </td>
-                <td class="text-right  <%= (index % 2 == 0) ? 'bg-gray' : '' %>">
-                  <% if SalesTotal.where(salesperson: salesperson, sold_on: values[:range] ).any? %>
-                      <% if sales_count(salesperson, values[:range]).positive? %>
-                          <%= conversion_rate(salesperson, values[:range]) %>
-                      <% end %>
-
-                  <% end %>
-                </td>
+                <% end %>
+              </td>
             <% end %>
           </tr>
-      <% end %>
-    </table>
-  </div>
+        <% end %>
+      </table>
+    </div>
   </div>
 </div>

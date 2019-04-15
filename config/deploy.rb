@@ -3,7 +3,11 @@ set :repo_url, 'ssh://git@bitbucket.org/fluxinc/ctd-worklist.git'
 
 set :rbenv_type, :user
 set :rbenv_path, '/home/deploy/.rbenv'
-set :rbenv_ruby, "2.4.4"
+set :rbenv_ruby, "2.5.3"
+
+set :nvm_type, :user # or :system, depends on your nvm setup
+set :nvm_node, 'v8.15.1'
+set :nvm_map_bins, %w{node npm yarn}
 
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
@@ -15,7 +19,6 @@ set :deploy_to, '/u/apps/ctd'
 # set :log_level, :debug
 # set :pty, true
 
-set :linked_files, ['.env.production']
 set :linked_dirs, ['log', 'published_files', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'tmp/uploads', 'vendor/bundle', 'public/system']
 
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }

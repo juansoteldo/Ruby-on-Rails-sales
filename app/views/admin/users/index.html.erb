@@ -16,7 +16,7 @@
       <td><%= user.presales_opt_in && "&check;".html_safe || "" %></td>
       <td><%= user.marketing_opt_in && "&check;".html_safe || "" %></td>
       <td><%= user.crm_opt_in && "&check;".html_safe || "" %></td>
-      <td><%= link_to 'Change', email_preferences_path(email: user.email), target: "_blank" %></td>
+      <td><%= link_to 'Change', email_preferences_url(email: user.email), target: "_blank" %></td>
     </tr>
   <% end %>
   </tbody>

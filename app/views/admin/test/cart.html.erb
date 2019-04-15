@@ -892,7 +892,7 @@
                 };
                 var $ = jquery();
 
-                $.post('//<%= Rails.env.development? && @host ||  'api.customtattoodesign.ca' %>/public/get_uid.json',_p,function (response) {
+                $.post('<%= CTD::APP_URL %>/public/get_uid.json',_p,function (response) {
                       if (!response) return;
                       ga('set', '&uid', response);
                       getAndSetCookie('uid', response);
@@ -924,7 +924,7 @@
                   var _p = {
                     email: $('#checkout_email').val()
                   };
-                  $.post('//<%= Rails.env.development? && @host ||  'api.customtattoodesign.ca' %>/public/get_ids.json', _p, function(response) {
+                  $.post('<%= CTD::APP_URL %>/public/get_ids.json', _p, function(response) {
                     console.log(response);
                     if (!response) return;
                     setCookie('_ga', response._ga);

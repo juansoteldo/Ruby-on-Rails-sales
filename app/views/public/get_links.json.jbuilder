@@ -1,6 +1,6 @@
 json.user_id @user.id
 
-json.requests @user.requests do |request|
+json.requests(@user.requests) do |request|
 	json.id request.id
 	json.user_id request.user_id
 	json.client_id request.client_id
@@ -14,7 +14,7 @@ json.requests @user.requests do |request|
 	json.has_cover request.has_cover_up
 end
 
-json.groups @groups do |group|
+json.groups(@groups) do |group|
 	json.title group.title
 	json.id group.id
 	json.products group.products do |product|
@@ -26,7 +26,7 @@ json.groups @groups do |group|
 			json.price variant.price
 			json.has_color variant.has_color?
 			json.has_cover variant.has_cover_up?
-			json.url "http://#{@host}/public/redirect/#{product.handle}/#{variant.id}?clientId=&linkerParam=&requestId=&_ga=&uid="
+			json.url "#{CTD::APP_URL}/public/redirect/#{product.handle}/#{variant.id}?clientId=&linkerParam=&requestId=&_ga=&uid="
 		end
 	end
 end
