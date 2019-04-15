@@ -81,4 +81,9 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     assert @response.body.include?(@existing_request.client_id)
   end
 
+  test "should fail to get new_request with generic missing parameters" do
+    get :new_request, { position: "Chest", gender: "Male", first_name: "John", client_id: "123456" }
+    assert_response :error
+  end
+
 end

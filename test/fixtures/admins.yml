@@ -6,4 +6,4 @@
 #
 one:
   email: admin@example.com
-
+  password: "testpwd"
