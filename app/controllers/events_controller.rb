@@ -10,13 +10,16 @@ class EventsController < ApplicationController
   #   &invitee_last_name=Smith&invitee_email=john%40example.com&answer_1=%2B14165551212&answer_2=WhatsApp
 
   def create
-    event = Event.from_params(event_params)
-    event.save!
+    @event = Event.from_params(event_params)
+    authorize @event
+    @event.save!
 
-    redirect_to event_path(event.uuid)
+    redirect_to event_path(@event.uuid)
   end
 
-  def show; end
+  def show
+    authorize @event
+  end
 
   private
 

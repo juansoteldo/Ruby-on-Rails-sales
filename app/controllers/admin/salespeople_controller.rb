@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Admin::SalespeopleController < Admin::BaseController
-  before_action :require_admin
-
   def index
     @statistic_parameters = {
       3.months.ago.strftime("%B").to_sym => {
@@ -18,15 +16,17 @@ class Admin::SalespeopleController < Admin::BaseController
         range: (Time.zone.now.beginning_of_month..Time.zone.now),
       },
     }
-    @salespeople = Salesperson.all
+    @salespeople = policy_scope(Salesperson)
   end
 
   def new
     @salesperson = Salesperson.new
+    authorize @salesperson
   end
 
   def create
     @salesperson = Salesperson.new salesperson_params
+    authorize @salesperson
 
     if salesperson.save
       redirect_to [:admin, :salespeople], notice: "Salesperson created"
@@ -36,6 +36,7 @@ class Admin::SalespeopleController < Admin::BaseController
   end
 
   def edit
+    authorize salesperson
   end
 
   def update
@@ -47,12 +48,6 @@ class Admin::SalespeopleController < Admin::BaseController
   end
 
   private
-
-  def require_admin
-    unless current_salesperson && current_salesperson.admin?
-      redirect_to [:admin, :root], notice: "Access denied"
-    end
-  end
 
   helper_method :salesperson
 

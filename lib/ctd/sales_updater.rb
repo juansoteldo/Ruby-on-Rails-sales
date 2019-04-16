@@ -28,8 +28,9 @@ module CTD
 
         #        puts "Cannot find request for #{order.customer.email}" unless request
         created_at = order.created_at.to_date
+        salesperson = Salesperson.find_or_create_with_id(order.sales_id.to_i)
         total = SalesTotal.where(sold_on: created_at,
-                                 salesperson_id: order.sales_id.to_i).first_or_create
+                                 salesperson_id: salesperson.id).first_or_create
         total.order_total += order.total_price.to_f.round(2)
         total.order_count += 1
         total.save!

@@ -20,10 +20,12 @@
             <%= link_to "Requests", [:admin, :requests] %>
           </li>
 
-          <% if current_salesperson.admin? %>
+          <% if policy(current_salesperson).index? %>
             <li>
               <%= link_to "Salespeople", [:admin, :salespeople] %>
             </li>
+          <% end %>
+          <% if policy(Admin::EmailStatisticsController).index? %>
             <li>
               <%= link_to "Email Statistics", admin_email_statistics_path %>
             </li>

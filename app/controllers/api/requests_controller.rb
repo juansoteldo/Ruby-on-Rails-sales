@@ -13,7 +13,7 @@ class Api::RequestsController < Api::BaseController
 
   def update
     if @request.update(request_params)
-      render json: @request, status: :created, location: [:api, @request ]
+      render json: @request, status: :created, location: [:api, @request]
     else
       render json: @request.errors, status: :unprocessable_entity
     end

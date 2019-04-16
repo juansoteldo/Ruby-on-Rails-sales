@@ -2,13 +2,12 @@
 
 class Admin::RequestsController < Admin::BaseController
   skip_before_action :verify_authenticity_token, only: [:edit, :update]
-  load_and_authorize_resource :request, class: Request
   before_action :set_request, only: [:show, :edit, :update, :destroy, :opt_out]
 
   # GET /requests
   # GET /requests.json
   def index
-    @requests = Request.joins(:user).includes(:images).order(created_at: :desc)
+    @requests = policy_scope(Request).joins(:user).includes(:images).order(created_at: :desc)
 
     if params[:search]
       term = params[:search].downcase
@@ -26,9 +25,12 @@ class Admin::RequestsController < Admin::BaseController
 
   # GET /requests/1
   # GET /requests/1.json
-  def show; end
+  def show
+    authorize @request
+  end
 
   def opt_out
+    authorize @request
     user = @request.user
     user.opted_out = true
     respond_to do |format|

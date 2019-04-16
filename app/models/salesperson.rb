@@ -32,6 +32,12 @@ class Salesperson < ApplicationRecord
       update_all contacted_by_id: id
   end
 
+  def self.find_or_create_with_id(id)
+    salesperson = Salesperson.find(id)
+    return salesperson if salesperson
+    Salesperson.create id: id, email: "salesperson#{id}@customtattoodesign.ca", is_active: false
+  end
+
   def self.with_sales(params)
     salespeople = Salesperson.all.to_a.map do |salesperson|
       params.each do |key, value|

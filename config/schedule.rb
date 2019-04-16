@@ -8,10 +8,10 @@ set :output, File.expand_path( '../log/cron.log', File.dirname(__FILE__) )
 
 
 every 1.day, at: '13:30' do
-  rake 'send_reminders'
+  rake 'recurring:send_reminders'
 end
 
 
 every 1.day, at: '03:00' do
-  rake 'update_sales_totals'
+  rake 'recurring:update_sales_totals'
 end

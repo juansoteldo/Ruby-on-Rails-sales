@@ -6,6 +6,7 @@ class MarketingController < ApplicationController
   before_action :load_user, only: [:opt_out]
 
   def opt_out
+    authorize @user
     @user.update marketing_opt_in: false, presales_opt_in: false
     redirect_to email_preferences_url(email: @user.email)
   end
