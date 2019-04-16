@@ -2,6 +2,8 @@
 
 class Admin::EmailStatisticsController < Admin::BaseController
 
-  def index; end
+  def index
+    authorize(Admin::EmailStatisticsController)
+  end
 
 end

@@ -1,6 +1,8 @@
 <div class="heading">
+  <% if policy(Salesperson).create? %>
   <%= link_to "New salesperson", [:new, :admin, :salesperson],
               class: "btn btn-primary btn-sm pull-right" %>
+  <% end %>
   <h2>Salespeople</h2>
 </div>
 
@@ -32,7 +34,11 @@
         <% @salespeople.each do |salesperson| %>
           <tr>
             <td>
-              <%= link_to salesperson.email, [:edit, :admin, salesperson] %>
+              <% if policy(Salesperson).update? %>
+                <%= link_to salesperson.email, [:edit, :admin, salesperson] %>
+              <% else %>
+                <%= salesperson.email %>
+              <% end %>
             </td>
             <td class="text-center">
               <%= tag :i, class: 'glyphicon glyphicon-ok' if salesperson.is_active? %>

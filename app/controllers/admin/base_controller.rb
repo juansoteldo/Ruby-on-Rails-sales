@@ -6,8 +6,8 @@ class Admin::BaseController < ApplicationController
 
   private
 
-  def current_ability
-    @current_ability ||= AdminAbility.new(current_admin)
+  def pundit_user
+    current_salesperson
   end
 
   def load_products

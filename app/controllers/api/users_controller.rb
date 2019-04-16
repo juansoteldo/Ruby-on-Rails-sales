@@ -4,7 +4,7 @@ class Api::UsersController < Api::BaseController
   before_action :set_user, only: [:show, :update]
 
   def index
-    params[:email].to_s.empty? ? @users = User.none : @users = User.where(email: params[:email])
+    @users = params[:email].to_s.empty? ? User.none : User.where(email: params[:email])
   end
 
   def show; end
