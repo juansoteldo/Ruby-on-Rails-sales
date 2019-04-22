@@ -5,13 +5,21 @@ require 'fileutils'
 
 module CTD
   class GmailImporter
-    OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
-    TOKEN_PATH = Rails.root.join("tmp/gmail_token.yaml").freeze
-    SCOPE = Google::Apis::GmailV1::AUTH_GMAIL_READONLY
-    CREDENTIALS_PATH = Rails.root.join("tmp", "credentials.json").freeze
-    APPLICATION_NAME = "CTD API".freeze
+    def self.threads(*params)
+      params ||= [Settings.gmail.labels.design_requests]
+      service.list_user_threads(ME, *params)&.threads
+    end
 
-    def self.import
+    def self.messages(*params)
+      params ||= [Settings.gmail.labels.design_requests]
+      service.list_user_messages(ME, *params)&.messages
+    end
+
+    def self.message(id, *params)
+      service.get_user_message(ME, id, *params)
+    end
+
+    def self.filter_threads
 
     end
 
@@ -23,7 +31,10 @@ module CTD
       @service
     end
 
-    private
+    def self.labels
+      response = service.list_user_labels(ME)
+      response.labels
+    end
 
     ##
     # Ensure valid credentials, either by restoring from the saved credentials
@@ -48,4 +59,12 @@ module CTD
       end
       credentials
     end
+
+    ME = "ME".freeze
+    OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
+    TOKEN_PATH = Rails.root.join("tmp/gmail_token.yaml").freeze
+    SCOPE = Google::Apis::GmailV1::AUTH_GMAIL_READONLY
+    CREDENTIALS_PATH = Rails.root.join("config", "gmail_credentials.json").freeze
+    APPLICATION_NAME = "CTD API".freeze
   end
+end

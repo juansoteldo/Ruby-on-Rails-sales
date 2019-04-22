@@ -19,6 +19,8 @@ set :deploy_to, '/u/apps/ctd'
 # set :log_level, :debug
 # set :pty, true
 
+# Get from here https://developers.google.com/gmail/api/quickstart/ruby
+set :linked_files, ['config/gmail_credentials.json', 'tmp/gmail_token.yaml']
 set :linked_dirs, ['log', 'published_files', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'tmp/uploads', 'vendor/bundle', 'public/system']
 
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
