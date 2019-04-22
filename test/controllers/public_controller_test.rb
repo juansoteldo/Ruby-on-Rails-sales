@@ -61,7 +61,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "set_link should assign quotation parameters" do
-    variant = Shopify::Variant.all.first
+    variant = MostlyShopify::Variant.all.first
     request = requests(:fresh)
     get set_link_path(request_id: request.id, variant_id: variant.id, salesperson_id: @salesperson.id, format: :json)
     assert_response :success
@@ -72,8 +72,8 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should redirect to shopify cart" do
-    variant = Shopify::Variant.all.first
-    product = Shopify::Product.find(variant.product_id).first
+    variant = MostlyShopify::Variant.all.first
+    product = MostlyShopify::Product.find(variant.product_id).first
     get cart_redirect_path(product.handle, variant.id, requestId: @existing_request.id)
     assert_response :success
     assert @response.body.include?(product.handle)

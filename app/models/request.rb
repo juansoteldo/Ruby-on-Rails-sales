@@ -155,17 +155,17 @@ class Request < ApplicationRecord
       box = streak_boxes.last
       return unless box
 
-      current_stage = StreakAPI::Stage.find(key: box.stage_key)
+      current_stage = MostlyStreak::Stage.find(key: box.stage_key)
       return unless current_stage.name == 'Contacted' || current_stage.name == 'Leads'
 
-      StreakAPI::Box.set_stage(box.key, 'Quoted')
+      MostlyStreak::Box.set_stage(box.key, 'Quoted')
     rescue Exception => e
       Rails.logger.error "Cannot update streak box for request #{self.id} (#{e})"
     end
   end
 
   def streak_boxes
-    StreakAPI::Box.query(user.email).map do |box|
+    MostlyStreak::Box.query(user.email).map do |box|
       Streak::Box.find(box.box_key)
     end.select do |box|
       box_created_at = Time.strptime(box.creation_timestamp.to_s,'%Q')
@@ -178,7 +178,7 @@ class Request < ApplicationRecord
     BoxMailer.confirmation_email(self).deliver_later
     begin
       streak_boxes.each do |box|
-        StreakAPI::Box.set_stage(box.key, 'Deposited')
+        MostlyStreak::Box.set_stage(box.key, 'Deposited')
       end
     rescue Exception => e
       Rails.logger.error "Cannot update streak box for request #{self.id} (#{e})"
@@ -190,7 +190,7 @@ class Request < ApplicationRecord
     return sub_total if sub_total
     return 0 if deposit_order_id.nil?
 
-    order = Shopify::Order.find(deposit_order_id).first
+    order = MostlyShopify::Order.find(deposit_order_id).first
     return 0 unless order
     self.update_column :sub_total, order.subtotal_price
     sub_total.to_f

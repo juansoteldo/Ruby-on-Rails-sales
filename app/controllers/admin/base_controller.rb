@@ -11,7 +11,7 @@ class Admin::BaseController < ApplicationController
   end
 
   def load_products
-    @groups = Shopify::Group.all
+    @groups = MostlyShopify::Group.all
   end
 
 end
