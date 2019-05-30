@@ -44,7 +44,7 @@ class WebhooksController < ApplicationController
   def wpcf7_params
     params.except(:controller, :action, :type).permit(
         :client_id, :position, :gender, :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :art_sample_1, :art_sample_2,
-        :art_sample_3, :description, :email
+        :art_sample_3, :description, :email, user_attributes: [ :marketing_opt_in, :presales_opt_in, :crm_opt_in ]
     )
   end
 end

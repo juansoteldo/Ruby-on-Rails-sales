@@ -2,6 +2,7 @@
 
 class Request < ApplicationRecord
   belongs_to :user, optional: true
+  accepts_nested_attributes_for :user
   has_many :delivered_emails
   has_many :images, class_name: "RequestImage"
   has_one :event

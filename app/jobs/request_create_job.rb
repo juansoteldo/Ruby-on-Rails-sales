@@ -11,9 +11,7 @@ class RequestCreateJob < ApplicationJob
   def make_request!
     @request = Request.recent.where(user_id: @user.id,
                                     position: params[:position]).first_or_create
-    @request.assign_attributes params
-    @request.user_id = @user.id
-    @request.save!
+    @request.update! params
   end
 
   private
@@ -24,13 +22,16 @@ class RequestCreateJob < ApplicationJob
 
   def set_user_by_email
     normalize_email!
-    if User.where(email: params[:email]).any?
-      @user =  User.find_by_email params.delete(:email)
-    else
-      password = SecureRandom.hex(8)
-      @user = User.create! email: params.delete(:email),
+    @user = if User.where(email: params[:email]).any?
+              User.find_by_email params[:email]
+            else
+              password = SecureRandom.hex(8)
+              User.create! email: params[:email],
                            password: password, password_confirmation: password
-    end
+            end
+    params[:user_attributes] ||= {}
+    params[:user_attributes][:id] = @user.id
+    params[:user_attributes][:email] = params.delete(:email)
   end
 
   def normalize_email!

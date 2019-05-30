@@ -87,6 +87,7 @@ group :development, :test do
   gem 'capistrano-nvm', require: false
   gem "rubocop", require: false
   gem "rubocop-airbnb", require: false
+  gem "rb-readline"
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"

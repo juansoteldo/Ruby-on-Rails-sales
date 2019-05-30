@@ -18,6 +18,16 @@ class ActiveSupport::TestCase
       last_name: "Smith",
       email: "johnsmith@example.com",
       position: "Sleeve",
+      has_color: "0",
+      is_first_time: "0",
+      gender: "Male",
+      description: "Test test",
+      art_sample_1: "",
+      art_sample_2: "",
+      art_sample_3: "",
+      linker_param: "",
+      _ga: "",
+      client_id: "",
     }
   end
 
@@ -30,7 +40,6 @@ class ActiveSupport::TestCase
     Pathname.new(path)
   end
 
-
   def request_with_image(path)
     request = requests(:deposited)
     request.add_image_from_path(path)
@@ -38,6 +47,6 @@ class ActiveSupport::TestCase
   end
 
   def content_type(path)
-    `file -Ib #{path}`.gsub(/\n/,"").split(";")[0]
+    `file -Ib #{path}`.gsub(/\n/, "").split(";")[0]
   end
 end
