@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require "shopify_api"
+
 class OrdersCreateJob < ApplicationJob
   queue_as :webhook
 
@@ -7,5 +11,3 @@ class OrdersCreateJob < ApplicationJob
     order.update_request
   end
 end
-
-require 'streak_api/box'
