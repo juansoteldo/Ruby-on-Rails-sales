@@ -20,5 +20,17 @@ module MostlyStreak
         end
       end
     end
+
+    def self.contacted
+      Rails.cache.fetch("streak_stage/contacted", expires_in: 1.hour) do
+        find(name: "Contacted")
+      end
+    end
+
+    def self.leads
+       Rails.cache.fetch("streak_stage/leads", expires_in: 1.hour) do
+        find(name: "Leads")
+      end
+    end
   end
 end

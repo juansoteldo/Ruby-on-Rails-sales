@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class PublicControllerTest < ActionDispatch::IntegrationTest
+  include ActiveJob::TestHelper
+
   setup do
     @existing_request = requests(:fresh)
     @salesperson = salespeople(:active)
@@ -86,4 +88,18 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     assert_response 422
   end
 
+
+  test "should save email and update streak box stage" do
+    salesperson = Salesperson.first
+    user = User.first
+    box = new_streak_box_for_email(user.email)
+    assert box.stage_key != MostlyStreak::Stage.contacted.key
+    perform_enqueued_jobs do
+      get save_email_path(params: { thread_id: nil, recipient_email: box.name, from_email: salesperson.email }, format: :js)
+      assert_response :success
+      box = MostlyStreak::Box.find(box.key)
+      assert box.stage_key == MostlyStreak::Stage.contacted.key
+    end
+
+  end
 end

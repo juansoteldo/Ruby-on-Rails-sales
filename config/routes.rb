@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  get "email_preferences", to: "email_preferences#edit"
+  get "email_preferences", to: "email_preferences#edit", as: :email_preferences
   resources :email_preferences, only: [:update]
   devise_for :salespeople
   devise_for :admins
