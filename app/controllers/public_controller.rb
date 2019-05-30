@@ -85,19 +85,19 @@ class PublicController < ApplicationController
     recipient_email = params[:recipient_email]
     @salesperson.claim_requests_with_email(recipient_email)
 
-    box = StreakAPI::Box.find_by_email(recipient_email)
+    box = MostlyStreak::Box.find_by_email(recipient_email)
     if box
-      current_stage = StreakAPI::Stage.find(key: box.stage_key)
+      current_stage = MostlyStreak::Stage.find(key: box.stage_key)
 
       if current_stage.name == 'Leads'
-        StreakAPI::Box.set_stage(box.key, 'Contacted')
+        MostlyStreak::Box.set_stage(box.key, 'Contacted')
       end
 
       user_key = @salesperson&.user_key
-      user_key ||= StreakAPI::User.find_by_email(from_email)
+      user_key ||= MostlyStreak::User.find_by_email(from_email)
 
       if user_key
-        StreakAPI::Box.add_follower(@salesperson.streak_api_key, box.key, user_key)
+        MostlyStreak::Box.add_follower(@salesperson.streak_api_key, box.key, user_key)
       else
         Rails.logger.error ">>> Cannot get streak follower key for `#{from_email}`"
       end
@@ -131,7 +131,7 @@ class PublicController < ApplicationController
   def set_shopify_order
     return if params[:order_id].blank?
     source_order = ShopifyAPI::Order.find(params[:order_id])
-    @order = Shopify::Order.new source_order
+    @order = MostlyShopify::Order.new source_order
   end
 
   def set_salesperson_by_email
@@ -158,7 +158,7 @@ class PublicController < ApplicationController
   end
 
   def load_products
-    @groups = Shopify::Group.all.reject do |group|
+    @groups = MostlyShopify::Group.all.reject do |group|
       group.products.count == 0
     end
   end

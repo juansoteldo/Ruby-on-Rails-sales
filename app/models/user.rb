@@ -14,6 +14,13 @@ class User < ApplicationRecord
   auto_strip_attributes :email
   phony_normalize :phone_number, default_country_code: 'US'
 
+  validates_presence_of :email
+  validates_length_of :email, minimum: 5
+
+  def email=(value)
+    self[:email] = value.downcase.strip
+  end
+
   def opted_out
     !presales_opt_in && !marketing_opt_in
   end

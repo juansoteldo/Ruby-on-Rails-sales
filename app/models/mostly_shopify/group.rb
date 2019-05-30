@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'shopify/product'
+require 'mostly_shopify/product'
 
-class Shopify::Group
+class MostlyShopify::Group
   attr_accessor :title, :products, :id
 
   def self.all
-    products = Shopify::Product.all
+    products = MostlyShopify::Product.all
     groups = products.map do |product|
       product.title.sub( 'Final Payment', '' ).sub( 'Deposit', '').strip
     end.uniq.map do |name|
@@ -23,5 +23,3 @@ class Shopify::Group
     @products = products
   end
 end
-
-

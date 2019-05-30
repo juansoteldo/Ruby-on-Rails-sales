@@ -46,7 +46,7 @@ gem "phony_rails"
 gem "pundit"
 gem "shopify_api"
 gem "simple_form"
-gem "streak-ruby", git: "https://github.com/OnFrontiers/streak-ruby.git"
+gem "streak-ruby", github: "mostlydev/streak-ruby", branch: "master"
 
 # Use ActiveModel has_secure_password
 # gem "bcrypt", "~> 3.1.7"
@@ -87,6 +87,7 @@ group :development, :test do
   gem 'capistrano-nvm', require: false
   gem "rubocop", require: false
   gem "rubocop-airbnb", require: false
+  gem "rb-readline"
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"

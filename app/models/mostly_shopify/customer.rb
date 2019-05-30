@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'shopify/base'
+require 'mostly_shopify/base'
 
-class Shopify::Customer < Shopify::Base
+class MostlyShopify::Customer < MostlyShopify::Base
   def self.search(params)
     ShopifyAPI::Customer.search(params).map{ |c| self.new(c) }
   end
@@ -12,8 +12,6 @@ class Shopify::Customer < Shopify::Base
   end
 
   def orders
-    @source.orders.map{|v| Shopify::Order.new(v)}
+    @source.orders.map{|v| MostlyShopify::Order.new(v)}
   end
-
 end
-

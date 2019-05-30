@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'shopify/base'
+require "mostly_shopify/base"
 
-class Shopify::Variant < Shopify::Base
+class MostlyShopify::Variant < MostlyShopify::Base
   def has_color?
     is_gift_card? && false || (@source.option1 == 'yes')
   end

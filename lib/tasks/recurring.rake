@@ -26,7 +26,7 @@ namespace :recurring do
 
     puts "Fetching orders for last #{maximum_age} days"
 
-    orders = Shopify::Order.find(created_at_min: cutoff, limit: 250)
+    orders = MostlyShopify::Order.find(created_at_min: cutoff, limit: 250)
     puts "Updating requests for #{orders.count} orders"
     orders.each(&:update_request)
 
