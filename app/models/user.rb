@@ -18,7 +18,7 @@ class User < ApplicationRecord
   validates_length_of :email, minimum: 5
 
   def email=(value)
-    self[:email] = value.downcase.strip
+    self[:email] = value&.downcase&.strip
   end
 
   def opted_out

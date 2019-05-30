@@ -46,7 +46,7 @@ gem "phony_rails"
 gem "pundit"
 gem "shopify_api"
 gem "simple_form"
-gem "streak-ruby", github: "mostlydev/streak-ruby", branch: "master"
+gem "streak-ruby"
 
 # Use ActiveModel has_secure_password
 # gem "bcrypt", "~> 3.1.7"

@@ -9,6 +9,14 @@ module MostlyStreak
 
     end
 
+    def self.create(email)
+      Streak::Box.create(ENV['STREAK_PIPELINE_ID'], { name: email })
+    end
+
+    def self.delete(box_key)
+      Streak::Box.delete(box_key)
+    end
+
     def self.all
       Rails.cache.fetch("streak_box/all", expires_in: 2.minutes) do
         Streak.api_key = Rails.application.config.streak_api_key
@@ -31,36 +39,36 @@ module MostlyStreak
       end
     end
 
-    def self.find(box_id)
+    def self.find(box_key)
       Streak.api_key = Rails.application.config.streak_api_key
-      Streak::Box.find(box_id)
+      Streak::Box.find(box_key)
     end
 
     def self.find_by_email(email)
       return unless email =~ /\A[^@]+@[^@]+\Z/
       Streak.api_key = Rails.application.config.streak_api_key
-      box_id = MostlyStreak::Box.query(email).select do |box|
+      box_key = MostlyStreak::Box.query(email).select do |box|
         box.name.casecmp(email.downcase).zero?
       end.last.try(&:box_key)
 
-      box_id && Streak::Box.find(box_id) || nil
+      box_key && Streak::Box.find(box_key) || nil
     end
 
-    def self.set_stage(box_id, stage_name)
-      new_stage = MostlyStreak::Stage.find(name: stage_name)
-
+    def self.set_stage(box_key, stage_name)
       Streak.api_key = Rails.application.config.streak_api_key
-      Streak::Box.update(box_id, stageKey: new_stage.key) unless Rails.env.test?
+      new_stage = MostlyStreak::Stage.find(name: stage_name)
+      raise "cannot find stage key for `#{stage_name}`" unless new_stage
+      Streak::Box.update(box_key, stageKey: new_stage.key)
     end
 
-    def self.add_follower(user_api_key, box_id, follower_key)
+    def self.add_follower(user_api_key, box_key, follower_key)
       # has to be user specific
       Streak.api_key = user_api_key
-      box = Streak::Box.find(box_id)
+      box = Streak::Box.find(box_key)
       follower_keys = box.follower_keys | [follower_key]
-      Streak::Box.update(box_id, followerKeys: follower_keys)
+      Streak::Box.update(box_key, followerKeys: follower_keys)
     rescue
-      Rails.logger.warn "Could not add follower with key `#{follower_key}` to box `#{box_id}`"
+      Rails.logger.warn "Could not add follower with key `#{follower_key}` to box `#{box_key}`"
     end
   end
 end
