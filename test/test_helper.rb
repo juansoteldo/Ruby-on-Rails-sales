@@ -40,6 +40,15 @@ class ActiveSupport::TestCase
     Pathname.new(path)
   end
 
+  def new_streak_box_for_email(email)
+    box = MostlyStreak::Box.find_by_email email
+    box ||= MostlyStreak::Box.create(email)
+    box_key = box.key
+    MostlyStreak::Box.set_stage(box_key, "Leads")
+    box = MostlyStreak::Box.find(box_key)
+    box
+  end
+
   def request_with_image(path)
     request = requests(:deposited)
     request.add_image_from_path(path)
