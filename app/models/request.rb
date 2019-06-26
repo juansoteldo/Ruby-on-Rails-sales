@@ -9,8 +9,9 @@ class Request < ApplicationRecord
 
   before_create :update_state_stamp
   after_create :opt_in_user
+  after_create :deliver_marketing_opt_in_email
 
-  default_scope -> { includes(:user)}
+  default_scope -> { includes(:user) }
 
   auto_strip_attributes :first_name, :last_name, :position
 
@@ -45,12 +46,12 @@ class Request < ApplicationRecord
     after_transition on: :complete, do: :perform_complete_actions
     after_transition on: :quote, do: :perform_quote_actions
 
-    event :convert do
-      transition fresh: :deposited, quoted: :deposited
-    end
-
     event :quote do
       transition fresh: :quoted
+    end
+
+    event :convert do
+      transition fresh: :deposited, quoted: :deposited
     end
 
     event :complete do
@@ -143,7 +144,12 @@ class Request < ApplicationRecord
   private
 
   def opt_in_user
-    user&.update presales_opt_in: true, crm_opt_in: true
+    user.update presales_opt_in: true, crm_opt_in: true
+  end
+
+  def deliver_marketing_opt_in_email
+    return unless user.marketing_opt_in.nil?
+    BoxMailer.opt_in_email(self).deliver_later
   end
 
   def perform_complete_actions

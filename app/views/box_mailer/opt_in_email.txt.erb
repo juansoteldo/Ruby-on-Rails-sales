@@ -1,0 +1,13 @@
+Hi <%= @request.first_name.try(:titleize) %>,
+
+Thanks for sending us your idea.  Please confirm that it's okay to send you emails by clicking the button below:
+<%= marketing_opt_in_url(@user,
+                         user_email: @user.email,
+                         user_token: @user.authentication_token) %>
+
+Lee Roller
+CEO / Founder
+Custom Tattoo Design
+
+
+

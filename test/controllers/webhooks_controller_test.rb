@@ -19,7 +19,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   test "webhook call should create request with positive opt_in" do
     params = wpcf7_params
     params[:user_attributes] = {
-        marketing_opt_in: "1",
+      marketing_opt_in: "1",
     }
     perform_enqueued_jobs do
       post "/webhooks/requests_create", params: params
@@ -33,7 +33,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   test "webhook call should create request with negative opt_in" do
     params = wpcf7_params
     params[:user_attributes] = {
-        marketing_opt_in: "0",
+      marketing_opt_in: "0",
     }
     perform_enqueued_jobs do
       post "/webhooks/requests_create", params: params
@@ -54,5 +54,4 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert request.images.count == 1
     assert request.images.first.decorate.exists?
   end
-
 end

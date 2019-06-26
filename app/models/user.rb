@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  acts_as_token_authenticatable
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :requests
+  ## Token Authenticatable
+  acts_as_token_authenticatable
+
+  has_many :requests, dependent: :destroy
   has_many :events
   has_many :messages, class_name: "Ahoy::Message"
 
@@ -29,4 +31,5 @@ class User < ApplicationRecord
     assign_attributes(presales_opt_in: !value, marketing_opt_in: !value)
     assign_attributes(crm_opt_in: !value) unless value
   end
+
 end

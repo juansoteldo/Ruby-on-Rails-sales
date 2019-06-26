@@ -11,7 +11,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   test "should get new_request" do
     post new_request_path(email: "test@email.com", format: :json)
     assert_response :success
-    new_request =  JSON.parse(@response.body)
+    new_request = JSON.parse(@response.body)
     assert new_request["id"] > 0
     assert new_request["user_id"] > 0
   end

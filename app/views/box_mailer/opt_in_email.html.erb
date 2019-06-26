@@ -1,0 +1,19 @@
+<p>
+  Hi <%= @request.first_name.try(:titleize) %>,
+</p>
+
+<p>
+  Thanks for sending us your idea.  Please confirm that it's okay to send you occasional emails by
+  <%= link_to "clicking this link", marketing_opt_in_url(@user,
+                                                         user_email: @user.email,
+                                                         user_token: @user.authentication_token) %>.
+</p>
+
+<p>
+Lee Roller<br>
+CEO / Founder<br>
+Custom Tattoo Design
+</p>
+
+
+

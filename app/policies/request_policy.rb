@@ -5,12 +5,16 @@ class RequestPolicy < ApplicationPolicy
   end
 
   def opt_out?
-    @user
+    active_salesperson? || @user == @record.user
+  end
+
+  def opt_in?
+    active_salesperson? || @user == @record.user
   end
 
   class Scope < Scope
     def resolve
-      active_salesperson?  ? scope.all : scope.none
+      active_salesperson? ? scope.all : scope.where(user: @user)
     end
   end
 end
