@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class MarketingController < ApplicationController
-  acts_as_token_authentication_handler_for User
+  acts_as_token_authentication_handler_for User, fallback: :none
   before_action :authenticate_user!
   before_action :set_user, only: [:opt_out, :opt_in]
 
@@ -22,6 +22,7 @@ class MarketingController < ApplicationController
   private
 
   def set_user
+    head 404 && return unless current_user
     @user = User.find(current_user.id)
   end
 end

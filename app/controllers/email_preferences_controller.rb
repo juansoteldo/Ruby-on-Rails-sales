@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EmailPreferencesController < ApplicationController
-  acts_as_token_authentication_handler_for User
+  acts_as_token_authentication_handler_for User, fallback: :none
   before_action :authenticate_user!
   before_action :set_user, only: [:edit, :update]
 
@@ -25,16 +25,8 @@ class EmailPreferencesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
-    unless params[:id].to_s.empty?
-      @user = User.find(params[:id])
-      return
-    end
-    email = params[:user] && params[:user][:email] || params[:email]
-    return unless email
-    email = email.to_s.downcase
-    raise "invalid-email" unless email =~ Devise.email_regexp
-    @user = User.where("LOWER(email) = ?", email).first
-    head 404 unless @user
+    head 404 && return unless current_user
+    @user = User.find(current_user.id)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
