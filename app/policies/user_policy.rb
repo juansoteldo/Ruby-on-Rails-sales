@@ -5,7 +5,11 @@ class UserPolicy < ApplicationPolicy
   end
 
   def opt_out?
-    true
+    active_salesperson? || @user == @record
+  end
+
+  def opt_in?
+    active_salesperson? || @user == @record
   end
 
   def update?

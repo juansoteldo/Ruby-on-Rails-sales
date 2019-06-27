@@ -63,7 +63,7 @@ class Event < ApplicationRecord
 
   private
 
-  def users_attributes
+  def user_attributes
     return unless invitee
 
     {
@@ -84,13 +84,13 @@ class Event < ApplicationRecord
 
   def ensure_user
     if user_id
-      user.update! users_attributes
+      user.update! user_attributes
     elsif possible_user
       self.user_id = possible_user.id
-      possible_user.update! users_attributes
+      possible_user.update! user_attributes
     else
       password = SecureRandom.hex(8)
-      create_user! users_attributes.merge( password: password, password_confirmation: password )
+      create_user! user_attributes.merge( password: password, password_confirmation: password )
     end
   end
 

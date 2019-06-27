@@ -8,11 +8,10 @@ class BoxMailer < ApplicationMailer
   add_template_helper(ApplicationHelper)
 
   def marketing_email(request, marketing_email = MarketingEmail.find(1))
+    return unless request.user
     @request = request
-    #    bcc = Rails.application.config.action_mailer_bcc
-    bcc ||= []
-
-    track user: @request.user
+    @user = @request.user
+    track user: @user
     track utm_content: marketing_email.template_name
 
     reply_to = if @request.converted? || @request.salesperson.nil?
@@ -21,8 +20,7 @@ class BoxMailer < ApplicationMailer
                  @request.salesperson.email
                end
 
-    mail(to: request.user.email,
-         bcc: bcc,
+    mail(to: @user.email,
          subject: marketing_email.subject_line,
          from: marketing_email.from,
          reply_to: reply_to,
@@ -33,26 +31,38 @@ class BoxMailer < ApplicationMailer
 
   def confirmation_email(request)
     return unless request.user
-    @request = request
+    @request = request.decorate
+    @user = @request.user
+    track user: @user
 
-    track user: @request.user
-
-    mail(to: request.user.email,
-         #         bcc: Rails.application.config.action_mailer_bcc,
+    mail(to: @user.email,
          from: "leeroller@customtattoodesign.ca",
          subject: "Thank you, Let's Get Started! Custom Tattoo Design",
          display_name: "Lee Roller")
   end
 
+  def opt_in_email(request)
+    return unless request.user
+    @request = request.decorate
+    @user = request.user
+    track user: @user
+
+    mail(
+      to: @user.email,
+      from: "leeroller@customtattoodesign.ca",
+      subject: "E-Mail opt-in Custom Tattoo Design",
+      display_name: "Lee Roller"
+    )
+  end
+
   def final_confirmation_email(request)
     return unless request.user
-
     @request = request
+    @user = @request.user
 
-    track user: @request.user
+    track user: @user
 
-    mail(to: email,
-         #         bcc: Rails.application.config.action_mailer_bcc,
+    mail(to: @user.email,
          from: "leeroller@customtattoodesign.ca",
          subject: "Thank you for your business Custom Tattoo Design",
          display_name: "Lee Roller")

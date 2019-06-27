@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class EmailPreferencesController < ApplicationController
+  acts_as_token_authentication_handler_for User
+  before_action :authenticate_user!
   before_action :set_user, only: [:edit, :update]
 
   # GET /email_preferences/1/edit
@@ -12,8 +14,8 @@ class EmailPreferencesController < ApplicationController
   # PATCH/PUT /email_preferences/1.json
   def update
     authorize @user
-    if @user.update(email_preference_params)
-      redirect_to email_preferences_url(email: @user.email), notice: 'Email preferences were successfully updated.'
+    if @user.update!(email_preference_params)
+      redirect_to edit_email_preference_url(@user), notice: 'Email preferences were successfully updated.'
     else
       render :edit
     end
@@ -23,12 +25,16 @@ class EmailPreferencesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
+    unless params[:id].to_s.empty?
+      @user = User.find(params[:id])
+      return
+    end
     email = params[:user] && params[:user][:email] || params[:email]
     return unless email
     email = email.to_s.downcase
     raise "invalid-email" unless email =~ Devise.email_regexp
     @user = User.where("LOWER(email) = ?", email).first
-    head :bad_request unless @user
+    head 404 unless @user
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
