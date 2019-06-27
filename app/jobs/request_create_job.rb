@@ -32,6 +32,9 @@ class RequestCreateJob < ApplicationJob
     params[:user_attributes] ||= {}
     params[:user_attributes][:id] = @user.id
     params[:user_attributes][:email] = params.delete(:email)
+
+    return unless params[:user_attributes].key?(:marketing_opt_in)
+    params[:user_attributes][:marketing_opt_in] = params[:user_attributes][:marketing_opt_in] == "0" ? false : nil
   end
 
   def normalize_email!

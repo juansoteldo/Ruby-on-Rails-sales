@@ -28,6 +28,7 @@ class ActiveSupport::TestCase
       linker_param: "",
       _ga: "",
       client_id: "",
+      user_attributes: { marketing_opt_in: "1" },
     }
   end
 

@@ -18,30 +18,25 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
   test "webhook call should create request with positive opt_in" do
     params = wpcf7_params
-    params[:user_attributes] = {
-      marketing_opt_in: "1",
-    }
+    params[:user_attributes][:marketing_opt_in] = "1"
     perform_enqueued_jobs do
       post "/webhooks/requests_create", params: params
       assert_response :success
     end
-    user = Request.joins(:user).where(users: { email: params[:email] }).first&.user
+    user = User.find(Request.joins(:user).where(users: { email: params[:email] }).first.user_id)
     assert_not_nil user
-    assert user.marketing_opt_in
+    assert user.marketing_opt_in.nil? # nil because they have to set truthy using opt-in link
   end
 
   test "webhook call should create request with negative opt_in" do
     params = wpcf7_params
-    params[:user_attributes] = {
-      marketing_opt_in: "0",
-    }
+    params[:user_attributes][:marketing_opt_in] = "0"
     perform_enqueued_jobs do
       post "/webhooks/requests_create", params: params
       assert_response :success
     end
-    user = Request.joins(:user).where(users: { email: params[:email] }).first&.user
-    assert_not_nil user
-    assert_not user.marketing_opt_in
+    user = User.find(Request.joins(:user).where(users: { email: params[:email] }).first.user_id)
+    assert_equal user.marketing_opt_in, false
   end
 
   test "webhook call should create request with an attached image" do
