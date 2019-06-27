@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   get "/public/get_links", as: :get_links, defaults: { format: 'json' }
   get "/public/set_link", as: :set_link, defaults: { format: 'json' }
   get "/public/save_email", as: :save_email, defaults: { format: 'json' }
-  get "/marketing/opt_out/:id", to: "marketing#opt_out", as: :marketing_opt_out
-  get "/marketing/opt_in/:id", to: "marketing#opt_in", as: :marketing_opt_in
+  get "/marketing/opt_out", to: "marketing#opt_out", as: :marketing_opt_out
+  get "/marketing/opt_in", to: "marketing#opt_in", as: :marketing_opt_in
   match "public/thanks", via: [:get, :post], to: "public#deposit_redirect", as: :deposit_redirect
 
   get "/events/create", to: "events#create"
