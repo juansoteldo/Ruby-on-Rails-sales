@@ -78,6 +78,7 @@ module CTD
       end
 
       def console_log(message)
+        return if Rails.env.test?
         puts "#{Time.now.to_s} #{message}"
       end
     end

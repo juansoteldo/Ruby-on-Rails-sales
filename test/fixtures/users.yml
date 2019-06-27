@@ -6,6 +6,8 @@
 #
 one:
   email: "kadeaplin@gmail.com"
+  authentication_token: "abc123"
 
 two:
   email: "user2@example.com"
+  authentication_token: "def987"
