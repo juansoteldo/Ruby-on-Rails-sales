@@ -35,6 +35,7 @@ class RequestCreateJob < ApplicationJob
 
     return unless params[:user_attributes].key?(:marketing_opt_in)
     params[:user_attributes][:marketing_opt_in] = params[:user_attributes][:marketing_opt_in] == "0" ? false : nil
+    @user.update params[:user_attributes]
   end
 
   def normalize_email!
