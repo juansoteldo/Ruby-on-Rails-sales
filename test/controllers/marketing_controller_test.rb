@@ -9,8 +9,9 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "authentication" do
-    get marketing_opt_in_url(@user)
-    assert_response 401
+    get marketing_opt_in_url(user_email: @user.email,
+                             user_token: SecureRandom.base64(8))
+    assert_response 302
   end
 
   test "opt_in" do
@@ -19,7 +20,8 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     assert_not @user.presales_opt_in
     get marketing_opt_in_url(user_email: @user.email,
                              user_token: @user.authentication_token)
-    assert_redirected_to edit_email_preference_path(@user)
+    assert_redirected_to edit_email_preference_path(@user, user_email: @user.email,
+                                                           user_token: @user.authentication_token)
     @user.reload
     assert @user.marketing_opt_in
     assert @user.presales_opt_in
@@ -31,10 +33,10 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     assert @user.presales_opt_in
     get marketing_opt_out_url(user_email: @user.email,
                               user_token: @user.authentication_token)
-    assert_redirected_to edit_email_preference_path(@user)
+    assert_redirected_to edit_email_preference_path(@user, user_email: @user.email,
+                                                           user_token: @user.authentication_token)
     @user.reload
     assert_not @user.marketing_opt_in
     assert_not @user.presales_opt_in
   end
-
 end
