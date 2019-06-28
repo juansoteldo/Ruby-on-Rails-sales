@@ -149,7 +149,6 @@ class Request < ApplicationRecord
 
   def deliver_marketing_opt_in_email
     return unless user.marketing_opt_in.nil?
-    return if Rails.env.production?
     BoxMailer.opt_in_email(self).deliver_later
   end
 
