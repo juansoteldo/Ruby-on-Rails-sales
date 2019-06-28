@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class EmailPreferencesController < ApplicationController
-  acts_as_token_authentication_handler_for User, fallback: :none
-  before_action :authenticate_user!
+  acts_as_token_authentication_handler_for User, fallback: :exception
+  before_action :require_authentication!
   before_action :set_user, only: [:edit, :update]
 
   # GET /email_preferences/1/edit
@@ -15,7 +15,8 @@ class EmailPreferencesController < ApplicationController
   def update
     authorize @user
     if @user.update!(email_preference_params)
-      redirect_to edit_email_preference_url(@user), notice: 'Email preferences were successfully updated.'
+      redirect_to edit_email_preference_url(@user, user_email: @user.email, user_token: @user.authentication_token),
+                  notice: 'Email preferences were successfully updated.'
     else
       render :edit
     end
@@ -25,7 +26,6 @@ class EmailPreferencesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
-    head 404 && return unless current_user
     @user = User.find(current_user.id)
   end
 

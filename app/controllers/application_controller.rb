@@ -72,4 +72,8 @@ class ApplicationController < ActionController::Base
   #
   # When defined, aliases are used to define both the params and the header names to watch.
   # E.g. facilitator_token, X-Facilitator-Token
+
+  def require_authentication!
+    throw(:warden, scope: :user) unless current_user.presence
+  end
 end
