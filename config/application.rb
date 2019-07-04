@@ -17,7 +17,7 @@ module CtdWorklist
     # the framework and any gems in your application.
     config.time_zone = 'Eastern Time (US & Canada)'
     config.active_job.queue_adapter = :delayed_job
-
+    config.action_dispatch.ip_spoofing_check = false
     config.autoload_paths += %W(#{config.root}/lib)
   end
 end

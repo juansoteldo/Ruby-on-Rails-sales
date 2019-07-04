@@ -84,7 +84,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should fail to get new_request with generic missing parameters" do
-    post new_request_path( position: "Chest", gender: "Male", first_name: "John", client_id: "123456" )
+    post new_request_path(position: "Chest", gender: "Male", first_name: "John", client_id: "123456", format: :json)
     assert_response 422
   end
 
