@@ -5,14 +5,17 @@ class PublicController < ApplicationController
 
   before_action :disable_cache, only: [:get_links]
 
-  before_action :normalize_email
-  before_action :validate_parameters, only: [:new_request]
-  before_action :set_or_create_user_by_email, only: [:new_request, :get_links]
   before_action :set_salesperson_by_email, only: [:get_links]
   before_action :load_products, only: [:get_links]
   before_action :set_user_by_client_id, only: [:get_uid]
   before_action :set_shopify_order, only: [:deposit_redirect]
   before_action :set_request_by_id, only: [:set_link, :deposit_redirect]
+
+  # Things that require a params[:email]
+  before_action :normalize_email, if: :email_is_present?
+  before_action :assert_email_is_valid, only: [:get_ids, :get_links, :deposit_redirect, :new_request]
+  before_action :set_or_create_user_by_email, only: [:get_ids, :get_links, :deposit_redirect, :new_request]
+  before_action :validate_request_parameters, only: [:new_request]
   before_action :set_or_create_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
 
   def redirect
@@ -79,10 +82,13 @@ class PublicController < ApplicationController
   end
 
   def save_email
-    from_email = params[:from_email].downcase.strip
+    from_email = params[:from_email].to_s.downcase.strip
+    head(422) && return unless from_email =~ URI::MailTo::EMAIL_REGEXP
     @salesperson = Salesperson.find_by_email!(from_email)
+    head(422) && return unless @salesperson
 
-    recipient_email = params[:recipient_email]
+    recipient_email = params[:recipient_email].to_s.downcase.strip
+    head(422) && return unless recipient_email =~ URI::MailTo::EMAIL_REGEXP
     @salesperson.claim_requests_with_email(recipient_email)
 
     box = MostlyStreak::Box.find_by_email(recipient_email)
@@ -119,7 +125,6 @@ class PublicController < ApplicationController
 
   def set_or_create_request_by_email
     return if @request
-    head 422 unless params[:email] =~ URI::MailTo::EMAIL_REGEXP
     @request = Request.joins(:user).where('users.email LIKE ?', params[:email]).first
     @request ||= Request.create(user: @user)
   end
@@ -135,13 +140,13 @@ class PublicController < ApplicationController
   end
 
   def set_salesperson_by_email
-    @salesperson = Salesperson.find_by_email(params[:sales_email].downcase.strip) unless params[:sales_email].to_s.empty?
-    @salesperson ||= Salesperson.find_by_email(params[:from_email].downcase.strip) unless params[:sales_email].to_s.empty?
+    sales_email = params[:sales_email].to_s.downcase.strip
+    @salesperson = Salesperson.find_by_email(sales_email) unless sales_email.empty?
+    @salesperson ||= Salesperson.find_by_email(sales_email) unless sales_email.empty?
     head 400 unless @salesperson
   end
 
   def set_or_create_user_by_email
-    head 422 unless params[:email] =~ URI::MailTo::EMAIL_REGEXP
     @user = User.find_by_email(params[:email])
     return if @user
 
@@ -163,9 +168,11 @@ class PublicController < ApplicationController
     end
   end
 
-  def validate_parameters
+  def validate_request_parameters
     [:position, :gender, :first_name, :last_name, :client_id].each do |sym|
-      render(json: false) if params[sym] == '' || params[sym] == false
+      if params[sym] == '' || params[sym] == false
+        head(422) && return
+      end
     end
   end
 
@@ -176,13 +183,21 @@ class PublicController < ApplicationController
   end
 
   def normalize_email
-    params[:email] = params[:email].downcase.strip if params[:email]
+    params[:email] = params[:email].downcase.strip
   end
 
   def disable_cache
     response.headers['Cache-Control'] = 'no-cache, no-store'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
+  end
+
+  def email_is_present?
+    @email_is_present ||= !params[:email].to_s.empty?
+  end
+
+  def assert_email_is_valid
+    head 422 unless params[:email] =~ URI::MailTo::EMAIL_REGEXP
   end
 end
 
