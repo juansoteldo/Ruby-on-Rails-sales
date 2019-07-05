@@ -1,0 +1,14 @@
+Hi <%= @request.first_name.try(:titleize) %>,
+
+Thank you for submitting your idea. Our sales team is looking it over and will be in touch soon. In the meantime, please confirm that you would like to
+receive occasional emails from us by clicking the link below:
+<%= marketing_opt_in_url(user_email: @user.email, user_token: @user.authentication_token) %>
+
+Thank you for choosing Custom Tattoo Design.
+
+Lee Roller
+CEO / Founder
+Custom Tattoo Design
+
+
+

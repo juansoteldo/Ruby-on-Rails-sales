@@ -1,13 +1,14 @@
 <p class="text-info lead"><%= notice %></p>
 
-<%= bootstrap_form_for(@user, url: email_preference_path(@user), method: :patch) do |f| %>
+<%= bootstrap_form_for(@user,
+                       url: email_preference_path(@user, user_email: @user.email, user_token: @user.authentication_token), method: :patch) do |f| %>
   <%= f.hidden_field :email, value: params[:email] %>
-    <%= f.check_box :presales_opt_in,
-                    label: "Messages from our team regarding your design request" %>
-    <%= f.check_box :marketing_opt_in,
-                    label: "Occasional e-mails about promotions, featured designs, and updates from our blog." %>
-    <%= f.check_box :crm_opt_in,
-                    label: "Notifications from our team and your designer about designs that you are currently working on with us." %>
+  <%= f.check_box :presales_opt_in,
+                  label: "Messages from our team regarding your design request" %>
+  <%= f.check_box :marketing_opt_in,
+                  label: "Occasional e-mails about promotions, featured designs, and updates from our blog." %>
+  <%= f.check_box :crm_opt_in,
+                  label: "Notifications from our team and your designer about designs that you are currently working on with us." %>
   <br>
 
   <%= f.submit "Save my preferences" %>

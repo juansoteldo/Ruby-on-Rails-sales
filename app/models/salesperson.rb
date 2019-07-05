@@ -33,7 +33,7 @@ class Salesperson < ApplicationRecord
   end
 
   def self.find_or_create_with_id(id)
-    salesperson = Salesperson.find(id)
+    salesperson = Salesperson.where(id: id).first
     return salesperson if salesperson
     Salesperson.create id: id, email: "salesperson#{id}@customtattoodesign.ca", is_active: false
   end
@@ -50,7 +50,7 @@ class Salesperson < ApplicationRecord
     end
 
     params.each do |key, param|
-      grouped_orders = Shopify::Order.attributed(param).group_by(&:sales_id)
+      grouped_orders = MostlyShopify::Order.attributed(param).group_by(&:sales_id)
       grouped_orders.select { |id, orders| id != "" }.map do |id, orders|
         salesperson = salespeople.find { |s| s.id == id }
         sales = orders.inject(0) { |sum, o| sum + o.total_price.to_f.round(2) }

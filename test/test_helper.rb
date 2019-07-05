@@ -18,6 +18,17 @@ class ActiveSupport::TestCase
       last_name: "Smith",
       email: "johnsmith@example.com",
       position: "Sleeve",
+      has_color: "0",
+      is_first_time: "0",
+      gender: "Male",
+      description: "Test test",
+      art_sample_1: "",
+      art_sample_2: "",
+      art_sample_3: "",
+      linker_param: "",
+      _ga: "",
+      client_id: "",
+      user_attributes: { marketing_opt_in: "1" },
     }
   end
 
@@ -30,6 +41,14 @@ class ActiveSupport::TestCase
     Pathname.new(path)
   end
 
+  def new_streak_box_for_email(email)
+    box = MostlyStreak::Box.find_by_email email
+    box ||= MostlyStreak::Box.create(email)
+    box_key = box.key
+    MostlyStreak::Box.set_stage(box_key, "Leads")
+    box = MostlyStreak::Box.find(box_key)
+    box
+  end
 
   def request_with_image(path)
     request = requests(:deposited)
@@ -38,6 +57,6 @@ class ActiveSupport::TestCase
   end
 
   def content_type(path)
-    `file -Ib #{path}`.gsub(/\n/,"").split(";")[0]
+    `file -Ib #{path}`.gsub(/\n/, "").split(";")[0]
   end
 end

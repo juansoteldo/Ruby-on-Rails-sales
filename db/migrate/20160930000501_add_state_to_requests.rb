@@ -13,7 +13,7 @@ class AddStateToRequests < ActiveRecord::Migration[4.2]
         r.final_order_id && r.final_order_id || r.deposit_order_id
       end.uniq
 
-      orders = Shopify::Order.find( { ids: ids.join(','), status: 'any' } )
+      orders = MostlyShopify::Order.find( { ids: ids.join(','), status: 'any' } )
       order_ids = orders.map(&:id).map(&:inspect).join(',')
 
       group.each do |request|

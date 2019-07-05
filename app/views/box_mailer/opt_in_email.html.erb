@@ -1,0 +1,23 @@
+<p>
+  Hi <%= @request.first_name.try(:titleize) %>,
+</p>
+
+<p>
+  Thank you for submitting your idea. Our sales team is looking it over and will be in touch soon. In the meantime, please confirm that you would like to
+  receive occasional emails from us by
+  <%= link_to "clicking this link", marketing_opt_in_url(user_email: @user.email,
+                                                         user_token: @user.authentication_token) %>.
+</p>
+
+<p>
+  Thank you for choosing Custom Tattoo Design.
+</p>
+
+<p>
+Lee Roller<br>
+CEO / Founder<br>
+Custom Tattoo Design
+</p>
+
+
+

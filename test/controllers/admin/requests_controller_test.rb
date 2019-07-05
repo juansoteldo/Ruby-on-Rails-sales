@@ -15,6 +15,12 @@ class Admin::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_response 401
   end
 
+  test "should not show requests when logged in as user" do
+    sign_in users(:one)
+    get admin_requests_path(format: :json)
+    assert_response 401
+  end
+
   test "should not show requests to inactive salesperson" do
     sign_in salespeople(:inactive)
     get admin_requests_path(format: :json)

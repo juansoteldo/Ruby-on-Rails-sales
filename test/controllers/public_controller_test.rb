@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class PublicControllerTest < ActionDispatch::IntegrationTest
+  include ActiveJob::TestHelper
+
   setup do
     @existing_request = requests(:fresh)
     @salesperson = salespeople(:active)
@@ -9,7 +11,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   test "should get new_request" do
     post new_request_path(email: "test@email.com", format: :json)
     assert_response :success
-    new_request =  JSON.parse(@response.body)
+    new_request = JSON.parse(@response.body)
     assert new_request["id"] > 0
     assert new_request["user_id"] > 0
   end
@@ -61,7 +63,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "set_link should assign quotation parameters" do
-    variant = Shopify::Variant.all.first
+    variant = MostlyShopify::Variant.all.first
     request = requests(:fresh)
     get set_link_path(request_id: request.id, variant_id: variant.id, salesperson_id: @salesperson.id, format: :json)
     assert_response :success
@@ -72,8 +74,8 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should redirect to shopify cart" do
-    variant = Shopify::Variant.all.first
-    product = Shopify::Product.find(variant.product_id).first
+    variant = MostlyShopify::Variant.all.first
+    product = MostlyShopify::Product.find(variant.product_id).first
     get cart_redirect_path(product.handle, variant.id, requestId: @existing_request.id)
     assert_response :success
     assert @response.body.include?(product.handle)
@@ -82,8 +84,22 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should fail to get new_request with generic missing parameters" do
-    post new_request_path( position: "Chest", gender: "Male", first_name: "John", client_id: "123456" )
+    post new_request_path(position: "Chest", gender: "Male", first_name: "John", client_id: "123456", format: :json)
     assert_response 422
   end
 
+
+  test "should save email and update streak box stage" do
+    salesperson = Salesperson.first
+    user = User.first
+    box = new_streak_box_for_email(user.email)
+    assert box.stage_key != MostlyStreak::Stage.contacted.key
+    perform_enqueued_jobs do
+      get save_email_path(params: { thread_id: nil, recipient_email: box.name, from_email: salesperson.email }, format: :js)
+      assert_response :success
+      box = MostlyStreak::Box.find(box.key)
+      assert box.stage_key == MostlyStreak::Stage.contacted.key
+    end
+
+  end
 end
