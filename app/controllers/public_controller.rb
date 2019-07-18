@@ -137,6 +137,7 @@ class PublicController < ApplicationController
     return if params[:order_id].blank?
     source_order = ShopifyAPI::Order.find(params[:order_id])
     @order = MostlyShopify::Order.new source_order
+    params[:email] ||= @order&.customer&.email
   end
 
   def set_salesperson_by_email
