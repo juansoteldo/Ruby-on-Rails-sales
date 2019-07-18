@@ -19,8 +19,9 @@ module CTD
       service.get_user_message(ME, id, *params)
     end
 
-    def self.filter_threads
-
+    def self.filter_threads(email)
+      email = email.gsub(/\./, "\\.")
+      threads.select { |t| t.snippet =~ /Email Address: #{email} /i }
     end
 
     def self.service
