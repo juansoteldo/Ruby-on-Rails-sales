@@ -55,4 +55,70 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert request.images.count == 1
     assert request.images.first.decorate.exists?
   end
+
+  test "shopify webhook should update its corresponding request" do
+    stamp = Time.now
+    perform_enqueued_jobs do
+      post "/webhooks/requests_create", params: wpcf7_params
+      assert_response :success
+    end
+    request = Request.where("updated_at > ?", stamp).first
+    perform_enqueued_jobs do
+      post "/webhooks/orders_create", params: shopify_params.merge(
+        "email": wpcf7_params[:email],
+        "note_attributes": [
+          {
+            "name": "req_id",
+            "value": request.id.to_s,
+          },
+          {
+            "name": "sales_id",
+            "value": request.quoted_by_id,
+          },
+        ]
+      )
+    end
+
+    request.reload
+    assert request.deposit_order_id == shopify_params["id"].to_s
+    assert request.state == "deposited"
+  end
+
+  test "shopify webhook should update using email only" do
+    stamp = Time.now
+    perform_enqueued_jobs do
+      post "/webhooks/requests_create", params: wpcf7_params
+      assert_response :success
+    end
+    request = Request.where("updated_at > ?", stamp).first
+    perform_enqueued_jobs do
+      post "/webhooks/orders_create", params: shopify_params.merge(
+          "email": wpcf7_params[:email],
+          "note_attributes": []
+      )
+    end
+
+    request.reload
+    assert request.deposit_order_id == shopify_params["id"].to_s
+    assert request.state == "deposited"
+  end
+
+  test "shopify webhook should fail to update on mismatch" do
+    stamp = Time.now
+    perform_enqueued_jobs do
+      post "/webhooks/requests_create", params: wpcf7_params
+      assert_response :success
+    end
+    request = Request.where("updated_at > ?", stamp).first
+    perform_enqueued_jobs do
+      params = shopify_params
+      params[:email] = SecureRandom.base64(8)
+      params[:note_attributes] = []
+      post "/webhooks/orders_create", params: params
+    end
+
+    request.reload
+    assert request.deposit_order_id == shopify_params["id"].to_s
+    assert request.state == "deposited"
+  end
 end
