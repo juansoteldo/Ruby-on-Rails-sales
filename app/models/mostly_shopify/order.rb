@@ -8,31 +8,33 @@ module MostlyShopify
   class Order < Base
     DEFAULT_SALESPERSON_EMAIL = "brittany@customtattoodesign.ca"
 
-    def update_request
-      request = if has_request_id?
-                  Request.where(id: request_id).first
-                else
-                  Request.joins(:user).where("users.email LIKE ?", customer.email.downcase.strip).first
-                end
-
-      return false unless request
+    def update_request!
+      request = guessed_request
+      raise "cannot find request for #{order_status_url}" unless request
 
       if request.can_convert? && is_deposit?
         request.convert
-        request.update_attributes deposit_order_id: @source.id,
-                                  state_changed_at: @source.created_at,
-                                  deposited_at: Time.now
+        request.update_columns deposit_order_id: @source.id,
+                               state_changed_at: @source.created_at,
+                               deposited_at: Time.now
       elsif request.can_complete? && is_final?
         request.complete
-        request.update_attributes final_order_id: @source.id,
-                                  state_changed_at: @source.created_at
+        request.update_columns final_order_id: @source.id,
+                               state_changed_at: @source.created_at
       end
 
       if has_salesperson_id? && request.quoted_by_id.nil?
-        request.update_attribute :quoted_by_id, salesperson_id
+        request.update_column :quoted_by_id, salesperson_id
       end
 
       @source.id == (is_deposit? ? request.deposit_order_id : request.final_order_id)
+    end
+
+    def guessed_request
+      request = Request.where(id: request_id).first if has_request_id?
+      return request if request
+      return nil unless @source.email
+      Request.joins(:user).where("users.email LIKE ?", @source.email.downcase.strip).first
     end
 
     def request_id
@@ -164,6 +166,7 @@ module MostlyShopify
     private
 
     def note_value(attr_name)
+      return nil unless @source.respond_to? :note_attributes
       return nil unless @source.note_attributes
 
       @source.note_attributes.each do |note_attr|
