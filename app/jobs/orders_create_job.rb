@@ -8,6 +8,6 @@ class OrdersCreateJob < ApplicationJob
   def perform(params)
     source_order = ShopifyAPI::Order.new(params[:webhook])
     order = MostlyShopify::Order.new source_order
-    order.update_request
+    order.update_request!
   end
 end

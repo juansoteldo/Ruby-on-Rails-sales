@@ -2,7 +2,7 @@
 
 class WebhooksController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :verify_shopify_webhook, only: [:orders_create]
+  before_action :verify_shopify_webhook, only: [:orders_create], if: -> { Rails.env.production? }
 
   def calendly
     UpdateEventJob.perform_later(params)
