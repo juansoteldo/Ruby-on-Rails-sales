@@ -181,7 +181,7 @@ class Request < ApplicationRecord
   end
 
   def perform_deposit_actions
-    puts "Sending confirmation email to #{user.email}"
+    Rails.logger.info "Sending confirmation email to #{user.email}"
     BoxMailer.confirmation_email(self).deliver_later
     begin
       streak_boxes.each do |box|
