@@ -1,11 +1,12 @@
 class RequestCreateJob < ApplicationJob
   queue_as :webhook
 
-  def perform(new_params)
-    @params = new_params
+  def perform(webhook)
+    @params = webhook.params
 
     set_user_by_email
     make_request!
+    webhook.commit! @request.id
   end
 
   def make_request!

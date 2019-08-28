@@ -62,6 +62,7 @@ group :development, :test do
   gem "puma"
 end
 
+gem "aasm"
 gem "auto_strip_attributes", "~> 2.1"
 gem "config"
 gem "dotenv-rails"

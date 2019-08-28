@@ -38,6 +38,11 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users, only: [:index]
     resources :products
+    resources :webhooks, only: [:index] do
+      member do
+        get "perform"
+      end
+    end
     resources :requests do
       member do
         match :opt_out, via: [:all], as: :opt_out

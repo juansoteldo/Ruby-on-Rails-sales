@@ -1,0 +1,24 @@
+<h2>Incomplete Webhooks</h2>
+<table class="table table-striped table-sales">
+  <thead>
+  <tr>
+    <th>Source</th>
+    <th>Type</th>
+    <th>Created At</th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @webhooks.each do |webhook| %>
+    <tr>
+      <td><%= webhook.source %></td>
+      <td><%= webhook.action %></td>
+      <td><%= webhook.created_at %></td>
+      <td><%= link_to 'Commit', perform_admin_webhook_path(webhook) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= will_paginate @webhooks %>

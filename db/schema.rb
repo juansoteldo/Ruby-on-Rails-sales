@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_26_171956) do
+ActiveRecord::Schema.define(version: 2019_08_28_195247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -229,6 +229,25 @@ ActiveRecord::Schema.define(version: 2019_06_26_171956) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["shopify_id"], name: "index_users_on_shopify_id"
+  end
+
+  create_table "webhooks", force: :cascade do |t|
+    t.string "source", null: false
+    t.string "source_id"
+    t.string "action", null: false
+    t.string "params"
+    t.string "headers"
+    t.string "referrer"
+    t.integer "request_id"
+    t.string "last_error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "aasm_state"
+    t.index ["request_id"], name: "index_webhooks_on_request_id"
+    t.index ["source", "action"], name: "index_webhooks_on_source_and_action"
+    t.index ["source", "source_id", "action"], name: "index_webhooks_on_source_and_source_id_and_action"
+    t.index ["source"], name: "index_webhooks_on_source"
+    t.index ["source_id"], name: "index_webhooks_on_source_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
