@@ -36,6 +36,10 @@ class ActiveSupport::TestCase
     JSON.parse File.open(File.join(__dir__, "fixtures/files/shopify_payload.json")).read
   end
 
+  def shopify_unassociated_params
+    JSON.parse File.open(File.join(__dir__, "fixtures/files/shopify_unassociated_payload.json")).read
+  end
+
   def file_fixture_copy(name)
     src_file = file_fixture(name)
     extname = File.extname(name).to_s

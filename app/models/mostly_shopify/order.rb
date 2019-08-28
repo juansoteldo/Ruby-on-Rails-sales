@@ -34,15 +34,21 @@ module MostlyShopify
       request = Request.where(id: request_id).first if has_request_id?
       return request if request
       return nil unless @source.email
-      Request.joins(:user).where("users.email LIKE ?", @source.email.downcase.strip).first
+      Request.joins(:user).where("users.email LIKE ?", @source.email.downcase.strip).last
     end
 
     def request_id
-      note_value("req_id")
+      @request_id ||= note_value("req_id")
+      return @request_id if @request_id
+      return nil unless /reqid=(\d+)/ =~ landing_site
+      @request_id = landing_site.gsub(/.+reqid=(\d+).+/, "\\1")
     end
 
     def salesperson_id
-      note_value("sales_id")
+      @salesperson_id ||= note_value("sales_id")
+      return @salesperson_id if @salesperson_id
+      return nil unless /salesid=(\d+)/ =~ landing_site
+      @salesperson_id = landing_site.gsub(/.+salesid=(\d+).+/, "\\1")
     end
 
     def has_request_id?
@@ -165,15 +171,23 @@ module MostlyShopify
 
     private
 
+    def landing_site
+      return nil unless @source.respond_to? :landing_site
+      @source.landing_site
+    end
+
     def note_value(attr_name)
       return nil unless @source.respond_to? :note_attributes
       return nil unless @source.note_attributes
 
       @source.note_attributes.each do |note_attr|
-        if note_attr.name == attr_name
-          return note_attr.value if note_attr.value != "undefined"
-        end
+        next unless note_attr.respond_to?(:name)
+        next unless note_attr.name == attr_name
+        return nil if note_attr.value == "undefined"
+
+        return note_attr.value
       end
+      nil
     end
   end
 end
