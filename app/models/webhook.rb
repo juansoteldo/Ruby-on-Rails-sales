@@ -21,17 +21,19 @@ class Webhook < ApplicationRecord
       transitions from: [:fresh, :queued], to: :committed
     end
 
-    event :perform, before: :perform_job do
-      transitions from: [:fresh, :queued, :failed], to: :committed
-    end
-
     event :fail, before: :record_failure do
       transitions from: [:queued], to: :failed
     end
   end
 
+  def perform!
+    return unless ["fresh", "queued", "failed"].include?(aasm_state)
+    perform_job
+  end
+
   def perform_job
     job_class.perform_now(webhook: self)
+    true
   rescue StandardError => e
     update_columns last_error: "#{e.message}\n#{e.backtrace}", aasm_state: "failed"
     false
