@@ -19,8 +19,31 @@
       <td><%= time_ago_in_words webhook.created_at %> ago</td>
       <td><%= webhook.email %></td>
       <td><%= webhook.source %></td>
-      <td title="<%= webhook.params.to_json %>"><span class="btn btn-default btn-xs">...</span></td>
-      <td title="<%= webhook.params.to_json %>"><%= webhook.last_error %></td>
+      <td>
+        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#webhook-modal-<%= webhook.id %>"
+                onclick="$('#webhook-modal-<%= webhook.id %>').appendTo(body);">...</button>
+        <div id="webhook-modal-<%= webhook.id %>" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                Parameters
+              </div>
+              <div class="modal-body" >
+                <div class="row">
+                  <div class="col-xs-12 small">
+                    <textarea style="overflow-y: scroll; height: 300px; width: 100%; font-family: monospace;" class="text-monospace small"
+                         onclick="this.select();"><%= JSON.pretty_generate webhook.params %>></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </td>
+      <td><%= webhook.last_error %></td>
       <td><%= link_to('Re-submit', perform_admin_webhook_path(webhook), class: "btn btn-xs btn-warning") unless webhook.committed?%></td>
     </tr>
   <% end %>
