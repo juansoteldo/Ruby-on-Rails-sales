@@ -16,9 +16,11 @@ module MostlyShopify
     end
 
     def self.shopify_sources
-      Rails.cache.fetch(expires_in: 1.minutes) do
+      Rails.cache.fetch("shopify/products/all", expires_in: 15.minutes) do
         ShopifyAPI::Product.all params: { limit: 200 }
       end
+    rescue
+      []
     end
 
     def is_final_payment?

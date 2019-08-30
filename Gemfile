@@ -34,9 +34,7 @@ gem "jbuilder", "~> 2.5"
 gem "ahoy_email"
 gem "aws-sdk-s3", require: false
 gem "daemons"
-gem "delayed_job"
-gem "delayed_job_active_record"
-gem "delayed_job_web"
+gem "sidekiq"
 gem "draper"
 gem "figaro"
 gem "honeybadger", "~> 3.1"
@@ -62,6 +60,7 @@ group :development, :test do
   gem "puma"
 end
 
+gem "aasm"
 gem "auto_strip_attributes", "~> 2.1"
 gem "config"
 gem "dotenv-rails"
@@ -91,6 +90,10 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"
+end
+
+group :test do
+  gem 'minitest-rails-capybara'
 end
 
 group :development do

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::UsersController < Admin::BaseController
+  before_action :require_admin!
 
   # GET /users
   # GET /users.json
