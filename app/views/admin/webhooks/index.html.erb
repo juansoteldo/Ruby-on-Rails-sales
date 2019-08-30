@@ -2,6 +2,7 @@
 <table class="table table-striped table-sales">
   <thead>
   <tr>
+    <th>State</th>
     <th>Created At</th>
     <th>Email</th>
     <th>Source</th>
@@ -13,6 +14,7 @@
   <tbody>
   <% @webhooks.each do |webhook| %>
     <tr>
+      <td><%= webhook.aasm_state %></td>
       <td><%= webhook.created_at %></td>
       <td><%= webhook.email %></td>
       <td><%= webhook.source %></td>
