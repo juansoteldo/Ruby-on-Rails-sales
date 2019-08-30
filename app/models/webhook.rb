@@ -34,8 +34,8 @@ class Webhook < ApplicationRecord
   def perform_job
     job_class.perform_now(webhook: self)
     true
-  rescue StandardError => e
-    update_columns last_error: "#{e.message}\n#{e.backtrace}", aasm_state: "failed"
+  rescue Exception => e
+    fail! "#{e.message}\n#{e.backtrace}"
     false
   end
 
@@ -55,5 +55,11 @@ class Webhook < ApplicationRecord
     elsif source == "Calendly" && action_name == "events_create"
       UpdateEventJob
     end
+  end
+
+  private
+
+  def record_failure(message)
+    update_column :last_error, message
   end
 end
