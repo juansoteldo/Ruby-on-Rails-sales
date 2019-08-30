@@ -6,7 +6,8 @@
     <th>Created At</th>
     <th>Email</th>
     <th>Source</th>
-    <th>Action</th>
+    <th>Payload</th>
+    <th>Last Error</th>
     <th></th>
   </tr>
   </thead>
@@ -15,12 +16,12 @@
   <% @webhooks.each do |webhook| %>
     <tr>
       <td><%= webhook.aasm_state %></td>
-      <td><%= webhook.created_at %></td>
+      <td><%= time_ago_in_words webhook.created_at %> ago</td>
       <td><%= webhook.email %></td>
       <td><%= webhook.source %></td>
-      <td><%= webhook.action_name %></td>
-
-      <td><%= link_to 'Re-submit', perform_admin_webhook_path(webhook), class: "btn btn-xs btn-warning" %></td>
+      <td title="<%= webhook.params.to_json %>"><span class="btn btn-default btn-xs">...</span></td>
+      <td title="<%= webhook.params.to_json %>"><%= webhook.last_error %></td>
+      <td><%= link_to('Re-submit', perform_admin_webhook_path(webhook), class: "btn btn-xs btn-warning") unless webhook.committed?%></td>
     </tr>
   <% end %>
   </tbody>
