@@ -6,8 +6,8 @@ class WebhookJob < ApplicationJob
   attr_accessor :webhook
 
   rescue_from Exception do |exception|
-    Rails.logger.error "ERROR: #{exception}"
-    @webhook&.update_column :last_error, exception.to_s
+    Rails.logger.error "WEBHOOK ERROR: #{exception}"
+    @webhook&.fail! exception.to_s
   end
 
   def perform(args)

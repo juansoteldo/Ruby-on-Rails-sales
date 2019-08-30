@@ -2,8 +2,7 @@ class Admin::WebhooksController < Admin::BaseController
   before_action :require_admin!
 
   def index
-    @webhooks = policy_scope(Webhook).order(id: :desc)
-    @webhooks = @webhooks.uncommitted
+    @webhooks = policy_scope(Webhook).order("aasm_state desc, id desc")
     @webhooks = @webhooks.paginate(page: params[:page])
   end
 

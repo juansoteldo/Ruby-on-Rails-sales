@@ -8,6 +8,6 @@ class OrdersCreateJob < WebhookJob
     source_order = ShopifyAPI::Order.new(params)
     order = MostlyShopify::Order.new source_order
     order.update_request!
-    webhook.commit!(order.request_id)
+    @webhook.commit!(order.request_id)
   end
 end
