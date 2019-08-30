@@ -4,27 +4,40 @@ class WebhooksController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :verify_shopify_webhook, only: [:orders_create], if: -> { Rails.env.production? }
 
-  def calendly
-    create_webhook source: "Calendly", source_id: params[:payload][:event][:uuid], params: calendly_params
+  def events_create
+    safe_params = calendly_params
+    payload = safe_params[:payload]
+    create_webhook source: "Calendly",
+                   source_id: payload["event"]["uuid"],
+                   email: payload["invitee"]["email"],
+                   params: safe_params
     head :ok
   end
 
   def requests_create
-    create_webhook source: "WordPress", source_id: nil, params: wpcf7_params
+    safe_params = wpcf7_params
+    create_webhook source: "WordPress",
+                   source_id: nil,
+                   email: safe_params[:email],
+                   params: safe_params
     head :ok
   end
 
   def orders_create
-    create_webhook source: "Shopify", source_id: shopify_params["id"], params: shopify_params
+    safe_params = shopify_params
+    create_webhook source: "Shopify",
+                   source_id: safe_params["id"],
+                   email: safe_params["email"],
+                   params: safe_params
     head :ok
   end
 
   private
 
   def create_webhook(args)
-    Webhook.create source: args[:source], source_id: args[:source_id], action: action_name.to_s,
-                   params: args[:params], referrer: request.referrer.to_s,
-                   headers: request.headers.env.select{|k, _| k =~ /^HTTP_/}
+    Webhook.create source: args[:source], source_id: args[:source_id], action_name: action_name,
+                   params: args[:params], referrer: request.referrer.to_s, email: args[:email],
+                   headers: request.headers.env.select { |k, _| k =~ /^HTTP_/ }
   end
 
   def verify_shopify_webhook
@@ -37,10 +50,6 @@ class WebhooksController < ApplicationController
       head :unauthorized
     end
     request.body.rewind
-  end
-
-  def shop_domain
-    request.headers['HTTP_X_SHOPIFY_SHOP_DOMAIN']
   end
 
   def shopify_params

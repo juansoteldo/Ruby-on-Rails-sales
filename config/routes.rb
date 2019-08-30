@@ -1,3 +1,5 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
 
   resources :email_preferences, only: [:edit, :update, :index]
@@ -30,7 +32,7 @@ Rails.application.routes.draw do
   namespace :webhooks do
     post "orders_create" => :orders_create
     post "requests_create" => :requests_create
-    post "calendly" => :calendly
+    post "calendly" => :events_create
   end
 
   match "public/get_ids", via: [:get, :post]
@@ -38,11 +40,6 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users, only: [:index]
     resources :products
-    resources :webhooks, only: [:index] do
-      member do
-        get "perform"
-      end
-    end
     resources :requests do
       member do
         match :opt_out, via: [:all], as: :opt_out
@@ -55,6 +52,12 @@ Rails.application.routes.draw do
     resources :salespeople do
       collection do
         get :how_to
+      end
+    end
+
+    resources :webhooks, only: [:index] do
+      member do
+        get "perform"
       end
     end
 
@@ -72,7 +75,9 @@ Rails.application.routes.draw do
     get "test/post_form" => "test#post_form", as: "post_form"
     get "test/cart" => "test#cart", as: "cart"
 
-    mount DelayedJobWeb, at: "/delayed_job"
+    authenticated :salesperson, lambda { |user| user&.admin? } do
+      mount Sidekiq::Web => 'sidekiq'
+    end
   end
 
   get "/admin" => "content#admin", as: "admin_root"

@@ -1,8 +1,9 @@
-class UpdateEventJob < ApplicationJob
-  queue_as :webhook
+# frozen_string_literal: true
 
-  def perform(webhook)
-    event = Event.from_payload(webhook.params[:payload])
+class UpdateEventJob < WebhookJob
+  def perform(args)
+    super
+    event = Event.from_payload(params[:payload])
     event.save!
     webhook.commit!(event.request_id)
   end

@@ -234,7 +234,8 @@ ActiveRecord::Schema.define(version: 2019_08_28_195247) do
   create_table "webhooks", force: :cascade do |t|
     t.string "source", null: false
     t.string "source_id"
-    t.string "action", null: false
+    t.string "email"
+    t.string "action_name", null: false
     t.string "params"
     t.string "headers"
     t.string "referrer"
@@ -243,9 +244,10 @@ ActiveRecord::Schema.define(version: 2019_08_28_195247) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "aasm_state"
+    t.index ["email"], name: "index_webhooks_on_email"
     t.index ["request_id"], name: "index_webhooks_on_request_id"
-    t.index ["source", "action"], name: "index_webhooks_on_source_and_action"
-    t.index ["source", "source_id", "action"], name: "index_webhooks_on_source_and_source_id_and_action"
+    t.index ["source", "action_name"], name: "index_webhooks_on_source_and_action_name"
+    t.index ["source", "source_id", "action_name"], name: "index_webhooks_on_source_and_source_id_and_action_name"
     t.index ["source"], name: "index_webhooks_on_source"
     t.index ["source_id"], name: "index_webhooks_on_source_id"
   end

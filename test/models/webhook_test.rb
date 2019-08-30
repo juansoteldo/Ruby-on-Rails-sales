@@ -9,7 +9,11 @@ class WebhookTest < ActiveSupport::TestCase
     @salesperson = salespeople(:active)
   end
 
-  test "queues appropriate action" do
+  test "" do
+    assert Webhook.create(source: "Shopify", action_name: "orders_create").job_class == OrdersCreateJob
+    assert Webhook.create(source: "WordPress", action_name: "requests_create").job_class == RequestCreateJob
+  end
+  test "queues job on create" do
     params = shopify_params.merge(
       "email": @request.user.email,
       "note_attributes": [
@@ -24,7 +28,7 @@ class WebhookTest < ActiveSupport::TestCase
       ]
     )
     perform_enqueued_jobs do
-      Webhook.create source: "Shopify", action: "orders_create", params: params, source_id: params[:id], referrer: "test123"
+      Webhook.create source: "Shopify", action_name: "orders_create", params: params, source_id: params[:id], referrer: "test123"
     end
     assert_not_nil @request.reload.deposit_order_id
   end

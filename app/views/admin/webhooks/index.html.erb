@@ -2,9 +2,10 @@
 <table class="table table-striped table-sales">
   <thead>
   <tr>
-    <th>Source</th>
-    <th>Type</th>
     <th>Created At</th>
+    <th>Email</th>
+    <th>Source</th>
+    <th>Action</th>
     <th></th>
   </tr>
   </thead>
@@ -12,10 +13,12 @@
   <tbody>
   <% @webhooks.each do |webhook| %>
     <tr>
-      <td><%= webhook.source %></td>
-      <td><%= webhook.action %></td>
       <td><%= webhook.created_at %></td>
-      <td><%= link_to 'Commit', perform_admin_webhook_path(webhook) %></td>
+      <td><%= webhook.email %></td>
+      <td><%= webhook.source %></td>
+      <td><%= webhook.action_name %></td>
+
+      <td><%= link_to 'Re-submit', perform_admin_webhook_path(webhook), class: "btn btn-xs btn-warning" %></td>
     </tr>
   <% end %>
   </tbody>

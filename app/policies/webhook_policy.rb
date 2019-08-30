@@ -9,11 +9,7 @@ class WebhookPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if @user.admin?
-        scope.all
-      else
-        scope.none
-      end
+      @user&.admin? ? scope.all : scope.none
     end
   end
 end

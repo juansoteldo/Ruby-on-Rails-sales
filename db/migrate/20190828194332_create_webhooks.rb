@@ -3,7 +3,8 @@ class CreateWebhooks < ActiveRecord::Migration[5.2]
     create_table :webhooks do |t|
       t.string :source, index: true, null: false
       t.string :source_id, index: true
-      t.string :action, null: false
+      t.string :email, index: true
+      t.string :action_name, null: false
       t.string :params
       t.string :headers
       t.string :referrer
@@ -13,7 +14,7 @@ class CreateWebhooks < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    add_index :webhooks, [:source, :action]
-    add_index :webhooks, [:source, :source_id, :action]
+    add_index :webhooks, [:source, :action_name]
+    add_index :webhooks, [:source, :source_id, :action_name]
   end
 end
