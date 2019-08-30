@@ -129,15 +129,16 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   test "shopify webhook should fail to update on mismatch" do
     request = generate_request
 
-    assert_raises RuntimeError do
-      perform_enqueued_jobs do
-        params = shopify_params
-        params["email"] = SecureRandom.base64(8)
-        params["landing_site"].gsub! /reqid=[\d]+/, "reqid=123456"
-        params["note_attributes"] = []
-        post "/webhooks/orders_create", params: params
-      end
+
+    perform_enqueued_jobs do
+      params = shopify_params
+      params["email"] = SecureRandom.base64(8)
+      params["landing_site"].gsub! /reqid=[\d]+/, "reqid=123456"
+      params["note_attributes"] = []
+      post "/webhooks/orders_create", params: params
     end
+    webhook = Webhook.last
+    assert_not_nil webhook.last_error
 
     assert_nil request.reload.deposit_order_id
     assert request.state == "fresh"

@@ -9,12 +9,16 @@ class RequestCreateJobTest < ActiveJob::TestCase
     User.where(email: wpcf7_params[:email]).delete_all
   end
 
+  def new_webhook(new_params)
+    Webhook.create! source: "WordPress", action_name: "requests_create", params: wpcf7_params.dup.merge(new_params)
+  end
+
   test "should add a new request with an image" do
     art_samples = {
         art_sample_1: @image_file
     }
     content_type = content_type(@image_file)
-    RequestCreateJob.perform_now(wpcf7_params.dup.merge(art_samples))
+    RequestCreateJob.perform_now webhook: new_webhook(art_samples)
     request = Request.joins(:user).where(users: { email: wpcf7_params[:email] }).first
     assert request
     assert request.images.any?
@@ -27,7 +31,7 @@ class RequestCreateJobTest < ActiveJob::TestCase
         art_sample_1: @image_file,
         art_sample_2: @image_file2
     }
-    RequestCreateJob.perform_now(wpcf7_params.dup.merge(art_samples))
+    RequestCreateJob.perform_now webhook: new_webhook(art_samples)
     request = Request.joins(:user).where(users: { email: wpcf7_params[:email] }).first
     assert request
     assert request.images.count == 2
@@ -38,7 +42,7 @@ class RequestCreateJobTest < ActiveJob::TestCase
         art_sample_1: @image_file,
         art_sample_2: @image_file2
     }
-    RequestCreateJob.perform_now(wpcf7_params.dup.merge(art_samples))
+    RequestCreateJob.perform_now webhook: new_webhook(art_samples)
     assert_not File.exist?(@image_file)
     assert_not File.exist?(@image_file2)
   end

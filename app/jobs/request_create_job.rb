@@ -1,11 +1,11 @@
-class RequestCreateJob < ApplicationJob
-  queue_as :webhook
+# frozen_string_literal: true
 
-  def perform(new_params)
-    @params = new_params
-
+class RequestCreateJob < WebhookJob
+  def perform(args)
+    super
     set_user_by_email
     make_request!
+    @webhook.commit! @request.id
   end
 
   def make_request!
@@ -15,10 +15,6 @@ class RequestCreateJob < ApplicationJob
   end
 
   private
-
-  def params
-    @params
-  end
 
   def set_user_by_email
     normalize_email!

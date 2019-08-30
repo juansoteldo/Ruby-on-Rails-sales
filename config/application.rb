@@ -16,7 +16,7 @@ module CtdWorklist
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
     config.time_zone = 'Eastern Time (US & Canada)'
-    config.active_job.queue_adapter = :delayed_job
+    config.active_job.queue_adapter = :sidekiq
     config.action_dispatch.ip_spoofing_check = false
     config.autoload_paths += %W(#{config.root}/lib)
   end
