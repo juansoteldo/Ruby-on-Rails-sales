@@ -2,7 +2,6 @@
 require "sidekiq/worker"
 
 class WebhookJob < ApplicationJob
-  queue_as :webhook
   attr_accessor :webhook
 
   rescue_from Exception do |exception|
