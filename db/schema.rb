@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_28_195247) do
+ActiveRecord::Schema.define(version: 2019_08_31_200631) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -244,6 +244,7 @@ ActiveRecord::Schema.define(version: 2019_08_28_195247) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "aasm_state"
+    t.integer "tries", default: 0
     t.index ["email"], name: "index_webhooks_on_email"
     t.index ["request_id"], name: "index_webhooks_on_request_id"
     t.index ["source", "action_name"], name: "index_webhooks_on_source_and_action_name"

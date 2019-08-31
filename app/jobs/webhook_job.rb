@@ -12,9 +12,10 @@ class WebhookJob < ApplicationJob
 
   def perform(args)
     @webhook = args[:webhook]
+    @webhook.update_column :tries, @webhook.tries + 1
   end
 
   def params
-    @webhook.params
+    @params ||= @webhook.params
   end
 end
