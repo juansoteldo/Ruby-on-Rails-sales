@@ -38,4 +38,10 @@ class OrderCreateJobTest < ActiveJob::TestCase
     assert @webhook.reload.failed?
     assert_not_nil @webhook.last_error
   end
+
+  test "should increment webhook tries counter" do
+    assert_difference('@webhook.reload.tries') do
+      OrdersCreateJob.perform_now webhook: @webhook
+    end
+  end
 end
