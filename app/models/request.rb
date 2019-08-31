@@ -9,7 +9,7 @@ class Request < ApplicationRecord
 
   before_create :update_state_stamp
   after_create :opt_in_user
-  after_create :deliver_marketing_opt_in_email
+  after_create_commit :deliver_marketing_opt_in_email
 
   default_scope -> { includes(:user) }
 
