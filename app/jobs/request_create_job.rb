@@ -12,6 +12,7 @@ class RequestCreateJob < WebhookJob
     @request = Request.recent.where(user_id: @user.id,
                                     position: params[:position]).first_or_create
     @request.update! params
+    @request.update_column(:created_at, [@reguest.created_at, @webhook.created_at].min)
   end
 
   private

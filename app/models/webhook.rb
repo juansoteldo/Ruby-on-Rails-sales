@@ -3,7 +3,7 @@ class Webhook < ApplicationRecord
   serialize :params
   serialize :headers
 
-  after_create :queue!
+  after_create_commit :queue!
 
   scope :uncommitted, -> { where.not(aasm_state: "committed") }
 
