@@ -45,7 +45,8 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_not_equal Webhook.last.tries, 0
-    assert Webhook.last.committed?
+    assert_equal "committed", Webhook.last.aasm_state
+
 
     user = User.find(Request.joins(:user).where(users: { email: params[:email] }).first.user_id)
     assert_not_nil user
@@ -63,7 +64,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_not_equal Webhook.last.tries, 0
-    assert Webhook.last.committed?
+    assert_equal "committed", Webhook.last.aasm_state
     user = User.find(Request.joins(:user).where(users: { email: params[:email] }).first.user_id)
     assert_equal user.marketing_opt_in, false
   end
@@ -75,7 +76,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       assert_response :success
     end
     assert_not_equal Webhook.last.tries, 0
-    assert Webhook.last.committed?
+    assert_equal "committed", Webhook.last.aasm_state
 
     request = last_request_after(stamp)
     assert request.images.count == 1
@@ -102,7 +103,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_not_equal Webhook.last.tries, 0
-    assert Webhook.last.committed?
+    assert_equal "committed", Webhook.last.aasm_state
     request.reload
     assert request.deposit_order_id == shopify_params["id"].to_s
     assert request.state == "deposited"
@@ -121,7 +122,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_not_equal Webhook.last.tries, 0
-    assert Webhook.last.committed?
+    assert_equal "committed", Webhook.last.aasm_state
     request.reload
     assert request.deposit_order_id == shopify_params["id"].to_s
     assert request.state == "deposited"
@@ -140,7 +141,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_not_equal Webhook.last.tries, 0
-    assert Webhook.last.committed?
+    assert_equal "committed", Webhook.last.aasm_state
     assert request.reload.deposit_order_id == shopify_unassociated_params["id"].to_s
     assert request.state == "deposited"
   end
@@ -159,7 +160,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
     assert_not_equal Webhook.last.tries, 0
     assert_not_nil webhook.last_error
-    assert Webhook.last.failed?
+    assert_equal "failed", Webhook.last.aasm_state
     assert_nil request.reload.deposit_order_id
     assert request.state == "fresh"
   end
