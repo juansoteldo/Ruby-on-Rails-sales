@@ -12,6 +12,11 @@ module CTD
         SalesTotal.where(sold_on: range).delete_all
         update_sales_totals(range)
         update_conversion_rates(range)
+        true
+      rescue Exception => e
+        console_log "ERROR #{e.message}"
+        Rails.logger.error e.message
+        false
       end
 
       def update_sales_totals(range)
