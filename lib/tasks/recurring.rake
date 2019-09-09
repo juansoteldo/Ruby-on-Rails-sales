@@ -3,7 +3,12 @@
 namespace :recurring do
   desc "Updates total sales"
   task update_sales_totals: :environment do
-    CTD::SalesUpdater.update
+    3.times do
+      break if CTD::SalesUpdater.update
+      sleep_duration = Rails.env.production? ? 30 : 1
+      puts "Update failed, sleeping for #{sleep_duration} milliseconds"
+      sleep sleep_duration
+    end
   end
 
   desc "This task is called by cron"
