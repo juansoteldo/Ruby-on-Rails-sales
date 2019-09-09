@@ -21,8 +21,9 @@ json.rows do
         json.url api_request_image_url(image, uuid: request.uuid )
       end
     end
-    json.url admin_request_url(request, format: :json)
+    json.url admin_request_path(request, format: :json)
     json.crm_url crm_start_url(request)
+    json.send_confirmation_path send_confirmation_admin_request_path(request)
   end
 end
 

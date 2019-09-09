@@ -37,9 +37,10 @@ class RequestCreateJob < WebhookJob
   end
 
   def normalize_email!
-    raise "empty email" if params[:email].nil?
-    params[:email] = params[:email].downcase.strip
-    raise "empty email" if params[:email] == ""
+    raise "empty email" unless params.key?(:email)
+    email = params[:email].to_s.downcase.strip
+    raise "empty email" if email.blank?
+    params[:email] = email
     params[:email]
   end
 end

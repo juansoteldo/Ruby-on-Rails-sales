@@ -22,7 +22,7 @@ class Webhook < ApplicationRecord
     end
 
     event :fail, before: :record_failure do
-      transitions from: [:queued], to: :failed
+      transitions from: [:fresh, :queued], to: :failed
     end
   end
 
@@ -55,6 +55,10 @@ class Webhook < ApplicationRecord
     elsif source == "Calendly" && action_name == "events_create"
       UpdateEventJob
     end
+  end
+
+  def params
+    super.with_indifferent_access
   end
 
   private
