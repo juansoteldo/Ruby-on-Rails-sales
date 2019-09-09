@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       member do
         match :opt_out, via: [:all], as: :opt_out
         match :opt_in, via: [:all], as: :opt_in
+        match :send_confirmation, via: [:all], as: :send_confirmation
       end
     end
 

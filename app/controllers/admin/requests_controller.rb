@@ -2,7 +2,7 @@
 
 class Admin::RequestsController < Admin::BaseController
   skip_before_action :verify_authenticity_token, only: [:edit, :update]
-  before_action :set_request, only: [:show, :edit, :update, :destroy, :opt_out]
+  before_action :set_request, only: [:show, :edit, :update, :destroy, :opt_out, :send_confirmation]
 
   # GET /requests
   # GET /requests.json
@@ -50,11 +50,19 @@ class Admin::RequestsController < Admin::BaseController
     respond_to do |format|
       if user.save
         format.html { redirect_to admin_requests_path, notice: 'Opted in this user.' }
-        format.json { render :show, status: :opted_in, location: admin_requests_path }
+        format.json { render :show, status: 200, location: admin_requests_path }
       else
         format.html { redirect_to admin_requests_path, notice: 'Cannot opt this user in.' }
         format.json { render json: user.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  def send_confirmation
+    respond_to do |format|
+      @request.send_confirmation_email
+      format.html { redirect_to admin_requests_path, notice: 'Re-sent the email.' }
+      format.json { render :show, status: 200, location: admin_requests_path }
     end
   end
 

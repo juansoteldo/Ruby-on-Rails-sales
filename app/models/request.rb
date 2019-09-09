@@ -141,6 +141,14 @@ class Request < ApplicationRecord
     end
   end
 
+  def send_confirmation_email
+    BoxMailer.confirmation_email(self).deliver_later
+  end
+
+  def send_final_confirmation_email
+    BoxMailer.final_confirmation_email(self).deliver_later
+  end
+
   private
 
   def opt_in_user
@@ -153,8 +161,8 @@ class Request < ApplicationRecord
   end
 
   def perform_complete_actions
-    puts "Sending final confirmation email to #{user.email}"
-    BoxMailer.final_confirmation_email(self).deliver_later
+    puts "Sending final confirmation email to #{user.email}" unless Rails.env.test?
+    send_final_confirmation_email
   end
 
   def perform_quote_actions
@@ -182,7 +190,7 @@ class Request < ApplicationRecord
 
   def perform_deposit_actions
     Rails.logger.info "Sending confirmation email to #{user.email}"
-    BoxMailer.confirmation_email(self).deliver_later
+    send_confirmation_email
     begin
       streak_boxes.each do |box|
         MostlyStreak::Box.set_stage(box.key, 'Deposited')

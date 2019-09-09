@@ -18,10 +18,14 @@ class AdminWebhooksTest < Capybara::Rails::TestCase
 
   test "re-submit should work" do
     visit admin_webhooks_path
+    assert row_state(@webhook.email) == "fresh"
     perform_enqueued_jobs do
       click_on "Re-submit"
-      assert_not page.has_content? @webhook.email
     end
-    assert @webhook.reload.committed?
+    assert row_state(@webhook.email) == "committed"
+  end
+
+  def row_state(email)
+    page.all("td", text: email).first.ancestor("tr").all("td").first.text
   end
 end
