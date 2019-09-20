@@ -7,7 +7,7 @@ class AddNamesToUsers < ActiveRecord::Migration[5.2]
       SET first_name = r.first_name, last_name = r.last_name
       FROM requests AS r 
       WHERE r.first_name IS NOT NULL 
-         AND r.first_name <> ""
+         AND r.first_name <> ''
          AND r.user_id = u.id
 SQL
   end
