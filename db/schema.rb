@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_31_200631) do
+ActiveRecord::Schema.define(version: 2019_09_20_195508) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -225,6 +225,8 @@ ActiveRecord::Schema.define(version: 2019_08_31_200631) do
     t.string "phone_number"
     t.string "timezone"
     t.string "uuid"
+    t.string "first_name"
+    t.string "last_name"
     t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
