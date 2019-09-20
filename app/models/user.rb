@@ -13,11 +13,15 @@ class User < ApplicationRecord
   has_many :events
   has_many :messages, class_name: "Ahoy::Message"
 
-  auto_strip_attributes :email
+  auto_strip_attributes :email, :first_name, :last_name
   phony_normalize :phone_number, default_country_code: 'US'
 
   validates_presence_of :email
   validates_length_of :email, minimum: 5
+
+  def ransackable_attributes(auth_object = nil)
+    [:email, :marketing_opt_in, :crm_opt_in, :presales_opt_in]
+  end
 
   def email=(value)
     self[:email] = value&.downcase&.strip

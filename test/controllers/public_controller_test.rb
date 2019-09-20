@@ -21,6 +21,15 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "should set first_name on user" do
+    post new_request_path(email: "test@email.com", first_name: "John", format: :json)
+    assert_response :success
+    new_request = JSON.parse(@response.body)
+    request = Request.find new_request["id"]
+    assert request.first_name == "John"
+    assert request.user.first_name == "John"
+  end
+
   test "should get uid based on client id" do
     get get_uid_path(client_id: @existing_request.client_id, format: :json)
     assert_response :success

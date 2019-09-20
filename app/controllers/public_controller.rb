@@ -16,6 +16,7 @@ class PublicController < ApplicationController
   before_action :assert_email_is_valid, only: [:get_ids, :get_links, :deposit_redirect, :new_request]
   before_action :set_or_create_user_by_email, only: [:get_ids, :get_links, :deposit_redirect, :new_request]
   before_action :validate_request_parameters, only: [:new_request]
+  before_action :update_user_names, only: [:new_request]
   before_action :set_or_create_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
 
   def redirect
@@ -113,6 +114,11 @@ class PublicController < ApplicationController
 
   private
 
+  def update_user_names
+    return if @user.first_name.to_s.present?
+    @user.update user_params
+  end
+
   def request_link_params
     params.require(:variant_id)
     params.require(:salesperson_id)
@@ -181,6 +187,10 @@ class PublicController < ApplicationController
     params.permit(:client_id, :ticket_id, :quote_id, :position, :gender,
                   :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :reqid, :salesid, :description,
                   user_attributes: [:marketing_opt_in])
+  end
+
+  def user_params
+    params.permit(:first_name, :last_name)
   end
 
   def normalize_email
