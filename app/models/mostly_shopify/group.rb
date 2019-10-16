@@ -8,11 +8,11 @@ class MostlyShopify::Group
   def self.all
     products = MostlyShopify::Product.all
     groups = products.map do |product|
-      product.title.sub( 'Final Payment', '' ).sub( 'Deposit', '').strip
+      product.title.sub("Final Payment", "").sub("Deposit", "").strip
     end.uniq.map do |name|
-      self.new(name, products.select{|p| /^#{name}.*/.match(p.title) })
+      new(name, products.select { |p| /^#{name}.*/.match(p.title) })
     end.reject do |group|
-      group.products.select{|p| p.variants.count == 0 }.any?
+      group.products.select { |p| p.variants.count == 0 }.any?
     end
     groups
   end
