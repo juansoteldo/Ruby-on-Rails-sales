@@ -111,16 +111,14 @@ module MostlyShopify
       orders
     end
 
-    MIN_DATE = "2016-06-01T00:00:00-00:00".to_time
-
     def self.deposits(params)
       digest = Digest::SHA256.base64digest params.inspect
       expires_in = Rails.env.production? ? 6.hours : 6.hours
       Rails.cache.fetch("shopify/orders/deposits/" + digest, expires_in: expires_in) do
-        params[:created_at_min] ||= MIN_DATE.dup
+        params[:created_at_min] ||= CTD::MIN_DATE.dup
         params[:created_at_max] ||= 1.day.ago.end_of_day
 
-        params[:created_at_min] = [params[:created_at_min], MIN_DATE.dup].max
+        params[:created_at_min] = [params[:created_at_min], CTD::MIN_DATE.dup].max
 
         params[:fields] = "customer,line_items,total_price,subtotal_price,note_attributes,created_at"
 

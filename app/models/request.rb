@@ -150,6 +150,7 @@ class Request < ApplicationRecord
   end
 
   def self.for_shopify_order(order, reset_attribution: false)
+    email = order.email.downcase.strip
     attributed_by = "request_id"
     request = Request.where(id: order.request_id.to_i).first if order.request_id
     unless reset_attribution
@@ -157,11 +158,11 @@ class Request < ApplicationRecord
       request ||= Request.find_by_deposit_order_id(order.id)
     end
     created_at = order.created_at.to_date
-    date_range = (created_at - 180.days)..Time.now
+    date_range = (created_at - 180.days)..(created_at + 7.days)
     attributed_by = "email" unless request
-    request ||= find_by_email(order.email, date_range: date_range)
+    request ||= find_by_email(email, date_range: date_range)
     attributed_by = "fuzzy_email" unless request
-    request ||= fuzzy_find_by_email(order.email, date_range: date_range)
+    request ||= fuzzy_find_by_email(email, date_range: date_range)
 
     order.request_id = request&.id
     if request && (reset_attribution || request.attributed_by.nil?)
@@ -172,15 +173,15 @@ class Request < ApplicationRecord
 
   private
 
-  def self.find_by_email(email, date_range: MIN_DATE..Time.now)
+  def self.find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
     joins(:user).
-      where(users: { email: email.downcase.strip }).
+      where(users: { email: email }).
       where(requests: { created_at: date_range }).last
   end
 
-  def self.fuzzy_find_by_email(email, date_range: MIN_DATE..Time.now)
+  def self.fuzzy_find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
     joins(:user).
-      merge(User.fuzzy_matching_email(email.downcase.strip)).
+      merge(User.fuzzy_matching_email(email)).
       where(requests: { created_at: date_range }).last
   end
 
