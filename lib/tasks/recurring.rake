@@ -5,8 +5,8 @@ namespace :recurring do
   task update_sales_totals: :environment do
     3.times do
       break if CTD::SalesUpdater.update
-      sleep_duration = Rails.env.production? ? 30 : 1
-      puts "Update failed, sleeping for #{sleep_duration} milliseconds"
+      sleep_duration = Rails.env.production? ? 30 : 5
+      puts "Update failed, sleeping for #{sleep_duration} seconds"
       sleep sleep_duration
     end
   end

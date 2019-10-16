@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_20_195508) do
+ActiveRecord::Schema.define(version: 2019_10_16_125126) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "fuzzystrmatch"
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
@@ -164,6 +165,7 @@ ActiveRecord::Schema.define(version: 2019_09_20_195508) do
     t.datetime "deposited_at"
     t.integer "contacted_by_id"
     t.uuid "uuid", default: -> { "uuid_generate_v4()" }
+    t.string "attributed_by"
     t.index ["client_id"], name: "index_requests_on_client_id"
     t.index ["created_at"], name: "index_requests_on_created_at"
     t.index ["deposit_order_id"], name: "index_requests_on_deposit_order_id"

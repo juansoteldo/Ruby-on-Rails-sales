@@ -85,8 +85,6 @@ group :development, :test do
   gem "capistrano-rails-console", require: false
   gem "capistrano-rbenv"
   gem 'capistrano-nvm', require: false
-  gem "rubocop", require: false
-  gem "rubocop-airbnb", require: false
   gem "rb-readline"
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -100,6 +98,10 @@ end
 group :development do
   gem "letter_opener"
   gem "listen"
+  gem "overcommit", require: false
+  gem "reek", require: false
+  gem "rubocop", require: false
+  gem "rubocop-airbnb", require: false
   gem "web-console"
 end
 
