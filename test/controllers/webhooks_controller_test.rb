@@ -18,7 +18,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     last_request_after(stamp)
   end
 
-  def last_request_after(stamp, email = wpcf7_params[:email])
+  def last_request_after(stamp, email: wpcf7_params[:email])
     Request.joins(:user).where("requests.updated_at > ? AND email = ?", stamp, email).last
   end
 
@@ -46,7 +46,6 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
     assert_not_equal Webhook.last.tries, 0
     assert_equal "committed", Webhook.last.aasm_state
-
 
     user = User.find(Request.joins(:user).where(users: { email: params[:email] }).first.user_id)
     assert_not_nil user
@@ -83,22 +82,21 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert request.images.first.decorate.exists?
   end
 
-
   test "shopify webhook should update its corresponding request" do
     request = generate_request
     perform_enqueued_jobs do
       post "/webhooks/orders_create", params: shopify_params.merge(
-          "email": wpcf7_params[:email],
-          "note_attributes": [
-              {
-                  "name": "req_id",
-                  "value": request.id.to_s,
-              },
-              {
-                  "name": "sales_id",
-                  "value": request.quoted_by_id,
-              },
-          ]
+        "email": wpcf7_params[:email],
+        "note_attributes": [
+          {
+            "name": "req_id",
+            "value": request.id.to_s,
+          },
+          {
+            "name": "sales_id",
+            "value": request.quoted_by_id,
+          },
+        ]
       )
     end
 
@@ -114,9 +112,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
     perform_enqueued_jobs do
       params = shopify_params.merge(
-          "email": wpcf7_params[:email],
-          "note_attributes": [],
-          )
+        "email": wpcf7_params[:email],
+        "note_attributes": [],
+      )
       params["landing_site"].gsub! /reqid=[\d]+/, "reqid=123456"
       post "/webhooks/orders_create", params: params
     end
@@ -133,15 +131,16 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
     perform_enqueued_jobs do
       params = shopify_unassociated_params.merge(
-          "email": SecureRandom.base64(8),
-          "note_attributes": [],
-          )
+        "email": SecureRandom.base64(8),
+        "note_attributes": [],
+      )
       params["landing_site"].gsub! /reqid=[\d]+/, "reqid=#{request.id}"
       post "/webhooks/orders_create", params: params
     end
 
-    assert_not_equal Webhook.last.tries, 0
-    assert_equal "committed", Webhook.last.aasm_state
+    webhook = Webhook.last
+    assert_not_equal webhook.tries, 0
+    assert_equal "committed", webhook.aasm_state
     assert request.reload.deposit_order_id == shopify_unassociated_params["id"].to_s
     assert request.state == "deposited"
   end
@@ -156,11 +155,11 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       params["note_attributes"] = []
       post "/webhooks/orders_create", params: params
     end
-    webhook = Webhook.last
 
-    assert_not_equal Webhook.last.tries, 0
+    webhook = Webhook.last
+    assert_not_equal webhook.tries, 0
     assert_not_nil webhook.last_error
-    assert_equal "failed", Webhook.last.aasm_state
+    assert_equal "failed", webhook.aasm_state
     assert_nil request.reload.deposit_order_id
     assert request.state == "fresh"
   end

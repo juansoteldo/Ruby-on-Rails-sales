@@ -13,9 +13,9 @@ module CTD
         update_sales_totals(range)
         update_conversion_rates(range)
         true
-      rescue Exception => e
-        console_log "ERROR #{e.message}"
-        Rails.logger.error e.message
+      rescue => e
+        console_log e.message
+        console_log e.backtrace.join("\n")
         false
       end
 
@@ -25,19 +25,29 @@ module CTD
           created_at_max: range.end,
         }
 
-        console_log "Loading attributed streak orders for last #{MONTHS_TEXT}"
-        orders = MostlyShopify::Order.attributed params
+        console_log "Loading attributed shopify orders for last #{MONTHS_TEXT}"
+        orders = MostlyShopify::Order.deposits params
 
         console_log "Calculating sales totals for #{orders.count} orders"
         orders.each do |order|
-          # request = Request.find(order.request_id.to_i) if order.request_id.is_a?(String)
-          # request ||= Request.joins(:user).where(users: { email: order.customer.email } ).last
+          request = order.request(reset_attribution: true)
+          console_log("Cannot find request for #{order.customer.email}", level: :warn) unless request
 
-          #        puts "Cannot find request for #{order.customer.email}" unless request
+          sales_id = order.sales_id
+          quoted_by_id = order.request&.quoted_by_id
+
+          if sales_id && request && quoted_by_id != sales_id.to_i
+            console_log(
+              "Updating quoted_by_id for request #{request.id} (#{quoted_by_id.inspect} => #{sales_id})"
+            )
+            request.update_column :quoted_by_id, sales_id
+          end
+          sales_id ||= quoted_by_id
+
           created_at = order.created_at.to_date
-          salesperson = Salesperson.find_or_create_with_id(order.sales_id.to_i)
+
           total = SalesTotal.where(sold_on: created_at,
-                                   salesperson_id: salesperson.id).first_or_create
+                                   salesperson_id: sales_id).first_or_create
           total.order_total += order.total_price.to_f.round(2)
           total.order_count += 1
           total.save!
@@ -61,17 +71,12 @@ module CTD
             created_at = Time.at(epoch)
 
             total_boxes += 1
-            next unless box.assigned_to_sharing_entries
-            assignees = box.assigned_to_sharing_entries.reject { |e| e.email == "sales@customtattoodesign.ca" }
-            next unless assignees.count == 1
-            salesperson = Salesperson.find_by_email assignees.first.email
-            next unless salesperson
+            next unless box.salesperson
+
             customer_email = box.name.strip.downcase
-
-            salesperson.claim_requests_with_email(customer_email, created_at - 1.day)
-
+            box.salesperson.claim_requests_with_email(customer_email, created_at - 1.day)
             sales_total = SalesTotal.where(sold_on: created_at.to_date,
-                                           salesperson_id: salesperson.id).first_or_create
+                                           salesperson_id: box.salesperson.id).first_or_create
             sales_total.update_attribute :box_count, sales_total.box_count + 1
           end
           console_log "Processed #{page * 1000} boxes, last was on #{Time.at(boxes.last.creation_timestamp / 1000).to_date}"
@@ -82,7 +87,8 @@ module CTD
         console_log "Updated salespeople for #{final_count - initial_count} requests based on #{total_boxes} boxes"
       end
 
-      def console_log(message)
+      def console_log(message, level: :info)
+        Rails.logger.send level, message
         return if Rails.env.test?
         puts "#{Time.now.to_s} #{message}"
       end

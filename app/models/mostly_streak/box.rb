@@ -4,9 +4,16 @@ require "mostly_streak/base"
 
 module MostlyStreak
   class Box < Base
-    # @param [MostlyGmail::Message] message
-    def self.from_gmail_message(message)
 
+    def salesperson
+      return @assigned_to_salesperson if @assigned_to_salesperson
+      emails = assigned_to_emails
+      return nil unless emails.count == 1
+      @assigned_to_salesperson = Salesperson.where(email: emails).first
+    end
+
+    def assigned_to_emails
+      assigned_to_sharing_entries.map(&:email).reject { |e| e == "sales@customtattoodesign.ca" }
     end
 
     def self.create(email)
@@ -20,19 +27,19 @@ module MostlyStreak
     def self.all
       Rails.cache.fetch("streak_box/all", expires_in: 2.minutes) do
         Streak.api_key = Rails.application.config.streak_api_key
-        Streak::Box.all(ENV['STREAK_PIPELINE_ID'])
+        Streak::Box.all(ENV['STREAK_PIPELINE_ID']).map { |b| new b }
       end
     end
 
     def self.all_with_limits(params = { limit: "10", page: "1" })
       Rails.cache.fetch("streak_box/all/#{params[:limit]}/#{params[:page]}", expires_in: 2.minutes) do
         Streak.api_key = Rails.application.config.streak_api_key
-        Streak::Box.all ENV['STREAK_PIPELINE_ID'], params
+        Streak::Box.all(ENV['STREAK_PIPELINE_ID'], params).map { |b| new b }
       end
     end
 
     def self.query(query)
-      Rails.cache.fetch("streak_box/query/" + query, expires_in: 10.seconds) do
+      Rails.cache.fetch("streak_box/query/" + query, expires_in: 60.seconds) do
         Streak.api_key = Rails.application.config.streak_api_key
         results = Streak::Search.query(query).results
         results&.boxes || [{}]
@@ -41,17 +48,18 @@ module MostlyStreak
 
     def self.find(box_key)
       Streak.api_key = Rails.application.config.streak_api_key
-      Streak::Box.find(box_key)
+      new Streak::Box.find(box_key)
     end
 
     def self.find_by_email(email)
       return unless email =~ /\A[^@]+@[^@]+\Z/
       Streak.api_key = Rails.application.config.streak_api_key
       box_key = MostlyStreak::Box.query(email).select do |box|
-        box.name.casecmp(email.downcase).zero?
+        difference = box.name.casecmp(email)
+        !difference.nil? && difference < 2
       end.last.try(&:box_key)
 
-      box_key && Streak::Box.find(box_key) || nil
+      box_key && find(box_key) || nil
     end
 
     def self.set_stage(box_key, stage_name)

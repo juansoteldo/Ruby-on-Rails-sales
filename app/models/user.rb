@@ -8,6 +8,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  scope :fuzzy_matching_email, (-> (email) { where("levenshtein(email, ?) <= 2", email.downcase.strip) })
 
   has_many :requests, dependent: :destroy
   has_many :events
@@ -24,7 +25,7 @@ class User < ApplicationRecord
   end
 
   def email=(value)
-    self[:email] = value&.downcase&.strip
+    self[:email] = value&.downcase
   end
 
   def opted_out

@@ -16,30 +16,30 @@ class Request < ApplicationRecord
   auto_strip_attributes :first_name, :last_name, :position
 
   scope :recent, (-> { where "created_at > ?", Rails.env.test? ? 1.seconds.ago : 5.minutes.ago })
-  scope :deposited, (->{ where.not deposited_at: nil })
+  scope :deposited, (-> { where.not deposited_at: nil })
   scope :valid, (-> { where.not user_id: nil })
-  scope :quoted_or_contacted_by, (->(salesperson_id){ where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
+  scope :quoted_or_contacted_by, (->(salesperson_id) { where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
 
   TATTOO_POSITIONS = [
-      "Calf",
-      "Chest",
-      "Foot",
-      "Fore Arm",
-      "Full Back",
-      "Full Sleeve",
-      "Half Sleeve",
-      "Leg",
-      "Lower Back",
-      "Ribs",
-      "Stomach",
-      "Upper Arm",
-      "Upper Back",
-      "Lower Arm",
-      "Hip",
-      "Wrist",
-      "Ankle",
-      "Other"
-  ]
+    "Calf",
+    "Chest",
+    "Foot",
+    "Fore Arm",
+    "Full Back",
+    "Full Sleeve",
+    "Half Sleeve",
+    "Leg",
+    "Lower Back",
+    "Ribs",
+    "Stomach",
+    "Upper Arm",
+    "Upper Back",
+    "Lower Arm",
+    "Hip",
+    "Wrist",
+    "Ankle",
+    "Other",
+  ].freeze
 
   state_machine :state, initial: :fresh do
     after_transition on: :convert, do: :perform_deposit_actions
@@ -105,7 +105,7 @@ class Request < ApplicationRecord
   end
 
   def time_since_state_change
-    (Time.zone.now - self.state_changed_at)
+    (Time.zone.now - state_changed_at)
   end
 
   def art_sample_1=(file)
@@ -149,7 +149,40 @@ class Request < ApplicationRecord
     BoxMailer.final_confirmation_email(self).deliver_later
   end
 
+  def self.for_shopify_order(order, reset_attribution: false)
+    attributed_by = "request_id"
+    request = Request.where(id: order.request_id.to_i).first if order.request_id
+    unless reset_attribution
+      attributed_by = "webhook" unless request
+      request ||= Request.find_by_deposit_order_id(order.id)
+    end
+    created_at = order.created_at.to_date
+    date_range = (created_at - 180.days)..Time.now
+    attributed_by = "email" unless request
+    request ||= find_by_email(order.email, date_range: date_range)
+    attributed_by = "fuzzy_email" unless request
+    request ||= fuzzy_find_by_email(order.email, date_range: date_range)
+
+    order.request_id = request&.id
+    if request && (reset_attribution || request.attributed_by.nil?)
+      request.update_column(:attributed_by, attributed_by)
+    end
+    request
+  end
+
   private
+
+  def self.find_by_email(email, date_range: MIN_DATE..Time.now)
+    joins(:user).
+      where(users: { email: email.downcase.strip }).
+      where(requests: { created_at: date_range }).last
+  end
+
+  def self.fuzzy_find_by_email(email, date_range: MIN_DATE..Time.now)
+    joins(:user).
+      merge(User.fuzzy_matching_email(email.downcase.strip)).
+      where(requests: { created_at: date_range }).last
+  end
 
   def opt_in_user
     user.update presales_opt_in: true, crm_opt_in: true
@@ -166,24 +199,22 @@ class Request < ApplicationRecord
   end
 
   def perform_quote_actions
-    begin
-      box = streak_boxes.last
-      return unless box
+    box = streak_boxes.last
+    return unless box
 
-      current_stage = MostlyStreak::Stage.find(key: box.stage_key)
-      return unless current_stage.name == 'Contacted' || current_stage.name == 'Leads'
+    current_stage = MostlyStreak::Stage.find(key: box.stage_key)
+    return unless current_stage.name == 'Contacted' || current_stage.name == 'Leads'
 
-      MostlyStreak::Box.set_stage(box.key, 'Quoted')
-    rescue Exception => e
-      Rails.logger.error "Cannot update streak box for request #{self.id} (#{e})"
-    end
+    MostlyStreak::Box.set_stage(box.key, 'Quoted')
+  rescue Exception => e
+    Rails.logger.error "Cannot update streak box for request #{id} (#{e})"
   end
 
   def streak_boxes
     MostlyStreak::Box.query(user.email).map do |box|
       Streak::Box.find(box.box_key)
     end.select do |box|
-      box_created_at = Time.strptime(box.creation_timestamp.to_s,'%Q')
+      box_created_at = Time.strptime(box.creation_timestamp.to_s, '%Q')
       (box_created_at - created_at) < 2.days
     end
   end
@@ -196,9 +227,8 @@ class Request < ApplicationRecord
         MostlyStreak::Box.set_stage(box.key, 'Deposited')
       end
     rescue Exception => e
-      Rails.logger.error "Cannot update streak box for request #{self.id} (#{e})"
+      Rails.logger.error "Cannot update streak box for request #{id} (#{e})"
     end
-
   end
 
   def subtotal
@@ -207,7 +237,7 @@ class Request < ApplicationRecord
 
     order = MostlyShopify::Order.find(deposit_order_id).first
     return 0 unless order
-    self.update_column :sub_total, order.subtotal_price
+    update_column :sub_total, order.subtotal_price
     sub_total.to_f
   end
 

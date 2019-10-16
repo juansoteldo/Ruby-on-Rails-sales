@@ -34,8 +34,8 @@ class Webhook < ApplicationRecord
   def perform_job
     job_class.perform_now(webhook: self)
     true
-  rescue Exception => e
-    fail! "#{e.message}\n#{e.backtrace}"
+  rescue => e
+    fail! "#{e.message}\n#{e.backtrace.join("\n")}"
     false
   end
 
