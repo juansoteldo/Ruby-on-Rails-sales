@@ -6,20 +6,22 @@ require "mostly_shopify/variant"
 
 module MostlyShopify
   class Product < Base
-
     def self.find(id)
-      self.shopify_sources.select{|i| i.id == id }.map{ |i| self.new(i) }
+      shopify_sources.select { |i| i.id == id }.map { |i| new(i) }
     end
 
     def self.all
-      self.shopify_sources.map{ |i| self.new(i) }
+      shopify_sources.map { |i| new(i) }
     end
 
     def self.shopify_sources
-      Rails.cache.fetch("shopify/products/all", expires_in: 15.minutes) do
+      products = Rails.cache.fetch("shopify/products/all", expires_in: 15.minutes) do
         ShopifyAPI::Product.all params: { limit: 200 }
       end
+      raise "no-products-found" if products.nil?
+      products
     rescue
+      Rails.cache.delete("shopify/products/all")
       []
     end
 
@@ -32,18 +34,15 @@ module MostlyShopify
     end
 
     def variants
-      @source.variants.map{|v| MostlyShopify::Variant.new(v)}
+      @source.variants.map { |v| MostlyShopify::Variant.new(v) }
     end
 
     def sub_title
-      @source.title.sub( group_title, '' ).strip
+      @source.title.sub(group_title, '').strip
     end
 
     def group_title
-      title.sub( 'Final Payment', '' ).sub( 'Deposit', '').strip
+      title.sub('Final Payment', '').sub('Deposit', '').strip
     end
   end
 end
-
-
-
