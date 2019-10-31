@@ -108,37 +108,26 @@ class Request < ApplicationRecord
     (Time.zone.now - state_changed_at)
   end
 
-  def art_sample_1=(file)
-    add_image_from_path(file)
-    File.unlink(file) if File.exist?(file)
-  end
-
-  def art_sample_2=(file)
-    add_image_from_path(file)
-    File.unlink(file) if File.exist?(file)
-  end
-
-  def art_sample_3=(file)
-    add_image_from_path(file)
-    File.unlink(file) if File.exist?(file)
+  (1..10).each do |x|
+    define_method("art_sample_#{x}=") do |file|
+      return if file.to_s.empty?
+      add_image_from_path(file)
+      File.unlink(file) if File.exist?(file)
+    end
   end
 
   def add_image_from_path(file)
-    return if file.empty?
+    return unless File.exist?(file)
 
-    begin
-      return unless File.exist?(file)
-
-      logger.info "Adding #{file}"
-      image = RequestImage.from_path(file)
-      image.request_id = id
-      image.save!
-    rescue => e
-      raise(e) if Rails.env.test?
-      logger.error ">>> Cannot add image to request #{file}"
-      logger.error e.message
-      logger.error e.backtrace.join("\n")
-    end
+    logger.info "Adding #{file}"
+    image = RequestImage.from_path(file)
+    image.request_id = id
+    image.save!
+  rescue => e
+    raise(e) if Rails.env.test?
+    logger.error ">>> Cannot add image to request #{file}"
+    logger.error e.message
+    logger.error e.backtrace.join("\n")
   end
 
   def send_confirmation_email
