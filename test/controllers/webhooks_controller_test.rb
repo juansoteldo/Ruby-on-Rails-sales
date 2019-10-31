@@ -7,6 +7,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   setup do
     @image_file = file_fixture_copy("test.jpg")
     User.all.each(&:destroy!)
+    Webhook.all.delete_all
   end
 
   def generate_request

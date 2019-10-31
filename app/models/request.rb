@@ -108,37 +108,26 @@ class Request < ApplicationRecord
     (Time.zone.now - state_changed_at)
   end
 
-  def art_sample_1=(file)
-    add_image_from_path(file)
-    File.unlink(file) if File.exist?(file)
-  end
-
-  def art_sample_2=(file)
-    add_image_from_path(file)
-    File.unlink(file) if File.exist?(file)
-  end
-
-  def art_sample_3=(file)
-    add_image_from_path(file)
-    File.unlink(file) if File.exist?(file)
+  (1..10).each do |x|
+    define_method("art_sample_#{x}=") do |file|
+      return if file.to_s.empty?
+      add_image_from_path(file)
+      File.unlink(file) if File.exist?(file)
+    end
   end
 
   def add_image_from_path(file)
-    return if file.empty?
+    return unless File.exist?(file)
 
-    begin
-      return unless File.exist?(file)
-
-      logger.info "Adding #{file}"
-      image = RequestImage.from_path(file)
-      image.request_id = id
-      image.save!
-    rescue => e
-      raise(e) if Rails.env.test?
-      logger.error ">>> Cannot add image to request #{file}"
-      logger.error e.message
-      logger.error e.backtrace.join("\n")
-    end
+    logger.info "Adding #{file}"
+    image = RequestImage.from_path(file)
+    image.request_id = id
+    image.save!
+  rescue => e
+    raise(e) if Rails.env.test?
+    logger.error ">>> Cannot add image to request #{file}"
+    logger.error e.message
+    logger.error e.backtrace.join("\n")
   end
 
   def send_confirmation_email
@@ -150,6 +139,7 @@ class Request < ApplicationRecord
   end
 
   def self.for_shopify_order(order, reset_attribution: false)
+    email = order.email.downcase.strip
     attributed_by = "request_id"
     request = Request.where(id: order.request_id.to_i).first if order.request_id
     unless reset_attribution
@@ -157,11 +147,11 @@ class Request < ApplicationRecord
       request ||= Request.find_by_deposit_order_id(order.id)
     end
     created_at = order.created_at.to_date
-    date_range = (created_at - 180.days)..Time.now
+    date_range = (created_at - 180.days)..(created_at + 7.days)
     attributed_by = "email" unless request
-    request ||= find_by_email(order.email, date_range: date_range)
+    request ||= find_by_email(email, date_range: date_range)
     attributed_by = "fuzzy_email" unless request
-    request ||= fuzzy_find_by_email(order.email, date_range: date_range)
+    request ||= fuzzy_find_by_email(email, date_range: date_range)
 
     order.request_id = request&.id
     if request && (reset_attribution || request.attributed_by.nil?)
@@ -172,15 +162,15 @@ class Request < ApplicationRecord
 
   private
 
-  def self.find_by_email(email, date_range: MIN_DATE..Time.now)
+  def self.find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
     joins(:user).
-      where(users: { email: email.downcase.strip }).
+      where(users: { email: email }).
       where(requests: { created_at: date_range }).last
   end
 
-  def self.fuzzy_find_by_email(email, date_range: MIN_DATE..Time.now)
+  def self.fuzzy_find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
     joins(:user).
-      merge(User.fuzzy_matching_email(email.downcase.strip)).
+      merge(User.fuzzy_matching_email(email)).
       where(requests: { created_at: date_range }).last
   end
 
