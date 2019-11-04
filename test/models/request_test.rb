@@ -34,13 +34,18 @@ class RequestTest < ActiveSupport::TestCase
     @user.update presales_opt_in: false, marketing_opt_in: false, crm_opt_in: false
     assert_not @user.marketing_opt_in
     Request.create! user: @user
-    @user.reload
-    assert @user.presales_opt_in
+    assert @user.reload.presales_opt_in
     assert @user.crm_opt_in
     assert_not @user.marketing_opt_in
   end
 
   test "quote_from_params!" do
     @request.quote_from_params!({ variant_id: @variant.id, salesperson_id: @salesperson.id })
+  end
+
+  test "updates user names on save" do
+    @request.update! first_name: SecureRandom.base64(8), last_name: SecureRandom.base64(8)
+    assert_equal @user.reload.first_name, @request.first_name
+    assert_equal @user.last_name, @request.last_name
   end
 end

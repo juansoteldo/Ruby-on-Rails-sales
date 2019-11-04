@@ -10,6 +10,7 @@ class Request < ApplicationRecord
   before_create :update_state_stamp
   after_create :opt_in_user
   after_create_commit :deliver_marketing_opt_in_email
+  after_save :update_user_names
 
   default_scope -> { includes(:user) }
 
@@ -233,5 +234,10 @@ class Request < ApplicationRecord
 
   def update_state_stamp
     self.state_changed_at = Time.zone.now
+  end
+
+  def update_user_names
+    return unless user
+    user.update first_name: first_name, last_name: last_name
   end
 end
