@@ -48,4 +48,10 @@ class RequestTest < ActiveSupport::TestCase
     assert_equal @user.reload.first_name, @request.first_name
     assert_equal @user.last_name, @request.last_name
   end
+
+  test "doesn't update user names on save if they're empty" do
+    @request.update! first_name: nil, last_name: nil
+    assert_not_equal @user.reload.first_name, @request.first_name
+    assert_not_equal @user.last_name, @request.last_name
+  end
 end
