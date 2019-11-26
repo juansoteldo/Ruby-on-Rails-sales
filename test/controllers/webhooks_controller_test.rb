@@ -83,6 +83,37 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert request.images.first.decorate.exists?
   end
 
+  test "webhook call with image url should create request with an attached image" do
+    stamp = Time.now
+    perform_enqueued_jobs do
+      post "/webhooks/requests_create", params: wpcf7_params.merge(
+        art_sample_1: "https://www.ece.rice.edu/~wakin/images/lena512.bmp")
+      assert_response :success
+    end
+    assert_not_equal Webhook.last.tries, 0
+    assert_equal "committed", Webhook.last.aasm_state
+
+    request = last_request_after(stamp)
+    assert request.images.count == 1
+    assert request.images.first.decorate.exists?
+  end
+
+  test "webhook call with base64 image should create request with an attached image" do
+    stamp = Time.now
+    image = Base64.encode64(open("https://www.ece.rice.edu/~wakin/images/lena512.bmp").to_s)
+    perform_enqueued_jobs do
+      post "/webhooks/requests_create", params: wpcf7_params.merge(
+        art_sample_1: image)
+      assert_response :success
+    end
+    assert_not_equal Webhook.last.tries, 0
+    assert_equal "committed", Webhook.last.aasm_state
+
+    request = last_request_after(stamp)
+    assert request.images.count == 1
+    assert request.images.first.decorate.exists?
+  end
+
   test "shopify webhook should update its corresponding request" do
     request = generate_request
     perform_enqueued_jobs do
