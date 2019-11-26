@@ -112,21 +112,19 @@ class Request < ApplicationRecord
   (1..10).each do |x|
     define_method("art_sample_#{x}=") do |file|
       return if file.to_s.empty?
-      add_image_from_path(file)
+      add_image_from_param(file)
       File.unlink(file) if File.exist?(file)
     end
   end
 
-  def add_image_from_path(file)
-    return unless File.exist?(file)
-
-    logger.info "Adding #{file}"
-    image = RequestImage.from_path(file)
+  def add_image_from_param(file)
+    image = RequestImage.from_param(file)
+    raise "#{file.truncate(128)} is not an image" unless image
     image.request_id = id
     image.save!
   rescue => e
     raise(e) if Rails.env.test?
-    logger.error ">>> Cannot add image to request #{file}"
+    logger.error ">>> Cannot add image from #{file.truncate(128)}"
     logger.error e.message
     logger.error e.backtrace.join("\n")
   end

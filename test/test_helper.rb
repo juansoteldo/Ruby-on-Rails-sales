@@ -61,7 +61,7 @@ class ActiveSupport::TestCase
 
   def request_with_image(path)
     request = requests(:deposited)
-    request.add_image_from_path(path)
+    request.add_image_from_param(path)
     request
   end
 
