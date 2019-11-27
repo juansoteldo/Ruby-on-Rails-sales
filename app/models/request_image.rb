@@ -32,17 +32,32 @@ class RequestImage < ApplicationRecord
   end
 
   def self.from_base64(value)
+    base64_data = value.split("base64,")[1] || return
+    extension = get_extension(value) || return
     image = new
-    file = Tempfile.new("request-image")
-    file.write Base64.decode64(value)
+    file = Tempfile.new(["request-image", ".#{extension}"])
+    data = Base64.decode64(base64_data)
+    data = data.force_encoding("UTF-8")
+    file.write data
     file.close
     image.file.attach io: file.open,
                       filename: File.basename(file.path)
     file.unlink
     image
+  rescue => e
+    raise e if Rails.env.test?
+    file&.path&.unlink if File.exist?(file.path)
+    nil
+  end
+
+  def self.get_extension(value)
+    regex = /data:image\/([a-z]{3,4});.+/
+    m = value.match regex
+    m ? m[1] : nil
   end
 
   def self.base64?(value)
-    value.is_a?(String) && Base64.encode64(Base64.decode64(value)) == value
+    return false unless value.is_a?(String)
+    value.start_with?("data:image/") || Base64.encode64(Base64.decode64(value)) == value
   end
 end
