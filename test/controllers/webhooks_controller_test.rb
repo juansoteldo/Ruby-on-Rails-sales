@@ -87,7 +87,8 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     stamp = Time.now
     perform_enqueued_jobs do
       post "/webhooks/requests_create", params: wpcf7_params.merge(
-        art_sample_1: "https://www.ece.rice.edu/~wakin/images/lena512.bmp")
+        art_sample_1: "https://www.ece.rice.edu/~wakin/images/lena512.bmp"
+      )
       assert_response :success
     end
     assert_not_equal Webhook.last.tries, 0
@@ -100,10 +101,12 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
   test "webhook call with base64 image should create request with an attached image" do
     stamp = Time.now
-    image = Base64.encode64(open("https://www.ece.rice.edu/~wakin/images/lena512.bmp").to_s)
+    bmp = open("https://www.ece.rice.edu/~wakin/images/lena512.bmp")&.read
+    image = "data:image/bmp;base64," + Base64.encode64(bmp)
     perform_enqueued_jobs do
       post "/webhooks/requests_create", params: wpcf7_params.merge(
-        art_sample_1: image)
+        art_sample_1: image
+      )
       assert_response :success
     end
     assert_not_equal Webhook.last.tries, 0
