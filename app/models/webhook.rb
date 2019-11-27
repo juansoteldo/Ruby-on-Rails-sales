@@ -17,7 +17,7 @@ class Webhook < ApplicationRecord
       transitions from: [:fresh, :failed], to: :queued
     end
 
-    event :commit, before: :associate do
+    event :commit, before: :associate, after: :clear_art_samples! do
       transitions from: [:fresh, :queued], to: :committed
     end
 
@@ -65,5 +65,15 @@ class Webhook < ApplicationRecord
 
   def record_failure(message)
     update_column :last_error, message
+  end
+
+  def clear_art_samples!
+    new_params = params.dup
+    (1..10).each do |x|
+      key = "art_sample_#{x}".to_sym
+      next unless new_params.key?(key)
+      new_params[key] = nil
+    end
+    update_column :params, new_params
   end
 end
