@@ -4,6 +4,8 @@ require 'shopify_api'
 
 module MostlyShopify
   class Base
+    attr_accessor :source
+
     def initialize(source)
       @source = source
     end

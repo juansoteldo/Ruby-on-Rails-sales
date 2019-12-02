@@ -48,7 +48,7 @@ module MostlyShopify
     end
 
     def email
-      @source.respond_to?(:email) ? @source.email : customer.email
+      @source.respond_to?(:email) ? @source.email : customer&.email
     end
 
     def has_request_id?
@@ -198,6 +198,10 @@ module MostlyShopify
     end
 
     def note_value(attr_name)
+      @source.is_a?(Hash) ? hash_note_value(attr_name) : object_note_value(attr_name)
+    end
+
+    def object_note_value(attr_name)
       return nil unless @source.respond_to? :note_attributes
       return nil unless @source.note_attributes
 
@@ -210,5 +214,21 @@ module MostlyShopify
       end
       nil
     end
+
+    def hash_note_value(attr_name)
+      return nil unless @source.key? :note_attributes
+      return nil unless @source[:note_attributes]
+
+      @source[:note_attributes].each do |note_attr|
+        next unless note_attr.key?(:name)
+        next unless note_attr[:name] == attr_name
+        return nil if note_attr[:value] == "undefined"
+
+        return note_attr[:value]
+      end
+      nil
+    end
+
+
   end
 end
