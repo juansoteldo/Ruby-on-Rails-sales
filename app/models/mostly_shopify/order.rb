@@ -8,8 +8,8 @@ module MostlyShopify
   class Order < Base
     DEFAULT_SALESPERSON_EMAIL = "brittany@customtattoodesign.ca"
 
-    def update_request!
-      raise "cannot find request for #{order_status_url}" unless request
+    def update_request!(request = self.request)
+      raise StandardError.new("cannot find request for #{order_status_url}") unless request
 
       if request.can_convert? && is_deposit?
         request.convert
