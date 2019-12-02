@@ -138,28 +138,36 @@ class Request < ApplicationRecord
   end
 
   def self.for_shopify_order(order, reset_attribution: false)
-    email = order.email.downcase.strip
-    attributed_by = "request_id"
-    request = Request.where(id: order.request_id.to_i).first if order.request_id
-    unless reset_attribution
-      attributed_by = "webhook" unless request
-      request ||= Request.find_by_deposit_order_id(order.id)
+    request = find_and_attribute("request_id", :find_by_id, order.request_id.to_i) if order.request_id
+    unless reset_attribution || order.id.nil?
+      request ||= find_and_attribute("webhook", :find_by_deposit_order_id, order.id)
     end
-    created_at = order.created_at.to_date
-    date_range = (created_at - 180.days)..(created_at + 7.days)
-    attributed_by = "email" unless request
-    request ||= find_by_email(email, date_range: date_range)
-    attributed_by = "fuzzy_email" unless request
-    request ||= fuzzy_find_by_email(email, date_range: date_range)
-
-    order.request_id = request&.id
-    if request && (reset_attribution || request.attributed_by.nil?)
-      request.update_column(:attributed_by, attributed_by)
-    end
+    request ||= find_and_attribute("email", :find_by_email,
+                                   order.email.downcase.strip,
+                                   date_range: relevant_date_range_for_order(order)) unless order.email.to_s.empty?
+    request ||= find_and_attribute("fuzzy_email", :fuzzy_find_by_email,
+                                   order.email.downcase.strip,
+                                   date_range: relevant_date_range_for_order(order)) unless order.email.to_s.empty?
+    return nil unless request
+    return request unless reset_attribution || request.attributed_by.nil?
+    request.save
     request
   end
 
   private
+
+  def self.relevant_date_range_for_order(order)
+    return CTD::MIN_DATE..Time.now if Rails.env.test?
+    created_at = order.created_at.to_date
+    (created_at - 180.days)..(created_at + 7.days)
+  end
+
+  def self.find_and_attribute(label, method, *params)
+    request = Request.send method, *params
+    return nil unless request
+    request.attributed_by ||= label
+    request
+  end
 
   def self.find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
     joins(:user).

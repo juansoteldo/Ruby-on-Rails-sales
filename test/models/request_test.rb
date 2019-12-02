@@ -54,4 +54,86 @@ class RequestTest < ActiveSupport::TestCase
     assert_not_equal @user.reload.first_name, @request.first_name
     assert_not_equal @user.last_name, @request.last_name
   end
+
+  test ".for_shopify_order uses request_id by default" do
+    order = last_deposit_order
+    request = create_request_for_shopify_order(order)
+    order.source.email = SecureRandom.base64(8)
+    order.source.note_attributes = [
+      {
+        "name": "req_id",
+        "value": request.id.to_s
+      },
+      {
+        "name": "sales_id",
+        "value": nil
+      }
+    ]
+    order.source.id = nil
+
+    found_request = Request.for_shopify_order(order)
+    assert_not_nil found_request
+    assert_equal "request_id", found_request.attributed_by
+    assert_equal found_request&.id, request.id
+  end
+
+  test ".for_shopify_order uses email if id not present" do
+    order = last_deposit_order
+    request = create_request_for_shopify_order(order)
+    order.request_id = request.id + 1
+    order.source.id = nil
+
+    found_request = Request.for_shopify_order(order)
+    assert_not_nil found_request
+    assert_equal "email", found_request.attributed_by
+    assert_equal found_request.user.email, request.user.email
+  end
+
+  test ".for_shopify_order uses fuzzy email if id not present" do
+    order = last_deposit_order
+    request = create_request_for_shopify_order(order)
+    order.source.email[1] = "a"
+    order.request_id = request.id + 1
+    order.source.id = nil
+    assert_not_equal request.user.email, order.email
+    found_request = Request.for_shopify_order(order)
+    assert_not_nil found_request
+    assert_equal "fuzzy_email", found_request.attributed_by
+    assert_equal found_request.user.email, request.user.email
+  end
+
+  def create_request_for_shopify_order(order, params = {})
+    request = requests(:fresh)
+    request.user.update email: order.email
+    request.deposit_order_id = order.id
+    request.variant = MostlyShopify::Variant.find(order.line_items.first.variant_id)
+    request.assign_attributes params
+    request.save
+    request.update(id: order.request_id) if order.request_id
+    request
+  end
+
+  def last_deposit_order
+    order_count = MostlyShopify::Order.count({})
+
+    order = MostlyShopify::Order.new(ShopifyAPI::Order.all({limit: 1, page: order_count}).last)
+    order
+  end
+
+  def shopify_order_for_request(request, params = {})
+    order = MostlyShopify::Order.new shopify_params.merge(
+      "email": @request.user.email,
+      "note_attributes": [
+        {
+          "name": "req_id",
+          "value": request.id.to_s,
+        },
+        {
+          "name": "sales_id",
+          "value": request.quoted_by_id,
+        },
+      ]
+    ).merge(params)
+    order
+  end
 end

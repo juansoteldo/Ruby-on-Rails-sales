@@ -25,8 +25,9 @@ class RequestImage < ApplicationRecord
   end
 
   def self.from_uri(uri)
+    options = Rails.env.production? ? {} : { ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE }
     image = new
-    image.file.attach io: open(uri),
+    image.file.attach io: open(uri, options),
                       filename: File.basename(uri.to_s)
     image
   end

@@ -15,7 +15,7 @@ module MostlyShopify
     end
 
     def self.shopify_sources
-      products = Rails.cache.fetch("shopify/products/all", expires_in: 15.minutes) do
+      products = Rails.cache.fetch("shopify/products/all", expires_in: expire_in(15.minutes)) do
         ShopifyAPI::Product.all params: { limit: 200 }
       end
       raise "no-products-found" if products.nil?

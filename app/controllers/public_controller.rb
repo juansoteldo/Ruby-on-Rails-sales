@@ -49,7 +49,7 @@ class PublicController < ApplicationController
   end
 
   def deposit_redirect
-    @order.update_request!
+    @order.update_request!(@request)
 
     if @request
       respond_to do |format|
