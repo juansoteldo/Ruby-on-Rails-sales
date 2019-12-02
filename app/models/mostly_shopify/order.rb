@@ -33,6 +33,10 @@ module MostlyShopify
       @request_id ||= note_value("req_id") || request_id_from_landing_site
     end
 
+    def request_id=(value)
+      @request_id = value
+    end
+
     def request(reset_attribution: false)
       return @request if @request && !reset_attribution
       @request = Request.for_shopify_order(self, reset_attribution: reset_attribution)
@@ -198,10 +202,6 @@ module MostlyShopify
     end
 
     def note_value(attr_name)
-      @source.is_a?(Hash) ? hash_note_value(attr_name) : object_note_value(attr_name)
-    end
-
-    def object_note_value(attr_name)
       return nil unless @source.respond_to? :note_attributes
       return nil unless @source.note_attributes
 
@@ -211,20 +211,6 @@ module MostlyShopify
         return nil if note_attr.value == "undefined"
 
         return note_attr.value
-      end
-      nil
-    end
-
-    def hash_note_value(attr_name)
-      return nil unless @source.key? :note_attributes
-      return nil unless @source[:note_attributes]
-
-      @source[:note_attributes].each do |note_attr|
-        next unless note_attr.key?(:name)
-        next unless note_attr[:name] == attr_name
-        return nil if note_attr[:value] == "undefined"
-
-        return note_attr[:value]
       end
       nil
     end

@@ -56,24 +56,31 @@ class RequestTest < ActiveSupport::TestCase
   end
 
   test ".for_shopify_order uses request_id by default" do
-    order = shopify_order_for_request(@request,
-    {
-        email: SecureRandom.base64(8),
-        id: nil,
+    order = last_deposit_order
+    request = create_request_for_shopify_order(order)
+    order.source.email = SecureRandom.base64(8)
+    order.source.note_attributes = [
+      {
+        "name": "req_id",
+        "value": request.id.to_s
+      },
+      {
+        "name": "sales_id",
+        "value": nil
       }
-    )
+    ]
+    order.source.id = nil
 
-    request = Request.for_shopify_order(order)
-    assert_not_nil request
-    assert_equal "request_id", request.attributed_by
-    assert_equal request&.id, @request.id
-
+    found_request = Request.for_shopify_order(order)
+    assert_not_nil found_request
+    assert_equal "request_id", found_request.attributed_by
+    assert_equal found_request&.id, request.id
   end
 
   test ".for_shopify_order uses email if id not present" do
     order = last_deposit_order
     request = create_request_for_shopify_order(order)
-    order.source.note_attributes[0][:value] = (@request.id + 1).to_s
+    order.request_id = request.id + 1
     order.source.id = nil
 
     found_request = Request.for_shopify_order(order)
@@ -86,7 +93,7 @@ class RequestTest < ActiveSupport::TestCase
     order = last_deposit_order
     request = create_request_for_shopify_order(order)
     order.source.email[1] = "a"
-    order.source.note_attributes[0][:value] = (@request.id + 1).to_s
+    order.request_id = request.id + 1
     order.source.id = nil
     assert_not_equal request.user.email, order.email
     found_request = Request.for_shopify_order(order)
@@ -102,13 +109,15 @@ class RequestTest < ActiveSupport::TestCase
     request.variant = MostlyShopify::Variant.find(order.line_items.first.variant_id)
     request.assign_attributes params
     request.save
+    request.update(id: order.request_id) if order.request_id
     request
   end
 
   def last_deposit_order
     order_count = MostlyShopify::Order.count({})
 
-    MostlyShopify::Order.new ShopifyAPI::Order.all({limit: 1, page: order_count}).last
+    order = MostlyShopify::Order.new(ShopifyAPI::Order.all({limit: 1, page: order_count}).last)
+    order
   end
 
   def shopify_order_for_request(request, params = {})

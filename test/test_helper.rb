@@ -1,6 +1,6 @@
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
-require 'rails/test_help'
+require "rails/test_help"
 require "minitest/rails/capybara"
 
 class ActiveSupport::TestCase
@@ -30,15 +30,17 @@ class ActiveSupport::TestCase
       _ga: "",
       client_id: "",
       user_attributes: { marketing_opt_in: "1" },
-    }
+    }.with_indifferent_access
   end
 
   def shopify_params
-    JSON.parse File.open(File.join(__dir__, "fixtures/files/shopify_payload.json")).read
+    payload = File.open(File.join(__dir__, "fixtures/files/shopify_payload.json")).read
+    JSON.parse(payload).with_indifferent_access
   end
 
   def shopify_unassociated_params
-    JSON.parse File.open(File.join(__dir__, "fixtures/files/shopify_unassociated_payload.json")).read
+    payload = File.open(File.join(__dir__, "fixtures/files/shopify_unassociated_payload.json")).read
+    JSON.parse(payload).with_indifferent_access
   end
 
   def file_fixture_copy(name)
