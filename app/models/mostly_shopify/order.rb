@@ -81,7 +81,7 @@ module MostlyShopify
 
     def self.find(params)
       digest = Digest::SHA256.base64digest params.inspect
-      Rails.cache.fetch("shopify/orders/" + digest, expires_in: 5.minutes) do
+      Rails.cache.fetch("shopify/orders/" + digest, expires_in: expire_in) do
         ShopifyAPI::Order.all(params: params).map { |c| new(c) }
       end
     end
@@ -92,7 +92,7 @@ module MostlyShopify
 
     def self.count(params)
       digest = Digest::SHA256.base64digest params.inspect
-      Rails.cache.fetch("shopify/orders/count/" + digest, expires_in: 5.minutes) do
+      Rails.cache.fetch("shopify/orders/count/" + digest, expires_in: expire_in) do
         ShopifyAPI::Order.count(params: params)
       end
     end
@@ -100,9 +100,15 @@ module MostlyShopify
     def self.find_in_batches(params)
       order_count = MostlyShopify::Order.count params
       params[:limit] ||= 250
-      nb_pages       = (order_count / params[:limit].to_f).ceil
-      orders         = []
-      1.upto(nb_pages) do |page|
+      if params[:page]
+        end_page = params[:page]
+        start_page = params[:page]
+      else
+        end_page = (order_count / params[:limit].to_f).ceil
+        start_page = 1
+      end
+      orders = []
+      start_page.upto(end_page) do |page|
         params[:page] = page
         orders += ShopifyAPI::Order.all(params: params)
         Rails.logger.debug "Loaded #{params[:limit]} orders, sleeping for 0.55 seconds"
@@ -113,8 +119,7 @@ module MostlyShopify
 
     def self.deposits(params)
       digest = Digest::SHA256.base64digest params.inspect
-      expires_in = Rails.env.production? ? 6.hours : 6.hours
-      Rails.cache.fetch("shopify/orders/deposits/" + digest, expires_in: expires_in) do
+      Rails.cache.fetch("shopify/orders/deposits/" + digest, expires_in: expire_in(6.hours)) do
         params[:created_at_min] ||= CTD::MIN_DATE.dup
         params[:created_at_max] ||= 1.day.ago.end_of_day
 
@@ -135,8 +140,7 @@ module MostlyShopify
 
     def self.attributed(params)
       digest = Digest::SHA256.base64digest params.inspect
-      expires_in = Rails.env.production? ? 6.hours : 6.hours
-      Rails.cache.fetch("shopify/orders/attributed/" + digest, expires_in: expires_in) do
+      Rails.cache.fetch("shopify/orders/attributed/" + digest, expires_in: expire_in(6.hours)) do
         orders = MostlyShopify::Order.deposits(params)
         date_range = "Wed, 1 Jun 2016".to_date..Time.now
         orders = orders.select do |order|
