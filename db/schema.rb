@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_16_125126) do
+ActiveRecord::Schema.define(version: 2020_01_17_015358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -251,6 +251,8 @@ ActiveRecord::Schema.define(version: 2019_10_16_125126) do
     t.datetime "updated_at", null: false
     t.string "aasm_state"
     t.integer "tries", default: 0
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_webhooks_on_deleted_at"
     t.index ["email"], name: "index_webhooks_on_email"
     t.index ["request_id"], name: "index_webhooks_on_request_id"
     t.index ["source", "action_name"], name: "index_webhooks_on_source_and_action_name"

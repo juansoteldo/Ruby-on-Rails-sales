@@ -73,6 +73,9 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    acts_as_paranoid (0.6.0)
+      activerecord (>= 4.2, < 6.0)
+      activesupport (>= 4.2, < 6.0)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     ahoy_email (1.1.0)
@@ -554,6 +557,7 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
+  acts_as_paranoid (~> 0.6.0)
   ahoy_email
   auto_strip_attributes (~> 2.1)
   aws-sdk-s3

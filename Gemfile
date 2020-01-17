@@ -31,6 +31,7 @@ gem "jbuilder", "~> 2.5"
 # bundle exec rake doc:rails generates the API under doc/api.
 #gem "sdoc", "~> 0.4.0", group: :doc
 
+gem 'acts_as_paranoid', '~> 0.6.0'
 gem "ahoy_email"
 gem "aws-sdk-s3", require: false
 gem "daemons"

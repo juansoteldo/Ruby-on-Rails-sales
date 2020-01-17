@@ -56,7 +56,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :webhooks, only: [:index] do
+    resources :webhooks, only: [:index, :destroy] do
       member do
         get "perform"
       end
