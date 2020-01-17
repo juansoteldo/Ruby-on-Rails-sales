@@ -13,6 +13,10 @@ module MostlyGmail
       @source = source
     end
 
+    def method_missing(symbol, *args)
+      @source.send(symbol, *args)
+    end
+
     ME_ID = "ME".freeze
     OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
     TOKEN_PATH = Rails.root.join("tmp/gmail_token.yaml").freeze
@@ -23,10 +27,6 @@ module MostlyGmail
     class << self
 
       protected
-
-      def method_missing(symbol, *args)
-        @source.send(symbol, *args)
-      end
 
       def service
         return @@service if @@service

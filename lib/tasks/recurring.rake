@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 namespace :recurring do
+  desc "Add gmail threads to streak boxes"
+  task :associate_gmail_threads do
+    CTD::GmailScanner.make_design_requests_boxes
+  end
+
   desc "Updates total sales"
   task update_sales_totals: :environment do
     CTD::SalesUpdater.update

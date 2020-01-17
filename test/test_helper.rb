@@ -6,6 +6,10 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
+  setup do
+    Request.skip_creating_streak_boxes = true
+  end
+
   def clear_requests_for(email)
     RequestImage.joins(:user).where(email: email).each &:destroy!
     Request.joins(:user).where(email: email).each &:destroy!
@@ -59,4 +63,26 @@ class ActiveSupport::TestCase
   def content_type(path)
     `file -Ib #{path}`.gsub(/\n/, "").split(";")[0]
   end
+
+  def change_delivery_method_to(method)
+    RequestMailer.delivery_method = method.is_a?(String) ? method.to_sym : method
+  end
+
+  def start_design_messages_for_streak_box(streak_box_key)
+    MostlyGmail::Message.design_requests.select do |m|
+      m.streak_box_key && m.streak_box_key == streak_box_key
+    end
+  end
+
+  def clear_streak_boxes
+    raise "Cannot use production pipeline" if MostlyStreak::Pipeline.default.name == "CTD Sales"
+    MostlyStreak::Box.all.each do |box|
+      begin
+        MostlyStreak::Box.delete box.key
+      rescue
+      end
+      sleep 2
+    end
+  end
+
 end

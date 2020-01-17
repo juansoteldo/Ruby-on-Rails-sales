@@ -9,7 +9,16 @@ class Request < ApplicationRecord
 
   before_create :update_state_stamp
   after_create :opt_in_user
-  after_create :deliver_marketing_opt_in_email
+  after_save :ensure_streak_box, unless: -> { @@skip_creating_streak_boxes }
+
+  @@skip_creating_streak_boxes = true
+  def self.skip_creating_streak_boxes
+    @@skip_creating_streak_boxes
+  end
+
+  def self.skip_creating_streak_boxes=(value)
+    @@skip_creating_streak_boxes = value
+  end
 
   default_scope -> { includes(:user) }
 
@@ -69,6 +78,10 @@ class Request < ApplicationRecord
 
     state :completed do
     end
+  end
+
+  def full_name
+    [first_name.try(:titleize), last_name.try(:titleize)].reject(&:nil?).join(" ")
   end
 
   def quote_from_params!(params)
@@ -143,13 +156,23 @@ class Request < ApplicationRecord
 
   private
 
+  def ensure_streak_box
+    return if self.streak_box_key
+    return unless self.user&.email
+    box = MostlyStreak::Box.create(user.email)
+    update_columns streak_box_key: box.key
+    RequestMailer.start_design_email(self).deliver_now
+  end
+
   def opt_in_user
     user.update presales_opt_in: true, crm_opt_in: true
+    deliver_marketing_opt_in_email
   end
 
   def deliver_marketing_opt_in_email
     return unless user.marketing_opt_in.nil?
-    BoxMailer.opt_in_email(self).deliver_later
+    return unless self.user&.email
+    BoxMailer.opt_in_email(self).deliver_now
   end
 
   def perform_complete_actions

@@ -25,8 +25,9 @@ class WebhooksController < ApplicationController
     data = request.body.read
     hmac_header = request.headers['HTTP_X_SHOPIFY_HMAC_SHA256']
     digest = OpenSSL::Digest::Digest.new('sha256')
-    calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, ENV['SHOPIFY_WEB_HOOK_KEY'], data)).strip
-    puts hmac_header
+    webhook_key = ENV.fetch("SHOPIFY_WEBHOOK_KEY", Rails.application.credentials[:shopify][:webhook_key])
+    calculated_hmac = Base64.encode64(
+      OpenSSL::HMAC.digest(digest, webhook_key, data)).strip
     unless hmac_header == calculated_hmac
       head :unauthorized
     end

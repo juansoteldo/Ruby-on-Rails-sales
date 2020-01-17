@@ -1,4 +1,4 @@
-gmail:
-  labels:
-    design_requests: "Label_2606897481654667624"
-    appointment_requests: "Label_7177529587396720741"
+streak:
+  api_cipher_random_key: <%= ENV.fetch("STREAK_API_CIPHER_RANDOM_KEY", Rails.application.credentials[:streak][:api_cipher_random_key]) %>,
+  api_cipher_random_iv: <%= ENV.fetch("STREAK_API_CIPHER_RANDOM_IV", Rails.application.credentials[:streak][:api_cipher_random_iv])  %>,
+  api_key: <%= ENV.fetch("STREAK_API_KEY", Rails.application.credentials[:streak][:api_key]) %>

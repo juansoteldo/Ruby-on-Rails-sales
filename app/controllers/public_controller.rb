@@ -91,7 +91,9 @@ class PublicController < ApplicationController
     head(422) && return unless recipient_email =~ URI::MailTo::EMAIL_REGEXP
     @salesperson.claim_requests_with_email(recipient_email)
 
-    box = MostlyStreak::Box.find_by_email(recipient_email)
+    @request = Request.joins(:user).where(users: { email: recipient_email.downcase.strip }).last
+    box = MostlyStreak::Box.find(@request.streak_box_key) if @request&.streak_box_key
+    box ||= MostlyStreak::Box.find_by_email(recipient_email)
     if box
       current_stage = MostlyStreak::Stage.find(key: box.stage_key)
 

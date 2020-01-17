@@ -12,7 +12,8 @@ class Api::RequestImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show image for using global token" do
-    get api_request_image_path(@test_request.images.first.id, token: ENV["GLOBAL_API_TOKEN"])
+    get api_request_image_path(@test_request.images.first.id,
+                               token: ENV["GLOBAL_API_TOKEN"])
     assert_response 200
   end
 

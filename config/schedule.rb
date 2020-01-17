@@ -6,12 +6,14 @@
 # Example:
 set :output, File.expand_path( '../log/cron.log', File.dirname(__FILE__) )
 
-
 every 1.day, at: '13:30' do
   rake 'recurring:send_reminders'
 end
 
-
 every 1.day, at: '03:00' do
   rake 'recurring:update_sales_totals'
+end
+
+every 10.seconds do
+  rake 'recurring:associate_gmail_threads'
 end

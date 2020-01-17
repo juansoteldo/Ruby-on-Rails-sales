@@ -4,8 +4,13 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
 
   setup do
+#    clear_streak_boxes
     @existing_request = requests(:fresh)
     @salesperson = salespeople(:active)
+  end
+
+  teardown do
+#    clear_streak_boxes
   end
 
   test "should get new_request" do
