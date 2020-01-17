@@ -29,8 +29,6 @@ set :keep_assets, 2
 
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 
-set :delayed_job_workers, 2
-
 namespace :deploy do
   def remote_file_exists?(full_path)
     'true' == capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip

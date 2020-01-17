@@ -16,6 +16,7 @@ class PublicController < ApplicationController
   before_action :assert_email_is_valid, only: [:get_ids, :get_links, :deposit_redirect, :new_request]
   before_action :set_or_create_user_by_email, only: [:get_ids, :get_links, :deposit_redirect, :new_request]
   before_action :validate_request_parameters, only: [:new_request]
+  before_action :update_user_names, only: [:new_request]
   before_action :set_or_create_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
 
   def redirect
@@ -48,7 +49,7 @@ class PublicController < ApplicationController
   end
 
   def deposit_redirect
-    @order.update_request
+    @order.update_request!(@request)
 
     if @request
       respond_to do |format|
@@ -115,6 +116,11 @@ class PublicController < ApplicationController
 
   private
 
+  def update_user_names
+    return if @user.first_name.to_s.present?
+    @user.update user_params
+  end
+
   def request_link_params
     params.require(:variant_id)
     params.require(:salesperson_id)
@@ -139,6 +145,7 @@ class PublicController < ApplicationController
     return if params[:order_id].blank?
     source_order = ShopifyAPI::Order.find(params[:order_id])
     @order = MostlyShopify::Order.new source_order
+    params[:email] ||= @order&.customer&.email
   end
 
   def set_salesperson_by_email
@@ -182,6 +189,10 @@ class PublicController < ApplicationController
     params.permit(:client_id, :ticket_id, :quote_id, :position, :gender,
                   :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :reqid, :salesid, :description,
                   user_attributes: [:marketing_opt_in])
+  end
+
+  def user_params
+    params.permit(:first_name, :last_name)
   end
 
   def normalize_email

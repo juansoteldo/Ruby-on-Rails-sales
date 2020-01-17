@@ -42,7 +42,7 @@ class BoxMailer < ApplicationMailer
   end
 
   def opt_in_email(request)
-    return unless request.user
+    return unless request&.user
     @request = request.decorate
     @user = request.user
     track user: @user

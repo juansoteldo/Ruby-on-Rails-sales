@@ -1,6 +1,7 @@
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
-require 'rails/test_help'
+require "rails/test_help"
+require "minitest/rails/capybara"
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
@@ -33,7 +34,17 @@ class ActiveSupport::TestCase
       _ga: "",
       client_id: "",
       user_attributes: { marketing_opt_in: "1" },
-    }
+    }.with_indifferent_access
+  end
+
+  def shopify_params
+    payload = File.open(File.join(__dir__, "fixtures/files/shopify_payload.json")).read
+    JSON.parse(payload).with_indifferent_access
+  end
+
+  def shopify_unassociated_params
+    payload = File.open(File.join(__dir__, "fixtures/files/shopify_unassociated_payload.json")).read
+    JSON.parse(payload).with_indifferent_access
   end
 
   def file_fixture_copy(name)
@@ -56,16 +67,12 @@ class ActiveSupport::TestCase
 
   def request_with_image(path)
     request = requests(:deposited)
-    request.add_image_from_path(path)
+    request.add_image_from_param(path)
     request
   end
 
   def content_type(path)
     `file -Ib #{path}`.gsub(/\n/, "").split(";")[0]
-  end
-
-  def change_delivery_method_to(method)
-    RequestMailer.delivery_method = method.is_a?(String) ? method.to_sym : method
   end
 
   def start_design_messages_for_streak_box(streak_box_key)

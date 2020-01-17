@@ -34,17 +34,16 @@ gem "jbuilder", "~> 2.5"
 gem "ahoy_email"
 gem "aws-sdk-s3", require: false
 gem "daemons"
-gem "delayed_job"
-gem "delayed_job_active_record"
-gem "delayed_job_web"
+gem "sidekiq"
 gem "draper"
 gem "figaro"
 gem "google-api-client"
-gem "honeybadger", "~> 3.1"
+gem "honeybadger", "~> 4.4"
 gem "js-routes"
 gem "zeroclipboard-rails"
 gem "phony_rails"
 gem "pundit"
+gem "ransack", github: "activerecord-hackery/ransack"
 gem "shopify_api"
 gem "simple_form"
 gem "streak-ruby", github: "mostlydev/streak-ruby", branch: "master"
@@ -63,6 +62,7 @@ group :development, :test do
   gem "puma"
 end
 
+gem "aasm"
 gem "auto_strip_attributes", "~> 2.1"
 gem "config"
 gem "dotenv-rails"
@@ -86,17 +86,23 @@ group :development, :test do
   gem "capistrano-rails-console", require: false
   gem "capistrano-rbenv"
   gem 'capistrano-nvm', require: false
-  gem "rubocop", require: false
-  gem "rubocop-airbnb", require: false
   gem "rb-readline"
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"
 end
 
+group :test do
+  gem 'minitest-rails-capybara'
+end
+
 group :development do
   gem "letter_opener"
   gem "listen"
+  gem "overcommit", require: false
+  gem "reek", require: false
+  gem "rubocop", require: false
+  gem "rubocop-airbnb", require: false
   gem "web-console"
 end
 

@@ -11,6 +11,7 @@ fresh:
   notes: MyString
   client_id: MyString
   state: fresh
+  description: THIS IS A TEST, DO NOT EMAIL ME
 
 quoted:
   user: one
@@ -23,6 +24,7 @@ quoted:
   notes: MyString
   client_id: MyString
   state: quoted
+  description: THIS IS A TEST, DO NOT EMAIL ME
 
 deposited:
   user: one
@@ -35,6 +37,7 @@ deposited:
   notes: MyString
   client_id: MyString
   state: deposited
+  description: THIS IS A TEST, DO NOT EMAIL ME
   created_at: <%= Time.now - 30.minutes %>
   deposited_at: <%= Time.now - 15.minutes %>
 

@@ -4,6 +4,18 @@ require "mostly_streak/base"
 
 module MostlyStreak
   class Box < Base
+
+    def salesperson
+      return @assigned_to_salesperson if @assigned_to_salesperson
+      emails = assigned_to_emails
+      return nil unless emails.count == 1
+      @assigned_to_salesperson = Salesperson.where(email: emails).first
+    end
+
+    def assigned_to_emails
+      assigned_to_sharing_entries.map(&:email).reject { |e| e == "sales@customtattoodesign.ca" }
+    end
+
     def self.create(email)
       Streak.api_key = Settings.streak.api_key
       Streak::Box.create(Settings.streak.pipeline_key, { name: email })
@@ -44,10 +56,11 @@ module MostlyStreak
       return unless email =~ /\A[^@]+@[^@]+\Z/
       Streak.api_key = Settings.streak.api_key
       box_key = MostlyStreak::Box.query(email).select do |box|
-        box.name.casecmp(email.downcase).zero?
+          difference = box.name.casecmp(email)
+        !difference.nil? && difference < 2
       end.last.try(&:box_key)
 
-      box_key && Streak::Box.find(box_key) || nil
+      box_key && find(box_key) || nil
     end
 
     def self.set_stage(box_key, stage_name)

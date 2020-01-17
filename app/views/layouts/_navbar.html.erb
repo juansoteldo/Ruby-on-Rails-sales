@@ -10,7 +10,7 @@
         <span class="icon-bar"></span>
       </button>
 
-      <%= link_to "CTD Worklist", [:admin, :root], class: "navbar-brand" %>
+      <%= link_to "CTD Sales", [:admin, :root], class: "navbar-brand" %>
     </div>
 
     <div class="collapse navbar-collapse" id="navbar-collapse">
@@ -39,6 +39,15 @@
             </li>
           <% end %>
 
+          <% if policy(Webhook).index? %>
+            <li>
+              <%= link_to "Webhooks", admin_webhooks_path %>
+            </li>
+
+            <li>
+              <%= link_to "Sidekiq", admin_sidekiq_web_path %>
+            </li>
+          <% end %>
         <% end %>
       </ul>
 

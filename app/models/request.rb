@@ -19,36 +19,37 @@ class Request < ApplicationRecord
   def self.skip_creating_streak_boxes=(value)
     @@skip_creating_streak_boxes = value
   end
+  after_save :update_user_names
 
   default_scope -> { includes(:user) }
 
   auto_strip_attributes :first_name, :last_name, :position
 
   scope :recent, (-> { where "created_at > ?", Rails.env.test? ? 1.seconds.ago : 5.minutes.ago })
-  scope :deposited, (->{ where.not deposited_at: nil })
+  scope :deposited, (-> { where.not deposited_at: nil })
   scope :valid, (-> { where.not user_id: nil })
-  scope :quoted_or_contacted_by, (->(salesperson_id){ where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
+  scope :quoted_or_contacted_by, (->(salesperson_id) { where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
 
   TATTOO_POSITIONS = [
-      "Calf",
-      "Chest",
-      "Foot",
-      "Fore Arm",
-      "Full Back",
-      "Full Sleeve",
-      "Half Sleeve",
-      "Leg",
-      "Lower Back",
-      "Ribs",
-      "Stomach",
-      "Upper Arm",
-      "Upper Back",
-      "Lower Arm",
-      "Hip",
-      "Wrist",
-      "Ankle",
-      "Other"
-  ]
+    "Calf",
+    "Chest",
+    "Foot",
+    "Fore Arm",
+    "Full Back",
+    "Full Sleeve",
+    "Half Sleeve",
+    "Leg",
+    "Lower Back",
+    "Ribs",
+    "Stomach",
+    "Upper Arm",
+    "Upper Back",
+    "Lower Arm",
+    "Hip",
+    "Wrist",
+    "Ankle",
+    "Other",
+  ].freeze
 
   state_machine :state, initial: :fresh do
     after_transition on: :convert, do: :perform_deposit_actions
@@ -118,40 +119,52 @@ class Request < ApplicationRecord
   end
 
   def time_since_state_change
-    (Time.zone.now - self.state_changed_at)
+    (Time.zone.now - state_changed_at)
   end
 
-  def art_sample_1=(file)
-    add_image_from_path(file)
-    File.unlink(file) if File.exist?(file)
-  end
-
-  def art_sample_2=(file)
-    add_image_from_path(file)
-    File.unlink(file) if File.exist?(file)
-  end
-
-  def art_sample_3=(file)
-    add_image_from_path(file)
-    File.unlink(file) if File.exist?(file)
-  end
-
-  def add_image_from_path(file)
-    return if file.empty?
-
-    begin
-      return unless File.exist?(file)
-
-      logger.info "Adding #{file}"
-      image = RequestImage.from_path(file)
-      image.request_id = id
-      image.save!
-    rescue => e
-      raise(e) if Rails.env.test?
-      logger.error ">>> Cannot add image to request #{file}"
-      logger.error e.message
-      logger.error e.backtrace.join("\n")
+  (1..10).each do |x|
+    define_method("art_sample_#{x}=") do |file|
+      return if file.to_s.empty?
+      add_image_from_param(file)
+      File.unlink(file) if File.exist?(file)
     end
+  end
+
+  def add_image_from_param(file)
+    image = RequestImage.from_param(file)
+    raise "#{file.truncate(128)} is not an image" unless image
+    image.request_id = id
+    image.save!
+  rescue => e
+    raise(e) if Rails.env.test?
+    logger.error ">>> Cannot add image from #{file.truncate(128)}"
+    logger.error e.message
+    logger.error e.backtrace.join("\n")
+  end
+
+  def send_confirmation_email
+    BoxMailer.confirmation_email(self).deliver_later
+  end
+
+  def send_final_confirmation_email
+    BoxMailer.final_confirmation_email(self).deliver_later
+  end
+
+  def self.for_shopify_order(order, reset_attribution: false)
+    request = find_and_attribute("request_id", :find_by_id, order.request_id.to_i) if order.request_id
+    unless reset_attribution || order.id.nil?
+      request ||= find_and_attribute("webhook", :find_by_deposit_order_id, order.id)
+    end
+    request ||= find_and_attribute("email", :find_by_email,
+                                   order.email.downcase.strip,
+                                   date_range: relevant_date_range_for_order(order)) unless order.email.to_s.empty?
+    request ||= find_and_attribute("fuzzy_email", :fuzzy_find_by_email,
+                                   order.email.downcase.strip,
+                                   date_range: relevant_date_range_for_order(order)) unless order.email.to_s.empty?
+    return nil unless request
+    return request unless reset_attribution || request.attributed_by.nil?
+    request.save
+    request
   end
 
   private
@@ -162,6 +175,31 @@ class Request < ApplicationRecord
     box = MostlyStreak::Box.create(user.email)
     update_columns streak_box_key: box.key
     RequestMailer.start_design_email(self).deliver_now
+  end
+
+  def self.relevant_date_range_for_order(order)
+    return CTD::MIN_DATE..Time.now if Rails.env.test?
+    created_at = order.created_at.to_date
+    (created_at - 180.days)..(created_at + 7.days)
+  end
+
+  def self.find_and_attribute(label, method, *params)
+    request = Request.send method, *params
+    return nil unless request
+    request.attributed_by ||= label
+    request
+  end
+
+  def self.find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
+    joins(:user).
+      where(users: { email: email }).
+      where(requests: { created_at: date_range }).last
+  end
+
+  def self.fuzzy_find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
+    joins(:user).
+      merge(User.fuzzy_matching_email(email)).
+      where(requests: { created_at: date_range }).last
   end
 
   def opt_in_user
@@ -176,44 +214,41 @@ class Request < ApplicationRecord
   end
 
   def perform_complete_actions
-    puts "Sending final confirmation email to #{user.email}"
-    BoxMailer.final_confirmation_email(self).deliver_later
+    puts "Sending final confirmation email to #{user.email}" unless Rails.env.test?
+    send_final_confirmation_email
   end
 
   def perform_quote_actions
-    begin
-      box = streak_boxes.last
-      return unless box
+    box = streak_boxes.last
+    return unless box
 
-      current_stage = MostlyStreak::Stage.find(key: box.stage_key)
-      return unless current_stage.name == 'Contacted' || current_stage.name == 'Leads'
+    current_stage = MostlyStreak::Stage.find(key: box.stage_key)
+    return unless current_stage.name == 'Contacted' || current_stage.name == 'Leads'
 
-      MostlyStreak::Box.set_stage(box.key, 'Quoted')
-    rescue Exception => e
-      Rails.logger.error "Cannot update streak box for request #{self.id} (#{e})"
-    end
+    MostlyStreak::Box.set_stage(box.key, 'Quoted')
+  rescue Exception => e
+    Rails.logger.error "Cannot update streak box for request #{id} (#{e})"
   end
 
   def streak_boxes
     MostlyStreak::Box.query(user.email).map do |box|
       Streak::Box.find(box.box_key)
     end.select do |box|
-      box_created_at = Time.strptime(box.creation_timestamp.to_s,'%Q')
+      box_created_at = Time.strptime(box.creation_timestamp.to_s, '%Q')
       (box_created_at - created_at) < 2.days
     end
   end
 
   def perform_deposit_actions
-    puts "Sending confirmation email to #{user.email}"
-    BoxMailer.confirmation_email(self).deliver_later
+    Rails.logger.info "Sending confirmation email to #{user.email}"
+    send_confirmation_email
     begin
       streak_boxes.each do |box|
         MostlyStreak::Box.set_stage(box.key, 'Deposited')
       end
     rescue Exception => e
-      Rails.logger.error "Cannot update streak box for request #{self.id} (#{e})"
+      Rails.logger.error "Cannot update streak box for request #{id} (#{e})"
     end
-
   end
 
   def subtotal
@@ -222,11 +257,17 @@ class Request < ApplicationRecord
 
     order = MostlyShopify::Order.find(deposit_order_id).first
     return 0 unless order
-    self.update_column :sub_total, order.subtotal_price
+    update_column :sub_total, order.subtotal_price
     sub_total.to_f
   end
 
   def update_state_stamp
     self.state_changed_at = Time.zone.now
+  end
+
+  def update_user_names
+    return unless user
+    return unless first_name || last_name
+    user.update first_name: first_name, last_name: last_name
   end
 end

@@ -10,9 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_26_171956) do
+ActiveRecord::Schema.define(version: 2019_10_16_125126) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "fuzzystrmatch"
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
@@ -163,6 +165,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_171956) do
     t.datetime "deposited_at"
     t.integer "contacted_by_id"
     t.uuid "uuid", default: -> { "uuid_generate_v4()" }
+    t.string "attributed_by"
     t.string "streak_box_key"
     t.string "thread_gmail_id"
     t.index ["client_id"], name: "index_requests_on_client_id"
@@ -226,10 +229,34 @@ ActiveRecord::Schema.define(version: 2019_06_26_171956) do
     t.string "phone_number"
     t.string "timezone"
     t.string "uuid"
+    t.string "first_name"
+    t.string "last_name"
     t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["shopify_id"], name: "index_users_on_shopify_id"
+  end
+
+  create_table "webhooks", force: :cascade do |t|
+    t.string "source", null: false
+    t.string "source_id"
+    t.string "email"
+    t.string "action_name", null: false
+    t.string "params"
+    t.string "headers"
+    t.string "referrer"
+    t.integer "request_id"
+    t.string "last_error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "aasm_state"
+    t.integer "tries", default: 0
+    t.index ["email"], name: "index_webhooks_on_email"
+    t.index ["request_id"], name: "index_webhooks_on_request_id"
+    t.index ["source", "action_name"], name: "index_webhooks_on_source_and_action_name"
+    t.index ["source", "source_id", "action_name"], name: "index_webhooks_on_source_and_source_id_and_action_name"
+    t.index ["source"], name: "index_webhooks_on_source"
+    t.index ["source_id"], name: "index_webhooks_on_source_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

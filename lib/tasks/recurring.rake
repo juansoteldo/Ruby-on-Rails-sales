@@ -8,7 +8,12 @@ namespace :recurring do
 
   desc "Updates total sales"
   task update_sales_totals: :environment do
-    CTD::SalesUpdater.update
+    3.times do
+      break if CTD::SalesUpdater.update
+      sleep_duration = Rails.env.production? ? 30 : 5
+      puts "Update failed, sleeping for #{sleep_duration} seconds"
+      sleep sleep_duration
+    end
   end
 
   desc "This task is called by cron"
@@ -33,7 +38,7 @@ namespace :recurring do
 
     orders = MostlyShopify::Order.find(created_at_min: cutoff, limit: 250)
     puts "Updating requests for #{orders.count} orders"
-    orders.each(&:update_request)
+    orders.each(&:update_request!)
 
     requests = Request.joins(:user).where("requests.created_at > ? AND state_changed_at BETWEEN ? AND ?",
                                           cutoff, cutoff, Time.zone.now.beginning_of_day).where("quoted_by_id IS NOT NULL")

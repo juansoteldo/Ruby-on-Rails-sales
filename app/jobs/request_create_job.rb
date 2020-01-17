@@ -1,24 +1,22 @@
-class RequestCreateJob < ApplicationJob
-  queue_as :webhook
+# frozen_string_literal: true
 
-  def perform(new_params)
-    @params = new_params
-
+class RequestCreateJob < WebhookJob
+  def perform(args)
+    super
     set_user_by_email
     make_request!
+    @webhook.commit! @request.id
   end
 
   def make_request!
     @request = Request.recent.where(user_id: @user.id,
                                     position: params[:position]).first_or_create
     @request.update! params
+    return if @request.created_at < @webhook.created_at
+    @request.update_column(:created_at, @webhook.created_at)
   end
 
   private
-
-  def params
-    @params
-  end
 
   def set_user_by_email
     normalize_email!
@@ -39,9 +37,10 @@ class RequestCreateJob < ApplicationJob
   end
 
   def normalize_email!
-    raise "empty email" if params[:email].nil?
-    params[:email] = params[:email].downcase.strip
-    raise "empty email" if params[:email] == ""
+    raise "empty email" unless params.key?(:email)
+    email = params[:email].to_s.downcase.strip
+    raise "empty email" if email.blank?
+    params[:email] = email
     params[:email]
   end
 end

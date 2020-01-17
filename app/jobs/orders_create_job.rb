@@ -2,12 +2,12 @@
 
 require "shopify_api"
 
-class OrdersCreateJob < ApplicationJob
-  queue_as :webhook
-
-  def perform(params)
-    source_order = ShopifyAPI::Order.new(params[:webhook])
+class OrdersCreateJob < WebhookJob
+  def perform(args)
+    super
+    source_order = ShopifyAPI::Order.new(params)
     order = MostlyShopify::Order.new source_order
-    order.update_request
+    order.update_request!
+    @webhook.commit!(order.request_id)
   end
 end
