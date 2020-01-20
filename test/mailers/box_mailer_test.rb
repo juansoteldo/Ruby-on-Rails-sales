@@ -10,7 +10,7 @@ class BoxMailerTest < ActionMailer::TestCase
     @request = requests(:fresh)
   end
 
-  test "marketing_email" do
+  test "marketing_emails render and include opt-out token" do
     marketing_email = MarketingEmail.first
     email = BoxMailer.marketing_email(@request, marketing_email)
 
@@ -21,7 +21,7 @@ class BoxMailerTest < ActionMailer::TestCase
     assert_equal [@request.user.email], email.to
     assert_equal marketing_email.subject_line, email.subject
     assert marketing_email.from.include?(email.from.first)
-    assert email.body.to_s.include? CGI.escape(@request.user.authentication_token)
+    assert email.parts.all? { |part| part.body.to_s.include? CGI.escape(@request.user.authentication_token) }
   end
 
   test "opt_in_email" do
@@ -37,7 +37,7 @@ class BoxMailerTest < ActionMailer::TestCase
     assert_equal ["leeroller@customtattoodesign.ca"], email.from
     assert_equal [@request.user.email], email.to
     assert_equal "E-Mail opt-in Custom Tattoo Design", email.subject
-    assert email.body.to_s.include? "user_token=#{CGI.escape @request.user.authentication_token}"
-    assert email.body.to_s.include? "user_email=#{CGI.escape @request.user.email}"
+    assert email.parts.all? { |part| part.body.to_s.include? "user_token=#{CGI.escape @request.user.authentication_token}" }
+    assert email.parts.all? { |part| part.body.to_s.include? "user_email=#{CGI.escape @request.user.email}" }
   end
 end
