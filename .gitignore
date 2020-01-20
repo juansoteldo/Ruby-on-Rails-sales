@@ -55,3 +55,5 @@ yarn-debug.log*
 .yarn-integrity
 node_modules/
 yarn-error.log
+/config/gmail_credentials.json
+/config/master.key
