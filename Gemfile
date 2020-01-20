@@ -53,19 +53,11 @@ gem "streak-ruby"
 # Use Capistrano for deployment
 # gem "capistrano-rails", group: :development
 
-group :production, :staging do
-  gem "unicorn"
-end
-
-group :development, :test do
-  gem "puma"
-end
+gem "puma"
 
 gem "aasm"
 gem "auto_strip_attributes", "~> 2.1"
 gem "config"
-gem "dotenv-rails"
-gem "whenever"
 gem "state_machines"
 gem "state_machines-activerecord"
 
@@ -78,13 +70,6 @@ group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console
   gem "byebug"
 
-  # Access an IRB console on exception pages or by using <%= console %> in views
-  gem "capistrano", "~> 3.1"
-  gem "capistrano-bundler"
-  gem "capistrano-rails"
-  gem "capistrano-rails-console", require: false
-  gem "capistrano-rbenv"
-  gem 'capistrano-nvm', require: false
   gem "rb-readline"
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
