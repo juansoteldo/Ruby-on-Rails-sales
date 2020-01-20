@@ -18,6 +18,6 @@ module CtdWorklist
     config.time_zone = 'Eastern Time (US & Canada)'
     config.active_job.queue_adapter = :sidekiq
     config.action_dispatch.ip_spoofing_check = false
-    config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += ["#{config.root}/lib"]
   end
 end

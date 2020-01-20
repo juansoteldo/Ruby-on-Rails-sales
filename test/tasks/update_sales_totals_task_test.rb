@@ -1,4 +1,4 @@
-# test/tasks/rake_task_file_test.rb
+# test/tasks/update_sales_totals_task_test.rb
 
 require 'test_helper'
 require 'rake'
