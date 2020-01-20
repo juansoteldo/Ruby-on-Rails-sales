@@ -5,7 +5,7 @@ class WebhookJob < ApplicationJob
   attr_accessor :webhook
 
   rescue_from Exception do |exception|
-    Rails.logger.error "WEBHOOK ERROR: #{exception}\n#{exception.backtrace.join("\n")}"
+    Rails.logger.error "Webhook Error: #{exception}\n#{exception.backtrace.join("\n")}"
     @webhook&.fail!(exception.to_s) unless @webhook&.committed?
     raise exception if Rails.env.test?
   end
