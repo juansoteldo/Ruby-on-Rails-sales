@@ -1,19 +1,27 @@
-require 'google/apis/gmail_v1'
-require 'googleauth'
-require 'googleauth/stores/file_token_store'
-require 'fileutils'
+# frozen_string_literal: true
+
+require "google/apis/gmail_v1"
+require "googleauth"
+require "googleauth/stores/file_token_store"
+require "fileutils"
 
 module CTD
   class GmailScanner
     EMAIL_REGEX = "^(?=[A-Z0-9][A-Z0-9@._%+-]{5,253}+$)[A-Z0-9._%+-]{1,64}+@(?:(?=[A-Z0-9-]{1,63}+\\.)[A-Z0-9]++(?:-[A-Z0-9]++)*+\\.){1,8}+[A-Z]{2,63}+$"
 
-    def self.make_design_requests_boxes
-      MostlyGmail::Message.design_requests.each do |message|
+    def self.associate_threads
+      MostlyGmail::Message.new_design_requests.each do |message|
         next unless message.streak_box_key
         next if Request.where(thread_gmail_id: message.thread_id).any?
-        box = MostlyStreak::Box.find(message.streak_box_key)
         MostlyStreak::Box.add_thread(message.streak_box_key, message.thread_id)
+        MostlyStreak::Box.update(message.streak_box_key, notes: message.text_body)
         find_request_for_message(message).update thread_gmail_id: message.thread_id
+
+        MostlyGmail::Thread.modify(
+          message.thread_id,
+          [Settings.gmail.labels.design_requests],
+          [Settings.gmail.labels.new_design_requests]
+        )
       end
     end
 

@@ -57,15 +57,4 @@ class RequestCreateJobTest < ActiveJob::TestCase
     assert_nil webhook.reload.params[:art_sample_1]
     assert_nil webhook.params[:art_sample_2]
   end
-
-  test "should send opt_in and start_design emails" do
-    art_samples = {
-      art_sample_1: @image_file,
-      art_sample_2: @image_file2
-    }
-    Request.skip_creating_streak_boxes = false
-    assert_enqueued_emails 2 do
-      RequestCreateJob.perform_now(wpcf7_params.dup.merge(art_samples))
-    end
-  end
 end

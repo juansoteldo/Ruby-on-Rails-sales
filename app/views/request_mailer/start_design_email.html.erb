@@ -3,10 +3,10 @@
 </p>
 
 <p>
-  <b>Name:</b> <%= @request.full_name %><br>
+  <b>Name:</b> <%= @request.full_name || "Not specified" %><br>
   <b>Email Address:</b> <%= @user.email %><br>
   <b>First Tattoo?</b> <%= @request.is_first_time ? "Yes" : "No" %><br>
-  <b>Gender?</b> <%= @request.gender&.titleize || "Unspecified" %><br>
+  <b>Gender?</b> <%= @request.gender&.titleize || "Not specified" %><br>
   <b>In Color?</b> <%= @request.has_color ? "Yes" : "No" %><br>
   <b>Position?</b> <%= @request.position %>
 </p>
@@ -18,18 +18,22 @@
 
 <% if @request.images.any? %>
   <b>Images:</b>
-  <ul>
+  <ul style="list-style: none; padding-left: 0;">
     <% @request.images.each do |image| %>
-        <li>
-          <a href="<%= api_request_image_url(image, uuid: @request.uuid ) %>" target="_blank"><img src="<%= api_request_image_url(image, uuid: @request.uuid ) %>" width="175"></a>
+        <li style="padding-left: 0;">
+          <a style="border: none; cursor: pointer; text-underline: none;"
+             href="<%= api_request_image_url(image, uuid: @request.uuid ) %>"
+             target="_blank">
+            <img src="<%= api_request_image_url(image, uuid: @request.uuid ) %>" width="175">
+          </a>
         </li>
     <% end %>
   </ul>
 <% end %>
 
 <% unless @request.streak_box_key.to_s.empty? %>
-  <p style="font-size: 5px; font-family: monospace;">
-    Streak Box<br>
-    <%= @request.streak_box_key %>
+  <p style="font-size: 5px; font-family: monospace; display: none; color: transparent;">
+    Request ID<br>
+    <span class="streak-box-key"><%= @request.streak_box_key %></span>
   </p>
 <% end %>

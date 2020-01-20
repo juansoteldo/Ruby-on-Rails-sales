@@ -2,13 +2,15 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require "rails/test_help"
 require "minitest/rails/capybara"
+require 'sidekiq/testing'
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
   setup do
-    Request.skip_creating_streak_boxes = true
+    Settings.streak.create_boxes = false
+    RequestMailer.delivery_method = :test
   end
 
   def clear_requests_for(email)
@@ -52,7 +54,7 @@ class ActiveSupport::TestCase
     extname = File.extname(name).to_s
     FileUtils.mkdir_p(Rails.root.join("tmp", "storage"))
     path = Rails.root.join("tmp", "storage", "#{Time.now.to_i}#{extname}")
-    FileUtils.cp src_file, path
+    FileUtils.cp(src_file, path)
     Pathname.new(path)
   end
 
@@ -75,8 +77,8 @@ class ActiveSupport::TestCase
     `file -Ib #{path}`.gsub(/\n/, "").split(";")[0]
   end
 
-  def start_design_messages_for_streak_box(streak_box_key)
-    MostlyGmail::Message.design_requests.select do |m|
+  def new_start_design_messages_for_streak_box(streak_box_key)
+    MostlyGmail::Message.new_design_requests.select do |m|
       m.streak_box_key && m.streak_box_key == streak_box_key
     end
   end

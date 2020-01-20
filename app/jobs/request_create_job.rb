@@ -12,6 +12,8 @@ class RequestCreateJob < WebhookJob
     @request = Request.recent.where(user_id: @user.id,
                                     position: params[:position]).first_or_create
     @request.update! params
+    @request.ensure_streak_box
+    @request.opt_in_user
     return if @request.created_at < @webhook.created_at
     @request.update_column(:created_at, @webhook.created_at)
   end

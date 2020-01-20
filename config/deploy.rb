@@ -7,7 +7,7 @@ set :rbenv_ruby, "2.5.3"
 
 set :nvm_type, :user # or :system, depends on your nvm setup
 set :nvm_node, 'v8.15.1'
-set :nvm_map_bins, %w{node npm yarn}
+set :nvm_map_bins, ['node', 'npm', 'yarn']
 
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
@@ -20,7 +20,7 @@ set :deploy_to, '/u/apps/ctd'
 # set :pty, true
 
 # Get from here https://developers.google.com/gmail/api/quickstart/ruby
-set :linked_files, ['config/gmail_credentials.json', 'tmp/gmail_token.yaml']
+set :linked_files, ['config/gmail_credentials.json', 'tmp/gmail_token.yaml', "master.key"]
 set :linked_dirs, ['log', 'published_files', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'tmp/uploads', 'vendor/bundle', 'public/system']
 
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }

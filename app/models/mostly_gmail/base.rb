@@ -20,7 +20,7 @@ module MostlyGmail
     ME_ID = "ME".freeze
     OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
     TOKEN_PATH = Rails.root.join("tmp/gmail_token.yaml").freeze
-    SCOPE = Google::Apis::GmailV1::AUTH_GMAIL_READONLY
+    SCOPE = Google::Apis::GmailV1::AUTH_GMAIL_MODIFY
     CREDENTIALS_PATH = Rails.root.join("config", "gmail_credentials.json").freeze
     APPLICATION_NAME = "CTD API".freeze
 

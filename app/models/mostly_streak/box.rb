@@ -4,7 +4,6 @@ require "mostly_streak/base"
 
 module MostlyStreak
   class Box < Base
-
     def salesperson
       return @assigned_to_salesperson if @assigned_to_salesperson
       emails = assigned_to_emails
@@ -56,7 +55,7 @@ module MostlyStreak
       return unless email =~ /\A[^@]+@[^@]+\Z/
       Streak.api_key = Settings.streak.api_key
       box_key = MostlyStreak::Box.query(email).select do |box|
-          difference = box.name.casecmp(email)
+        difference = box.name.casecmp(email)
         !difference.nil? && difference < 2
       end.last.try(&:box_key)
 
@@ -85,5 +84,9 @@ module MostlyStreak
       new Streak::Thread.put_into_box(thread_gmail_id, box_key)
     end
 
+    def self.update(box_key, *params)
+      Streak.api_key = Settings.streak.api_key
+      Streak::Box.update(box_key, *params)
+    end
   end
 end

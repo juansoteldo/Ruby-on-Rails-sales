@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MostlyGmail
   class Message < Base
     def self.all(*params)
@@ -8,8 +10,14 @@ module MostlyGmail
       new get_user_message(ME_ID, id, *params)
     end
 
+    def self.new_design_requests
+      Rails.cache.fetch( "gmail/new-design-requests", expires_in: 5.seconds) do
+        all({label_ids: Settings.gmail.labels.new_design_requests})
+      end
+    end
+
     def self.design_requests
-      Rails.cache.fetch( "gmail/design-requests", expires_in: 5.seconds) do
+      Rails.cache.fetch( "gmail/new-design-requests", expires_in: 5.seconds) do
         all({label_ids: Settings.gmail.labels.design_requests})
       end
     end
@@ -25,6 +33,10 @@ module MostlyGmail
     def payload
       fetch unless @source.payload
       @source.payload
+    end
+
+    def text_body
+      payload.parts.find {|p| p.mime_type == "text/plain"}.body.data
     end
 
     def fetch
