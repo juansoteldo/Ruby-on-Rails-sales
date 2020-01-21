@@ -53,6 +53,11 @@ good-listener@^1.2.2:
   dependencies:
     delegate "^3.1.2"
 
+jquery@1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-1.9.1.tgz#e4cd4835faaefbade535857613c0fc3ff2adaf34"
+  integrity sha1-5M1INfqu+63lNYV2E8D8P/KtrzQ=
+
 jquery@>=1.10, "jquery@>=1.7.1 <4.0.0":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
@@ -72,6 +77,11 @@ nouislider@^13.1.1:
   version "13.1.1"
   resolved "https://registry.yarnpkg.com/nouislider/-/nouislider-13.1.1.tgz#fc6b38de65385579774887468bee00b138447854"
   integrity sha512-PYXfMYYZA2F7QzMSEANocyIr8OgeMBrQBCre5wHsZiyha0DSrt9i5weEV2oWaJDYnG2qDKb6GwmKAkczqTzvAQ==
+
+popper.js@^1.14.7:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.0.tgz#2e1816bcbbaa518ea6c2e15a466f4cb9c6e2fbb3"
+  integrity sha512-+G+EkOPoE5S/zChTpmBSSDYmhXJ5PsW8eMhH8cP/CQHMFPBG/kC9Y5IIw6qNYgdJ+/COf0ddY2li28iHaZRSjw==
 
 select@^1.1.2:
   version "1.1.2"
