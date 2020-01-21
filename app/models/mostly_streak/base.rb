@@ -9,7 +9,7 @@ module MostlyStreak
     end
 
     def method_missing(symbol, *args)
-      Streak.api_key = Settings.streak.api_key
+      Streak.api_key = Rails.application.config.streak_api_key
       @source.send(symbol, *args)
     end
   end
