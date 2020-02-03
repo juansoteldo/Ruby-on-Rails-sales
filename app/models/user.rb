@@ -17,6 +17,7 @@ class User < ApplicationRecord
   auto_strip_attributes :email, :first_name, :last_name
   phony_normalize :phone_number, default_country_code: 'US'
 
+  before_validation :initialize_password
   validates_presence_of :email
   validates_length_of :email, minimum: 5
 
@@ -37,4 +38,8 @@ class User < ApplicationRecord
     assign_attributes(crm_opt_in: !value) unless value
   end
 
+  def initialize_password
+    return unless password.blank?
+    self.password = SecureRandom.base64(12)
+  end
 end
