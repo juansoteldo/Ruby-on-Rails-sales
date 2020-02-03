@@ -28,6 +28,6 @@ class Api::UsersController < Api::BaseController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.require(:user).permit(:presales_opt_in, :marketing_opt_in, :crm_opt_in)
+    params.require(:user).permit(:presales_opt_in, :marketing_opt_in, :crm_opt_in, :first_name, :last_name)
   end
 end
