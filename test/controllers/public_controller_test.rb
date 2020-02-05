@@ -109,6 +109,5 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
       box = MostlyStreak::Box.find(box.key)
       assert box.stage_key == MostlyStreak::Stage.contacted.key
     end
-
   end
 end
