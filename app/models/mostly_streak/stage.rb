@@ -5,7 +5,7 @@ require 'mostly_streak/base'
 module MostlyStreak
   class Stage < Base
     def self.all
-      Rails.cache.fetch('streak_stage/all', expires_in: 15.minutes) do
+      Rails.cache.fetch('streak_stage/all', expires_in: 1.hours) do
         Streak.api_key = Rails.application.config.streak_api_key
         Streak::Stage.all(ENV['STREAK_PIPELINE_ID'])
       end
