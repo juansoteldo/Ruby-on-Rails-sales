@@ -41,9 +41,10 @@ class Request < ApplicationRecord
   ].freeze
 
   state_machine :state, initial: :fresh do
-    after_transition on: :convert, do: :perform_deposit_actions
+    after_transition on: :quote, do: :enqueue_quote_actions
+    after_transition on: :convert, do: :enqueue_deposit_actions
+    # TODO: Check if this gets used
     after_transition on: :complete, do: :perform_complete_actions
-    after_transition on: :quote, do: :perform_quote_actions
 
     event :quote do
       transition fresh: :quoted
@@ -134,10 +135,12 @@ class Request < ApplicationRecord
   end
 
   def send_confirmation_email
+    Rails.logger.info "Sending confirmation email for request #{id}"
     BoxMailer.confirmation_email(self).deliver_later
   end
 
   def send_final_confirmation_email
+    Rails.logger.info "Sending final confirmation email for request #{id}"
     BoxMailer.final_confirmation_email(self).deliver_later
   end
 
@@ -210,16 +213,13 @@ class Request < ApplicationRecord
     send_final_confirmation_email
   end
 
-  def perform_quote_actions
-    box = streak_boxes.last
-    return unless box
+  def enqueue_quote_actions
+    RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
+  end
 
-    current_stage = MostlyStreak::Stage.find(key: box.stage_key)
-    return unless current_stage.name == 'Contacted' || current_stage.name == 'Leads'
-
-    MostlyStreak::Box.set_stage(box.key, 'Quoted')
-  rescue Exception => e
-    Rails.logger.error "Cannot update streak box for request #{id} (#{e})"
+  def enqueue_deposit_actions
+    RequestActionJob.perform_later(request: self, method: "send_confirmation_email")
+    RequestActionJob.perform_later(request: self, method: "mark_boxes_deposited")
   end
 
   def streak_boxes
@@ -231,15 +231,21 @@ class Request < ApplicationRecord
     end
   end
 
-  def perform_deposit_actions
-    Rails.logger.info "Sending confirmation email to #{user.email}"
-    send_confirmation_email
-    begin
-      streak_boxes.each do |box|
-        MostlyStreak::Box.set_stage(box.key, 'Deposited')
-      end
-    rescue Exception => e
-      Rails.logger.error "Cannot update streak box for request #{id} (#{e})"
+  def mark_last_box_quoted
+    box = streak_boxes.last
+    return unless box
+
+    current_stage = MostlyStreak::Stage.find(key: box.stage_key)
+    return unless ["Contacted", "Leads"].include?(current_stage.name)
+
+    MostlyStreak::Box.set_stage(box.key, 'Quoted')
+  end
+
+  def mark_boxes_deposited
+    streak_boxes.each do |box|
+      current_stage = MostlyStreak::Stage.find(key: box.stage_key)
+      next unless ["Contacted", "Leads", "Quoted"].include?(current_stage.name)
+      MostlyStreak::Box.set_stage(box.key, 'Deposited')
     end
   end
 

@@ -67,6 +67,7 @@ gem "state_machines-activerecord"
 gem "carrierwave"
 gem "fog-aws"
 gem "mini_magick"
+gem "newrelic_rpm"
 gem 'will_paginate', '~> 3.1.0'
 
 group :development, :test do
@@ -81,6 +82,7 @@ end
 
 group :test do
   gem 'minitest-rails-capybara'
+  gem 'simplecov', require: false
 end
 
 group :development do
