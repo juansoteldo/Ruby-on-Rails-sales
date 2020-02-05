@@ -51,7 +51,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :debug
+  config.log_level = :warn
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
@@ -66,7 +66,16 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
   config.marketing_email_recipients = ['leeroller@customtattoodesign.ca', 'brittany@customtattoodesign.ca', 'johnd@customtattoodesign.ca']
 
-  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address              => "email-smtp.us-east-1.amazonaws.com",
+    :port                 => 587,
+    :domain               => 'customtattoodesign.ca',
+    :user_name            => ENV["SMTP_USER_NAME"],
+    :password             => ENV["SMTP_PASSWORD"],
+    :authentication       => 'plain',
+    :enable_starttls_auto => true
+  }
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false

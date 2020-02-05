@@ -83,34 +83,15 @@ class PublicController < ApplicationController
   end
 
   def save_email
-    from_email = params[:from_email].to_s.downcase.strip
-    head(422) && return unless from_email =~ URI::MailTo::EMAIL_REGEXP
-    @salesperson = Salesperson.find_by_email!(from_email)
+    from = params[:from_email].to_s.strip.downcase
+    head(422) && return unless from =~ URI::MailTo::EMAIL_REGEXP
+    @salesperson = Salesperson.find_by_email!(from)
     head(422) && return unless @salesperson
 
-    recipient_email = params[:recipient_email].to_s.downcase.strip
-    head(422) && return unless recipient_email =~ URI::MailTo::EMAIL_REGEXP
-    @salesperson.claim_requests_with_email(recipient_email)
+    to = params[:recipient_email].to_s.strip.downcase
+    head(422) && return unless to =~ URI::MailTo::EMAIL_REGEXP
+    SaveEmailJob.perform_later(from: from, to: to)
 
-    @request = Request.joins(:user).where(users: { email: recipient_email.downcase.strip }).last
-    box = MostlyStreak::Box.find(@request.streak_box_key) if @request&.streak_box_key
-    box ||= MostlyStreak::Box.find_by_email(recipient_email)
-    if box
-      current_stage = MostlyStreak::Stage.find(key: box.stage_key)
-
-      if current_stage.name == 'Leads'
-        MostlyStreak::Box.set_stage(box.key, 'Contacted')
-      end
-
-      user_key = @salesperson&.user_key
-      user_key ||= MostlyStreak::User.find_by_email(from_email)
-
-      if user_key
-        MostlyStreak::Box.add_follower(@salesperson.streak_api_key, box.key, user_key)
-      else
-        Rails.logger.error ">>> Cannot get streak follower key for `#{from_email}`"
-      end
-    end
     head :ok
   end
 
