@@ -80,6 +80,7 @@ end
 
 group :test do
   gem 'minitest-rails-capybara'
+  gem 'simplecov', require: false
 end
 
 group :development do
