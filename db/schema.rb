@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_16_125126) do
+ActiveRecord::Schema.define(version: 2020_02_05_035011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -166,9 +166,12 @@ ActiveRecord::Schema.define(version: 2019_10_16_125126) do
     t.integer "contacted_by_id"
     t.uuid "uuid", default: -> { "uuid_generate_v4()" }
     t.string "attributed_by"
+    t.string "streak_box_key"
+    t.string "thread_gmail_id"
     t.index ["client_id"], name: "index_requests_on_client_id"
     t.index ["created_at"], name: "index_requests_on_created_at"
     t.index ["deposit_order_id"], name: "index_requests_on_deposit_order_id"
+    t.index ["first_name", "last_name"], name: "request_names"
     t.index ["quoted_by_id"], name: "index_requests_on_quoted_by_id"
     t.index ["sku"], name: "index_requests_on_sku"
     t.index ["user_id"], name: "index_requests_on_user_id"
@@ -249,6 +252,8 @@ ActiveRecord::Schema.define(version: 2019_10_16_125126) do
     t.datetime "updated_at", null: false
     t.string "aasm_state"
     t.integer "tries", default: 0
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_webhooks_on_deleted_at"
     t.index ["email"], name: "index_webhooks_on_email"
     t.index ["request_id"], name: "index_webhooks_on_request_id"
     t.index ["source", "action_name"], name: "index_webhooks_on_source_and_action_name"
