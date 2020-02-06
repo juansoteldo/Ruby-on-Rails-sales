@@ -54,12 +54,16 @@ module MostlyStreak
     def self.find_by_email(email)
       return unless email =~ /\A[^@]+@[^@]+\Z/
       Streak.api_key = Settings.streak.api_key
-      box_key = MostlyStreak::Box.query(email).select do |box|
+      email = email.downcase.strip
+      box = MostlyStreak::Box.query(email).find do |box|
+        box.name.casecmp?(email)
+      end
+      box ||= MostlyStreak::Box.query(email).select do |box|
         difference = box.name.casecmp(email)
-        !difference.nil? && difference < 2
-      end.last.try(&:box_key)
+        !difference.nil? && difference.to_i < 2
+      end.last
 
-      box_key && find(box_key) || nil
+      box && find(box.box_key) || nil
     end
 
     def self.set_stage(box_key, stage_name)
