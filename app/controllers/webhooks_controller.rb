@@ -7,29 +7,29 @@ class WebhooksController < ApplicationController
   def events_create
     safe_params = calendly_params
     payload = safe_params[:payload]
-    create_webhook source: "Calendly",
-                   source_id: payload["event"]["uuid"],
-                   email: payload["invitee"]["email"],
-                   params: safe_params
-    head :ok
+    webhook = create_webhook source: "Calendly",
+                     source_id: payload["event"]["uuid"],
+                     email: payload["invitee"]["email"],
+                     params: safe_params
+    render json: webhook.id
   end
 
   def requests_create
     safe_params = wpcf7_params
-    create_webhook source: "WordPress",
-                   source_id: nil,
-                   email: safe_params[:email],
-                   params: safe_params
-    head :ok
+    webhook = create_webhook source: "WordPress",
+                     source_id: nil,
+                     email: safe_params[:email],
+                     params: safe_params
+    render json: webhook.id
   end
 
   def orders_create
     safe_params = shopify_params
-    create_webhook source: "Shopify",
-                   source_id: safe_params["id"],
-                   email: safe_params["email"],
-                   params: safe_params
-    head :ok
+    webhook = create_webhook source: "Shopify",
+                     source_id: safe_params["id"],
+                     email: safe_params["email"],
+                     params: safe_params
+    render json: webhook.id
   end
 
   private
