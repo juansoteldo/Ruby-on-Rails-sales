@@ -61,6 +61,6 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.marketing_email_recipients = ['mailer@ctd-worklist.dev']
+  config.marketing_email_recipients = ['mailer@ctd-sales.dev']
   config.action_mailer.preview_path = "#{Rails.root}/lib/mailer_previews"
 end
