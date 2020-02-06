@@ -107,12 +107,12 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     salesperson = Salesperson.first
     user = User.first
     box = new_streak_box_for_email(user.email)
-    assert box.stage_key != MostlyStreak::Stage.contacted.key
+    assert box.stage_key == MostlyStreak::Stage.leads.key
     perform_enqueued_jobs do
       get save_email_path(params: { thread_id: nil, recipient_email: box.name, from_email: salesperson.email }, format: :js)
       assert_response :success
-      box = MostlyStreak::Box.find(box.key)
-      assert box.stage_key == MostlyStreak::Stage.contacted.key
     end
+    box = MostlyStreak::Box.find(box.key)
+    assert box.stage_key == MostlyStreak::Stage.contacted.key
   end
 end

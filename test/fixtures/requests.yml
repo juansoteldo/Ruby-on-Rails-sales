@@ -13,6 +13,16 @@ fresh:
   state: fresh
   description: THIS IS A TEST, DO NOT EMAIL ME
 
+wpcf7:
+  user: wpcf7
+  first_name: John
+  last_name: Smith
+  position: Sleeve
+  has_color: false
+  is_first_time: false
+  gender: Male
+  description: Test test
+
 quoted:
   user: one
   first_name: Jane

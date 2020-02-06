@@ -13,3 +13,9 @@ one:
 two:
   email: "user2@customtattodesign.test"
   authentication_token: "def987"
+
+wpcf7:
+  email: johnsmith@example.com
+  first_name: John
+  last_name: Smith
+  authentication_token: "ad2010f9911"

@@ -38,7 +38,9 @@ class RequestTest < ActiveSupport::TestCase
 
   test "re-opts-in user to pre-sales and crm, but not marketing" do
     @user.update! presales_opt_in: false, marketing_opt_in: false, crm_opt_in: false
-    Request.create! user: @user, description: "TEST, DO NOT REPLY"
+    perform_enqueued_jobs do
+      Request.create! user: @user, description: "TEST, DO NOT REPLY"
+    end
     assert @user.reload.presales_opt_in
     assert @user.crm_opt_in
     assert_not @user.marketing_opt_in

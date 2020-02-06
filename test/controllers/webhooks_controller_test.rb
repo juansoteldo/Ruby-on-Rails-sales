@@ -8,20 +8,16 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     RequestMailer.delivery_method = :test
     @image_file = file_fixture_copy("test.jpg")
     @image_url = "https://www.ece.rice.edu/~wakin/images/lena512.bmp"
-    User.all.each(&:destroy!)
-    Webhook.all.delete_all
   end
 
   teardown do
   end
 
   def generate_request
-    stamp = Time.now
-    perform_enqueued_jobs do
-      post "/webhooks/requests_create", params: wpcf7_params
-      assert_response :success
-    end
-    last_request_after(stamp)
+    request = requests(:wpcf7)
+    request.ensure_streak_box
+    request.opt_in_user
+    request
   end
 
   def last_request_after(stamp, email: wpcf7_params[:email])
@@ -34,8 +30,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       assert_response :success
     end
 
-    assert_not_equal Webhook.last.tries, 0
-    assert Webhook.last.committed?
+    webhook = Webhook.find(response.body.to_i)
+    assert_not_equal webhook.tries, 0
+    assert webhook.committed?
 
     assert_not_nil Request.joins(:user).where(users: { email: wpcf7_params[:email] }).first
   end
@@ -44,14 +41,15 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     params = wpcf7_params
     params[:user_attributes][:marketing_opt_in] = "1"
     assert_emails(1) do
-      perform_enqueued_jobs(only: RequestCreateJob) do
+      perform_enqueued_jobs do
         post "/webhooks/requests_create", params: params
         assert_response :success
       end
     end
 
-    assert_not_equal Webhook.last.tries, 0
-    assert_equal "committed", Webhook.last.aasm_state
+    webhook = Webhook.find(response.body.to_i)
+    assert_not_equal webhook.tries, 0
+    assert_equal "committed", webhook.aasm_state
 
     user = User.find(Request.joins(:user).where(users: { email: params[:email] }).first.user_id)
     assert_not_nil user
@@ -68,8 +66,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_not_equal Webhook.last.tries, 0
-    assert_equal "committed", Webhook.last.aasm_state
+    webhook = Webhook.find(response.body.to_i)
+    assert_not_equal webhook.tries, 0
+    assert_equal "committed", webhook.aasm_state
     user = User.find(Request.joins(:user).where(users: { email: params[:email] }).first.user_id)
     assert_equal user.marketing_opt_in, false
   end
@@ -80,8 +79,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       post "/webhooks/requests_create", params: wpcf7_params.merge(art_sample_1: @image_file)
       assert_response :success
     end
-    assert_not_equal Webhook.last.tries, 0
-    assert_equal "committed", Webhook.last.aasm_state
+    webhook = Webhook.find(response.body.to_i)
+    assert_not_equal webhook.tries, 0
+    assert_equal "committed", webhook.aasm_state
 
     request = last_request_after(stamp)
     assert request.images.count == 1
@@ -96,8 +96,10 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       )
       assert_response :success
     end
-    assert_not_equal Webhook.last.tries, 0
-    assert_equal "committed", Webhook.last.aasm_state
+
+    webhook = Webhook.find(response.body.to_i)
+    assert_not_equal webhook.tries, 0
+    assert_equal "committed", webhook.aasm_state
 
     request = last_request_after(stamp)
     assert request.images.count == 1
@@ -113,8 +115,10 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       )
       assert_response :success
     end
-    assert_not_equal Webhook.last.tries, 0
-    assert_equal "committed", Webhook.last.aasm_state
+
+    webhook = Webhook.find(response.body.to_i)
+    assert_not_equal webhook.tries, 0
+    assert_equal "committed", webhook.aasm_state
 
     request = last_request_after(stamp)
     assert request.images.count == 1
@@ -129,11 +133,12 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
         art_sample_1: @image_data,
         art_sample_2: @image_file,
         art_sample_3: @image_url
-        )
+      )
       assert_response :success
     end
-    assert_not_equal Webhook.last.tries, 0
-    assert_equal "committed", Webhook.last.aasm_state
+    webhook = Webhook.find(response.body.to_i)
+    assert_not_equal webhook.tries, 0
+    assert_equal "committed", webhook.aasm_state
 
     request = last_request_after(stamp)
     assert request.images.count == 3
@@ -157,8 +162,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       )
     end
 
-    assert_not_equal Webhook.last.tries, 0
-    assert_equal "committed", Webhook.last.aasm_state
+    webhook = Webhook.find(response.body.to_i)
+    assert_not_equal webhook.tries, 0
+    assert_equal "committed", webhook.aasm_state
     request.reload
     assert request.deposit_order_id == shopify_params["id"].to_s
     assert request.state == "deposited"
@@ -176,8 +182,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       post "/webhooks/orders_create", params: params
     end
 
-    assert_not_equal Webhook.last.tries, 0
-    assert_equal "committed", Webhook.last.aasm_state
+    webhook = Webhook.find(response.body.to_i)
+    assert_not_equal webhook.tries, 0
+    assert_equal "committed", webhook.aasm_state
     request.reload
     assert request.deposit_order_id == shopify_params["id"].to_s
     assert request.state == "deposited"
@@ -185,17 +192,17 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
   test "shopify webhook should update using landing_site url params" do
     request = generate_request
-
+    email = SecureRandom.base64(8)
     perform_enqueued_jobs do
       params = shopify_unassociated_params.merge(
-        "email": SecureRandom.base64(8),
+        "email": email,
         "note_attributes": [],
       )
       params["landing_site"].gsub! /reqid=[\d]+/, "reqid=#{request.id}"
       post "/webhooks/orders_create", params: params
     end
 
-    webhook = Webhook.last
+    webhook = Webhook.find(response.body.to_i)
     assert_not_equal webhook.tries, 0
     assert_equal "committed", webhook.aasm_state
     assert request.reload.deposit_order_id == shopify_unassociated_params["id"].to_s
@@ -204,16 +211,18 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
   test "shopify webhook should fail to update on mismatch" do
     request = generate_request
+    email = SecureRandom.base64(8)
 
     perform_enqueued_jobs do
       params = shopify_params
-      params["email"] = SecureRandom.base64(8)
+      params["email"] = email
       params["landing_site"].gsub! /reqid=[\d]+/, "reqid=123456"
       params["note_attributes"] = []
       post "/webhooks/orders_create", params: params
+      assert_response :success
     end
 
-    webhook = Webhook.last
+    webhook = Webhook.find(response.body.to_i)
     assert_not_equal webhook.tries, 0
     assert_not_nil webhook.last_error
     assert_equal "failed", webhook.aasm_state
