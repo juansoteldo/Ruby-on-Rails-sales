@@ -36,16 +36,6 @@ class RequestTest < ActiveSupport::TestCase
     end
   end
 
-  test "re-opts-in user to pre-sales and crm, but not marketing" do
-    @user.update! presales_opt_in: false, marketing_opt_in: false, crm_opt_in: false
-    perform_enqueued_jobs do
-      Request.create! user: @user, description: "TEST, DO NOT REPLY"
-    end
-    assert @user.reload.presales_opt_in
-    assert @user.crm_opt_in
-    assert_not @user.marketing_opt_in
-  end
-
   test "quote_from_params!" do
     @request.quote_from_params!({ variant_id: @variant.id, salesperson_id: @salesperson.id })
   end
@@ -99,7 +89,7 @@ class RequestTest < ActiveSupport::TestCase
   test ".for_shopify_order uses fuzzy email if id not present" do
     order = last_deposit_order
     request = create_request_for_shopify_order(order)
-    order.source.email[1] = "a"
+    order.source.email[1] = "+"
     order.request_id = request.id + 1
     order.source.id = nil
     assert_not_equal request.user.email, order.email

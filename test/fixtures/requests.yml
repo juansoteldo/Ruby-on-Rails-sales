@@ -22,6 +22,7 @@ wpcf7:
   is_first_time: false
   gender: Male
   description: Test test
+  state: fresh
 
 quoted:
   user: one

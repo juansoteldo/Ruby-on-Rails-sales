@@ -9,9 +9,6 @@ class RequestCreateJobTest < ActiveJob::TestCase
     @image_file2 = file_fixture_copy("test2.png")
     @image_data = "data:image/jpg;base64," + Base64.encode64(@image_file.read.to_s)
     @image_data2 = "data:image/png;base64," + Base64.encode64(@image_file2.read.to_s)
-    RequestImage.joins(:user).where(users: { email: wpcf7_params[:email] }).each &:destroy!
-    Request.joins(:user).where(users: { email: wpcf7_params[:email] }).each &:destroy!
-    User.where(email: wpcf7_params[:email]).delete_all
   end
 
   teardown do
@@ -21,6 +18,16 @@ class RequestCreateJobTest < ActiveJob::TestCase
 
   def new_webhook(new_params)
     Webhook.create! source: "WordPress", action_name: "requests_create", params: wpcf7_params.dup.merge(new_params)
+  end
+
+  test "opts user back in" do
+    user = users(:wpcf7)
+    user.update! presales_opt_in: false, marketing_opt_in: false, crm_opt_in: false
+    RequestCreateJob.perform_now webhook: new_webhook({})
+
+    assert user.reload.presales_opt_in
+    assert user.crm_opt_in
+    assert_not user.marketing_opt_in
   end
 
   test "should add a new request with an image" do
@@ -44,7 +51,7 @@ class RequestCreateJobTest < ActiveJob::TestCase
     RequestCreateJob.perform_now webhook: new_webhook(art_samples)
     request = Request.joins(:user).where(users: { email: wpcf7_params[:email] }).first
     assert request
-    assert request.images.count == 2
+    assert_equal request.images.count, 2
   end
 
   test "should clear art_sample fields" do
