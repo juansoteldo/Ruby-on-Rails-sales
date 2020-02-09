@@ -83,15 +83,10 @@ class PublicController < ApplicationController
   end
 
   def save_email
-    from = params[:from_email].to_s.strip.downcase
-    head(422) && return unless from =~ URI::MailTo::EMAIL_REGEXP
-    @salesperson = Salesperson.find_by_email!(from)
-    head(422) && return unless @salesperson
+    args = SaveEmailJobArguments.new salesperson_email: params[:from_email], recipient_email: params[:recipient_email]
+    head(422) && return unless args.valid?
 
-    to = params[:recipient_email].to_s.strip.downcase
-    head(422) && return unless to =~ URI::MailTo::EMAIL_REGEXP
-    SaveEmailJob.perform_later(from: from, to: to)
-
+    SaveEmailJob.perform_later(args.to_h)
     head :ok
   end
 
