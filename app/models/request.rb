@@ -167,6 +167,9 @@ class Request < ApplicationRecord
 
   def ensure_streak_box
     return unless Settings.streak.create_boxes
+    return if streak_box_key
+    return unless user&.email
+    return unless user.first_name&.present?
     StreakBoxCreateJob.perform_later(self)
   end
 

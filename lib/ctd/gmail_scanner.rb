@@ -13,8 +13,9 @@ module CTD
       MostlyGmail::Message.new_design_requests.each do |message|
         next unless message.streak_box_key
         next if Request.where(thread_gmail_id: message.thread_id).any?
-        MostlyStreak::Box.add_thread(message.streak_box_key, message.thread_id)
-        MostlyStreak::Box.update(message.streak_box_key, notes: message.text_body)
+        box = MostlyStreak::Box.find(message.streak_box_key)
+        box.add_thread(message.streak_box_key, message.thread_id)
+        box.update(notes: message.text_body)
         find_request_for_message(message).update thread_gmail_id: message.thread_id
 
         MostlyGmail::Thread.modify(

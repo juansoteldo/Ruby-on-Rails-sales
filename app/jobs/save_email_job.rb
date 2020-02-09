@@ -17,15 +17,15 @@ class SaveEmailJob < ApplicationJob
 
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
 
-    if current_stage.name == 'Leads'
-      MostlyStreak::Box.set_stage(box.key, 'Contacted')
+    if current_stage.name == "Leads"
+      box = box.set_stage("Contacted")
     end
 
     user_key = @salesperson&.user_key
     user_key ||= MostlyStreak::User.find_by_email(@salesperson.email)
 
     if user_key
-      MostlyStreak::Box.add_follower(@salesperson.streak_api_key, box.key, user_key)
+      box.add_follower(user_key, @salesperson.streak_api_key)
     else
       Rails.logger.error ">>> Cannot get streak follower key for `#{@salesperson.email}`"
     end

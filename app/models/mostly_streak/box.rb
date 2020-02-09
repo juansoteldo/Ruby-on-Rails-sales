@@ -17,7 +17,7 @@ module MostlyStreak
 
     def self.create(email)
       Streak.api_key = Settings.streak.api_key
-      Streak::Box.create(Settings.streak.pipeline_key, { name: email })
+      new Streak::Box.create(Settings.streak.pipeline_key, { name: email })
     end
 
     def self.delete(box_key)
@@ -39,7 +39,7 @@ module MostlyStreak
     end
 
     def self.query(query)
-      Rails.cache.fetch("streak_box/query/" + query, expires_in: 60.seconds) do
+      Rails.cache.fetch("streak_box/query/" + query, expires_in: 5.seconds) do
         Streak.api_key = Settings.streak.api_key
         results = Streak::Search.query(query).results
         results&.boxes || [{}]
@@ -51,10 +51,10 @@ module MostlyStreak
       new Streak::Box.find(box_key)
     end
 
-    def self.find_by_email(email)
+    def self.find_by_name(email)
       return unless email =~ /\A[^@]+@[^@]+\Z/
       Streak.api_key = Settings.streak.api_key
-      email = email.downcase.strip
+
       box = MostlyStreak::Box.query(email).find do |box|
         box.name.casecmp?(email)
       end
@@ -63,34 +63,43 @@ module MostlyStreak
         !difference.nil? && difference.to_i < 2
       end.last
 
-      box && find(box.box_key) || nil
+      box.nil? ? nil : find(box.box_key)
     end
 
-    def self.set_stage(box_key, stage_name)
-      Streak.api_key = Settings.streak.api_key
+    def set_stage(stage_name)
       new_stage = MostlyStreak::Stage.find(name: stage_name)
       raise "cannot find stage key for `#{stage_name}`" unless new_stage
-      Streak::Box.update(box_key, stageKey: new_stage.key)
+      update(stageKey: new_stage.key)
     end
 
-    def self.add_follower(user_api_key, box_key, follower_key)
+    def add_follower(follower_key, user_api_key)
       # has to be user specific
       Streak.api_key = user_api_key
-      box = Streak::Box.find(box_key)
+      box = Streak::Box.find(key)
       follower_keys = box.follower_keys | [follower_key]
-      Streak::Box.update(box_key, followerKeys: follower_keys)
+      update(followerKeys: follower_keys)
     rescue
       Rails.logger.warn "Could not add follower with key `#{follower_key}` to box `#{box_key}`"
     end
 
-    def self.add_thread(box_key, thread_gmail_id)
+    def add_thread(box_key, thread_gmail_id)
       Streak.api_key = Settings.streak.api_key
-      new Streak::Thread.put_into_box(thread_gmail_id, box_key)
+      @source = Streak::Thread.put_into_box(thread_gmail_id, box_key)
     end
 
-    def self.update(box_key, *params)
+    def update(*params)
       Streak.api_key = Settings.streak.api_key
-      Streak::Box.update(box_key, *params)
+      @source = Streak::Box.update(key, *params)
+    end
+
+    def self.new_with_name(name)
+      box = MostlyStreak::Box.create(name)
+      box.set_stage "Leads"
+      box
+    end
+
+    def key
+      @source&.box_key || @source&.key
     end
   end
 end
