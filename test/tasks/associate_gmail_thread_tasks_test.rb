@@ -11,7 +11,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
     @user = users(:one)
     RequestMailer.delivery_method = :smtp
     Settings.streak.create_boxes = true
-    CtdWorklist::Application.load_tasks
+    CtdSales::Application.load_tasks
     @image_file = file_fixture_copy("test.jpg")
     @image_url = "https://www.ece.rice.edu/~wakin/images/lena512.bmp"
   end
