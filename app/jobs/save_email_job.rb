@@ -4,9 +4,15 @@ class SaveEmailJob < ApplicationJob
   retry_on Streak::APIError, wait: 15.seconds, attempts: 6
 
   def perform(args)
-    box = MostlyStreak::Box.find_by_email(args[:to])
     @salesperson = args[:salesperson]
     @salesperson.claim_requests_with_email(args[:recipient_email])
+    start = Time.now
+    box = nil
+    while (Time.now - start < 10.seconds) do
+      box = MostlyStreak::Box.find_by_name(args[:recipient_email])
+      break unless box.nil?
+      sleep 2
+    end
     return unless box
 
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
