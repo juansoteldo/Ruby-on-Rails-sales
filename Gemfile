@@ -59,7 +59,7 @@ gem "streak-ruby", git: "https://github.com/mostlydev/streak-ruby", branch: "mas
 gem "puma"
 
 gem "aasm"
-gem "auto_strip_attributes", "~> 2.1"
+gem "auto_strip_attributes", "~> 2.5"
 gem "config"
 gem "state_machines"
 gem "state_machines-activerecord"

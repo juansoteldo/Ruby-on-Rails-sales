@@ -8,7 +8,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  scope :fuzzy_matching_email, (-> (email) { where("levenshtein(email, ?) <= 2", email.downcase.strip) })
+  scope :fuzzy_matching_email, (-> (email) { where("levenshtein(email, ?) <= 2", email) })
 
   has_many :requests, dependent: :destroy
   has_many :events

@@ -524,7 +524,7 @@ DEPENDENCIES
   aasm
   acts_as_paranoid (~> 0.6.0)
   ahoy_email
-  auto_strip_attributes (~> 2.1)
+  auto_strip_attributes (~> 2.5)
   aws-sdk-s3
   bootsnap
   bootstrap-sass (~> 3.3.6)
