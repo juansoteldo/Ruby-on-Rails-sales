@@ -7,7 +7,7 @@ module MostlyStreak
   class User < Base
     def self.find(key)
       Rails.cache.fetch('streak_user/' + key, expires_in: 15.minutes) do
-        Streak.api_key = Rails.application.config.streak_api_key
+        Streak.api_key = Settings.streak.api_key
         Streak::User.find(key)
       end
     end

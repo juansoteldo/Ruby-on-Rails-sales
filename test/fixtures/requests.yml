@@ -11,6 +11,18 @@ fresh:
   notes: MyString
   client_id: MyString
   state: fresh
+  description: THIS IS A TEST, DO NOT EMAIL ME
+
+wpcf7:
+  user: wpcf7
+  first_name: John
+  last_name: Smith
+  position: Sleeve
+  has_color: false
+  is_first_time: false
+  gender: Male
+  description: Test test
+  state: fresh
 
 quoted:
   user: one
@@ -23,6 +35,7 @@ quoted:
   notes: MyString
   client_id: MyString
   state: quoted
+  description: THIS IS A TEST, DO NOT EMAIL ME
 
 deposited:
   user: one
@@ -35,6 +48,7 @@ deposited:
   notes: MyString
   client_id: MyString
   state: deposited
+  description: THIS IS A TEST, DO NOT EMAIL ME
   created_at: <%= Time.now - 30.minutes %>
   deposited_at: <%= Time.now - 15.minutes %>
 

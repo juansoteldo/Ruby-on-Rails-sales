@@ -7,29 +7,29 @@ class WebhooksController < ApplicationController
   def events_create
     safe_params = calendly_params
     payload = safe_params[:payload]
-    create_webhook source: "Calendly",
-                   source_id: payload["event"]["uuid"],
-                   email: payload["invitee"]["email"],
-                   params: safe_params
-    head :ok
+    webhook = create_webhook source: "Calendly",
+                     source_id: payload["event"]["uuid"],
+                     email: payload["invitee"]["email"],
+                     params: safe_params
+    render json: webhook.id
   end
 
   def requests_create
     safe_params = wpcf7_params
-    create_webhook source: "WordPress",
-                   source_id: nil,
-                   email: safe_params[:email],
-                   params: safe_params
-    head :ok
+    webhook = create_webhook source: "WordPress",
+                     source_id: nil,
+                     email: safe_params[:email],
+                     params: safe_params
+    render json: webhook.id
   end
 
   def orders_create
     safe_params = shopify_params
-    create_webhook source: "Shopify",
-                   source_id: safe_params["id"],
-                   email: safe_params["email"],
-                   params: safe_params
-    head :ok
+    webhook = create_webhook source: "Shopify",
+                     source_id: safe_params["id"],
+                     email: safe_params["email"],
+                     params: safe_params
+    render json: webhook.id
   end
 
   private
@@ -44,7 +44,9 @@ class WebhooksController < ApplicationController
     data = request.body.read
     hmac_header = request.headers['HTTP_X_SHOPIFY_HMAC_SHA256']
     digest = OpenSSL::Digest::Digest.new('sha256')
-    calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, ENV['SHOPIFY_WEB_HOOK_KEY'], data)).strip
+    webhook_key = ENV.fetch("SHOPIFY_WEBHOOK_KEY", Rails.application.credentials[:shopify][:webhook_key])
+    calculated_hmac = Base64.encode64(
+      OpenSSL::HMAC.digest(digest, webhook_key, data)).strip
     unless hmac_header == calculated_hmac
       head :unauthorized
     end

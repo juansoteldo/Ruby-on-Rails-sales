@@ -13,6 +13,7 @@ class WebhookTest < ActiveSupport::TestCase
     assert Webhook.create(source: "Shopify", action_name: "orders_create").job_class == OrdersCreateJob
     assert Webhook.create(source: "WordPress", action_name: "requests_create").job_class == RequestCreateJob
   end
+
   test "queues job on create" do
     params = shopify_params.merge(
       "email": @request.user.email,

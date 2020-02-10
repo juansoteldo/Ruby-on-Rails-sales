@@ -4,39 +4,36 @@ class RequestTest < ActiveSupport::TestCase
   include ActionMailer::TestHelper
 
   setup do
+    Settings.streak.create_boxes = false
     @request = requests(:fresh)
     @user = @request.user
     @variant = MostlyShopify::Variant.all.first
     @salesperson = salespeople(:active)
   end
 
+  teardown do
+    Settings.streak.create_boxes = true
+  end
+
   test "create_user" do
-    assert_not_nil @request.user
-    assert_not_nil @request.user.email
-    assert_nil @request.user.marketing_opt_in
+    assert_not_nil @user
+    assert_not_nil @user.email
+    assert_nil @user.marketing_opt_in
   end
 
   test "sends opt-in email" do
     assert_enqueued_emails(1) do
-      Request.create! user: @user
+      request = Request.create! user: @user, description: "TEST, DO NOT REPLY"
+      request.opt_in_user
     end
   end
 
   test "does not re-send opt-in" do
-    assert_enqueued_emails(1) do
-      Request.create! user: @user
+    assert_enqueued_emails(0) do
       @user.update marketing_opt_in: false
-      Request.create! user: @user
+      request = Request.create! user: @user, description: "TEST, DO NOT REPLY"
+      request.opt_in_user
     end
-  end
-
-  test "re-opts-in user to pre-sales and crm, but not marketing" do
-    @user.update presales_opt_in: false, marketing_opt_in: false, crm_opt_in: false
-    assert_not @user.marketing_opt_in
-    Request.create! user: @user
-    assert @user.reload.presales_opt_in
-    assert @user.crm_opt_in
-    assert_not @user.marketing_opt_in
   end
 
   test "quote_from_params!" do
@@ -92,7 +89,7 @@ class RequestTest < ActiveSupport::TestCase
   test ".for_shopify_order uses fuzzy email if id not present" do
     order = last_deposit_order
     request = create_request_for_shopify_order(order)
-    order.source.email[1] = "a"
+    order.source.email[1] = "+"
     order.request_id = request.id + 1
     order.source.id = nil
     assert_not_equal request.user.email, order.email

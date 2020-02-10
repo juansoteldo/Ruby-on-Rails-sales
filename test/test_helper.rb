@@ -5,10 +5,16 @@ SimpleCov.start 'rails'
 require File.expand_path('../../config/environment', __FILE__)
 require "rails/test_help"
 require "minitest/rails/capybara"
+require 'sidekiq/testing'
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
+
+  setup do
+    Settings.streak.create_boxes = false
+    RequestMailer.delivery_method = :test
+  end
 
   def clear_requests_for(email)
     RequestImage.joins(:user).where(email: email).each &:destroy!
@@ -51,17 +57,8 @@ class ActiveSupport::TestCase
     extname = File.extname(name).to_s
     FileUtils.mkdir_p(Rails.root.join("tmp", "storage"))
     path = Rails.root.join("tmp", "storage", "#{Time.now.to_i}#{extname}")
-    FileUtils.cp src_file, path
+    FileUtils.cp(src_file, path)
     Pathname.new(path)
-  end
-
-  def new_streak_box_for_email(email)
-    box = MostlyStreak::Box.find_by_email email
-    box ||= MostlyStreak::Box.create(email)
-    box_key = box.key
-    MostlyStreak::Box.set_stage(box_key, "Leads")
-    box = MostlyStreak::Box.find(box_key)
-    box
   end
 
   def request_with_image(path)
@@ -73,4 +70,22 @@ class ActiveSupport::TestCase
   def content_type(path)
     `file -Ib #{path}`.gsub(/\n/, "").split(";")[0]
   end
+
+  def new_start_design_messages_for_streak_box(streak_box_key)
+    MostlyGmail::Message.new_design_requests.select do |m|
+      m.streak_box_key && m.streak_box_key == streak_box_key
+    end
+  end
+
+  def clear_streak_boxes
+    raise "Cannot use production pipeline" if MostlyStreak::Pipeline.default.name == "CTD Sales"
+    MostlyStreak::Box.all.each do |box|
+      begin
+        MostlyStreak::Box.delete box.key
+      rescue
+      end
+      sleep 2
+    end
+  end
+
 end

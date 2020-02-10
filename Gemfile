@@ -32,12 +32,14 @@ gem "jbuilder", "~> 2.5"
 # bundle exec rake doc:rails generates the API under doc/api.
 #gem "sdoc", "~> 0.4.0", group: :doc
 
+gem 'acts_as_paranoid', '~> 0.6.0'
 gem "ahoy_email"
 gem "aws-sdk-s3", require: false
 gem "daemons"
 gem "sidekiq"
 gem "draper"
 gem "figaro"
+gem "google-api-client"
 gem "honeybadger", "~> 4.4"
 gem "js-routes"
 gem "zeroclipboard-rails"
@@ -46,7 +48,7 @@ gem "pundit"
 gem "ransack"
 gem "shopify_api"
 gem "simple_form"
-gem "streak-ruby"
+gem "streak-ruby", git: "https://github.com/mostlydev/streak-ruby", branch: "master"
 
 # Use ActiveModel has_secure_password
 # gem "bcrypt", "~> 3.1.7"
@@ -57,7 +59,7 @@ gem "streak-ruby"
 gem "puma"
 
 gem "aasm"
-gem "auto_strip_attributes", "~> 2.1"
+gem "auto_strip_attributes", "~> 2.5"
 gem "config"
 gem "state_machines"
 gem "state_machines-activerecord"

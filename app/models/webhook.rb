@@ -1,4 +1,6 @@
 class Webhook < ApplicationRecord
+  acts_as_paranoid
+
   include AASM
   serialize :params
   serialize :headers

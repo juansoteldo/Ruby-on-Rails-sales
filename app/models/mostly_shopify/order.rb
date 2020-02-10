@@ -183,7 +183,7 @@ module MostlyShopify
       if request&.quoted_by_id && request&.quoted_by_id != 6
         @box_sales_id = request.quoted_by_id
       end
-      @box_sales_id ||= MostlyStreak::Box.find_by_email(email)&.salesperson&.id
+      @box_sales_id ||= MostlyStreak::Box.find_by_name(email)&.salesperson&.id
     end
 
     def noted_sales_id

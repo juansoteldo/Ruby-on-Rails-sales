@@ -7,6 +7,10 @@ class WebhookPolicy < ApplicationPolicy
     @user&.admin?
   end
 
+  def destroy?
+    @user&.admin?
+  end
+
   class Scope < Scope
     def resolve
       @user&.admin? ? scope.all : scope.none
