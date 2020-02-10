@@ -48,7 +48,11 @@ module MostlyStreak
 
     def self.find(box_key)
       Streak.api_key = Settings.streak.api_key
+
       new Streak::Box.find(box_key)
+    rescue Streak::InvalidRequestError => e
+      return nil if e.http_status == 404
+      raise
     end
 
     def self.find_by_name(email)
@@ -84,7 +88,8 @@ module MostlyStreak
 
     def add_thread(box_key, thread_gmail_id)
       Streak.api_key = Settings.streak.api_key
-      @source = Streak::Thread.put_into_box(thread_gmail_id, box_key)
+      Streak::Thread.put_into_box(thread_gmail_id, box_key)
+      @source = Streak::Box.find(box_key)
     end
 
     def update(*params)

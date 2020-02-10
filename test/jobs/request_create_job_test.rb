@@ -9,6 +9,7 @@ class RequestCreateJobTest < ActiveJob::TestCase
     @image_file2 = file_fixture_copy("test2.png")
     @image_data = "data:image/jpg;base64," + Base64.encode64(@image_file.read.to_s)
     @image_data2 = "data:image/png;base64," + Base64.encode64(@image_file2.read.to_s)
+    # Request.joins(:user).where(users: { email: wpcf7_params[:email] }).destroy_all
   end
 
   teardown do
@@ -35,8 +36,7 @@ class RequestCreateJobTest < ActiveJob::TestCase
       art_sample_1: @image_data,
     }
     content_type = content_type(@image_file)
-    RequestCreateJob.perform_now webhook: new_webhook(art_samples)
-    request = Request.joins(:user).where(users: { email: wpcf7_params[:email] }).first
+    request = RequestCreateJob.perform_now webhook: new_webhook(art_samples)
     assert request
     assert request.images.any?
     assert request.images.decorate.all? &:exists?
@@ -48,8 +48,7 @@ class RequestCreateJobTest < ActiveJob::TestCase
       art_sample_1: @image_data,
       art_sample_2: @image_data2,
     }
-    RequestCreateJob.perform_now webhook: new_webhook(art_samples)
-    request = Request.joins(:user).where(users: { email: wpcf7_params[:email] }).first
+    request = RequestCreateJob.perform_now webhook: new_webhook(art_samples)
     assert request
     assert_equal request.images.count, 2
   end

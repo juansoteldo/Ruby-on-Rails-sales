@@ -162,7 +162,7 @@ class PublicController < ApplicationController
   end
 
   def request_params
-    params.permit(:client_id, :ticket_id, :quote_id, :position, :gender,
+    params.permit(:client_id, :ticket_id, :quote_id, :position, :gender, :first_name, :last_name,
                   :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga, :reqid, :salesid, :description,
                   user_attributes: [:marketing_opt_in])
   end

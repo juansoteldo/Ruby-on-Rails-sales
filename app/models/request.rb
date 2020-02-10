@@ -231,6 +231,8 @@ class Request < ApplicationRecord
     end.select do |box|
       box_created_at = Time.strptime(box.creation_timestamp.to_s, '%Q')
       (box_created_at - created_at) < 2.days
+    end.map do |box|
+      MostlyStreak::Box.new box
     end
   end
 
@@ -248,7 +250,7 @@ class Request < ApplicationRecord
     streak_boxes.each do |box|
       current_stage = MostlyStreak::Stage.find(key: box.stage_key)
       next unless ["Contacted", "Leads", "Quoted"].include?(current_stage.name)
-      MostlyStreak::Box.set_stage(box.key, 'Deposited')
+      box.set_stage('Deposited')
     end
   end
 

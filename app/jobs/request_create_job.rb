@@ -6,6 +6,7 @@ class RequestCreateJob < WebhookJob
     set_user_by_email
     make_request!
     @webhook.commit! @request.id
+    @request
   end
 
   def make_request!
