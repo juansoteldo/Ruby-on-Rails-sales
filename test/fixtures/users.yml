@@ -5,11 +5,17 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
-  email: "kadeaplin@gmail.com"
+  email: "user1@customtattodesign.test"
   authentication_token: "abc123"
   first_name: John
   last_name: Smith
 
 two:
-  email: "user2@example.com"
+  email: "user2@customtattodesign.test"
   authentication_token: "def987"
+
+wpcf7:
+  email: johnsmith@example.com
+  first_name: John
+  last_name: Smith
+  authentication_token: "ad2010f9911"

@@ -43,8 +43,15 @@
         </div>
 
       </td>
-      <td><%= webhook.last_error %></td>
-      <td><%= link_to('Re-submit', perform_admin_webhook_path(webhook), class: "btn btn-xs btn-warning") unless webhook.committed?%></td>
+      <td class="small" title="<%= webhook.last_error %>"><%= webhook.last_error&.truncate(80) %></td>
+      <% if webhook.committed? %>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      <% else %>
+        <td><%= link_to('Re-submit', perform_admin_webhook_path(webhook), class: "btn btn-xs btn-warning")%></td>
+        <td><%= button_to "Delete", {:controller => "admin/webhooks",
+                                     :action => 'destroy', :id => webhook.id }, :method => :delete, class: "btn btn-xs btn-danger" %></td>
+      <% end %>
     </tr>
   <% end %>
   </tbody>

@@ -8,12 +8,28 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     @salesperson = salespeople(:active)
   end
 
+  teardown do
+  end
+
   test "should get new_request" do
     post new_request_path(email: "test@email.com", format: :json)
     assert_response :success
     new_request = JSON.parse(@response.body)
     assert new_request["id"] > 0
     assert new_request["user_id"] > 0
+  end
+
+  test "should make only one new_request for multiple posts" do
+    post new_request_path(email: "test@email.com", format: :json)
+    assert_response :success
+    first_id = JSON.parse(@response.body)["id"]
+    post new_request_path(email: "test@email.com", format: :json)
+    assert_response :success
+    assert_equal JSON.parse(@response.body)["id"], first_id
+    sleep 2
+    post new_request_path(email: "test@email.com", format: :json)
+    assert_response :success
+    assert_not_equal JSON.parse(@response.body)["id"], first_id
   end
 
   test "should fail to get new request for invalid email" do
@@ -100,14 +116,23 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
 
   test "should save email and update streak box stage" do
     salesperson = Salesperson.first
-    user = User.first
-    box = new_streak_box_for_email(user.email)
-    assert box.stage_key != MostlyStreak::Stage.contacted.key
+    user = users(:wpcf7)
+    delete_boxes_for_email(user.email)
+    box = MostlyStreak::Box.new_with_name(user.email)
+    assert box.stage_key == MostlyStreak::Stage.leads.key
     perform_enqueued_jobs do
       get save_email_path(params: { thread_id: nil, recipient_email: box.name, from_email: salesperson.email }, format: :js)
       assert_response :success
-      box = MostlyStreak::Box.find(box.key)
-      assert box.stage_key == MostlyStreak::Stage.contacted.key
+    end
+    sleep 5
+    box = Streak::Box.find(box.key)
+    assert_equal box.stage_key, MostlyStreak::Stage.contacted.key
+  end
+
+  def delete_boxes_for_email(email)
+    while box = MostlyStreak::Box.find_by_name(email)
+      MostlyStreak::Box.delete(box.key)
+      sleep 2
     end
   end
 end

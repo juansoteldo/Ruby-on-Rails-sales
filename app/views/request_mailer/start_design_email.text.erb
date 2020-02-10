@@ -1,0 +1,23 @@
+You have received a New Start Design request. Please see the details below.
+
+Name: <%= @request.full_name || "Not specified" %>
+Email Address: <%= @user.email %>
+First Tattoo? <%= @request.is_first_time ? "Yes" : "No" %>
+Gender? <%= @request.gender&.titleize || "Not specified" %>
+In Color? <%= @request.has_color ? "Yes" : "No" %>
+Position? <%= @request.position %>
+
+Description:
+<%= @request.description %>
+
+<% if @request.images.any? %>
+Images:
+<% @request.images.each do |image| %>
+<%= api_request_image_url(image, uuid: @request.uuid ) %>
+<% end %>
+<% end %>
+
+
+---
+Request ID:
+[<%= @request.streak_box_key %>]

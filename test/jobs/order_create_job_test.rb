@@ -7,7 +7,7 @@ class OrderCreateJobTest < ActiveJob::TestCase
   end
 
   setup do
-    @request = requests(:fresh)
+    @request = requests(:wpcf7)
     @salesperson = salespeople(:active)
     params = {
         "email": wpcf7_params[:email],

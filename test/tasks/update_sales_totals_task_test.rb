@@ -5,7 +5,7 @@ require 'rake'
 
 class UpdateSalesTotalsTaskTest < ActiveSupport::TestCase
   def setup
-    CtdWorklist::Application.load_tasks
+    CtdSales::Application.load_tasks
   end
 
   test "updating sales totals" do

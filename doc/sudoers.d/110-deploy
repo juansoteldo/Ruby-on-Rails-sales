@@ -1,3 +1,0 @@
-# This is a sample sudoers file to allow the deploy user to restart this service.
-deploy ALL = (root) NOPASSWD: /sbin/start api, /sbin/stop api, /sbin/restart api, /sbin/status api
-deploy ALL = (root) NOPASSWD: /sbin/start api-worker, /sbin/stop api-worker, /sbin/restart api-worker, /sbin/status api-worker

@@ -1,6 +1,6 @@
 class RequestImageDecorator < Draper::Decorator
   delegate_all
-  include CtdWorklist::Application.routes.url_helpers
+  include CtdSales::Application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
 
   # Define presentation-specific methods here. Helpers are accessed through

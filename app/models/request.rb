@@ -8,9 +8,7 @@ class Request < ApplicationRecord
   has_one :event
 
   before_create :update_state_stamp
-  after_create :opt_in_user
-  after_create_commit :deliver_marketing_opt_in_email
-  after_save :update_user_names
+  after_update :update_user_names
 
   default_scope -> { includes(:user) }
 
@@ -71,6 +69,12 @@ class Request < ApplicationRecord
 
     state :completed do
     end
+  end
+
+  def full_name
+    names = [first_name, last_name].reject(&:nil?)
+    return nil unless names.any?
+    names.map(&:titleize).join(" ")
   end
 
   def quote_from_params!(params)
@@ -145,16 +149,33 @@ class Request < ApplicationRecord
     unless reset_attribution || order.id.nil?
       request ||= find_and_attribute("webhook", :find_by_deposit_order_id, order.id)
     end
-    request ||= find_and_attribute("email", :find_by_email,
-                                   order.email.downcase.strip,
-                                   date_range: relevant_date_range_for_order(order)) unless order.email.to_s.empty?
-    request ||= find_and_attribute("fuzzy_email", :fuzzy_find_by_email,
-                                   order.email.downcase.strip,
-                                   date_range: relevant_date_range_for_order(order)) unless order.email.to_s.empty?
+    unless order.email.to_s.empty?
+      request ||= find_and_attribute("email", :find_by_email,
+                                     order.email.downcase.strip,
+                                     date_range: relevant_date_range_for_order(order))
+    end
+    unless order.email.to_s.empty?
+      request ||= find_and_attribute("fuzzy_email", :fuzzy_find_by_email,
+                                     order.email.downcase.strip,
+                                     date_range: relevant_date_range_for_order(order))
+    end
     return nil unless request
     return request unless reset_attribution || request.attributed_by.nil?
     request.save
     request
+  end
+
+  def ensure_streak_box
+    return unless Settings.streak.create_boxes
+    return if streak_box_key
+    return unless user&.email
+    return unless user.first_name&.present?
+    StreakBoxCreateJob.perform_later(self)
+  end
+
+  def opt_in_user
+    user.update presales_opt_in: true, crm_opt_in: true
+    deliver_marketing_opt_in_email
   end
 
   private
@@ -184,12 +205,9 @@ class Request < ApplicationRecord
       where(requests: { created_at: date_range }).last
   end
 
-  def opt_in_user
-    user.update presales_opt_in: true, crm_opt_in: true
-  end
-
   def deliver_marketing_opt_in_email
     return unless user.marketing_opt_in.nil?
+    return unless user&.email
     BoxMailer.opt_in_email(self).deliver_later
   end
 
@@ -213,6 +231,8 @@ class Request < ApplicationRecord
     end.select do |box|
       box_created_at = Time.strptime(box.creation_timestamp.to_s, '%Q')
       (box_created_at - created_at) < 2.days
+    end.map do |box|
+      MostlyStreak::Box.new box
     end
   end
 
@@ -230,7 +250,7 @@ class Request < ApplicationRecord
     streak_boxes.each do |box|
       current_stage = MostlyStreak::Stage.find(key: box.stage_key)
       next unless ["Contacted", "Leads", "Quoted"].include?(current_stage.name)
-      MostlyStreak::Box.set_stage(box.key, 'Deposited')
+      box.set_stage('Deposited')
     end
   end
 
@@ -250,7 +270,6 @@ class Request < ApplicationRecord
 
   def update_user_names
     return unless user
-    return unless first_name || last_name
-    user.update first_name: first_name, last_name: last_name
+    user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
   end
 end

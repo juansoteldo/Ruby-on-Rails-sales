@@ -1,8 +1,8 @@
 {
-  "name": "ctd-worklist",
+  "name": "ctd-sales",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@bitbucket.org:fluxinc/ctd-worklist.git",
+  "repository": "git@bitbucket.org:fluxinc/ctd-sales.git",
   "author": "Wojtek Grabski <wojtek@grabski.ca>",
   "license": "MIT",
   "dependencies": {
