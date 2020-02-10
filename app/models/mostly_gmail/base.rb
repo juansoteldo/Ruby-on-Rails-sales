@@ -2,7 +2,8 @@
 
 require 'google/apis/gmail_v1'
 require 'googleauth'
-require 'googleauth/stores/file_token_store'
+require 'googleauth/stores/redis_token_store'
+require 'redis'
 require 'fileutils'
 
 module MostlyGmail
@@ -19,7 +20,6 @@ module MostlyGmail
 
     ME_ID = "ME".freeze
     OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
-    TOKEN_PATH = Rails.root.join("tmp/gmail_token.yaml").freeze
     SCOPE = Google::Apis::GmailV1::AUTH_GMAIL_MODIFY
     CREDENTIALS_PATH = Rails.root.join("config", "gmail_credentials.json").freeze
     APPLICATION_NAME = "CTD API".freeze
@@ -43,8 +43,9 @@ module MostlyGmail
       #
       # @return [Google::Auth::UserRefreshCredentials] OAuth2 credentials
       def authorize
-        client_id = Google::Auth::ClientId.from_file(CREDENTIALS_PATH)
-        token_store = Google::Auth::Stores::FileTokenStore.new(file: TOKEN_PATH)
+        client_id = Google::Auth::ClientId.new Rails.application.credentials[:gmail][:client_id],
+                                               Rails.application.credentials[:gmail][:client_secret]
+        token_store = Google::Auth::Stores::RedisTokenStore.new(redis: Redis.new)
         authorizer = Google::Auth::UserAuthorizer.new(client_id, SCOPE, token_store)
         user_id = 'default'
         credentials = authorizer.get_credentials(user_id)
