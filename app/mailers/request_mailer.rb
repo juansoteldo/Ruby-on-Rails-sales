@@ -1,5 +1,5 @@
 class RequestMailer < ApplicationMailer
-  default from: "Custom Tattoo Design <katie@customtattoodesign.ca>"
+  default from: "Custom Tattoo Design <mailer@customtattoodesign.ca>"
   default display_name: "Custom Tattoo Design"
 
   def start_design_email(request)
