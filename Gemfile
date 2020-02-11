@@ -48,7 +48,7 @@ gem "pundit"
 gem "ransack"
 gem "shopify_api"
 gem "simple_form"
-gem "streak-ruby", github: "mostlydev/streak-ruby", branch: "master"
+gem "streak-ruby", git: "https://github.com/mostlydev/streak-ruby.git"
 
 # Use ActiveModel has_secure_password
 # gem "bcrypt", "~> 3.1.7"
