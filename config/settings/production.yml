@@ -1,11 +1,10 @@
 gmail:
   labels:
-    design_requests: "Label_2606897481654667624"
     new_design_requests: "Label_6157564878440197778"
+    design_requests: "Label_2606897481654667624"
     appointment_requests: "Label_7177529587396720741"
 streak:
-  create_boxes: true
   pipeline_key: "agxzfm1haWxmb29nYWVyMQsSDE9yZ2FuaXphdGlvbiIKZmx1eGluYy5jYQwLEghXb3JrZmxvdxiAgICAhN6GCgw"
 emails:
-  deliver_opt_in: true
   deliver_start_design: true
+  deliver_opt_in: true
