@@ -16,7 +16,8 @@ module CTD
         box = MostlyStreak::Box.find(message.streak_box_key)
         next if box.nil?
         box.add_thread(message.streak_box_key, message.thread_id)
-        box.update(notes: message.text_body)
+        box = box.update(notes: message.text_body)
+        box.set_stage "Leads"
         find_request_for_message(message).update thread_gmail_id: message.thread_id
 
         MostlyGmail::Thread.modify(
