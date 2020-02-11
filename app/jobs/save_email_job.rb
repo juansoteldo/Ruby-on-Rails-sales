@@ -2,7 +2,7 @@
 
 class SaveEmailJob < ApplicationJob
   retry_on Streak::APIError, wait: 15.seconds, attempts: 6
-  TIME_TO_WAIT_FOR_BOX = 10
+  TIME_TO_WAIT_FOR_BOX = Rails.env.test? ? 30 : 10
 
   def perform(args)
     @salesperson = args[:salesperson]
@@ -15,13 +15,11 @@ class SaveEmailJob < ApplicationJob
       sleep 2
     end
 
-    raise(CTD::Errors::StreakBoxNotFoundError.new("Cannot find streak box, aborting")) if box.nil?
+    raise CTD::Errors::StreakBoxNotFoundError, "Cannot find streak box, aborting" if box.nil?
 
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
 
-    if current_stage.name == "Fresh" || current_stage.name == "Leads"
-      box = box.set_stage("Contacted")
-    end
+    box.set_stage("Contacted") if ["Fresh", "Leads"].include?(current_stage.name)
 
     user_key = @salesperson&.user_key
     user_key ||= MostlyStreak::User.find_by_email(@salesperson.email)
