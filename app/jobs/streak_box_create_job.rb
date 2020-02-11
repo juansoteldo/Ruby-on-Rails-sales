@@ -2,6 +2,7 @@
 
 class StreakBoxCreateJob < ApplicationJob
   def perform(request)
+    return unless Settings.streak.create_boxes
     box = MostlyStreak::Box.new_with_name(request.user.email)
     box.update(notes: request.description)
     request.update_columns streak_box_key: box.key
