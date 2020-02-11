@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/mostlydev/streak-ruby
+  remote: git://github.com/mostlydev/streak-ruby.git
   revision: ef6da7339f009f2321f6f704cbda79a2cacd56c7
   branch: master
   specs:
