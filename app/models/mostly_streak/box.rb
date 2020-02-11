@@ -99,7 +99,7 @@ module MostlyStreak
 
     def self.new_with_name(name)
       box = MostlyStreak::Box.create(name)
-      box.set_stage "Leads"
+      box.set_stage "Fresh"
       box
     end
 

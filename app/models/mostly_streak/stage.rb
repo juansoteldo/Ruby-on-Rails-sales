@@ -32,5 +32,11 @@ module MostlyStreak
         find(name: "Leads")
       end
     end
+
+    def self.fresh
+      Rails.cache.fetch("streak_stage/fresh", expires_in: 1.hour) do
+        find(name: "Fresh")
+      end
+    end
   end
 end

@@ -19,7 +19,7 @@ class SaveEmailJob < ApplicationJob
 
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
 
-    if current_stage.name == "Leads"
+    if current_stage.name == "Fresh" || current_stage.name == "Leads"
       box = box.set_stage("Contacted")
     end
 

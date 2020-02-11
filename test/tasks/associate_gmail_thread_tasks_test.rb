@@ -38,6 +38,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
     assert_equal request.reload.thread_gmail_id, message.thread_id
     box = MostlyStreak::Box.find(message.streak_box_key)
     assert_equal box.notes, message.text_body
+    assert box.stage_key == MostlyStreak::Stage.leads.key
   end
 
   def wait_for_and_get_message(streak_box_key)
