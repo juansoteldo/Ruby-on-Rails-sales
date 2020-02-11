@@ -1,7 +1,6 @@
 GIT
-  remote: git://github.com/mostlydev/streak-ruby.git
+  remote: https://github.com/mostlydev/streak-ruby.git
   revision: d8feca99067d6f5fa768c891adf2b12b08bfe2f9
-  branch: master
   specs:
     streak-ruby (0.0.7)
       multi_json
