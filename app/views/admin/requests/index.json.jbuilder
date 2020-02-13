@@ -18,7 +18,7 @@ json.rows do
     json.images do
       json.array!(request.images.decorate) do |image|
         next unless image.exists?
-        json.url api_request_image_url(image, uuid: request.uuid )
+        json.url api_request_image_url(image, uuid: request.uuid)
       end
     end
     json.url admin_request_path(request, format: :json)

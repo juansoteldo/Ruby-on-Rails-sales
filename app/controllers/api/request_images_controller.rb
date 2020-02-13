@@ -7,7 +7,8 @@ class Api::RequestImagesController < Api::BaseController
   def show
     send_data @request_image.download_or_read,
               filename: @request_image.filename.to_s,
-              type: @request_image.content_type
+              type: @request_image.content_type,
+              disposition: :inline
   end
 
   private
