@@ -131,7 +131,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
 
   def delete_boxes_for_email(email)
     while box = MostlyStreak::Box.find_by_name(email)
-      MostlyStreak::Box.delete(box.key)
+      box.delete
       sleep 2
     end
   end
