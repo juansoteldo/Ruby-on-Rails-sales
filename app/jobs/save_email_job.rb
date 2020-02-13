@@ -9,6 +9,7 @@ class SaveEmailJob < ApplicationJob
   def perform(args)
     @salesperson = args[:salesperson]
     @salesperson.claim_requests_with_email(args[:recipient_email])
+    return unless User.find_by_email(args[:recipient_email])
     start = Time.now
     box = nil
     while Time.now - start < TIME_TO_WAIT_FOR_BOX.seconds
