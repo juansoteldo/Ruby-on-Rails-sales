@@ -81,7 +81,7 @@ class ActiveSupport::TestCase
     raise "Cannot use production pipeline" if MostlyStreak::Pipeline.default.name == "CTD Sales"
     MostlyStreak::Box.all.each do |box|
       begin
-        MostlyStreak::Box.delete box.key
+        box.delete
       rescue
       end
       sleep 2

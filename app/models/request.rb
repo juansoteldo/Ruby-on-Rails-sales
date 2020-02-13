@@ -243,7 +243,7 @@ class Request < ApplicationRecord
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
     return unless ["Contacted", "Leads"].include?(current_stage.name)
 
-    MostlyStreak::Box.set_stage(box.key, 'Quoted')
+    box.set_stage('Quoted')
   end
 
   def mark_boxes_deposited
