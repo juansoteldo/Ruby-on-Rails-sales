@@ -20,7 +20,7 @@ module MostlyStreak
       new Streak::Box.create(Settings.streak.pipeline_key, { name: email })
     end
 
-    def self.delete(box_key)
+    def delete
       Streak::Box.delete(box_key)
     end
 

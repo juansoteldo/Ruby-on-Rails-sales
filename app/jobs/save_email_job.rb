@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "ctd/errors"
+
 class SaveEmailJob < ApplicationJob
   retry_on Streak::APIError, wait: 15.seconds, attempts: 6
   TIME_TO_WAIT_FOR_BOX = Rails.env.test? ? 30 : 10
