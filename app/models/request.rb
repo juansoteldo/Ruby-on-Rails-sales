@@ -130,10 +130,10 @@ class Request < ApplicationRecord
     image.request_id = id
     image.save!
   rescue => e
-    raise(e) if Rails.env.test?
     logger.error ">>> Cannot add image from #{file.truncate(128)}"
     logger.error e.message
     logger.error e.backtrace.join("\n")
+    raise(e) if Rails.application.config.debugging
   end
 
   def send_confirmation_email
@@ -168,16 +168,20 @@ class Request < ApplicationRecord
   end
 
   def ensure_streak_box
-    return unless Settings.streak.create_boxes
     return if streak_box_key
-    return unless user&.email
-    return unless user.first_name&.present?
     StreakBoxCreateJob.perform_later(self)
   end
 
   def opt_in_user
     user.update presales_opt_in: true, crm_opt_in: true
     deliver_marketing_opt_in_email
+  end
+
+  def complete?
+    return false unless user&.email&.present?
+    return false unless user.first_name&.present?
+    return false unless description&.present?
+    true
   end
 
   private

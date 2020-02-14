@@ -5,7 +5,7 @@ require "shopify_api"
 class OrdersCreateJob < WebhookJob
   def perform(args)
     super
-    source_order = ShopifyAPI::Session.temp(domain: ShopifyAPI::Base.site, api_version: "2020-01", token: nil) do
+    source_order = ShopifyAPI::Session.temp(domain: ShopifyAPI::Base.site.to_s, api_version: "2020-01", token: nil) do
       ShopifyAPI::Order.new(params)
     end
     order = MostlyShopify::Order.new source_order

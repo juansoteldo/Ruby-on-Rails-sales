@@ -38,6 +38,7 @@ class Webhook < ApplicationRecord
     true
   rescue => e
     fail! "#{e.message}\n#{e.backtrace.join("\n")}"
+    raise(e) if Rails.application.config.debugging
     false
   end
 

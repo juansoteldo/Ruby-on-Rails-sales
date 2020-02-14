@@ -37,7 +37,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
     Rake::Task["recurring:associate_gmail_threads"].invoke
     assert_equal request.reload.thread_gmail_id, message.thread_id
     box = MostlyStreak::Box.find(message.streak_box_key)
-    assert_equal box.notes, message.text_body
+    assert_equal box.notes, message.shortened_utf_8_text_body
     assert box.stage_key == MostlyStreak::Stage.leads.key
   end
 

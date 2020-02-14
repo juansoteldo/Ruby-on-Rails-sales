@@ -39,6 +39,11 @@ module MostlyGmail
       payload.parts.find {|p| p.mime_type == "text/plain"}.body.data
     end
 
+    # TODO: This should not be necessary
+    def shortened_utf_8_text_body
+      text_body.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '_').split("\n")[2..-1].join("\n")
+    end
+
     def fetch
       @source = @@service&.get_user_message(ME_ID, @source.id) || @source
     end

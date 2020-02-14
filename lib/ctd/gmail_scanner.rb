@@ -16,9 +16,7 @@ module CTD
         box = MostlyStreak::Box.find(message.streak_box_key)
         next if box.nil?
         box.add_thread(message.streak_box_key, message.thread_id)
-        notes = message.text_body.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '_')
-        notes = notes.split("\n")[2..-1].join("\n")
-        box.update(notes: notes)
+        box.update(notes: message.shortened_utf_8_text_body)
         box.set_stage "Leads"
         find_request_for_message(message).update thread_gmail_id: message.thread_id
 
