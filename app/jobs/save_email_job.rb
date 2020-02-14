@@ -4,6 +4,8 @@ require "ctd/errors"
 
 class SaveEmailJob < ApplicationJob
   retry_on Streak::APIError, wait: 15.seconds, attempts: 6
+  retry_on CTD::Errors::StreakBoxNotFoundError, wait: 10, attempts: 1
+
   TIME_TO_WAIT_FOR_BOX = Rails.env.test? ? 30 : 10
 
   def perform(args)
