@@ -19,5 +19,6 @@ module CtdSales
     config.active_job.queue_adapter = :sidekiq
     config.action_dispatch.ip_spoofing_check = false
     config.autoload_paths += ["#{config.root}/lib"]
+    config.debugging = ENV["DEBUGGER_HOST"].present?
   end
 end
