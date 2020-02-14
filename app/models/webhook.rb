@@ -20,7 +20,7 @@ class Webhook < ApplicationRecord
     end
 
     event :commit, before: :associate, after: :clear_art_samples! do
-      transitions from: [:fresh, :queued], to: :committed
+      transitions from: [:fresh, :queued, :failed], to: :committed
     end
 
     event :fail, before: :record_failure do
