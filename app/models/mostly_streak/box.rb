@@ -70,6 +70,10 @@ module MostlyStreak
       box.nil? ? nil : find(box.box_key)
     end
 
+    def current_stage
+      MostlyStreak::Stage.find(key: @source.stage_key)
+    end
+
     def set_stage(stage_name)
       new_stage = MostlyStreak::Stage.find(name: stage_name)
       raise "cannot find stage key for `#{stage_name}`" unless new_stage

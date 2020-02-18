@@ -24,7 +24,7 @@ class SaveEmailJob < ApplicationJob
 
     raise CTD::Errors::StreakBoxNotFoundError, "Cannot find streak box, aborting" if box.nil?
 
-    current_stage = MostlyStreak::Stage.find(key: box.stage_key)
+    current_stage = box.current_stage
 
     box.set_stage("Contacted") if ["Fresh", "Leads"].include?(current_stage.name)
 

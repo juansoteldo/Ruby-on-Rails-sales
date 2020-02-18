@@ -15,17 +15,27 @@ module CTD
         next if Request.where(thread_gmail_id: message.thread_id).any?
         box = MostlyStreak::Box.find(message.streak_box_key)
         next if box.nil?
-        box.add_thread(message.streak_box_key, message.thread_id)
+        request = find_request_for_message(message)
+        add_thread_to_box(message, box, request)
         box.update(notes: message.shortened_utf_8_text_body)
-        box.set_stage "Leads"
-        find_request_for_message(message).update thread_gmail_id: message.thread_id
-
-        MostlyGmail::Thread.modify(
-          message.thread_id,
-          [Settings.gmail.labels.design_requests],
-          [Settings.gmail.labels.new_design_requests]
-        )
+        box.set_stage("Leads") if box.current_stage.name == "Fresh"
+        remove_thread_new_label message
       end
+    end
+
+    def self.remove_thread_new_label(message)
+      MostlyGmail::Thread.modify(
+        message.thread_id,
+        [Settings.gmail.labels.design_requests],
+        [Settings.gmail.labels.new_design_requests]
+      )
+    end
+
+    def self.add_thread_to_box(message, box, request)
+      return if request.thread_gmail_id == message.thread_id
+      return if MostlyStreak::Thread.all(box.key).map(&:thread_gmail_id).include?(message.thread_id)
+      box.add_thread(message.streak_box_key, message.thread_id)
+      request.update thread_gmail_id: message.thread_id
     end
 
     def self.find_request_for_message(message)
