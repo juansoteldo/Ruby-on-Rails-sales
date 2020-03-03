@@ -102,21 +102,14 @@ module MostlyShopify
     end
 
     def self.find_in_batches(params)
-      order_count = MostlyShopify::Order.count params
       params[:limit] ||= 250
-      if params[:page]
-        end_page = params[:page]
-        start_page = params[:page]
-      else
-        end_page = (order_count / params[:limit].to_f).ceil
-        start_page = 1
-      end
-      orders = []
-      start_page.upto(end_page) do |page|
-        params[:page] = page
-        orders += ShopifyAPI::Order.all(params: params)
-        Rails.logger.debug "Loaded #{params[:limit]} orders, sleeping for 0.55 seconds"
-        sleep 0.55
+      page = ShopifyAPI::Order.all params: params
+      orders = page.elements
+      while page.next_page?
+        page = page.fetch_next_page
+        orders += page.elements
+        Rails.logger.debug "Loaded #{params[:limit]} orders, sleeping for 0.75 seconds"
+        sleep 0.75
       end
       orders
     end
@@ -173,7 +166,7 @@ module MostlyShopify
       return box_sales_id if box_sales_id
       return noted_sales_id if noted_sales_id
       return request_sales_id if request_sales_id
-      puts "Cannot find sales id for shopify order with email #{email}" unless Rails.env.test?
+      Rails.logger.warn("Cannot find sales id for shopify order with email #{email}") unless Rails.env.test?
       nil
     end
 
