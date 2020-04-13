@@ -60,3 +60,4 @@ yarn-error.log
 /config/master.key
 /config/gmail_credentials.json
 
+!/app/assets/javascripts/application.js

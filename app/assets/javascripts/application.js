@@ -29,31 +29,36 @@
 //= require lightbox2/dist/js/lightbox
 //= require_tree .
 
-$(document).ready(function() {
-  const $reportRange = $('#reportrange');
+$(document).ready(() => {
+  const $reportRange = $("#reportrange");
 
-	const applyCallback = function(start, end) {
-	  const format = 'YYYY-MM-DD';
-	  $('span', $reportRange).html(start.format(format) + ' - ' + end.format(format));
+  const applyCallback = (start, end) => {
+    const format = "YYYY-MM-DD";
+    $("span", $reportRange).html(
+      `${start.format(format)} - ${end.format(format)}`
+    );
     const minDate = start.format(format);
     const maxDate = end.format(format);
-	  window.location.href = `salespeople?date_min=${minDate}&date_max=${maxDate}`;
-	}
+    window.location.href = `salespeople?date_min=${minDate}&date_max=${maxDate}`;
+  };
 
   $reportRange.daterangepicker({
-	  ranges: {
-	     'Today': [moment(), moment()],
-	     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-	     'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-	     'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-	     'This Month': [moment().startOf('month'), moment().endOf('month')],
-	     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-	  }
-	});
+    ranges: {
+      Today: [moment(), moment()],
+      Yesterday: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+      "Last 7 Days": [moment().subtract(6, "days"), moment()],
+      "Last 30 Days": [moment().subtract(29, "days"), moment()],
+      "This Month": [moment().startOf("month"), moment().endOf("month")],
+      "Last Month": [
+        moment().subtract(1, "month").startOf("month"),
+        moment().subtract(1, "month").endOf("month"),
+      ],
+    },
+  });
 
-  $reportRange.on('apply.daterangepicker', function(ev, picker) {
-		const start = picker.startDate;
+  $reportRange.on("apply.daterangepicker", (ev, picker) => {
+    const start = picker.startDate;
     const end = picker.endDate;
-		applyCallback(start, end);
-	});
+    applyCallback(start, end);
+  });
 });

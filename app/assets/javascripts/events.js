@@ -1,35 +1,37 @@
 (function ($) {
-
   let $eventInfo;
 
-  const getTrackerClientId = function() {
+  const getTrackerClientId = function () {
     try {
       const trackers = ga.getAll();
-      let i, len;
+      let i;
+      let len;
       for (i = 0, len = trackers.length; i < len; i += 1) {
-        if (trackers[i].get('trackingId') === 'UA-34117074-2') {
-          return trackers[i].get('clientId');
+        if (trackers[i].get("trackingId") === "UA-34117074-2") {
+          return trackers[i].get("clientId");
         }
       }
-    } catch(e) {}
-    return 'false';
+    } catch (e) {
+      // ignored
+    }
+    return "false";
   };
 
-  const saveClientId = function(clientId) {
-    const request = $eventInfo.data('request');
+  const saveClientId = function (clientId) {
+    const request = $eventInfo.data("request");
     const patch = {
       request: {
-        client_id: clientId
-      }
+        client_id: clientId,
+      },
     };
     $.ajax({
-      type: 'PATCH',
+      type: "PATCH",
       url: Routes.api_request_path(request.id, { uuid: request.uuid }),
-      data: patch
+      data: patch,
     });
   };
 
-  const updateRequest = function() {
+  const updateRequest = function () {
     const clientId = getTrackerClientId();
 
     if (!clientId) return;
@@ -38,8 +40,8 @@
 
   let iterations = 0;
 
-  const runWhenAnalyticsLoaded = function(method) {
-    if (getTrackerClientId() !== 'false') {
+  const runWhenAnalyticsLoaded = function (method) {
+    if (getTrackerClientId() !== "false") {
       method.call();
     } else {
       iterations += 1;
@@ -48,14 +50,12 @@
     }
   };
 
-  const ready = function() {
-    $eventInfo = $('.event_info');
+  const ready = function () {
+    $eventInfo = $(".event_info");
     if ($eventInfo.length === 0) return;
     runWhenAnalyticsLoaded(updateRequest);
   };
 
   $(document).ready(ready);
-  $(document).on('turbolinks:load', ready);
-}(jQuery));
-
-
+  $(document).on("turbolinks:load", ready);
+})(jQuery);
