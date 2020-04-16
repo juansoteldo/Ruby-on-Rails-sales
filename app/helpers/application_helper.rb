@@ -1,12 +1,4 @@
 module ApplicationHelper
-  def image_paths
-    images = {}
-    Dir.chdir("#{Rails.root}/app/assets/images/") do
-      images = Dir["**"].inject({}) {|h,f| h.merge! f => image_path(f)}
-    end
-    images
-  end
-
   def in_admin_panel?
     controller_path.split('/').first == 'admin' && params[:layout].to_s != "0"
   end
