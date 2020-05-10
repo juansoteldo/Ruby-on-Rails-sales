@@ -99,7 +99,7 @@ window.mouseOverTable = false;
 
   window.colorFormatter = (value, row) => {
     if (value) {
-      return `<img src='${<%= image_path("color-wheel.png") %>}'
+      return `<img src='<%= image_path("color-wheel.png") %>'
             width='16' height='16' style='width: 16px;'/>`;
     }
     return "";
