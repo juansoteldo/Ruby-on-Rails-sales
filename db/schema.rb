@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_05_035011) do
+ActiveRecord::Schema.define(version: 2020_05_10_164258) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -168,6 +168,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_035011) do
     t.string "attributed_by"
     t.string "streak_box_key"
     t.string "thread_gmail_id"
+    t.string "style"
     t.index ["client_id"], name: "index_requests_on_client_id"
     t.index ["created_at"], name: "index_requests_on_created_at"
     t.index ["deposit_order_id"], name: "index_requests_on_deposit_order_id"

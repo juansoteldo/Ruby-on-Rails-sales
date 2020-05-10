@@ -61,7 +61,7 @@ class WebhooksController < ApplicationController
     params.except(:controller, :action, :type).permit(
       :client_id, :position, :gender, :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga,
       :art_sample_1, :art_sample_2, :art_sample_3, :art_sample_4, :art_sample_5, :art_sample_6, :art_sample_7,
-      :art_sample_8, :art_sample_9, :art_sample_10,
+      :art_sample_8, :art_sample_9, :art_sample_10, :style,
       :description, :email, user_attributes: [:marketing_opt_in, :presales_opt_in, :crm_opt_in]
     ).to_unsafe_h
 end

@@ -233,6 +233,6 @@ Lint/UnusedMethodArgument:
 # Metrics
 #########
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 200
   AutoCorrect: true

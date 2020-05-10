@@ -23,7 +23,7 @@ window.mouseOverTable = false;
     let i;
     let result = "";
     i = 1;
-    $(images).each(function () {
+    $(images).each(() => {
       result += `<a href='${this.url}' data-lightbox='request-${row.id}' >${i}</a>`;
       i += 1;
       return i;
@@ -47,7 +47,7 @@ window.mouseOverTable = false;
   window.dateFormatter = (value) => moment(value).format("D MMM h:mm a");
 
   window.currencyFormatter = (value) => {
-    value = parseFloat(value)
+    const newValue = parseFloat(value)
       .toFixed(2)
       .replace(/./g, (c, i, a) => {
         if (i && c !== "." && (a.length - i) % 3 === 0) {
@@ -55,7 +55,7 @@ window.mouseOverTable = false;
         }
         return c;
       });
-    return `$${value}`;
+    return `$${newValue}`;
   };
 
   window.userFormatter = (value, row) => {

@@ -32,6 +32,7 @@ class ActiveSupport::TestCase
       is_first_time: "0",
       gender: "Male",
       description: "Test test",
+      style: "Traditional",
       art_sample_1: "",
       art_sample_2: "",
       art_sample_3: "",
