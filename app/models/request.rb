@@ -42,6 +42,19 @@ class Request < ApplicationRecord
     "Other",
   ].freeze
 
+  TATTOO_STYLES = [
+    "Traditional",
+    "Realistic",
+    "Watercolor",
+    "Tribal",
+    "New School",
+    "New Traditional",
+    "Japanese",
+    "Blackwork",
+    "Illustrative",
+    "Chicano",
+  ].freeze
+
   state_machine :state, initial: :fresh do
     after_transition on: :quote, do: :enqueue_quote_actions
     after_transition on: :convert, do: :enqueue_deposit_actions
