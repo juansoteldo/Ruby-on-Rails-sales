@@ -5,7 +5,7 @@ class RequestDecorator < Draper::Decorator
     "Name: #{object.full_name || "Not specified"}
 Email Address: #{object.user.email}
 Position: #{object.position}
-Style: #{object.has_color ? "Yes" : "No"}
+Style: #{object.style}
 Gender: #{object.gender&.titleize || "Not specified"}
 First Tattoo? #{object.is_first_time ? "Yes" : "No"}
 In Color? #{object.has_color ? "Yes" : "No"}
