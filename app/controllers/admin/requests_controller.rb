@@ -15,12 +15,27 @@ class Admin::RequestsController < Admin::BaseController
         where('LOWER(users.email) ILIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ?',
               "#{term}%", "#{term}%", "#{term}%")
     end
-    @requests = @requests.where('requests.created_at > ?', Date.strptime(params[:after])) if params[:after]
+    @requests = @requests.where('requests.created_at > ?', after)  if params[:after]
     @requests = @requests.where('requests.created_at < ?', Date.strptime(params[:before])) if params[:before]
 
     @requests_count = @requests.count
     @requests = @requests.limit(params[:limit]) if params[:limit]
     @requests = @requests.offset(params[:offset]) if params[:offset]
+
+    respond_to do |format|
+      format.xlsx {
+          send_data(CTD::ExportMaker.make_xlsx!(@requests).read_string,
+                    filename: "requests-#{Time.now.strftime("%Y%m%d-%H%M%S")}.xlsx",
+                    disposition: 'attachment')
+      }
+      format.html
+      format.csv {
+        send_file(CTD::ExportMaker.make_csv!(@requests),
+                  filename: "requests-#{Time.now.strftime("%Y%m%d-%H%M%S")}.csv",
+                  disposition: 'attachment') and return
+      }
+      format.json
+    end
   end
 
   # GET /requests/1
