@@ -33,6 +33,18 @@ class Admin::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_response 200
   end
 
+  test "should provide requests.csv to active salesperson" do
+    sign_in salespeople(:active)
+    get admin_requests_path(format: :csv)
+    assert_response 200
+  end
+
+  test "should provide requests.xlsx to active salesperson" do
+    sign_in salespeople(:active)
+    get admin_requests_path(format: :xlsx)
+    assert_response 200
+  end
+
   test "should truncate requests to specified limit" do
     sign_in salespeople(:active)
     get admin_requests_path(limit: 1, format: :json)

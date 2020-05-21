@@ -39,6 +39,7 @@ gem "aws-sdk-s3", require: false
 gem "daemons"
 gem "sidekiq"
 gem "draper"
+gem "fast_excel"
 gem "figaro"
 gem "google-api-client"
 gem "js-routes"
