@@ -144,3 +144,5 @@ class Admin::RequestsController < Admin::BaseController
                                     :quote_id, :client_id, :ticket_id)
   end
 end
+
+require "ctd/export_maker"
