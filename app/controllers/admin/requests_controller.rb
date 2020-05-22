@@ -23,17 +23,17 @@ class Admin::RequestsController < Admin::BaseController
     @requests = @requests.offset(params[:offset]) if params[:offset]
 
     respond_to do |format|
-      format.xlsx {
-          send_data(CTD::ExportMaker.make_xlsx!(@requests).read_string,
-                    filename: "requests-#{Time.now.strftime("%Y%m%d-%H%M%S")}.xlsx",
-                    disposition: 'attachment')
-      }
-      format.html
+      format.xlsx do
+        send_data(CTD::ExportMaker.make_xlsx!(@requests).read_string,
+                  filename: "requests-#{Time.now.strftime("%Y%m%d-%H%M%S")}.xlsx",
+                  disposition: 'attachment')
+      end
       format.csv {
         send_file(CTD::ExportMaker.make_csv!(@requests),
                   filename: "requests-#{Time.now.strftime("%Y%m%d-%H%M%S")}.csv",
                   disposition: 'attachment') and return
       }
+      format.html
       format.json
     end
   end
