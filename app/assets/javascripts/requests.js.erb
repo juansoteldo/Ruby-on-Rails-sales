@@ -90,6 +90,12 @@ window.mouseOverTable = false;
     return "";
   };
 
+  window.positionFormatter = (value, row) => {
+    $(row).addClass("tattoo-position");
+    $(row).attr('title', value);
+    return value;
+  }
+
   window.visitedFormatter = (value, row) => {
     if (value) {
       return '<span class="glyphicon glyphicon-eye-open"></span>';
