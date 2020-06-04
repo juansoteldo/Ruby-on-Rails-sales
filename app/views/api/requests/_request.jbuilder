@@ -1,4 +1,4 @@
-json.extract! request, :id, :has_color,
+json.extract! request, :id, :has_color, :style, :size,
               :position, :description, :variant, :sku, :notes, :sub_total,
               :first_name, :last_name, :deposit_order_id, :deposited_at
 
