@@ -8,8 +8,8 @@
   <b>First Tattoo?</b> <%= @request.is_first_time ? "Yes" : "No" %><br>
   <b>Gender?</b> <%= @request.gender&.titleize || "Not specified" %><br>
   <b>In Color?</b> <%= @request.has_color ? "Yes" : "No" %><br>
-  <b>Position?</b> <%= @request.position %>
-  <b>Style?</b> <%= @request.style %>
+  <b>Position?</b> <%= @request.position %><br>
+  <b>Style?</b> <%= @request.style %><br>
   <b>Size?</b> <%= @request.size %>
 </p>
 
