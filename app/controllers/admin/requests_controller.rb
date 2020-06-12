@@ -7,7 +7,7 @@ class Admin::RequestsController < Admin::BaseController
   # GET /requests
   # GET /requests.json
   def index
-    @requests = policy_scope(Request).joins(:user).includes(:images).order(created_at: :desc)
+    @requests = policy_scope(Request).joins(:user).includes(:images)
 
     if params[:search]
       term = params[:search].downcase
@@ -15,7 +15,7 @@ class Admin::RequestsController < Admin::BaseController
         where('LOWER(users.email) ILIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ?',
               "#{term}%", "#{term}%", "#{term}%")
     end
-    @requests = @requests.where('requests.created_at > ?', after)  if params[:after]
+    @requests = @requests.where('requests.created_at > ?', after) if params[:after]
     @requests = @requests.where('requests.created_at < ?', Date.strptime(params[:before])) if params[:before]
 
     @requests_count = @requests.count
