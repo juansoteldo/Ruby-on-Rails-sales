@@ -7,7 +7,7 @@ json.rows do
     json.user do
       if request.user
         json.extract!(request.user, :id, :email, :presales_opt_in,
-                      :marketing_opt_in, :crm_opt_in, :opted_out)
+                      :marketing_opt_in, :crm_opt_in, :opted_out, :authentication_token)
       else
         json.id 0
         json.email 'Unmatched'
