@@ -63,7 +63,7 @@ window.mouseOverTable = false;
     let email;
     if (row.user.opted_out) {
       button = `<a class=" btn-xs btn-simple btn-danger btn"
-            href="${Routes.edit_email_preference_path(value.id)}"
+            href="${Routes.edit_email_preference_path(value.id)}?user_email=${row.user.email}&user_token=${row.user.authentication_token}"
             target="_blank"><i class="material-icons">do_not_disturb_on</i></a>`;
       email = `<strike>${value.email}</strike>`;
     } else {
