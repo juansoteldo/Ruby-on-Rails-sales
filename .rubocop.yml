@@ -4006,7 +4006,7 @@ Style/SymbolArray:
   Enabled: true
   VersionAdded: '0.9'
   VersionChanged: '0.49'
-  EnforcedStyle: percent
+  EnforcedStyle: brackets
   MinSize: 2
   SupportedStyles:
     - percent
@@ -4218,7 +4218,7 @@ Style/WordArray:
   Enabled: true
   VersionAdded: '0.9'
   VersionChanged: '0.36'
-  EnforcedStyle: percent
+  EnforcedStyle: brackets
   SupportedStyles:
     # percent style: %w(word1 word2)
     - percent
