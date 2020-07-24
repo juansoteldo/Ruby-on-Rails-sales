@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Represents a kind of email sent to a lead, includes quotes, reminders, and follow-ups
 class MarketingEmail < ApplicationRecord
   has_many :delivered_emails
 

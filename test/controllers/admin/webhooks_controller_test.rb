@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class Admin::WebhooksControllerTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper

@@ -1,8 +1,8 @@
-require 'test_helper'
+require "test_helper"
 
 class BoxMailerTest < ActionMailer::TestCase
   def get_urls(string)
-    regexp = /(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)/ix
+    regexp = %r{(^$)|(^(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?$)}ix
     string.scan(regexp)
   end
 

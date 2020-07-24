@@ -1,7 +1,7 @@
 # test/tasks/update_sales_totals_task_test.rb
 
-require 'test_helper'
-require 'rake'
+require "test_helper"
+require "rake"
 
 class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
   include ActionMailer::TestHelper
@@ -47,7 +47,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
     until message
       sleep 5
       messages = new_start_design_messages_for_streak_box(streak_box_key)
-      message = messages&.any? && messages.first || nil
+      message = messages&.any? && messages&.first || nil
       break if start_time + 30.seconds < Time.now
     end
     message

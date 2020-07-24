@@ -1,7 +1,7 @@
 # test/tasks/update_sales_totals_task_test.rb
 
-require 'test_helper'
-require 'rake'
+require "test_helper"
+require "rake"
 
 class UpdateSalesTotalsTaskTest < ActiveSupport::TestCase
   def setup

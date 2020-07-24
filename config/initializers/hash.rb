@@ -2,19 +2,17 @@
 
 class Hash
   def compact(opts = {})
-    inject({}) do |new_hash, (k, v)|
+    each_with_object({}) do |(k, v), new_hash|
       unless v.nil?
         new_hash[k.to_sym] = opts[:recurse] && v.class == Hash ? v.compact(opts) : v
       end
-      new_hash
     end
   end
 
-  def strip(opts = {})
-    inject({}) do |new_hash, (k, v)|
-      v = v.strip if v.class == String && v != ''
-      new_hash[k.to_sym] = opts[:recurse] && v.class == Hash ? v.strip(opts) : v
-      new_hash
-    end
-  end
+  #def strip(opts = {})
+  #  each_with_object({}) do |(k, v), new_hash|
+  #    v = v.strip if v.class == String && v != ''
+  #    new_hash[k.to_sym] = opts[:recurse] && v.class == Hash ? v.strip(opts) : v
+  #  end
+  #end
 end

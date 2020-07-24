@@ -9,6 +9,7 @@ class BoxMailer < ApplicationMailer
 
   def marketing_email(request, marketing_email = MarketingEmail.find(1))
     return unless request.user
+
     @request = request
     @user = @request.user
     track user: @user
@@ -31,6 +32,7 @@ class BoxMailer < ApplicationMailer
 
   def confirmation_email(request)
     return unless request.user
+
     @request = request.decorate
     @user = @request.user
     track user: @user
@@ -43,6 +45,7 @@ class BoxMailer < ApplicationMailer
 
   def opt_in_email(request)
     return unless request&.user
+
     @request = request.decorate
     @user = request.user
     track user: @user
@@ -57,6 +60,7 @@ class BoxMailer < ApplicationMailer
 
   def final_confirmation_email(request)
     return unless request.user
+
     @request = request
     @user = @request.user
 

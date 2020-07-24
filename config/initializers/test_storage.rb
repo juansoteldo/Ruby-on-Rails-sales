@@ -20,7 +20,7 @@ module RemoveUploadedFiles
   end
 
   def tmp_storage
-    Rails.root.join('tmp', 'storage')
+    Rails.root.join("tmp", "storage")
   end
 end
 

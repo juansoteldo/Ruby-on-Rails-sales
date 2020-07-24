@@ -1,5 +1,4 @@
 class RequestPolicy < ApplicationPolicy
-
   def index?
     active_salesperson?
   end

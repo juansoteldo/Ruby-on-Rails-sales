@@ -10,7 +10,7 @@ class RequestImage < ApplicationRecord
   def self.from_param(value)
     if base64?(value)
       from_base64(value)
-    elsif value.to_s =~ URI.regexp
+    elsif value.to_s =~ URI::DEFAULT_PARSER.make_regexp
       from_uri(value)
     elsif File.exist?(value)
       from_path(value)
@@ -45,20 +45,22 @@ class RequestImage < ApplicationRecord
                       filename: File.basename(file.path)
     file.unlink
     image
-  rescue => e
+  rescue StandardError => e
     raise e if Rails.env.test?
+
     file&.path&.unlink if File.exist?(file.path)
     nil
   end
 
   def self.get_extension(value)
-    regex = /data:image\/([a-z]{3,4});.+/
+    regex = %r{data:image/([a-z]{3,4});.+}
     m = value.match regex
     m ? m[1] : nil
   end
 
   def self.base64?(value)
     return false unless value.is_a?(String)
+
     value.start_with?("data:image/") || Base64.encode64(Base64.decode64(value)) == value
   end
 end

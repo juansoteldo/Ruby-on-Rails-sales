@@ -16,7 +16,7 @@ module CTD
         group.each do |request|
           worksheet.append_row(
             [
-              request.created_at.in_time_zone('EST'),
+              request.created_at.in_time_zone("EST"),
               request.user.email,
               request.user.marketing_opt_in,
               request.is_first_time,
@@ -28,7 +28,7 @@ module CTD
               request.position,
               request.large,
               request.deposit_order_id,
-              request.sub_total,
+              request.sub_total
             ]
           )
         end
@@ -45,7 +45,7 @@ module CTD
           group.each do |request|
             csv <<
               [
-                request.created_at.in_time_zone('EST'),
+                request.created_at.in_time_zone("EST"),
                 request.user.email,
                 request.user.marketing_opt_in,
                 request.is_first_time,
@@ -57,15 +57,13 @@ module CTD
                 request.position,
                 request.large,
                 request.deposit_order_id,
-                request.sub_total,
+                request.sub_total
               ]
           end
         end
       end
       path
     end
-
-    private
 
     def self.get_file_path(extension)
       path = Rails.root.join("tmp", "requests.#{extension}")
@@ -74,19 +72,19 @@ module CTD
     end
 
     HEADER_ROW = [
-      'Created At',
-      'E-Mail',
-      'Opted-in',
-      'First Time?',
-      'Gender',
-      'Color?',
-      'Cover Up?',
+      "Created At",
+      "E-Mail",
+      "Opted-in",
+      "First Time?",
+      "Gender",
+      "Color?",
+      "Cover Up?",
       "Style",
       "Size",
-      'Position',
-      'Large?',
-      'Shopify Oder',
-      'Subtotal',
+      "Position",
+      "Large?",
+      "Shopify Oder",
+      "Subtotal"
     ].freeze
   end
 end

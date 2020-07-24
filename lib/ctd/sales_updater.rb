@@ -13,7 +13,7 @@ module CTD
         update_sales_totals(range)
         update_conversion_rates(range)
         true
-      rescue => e
+      rescue StandardError => e
         console_log e.message
         console_log e.backtrace.join("\n")
         false
@@ -22,7 +22,7 @@ module CTD
       def update_sales_totals(range)
         params = {
           created_at_min: range.begin,
-          created_at_max: range.end,
+          created_at_max: range.end
         }
 
         console_log "Loading attributed shopify orders for last #{MONTHS_TEXT}"
@@ -68,6 +68,7 @@ module CTD
           boxes.each do |box|
             epoch = box.creation_timestamp / 1000
             (done = true) && break unless epoch_range === epoch
+
             created_at = Time.at(epoch)
 
             total_boxes += 1
@@ -90,7 +91,8 @@ module CTD
       def console_log(message, level: :info)
         Rails.logger.send level, message
         return if Rails.env.test?
-        puts "#{Time.now.to_s} #{message}"
+
+        puts "#{Time.now} #{message}"
       end
     end
   end

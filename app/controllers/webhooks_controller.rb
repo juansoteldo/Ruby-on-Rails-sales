@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Provides web hook handles for external services
 class WebhooksController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :verify_shopify_webhook, only: [:orders_create], if: -> { Rails.env.production? }
@@ -8,27 +9,27 @@ class WebhooksController < ApplicationController
     safe_params = calendly_params
     payload = safe_params[:payload]
     webhook = create_webhook source: "Calendly",
-                     source_id: payload["event"]["uuid"],
-                     email: payload["invitee"]["email"],
-                     params: safe_params
+                             source_id: payload["event"]["uuid"],
+                             email: payload["invitee"]["email"],
+                             params: safe_params
     render json: webhook.id
   end
 
   def requests_create
     safe_params = wpcf7_params
     webhook = create_webhook source: "WordPress",
-                     source_id: nil,
-                     email: safe_params[:email],
-                     params: safe_params
+                             source_id: nil,
+                             email: safe_params[:email],
+                             params: safe_params
     render json: webhook.id
   end
 
   def orders_create
     safe_params = shopify_params
     webhook = create_webhook source: "Shopify",
-                     source_id: safe_params["id"],
-                     email: safe_params["email"],
-                     params: safe_params
+                             source_id: safe_params["id"],
+                             email: safe_params["email"],
+                             params: safe_params
     render json: webhook.id
   end
 
@@ -42,14 +43,13 @@ class WebhooksController < ApplicationController
 
   def verify_shopify_webhook
     data = request.body.read
-    hmac_header = request.headers['HTTP_X_SHOPIFY_HMAC_SHA256']
-    digest = OpenSSL::Digest::Digest.new('sha256')
+    hmac_header = request.headers["HTTP_X_SHOPIFY_HMAC_SHA256"]
+    digest = OpenSSL::Digest::Digest.new("sha256")
     webhook_key = ENV.fetch("SHOPIFY_WEBHOOK_KEY", Rails.application.credentials[:shopify][:webhook_key])
     calculated_hmac = Base64.encode64(
-      OpenSSL::HMAC.digest(digest, webhook_key, data)).strip
-    unless hmac_header == calculated_hmac
-      head :unauthorized
-    end
+      OpenSSL::HMAC.digest(digest, webhook_key, data)
+    ).strip
+    head :unauthorized unless hmac_header == calculated_hmac
     request.body.rewind
   end
 

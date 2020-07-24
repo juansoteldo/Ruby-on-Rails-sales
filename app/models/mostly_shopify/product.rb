@@ -19,18 +19,19 @@ module MostlyShopify
         ShopifyAPI::Product.all params: { limit: 200 }
       end
       raise "no-products-found" if products.nil?
+
       products
-    rescue
+    rescue StandardError
       Rails.cache.delete("shopify/products/all")
       []
     end
 
     def is_final_payment?
-      handle.include?('final')
+      handle.include?("final")
     end
 
     def is_deposit?
-      handle.include?('deposit')
+      handle.include?("deposit")
     end
 
     def variants
@@ -38,11 +39,11 @@ module MostlyShopify
     end
 
     def sub_title
-      @source.title.sub(group_title, '').strip
+      @source.title.sub(group_title, "").strip
     end
 
     def group_title
-      title.sub('Final Payment', '').sub('Deposit', '').strip
+      title.sub("Final Payment", "").sub("Deposit", "").strip
     end
   end
 end

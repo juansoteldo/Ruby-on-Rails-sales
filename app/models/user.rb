@@ -8,21 +8,21 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  scope :fuzzy_matching_email, (-> (email) { where("levenshtein(email, ?) <= 2", email) })
+  scope :fuzzy_matching_email, (->(email) { where("levenshtein(email, ?) <= 2", email) })
 
   has_many :requests, dependent: :destroy
   has_many :events
   has_many :messages, class_name: "Ahoy::Message"
 
   auto_strip_attributes :email, :first_name, :last_name
-  phony_normalize :phone_number, default_country_code: 'US'
+  phony_normalize :phone_number, default_country_code: "US"
 
   before_validation :initialize_password
   validates_presence_of :email
   validates_length_of :email, minimum: 5
 
-  def ransackable_attributes(auth_object = nil)
-    [:email, :marketing_opt_in, :crm_opt_in, :presales_opt_in]
+  def ransackable_attributes(_auth_object = nil)
+    %i[email marketing_opt_in crm_opt_in presales_opt_in]
   end
 
   def email=(value)
@@ -40,6 +40,7 @@ class User < ApplicationRecord
 
   def initialize_password
     return unless password.blank?
+
     self.password = SecureRandom.base64(12)
   end
 end

@@ -12,7 +12,7 @@ class Admin::UsersController < Admin::BaseController
     @users = @q.result(distinct: true)
 
     respond_to do |format|
-      format.html { @users = @users.paginate(:page => params[:page]) }
+      format.html { @users = @users.paginate(page: params[:page]) }
       format.csv
     end
   end

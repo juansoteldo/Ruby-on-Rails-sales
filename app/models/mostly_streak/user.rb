@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'mostly_streak/base'
+require "mostly_streak/base"
 require "mostly_streak/pipeline"
 
 module MostlyStreak
   class User < Base
     def self.find(key)
-      Rails.cache.fetch('streak_user/' + key, expires_in: 15.minutes) do
+      Rails.cache.fetch("streak_user/" + key, expires_in: 15.minutes) do
         Streak.api_key = Settings.streak.api_key
         Streak::User.find(key)
       end
