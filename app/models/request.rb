@@ -227,7 +227,7 @@ class Request < ApplicationRecord
 
   def enqueue_quote_actions
     RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
-      # RequestActionJob.perform_later(request: self, method: "send_quote") unless tattoo_size_id.nil?
+    # RequestActionJob.perform_later(request: self, method: "send_quote") unless tattoo_size_id.nil?
   end
 
   # def send_quote

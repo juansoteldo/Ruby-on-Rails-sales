@@ -22,7 +22,7 @@ class User < ApplicationRecord
   validates_length_of :email, minimum: 5
 
   def ransackable_attributes(_auth_object = nil)
-    %i[email marketing_opt_in crm_opt_in presales_opt_in]
+    [:email, :marketing_opt_in, :crm_opt_in, :presales_opt_in]
   end
 
   def email=(value)
