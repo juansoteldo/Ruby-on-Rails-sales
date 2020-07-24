@@ -2,6 +2,8 @@
 
 class Request < ApplicationRecord
   belongs_to :user, optional: true
+  belongs_to :tattoo_size, optional: true
+  belongs_to :quoted_by, optional: true, class_name: "Salesperson"
   accepts_nested_attributes_for :user
   has_many :delivered_emails
   has_many :images, class_name: "RequestImage"
