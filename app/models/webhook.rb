@@ -52,9 +52,9 @@ class Webhook < ApplicationRecord
 
   def job_class
     if source == "WordPress" && action_name == "requests_create"
-      RequestCreateJob
+      CreateRequestJob
     elsif source == "Shopify" && action_name == "orders_create"
-      OrdersCreateJob
+      CommitShopifyOrderJob
     elsif source == "Calendly" && action_name == "events_create"
       UpdateEventJob
     end

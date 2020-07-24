@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Saves an email based on data from Chrome extension
 class SaveEmailJob < ApplicationJob
   StreakBoxNotFoundError = Class.new(StandardError)
   retry_on Streak::APIError, wait: 15.seconds, attempts: 6
@@ -21,13 +22,14 @@ class SaveEmailJob < ApplicationJob
       while Time.now - start < TIME_TO_WAIT_FOR_BOX.seconds
         box = MostlyStreak::Box.find_by_name(args[:recipient_email])
         break unless box.nil?
+
         sleep 2
       end
 
-      raise StreakBoxNotFoundError, "Cannot find streak box, aborting" if box.nil?
+      raise StreakBoxNotFoundError, 'Cannot find streak box, aborting' if box.nil?
     rescue StreakBoxNotFoundError
       if attempt < 4
-        sleep 1  # wait a bit
+        sleep 1 # wait a bit
         retry
       else
         return
@@ -35,7 +37,7 @@ class SaveEmailJob < ApplicationJob
     end
     current_stage = box.current_stage
 
-    box.set_stage("Contacted") if ["Fresh", "Leads"].include?(current_stage.name)
+    box.set_stage('Contacted') if %w[Fresh Leads].include?(current_stage.name)
 
     user_key = @salesperson&.user_key
     user_key ||= MostlyStreak::User.find_by_email(@salesperson.email)

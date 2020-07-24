@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class RequestCreateJob < WebhookJob
+# Creates a request based on form data
+class CreateRequestJob < WebhookJob
   def perform(args)
     super
     set_user_by_email
@@ -14,6 +15,7 @@ class RequestCreateJob < WebhookJob
                                     position: params[:position]).first_or_create
     @request.update! params.merge(created_at: [@webhook.created_at, @request.created_at].min)
     return unless @request.complete?
+
     @request.ensure_streak_box
     @request.opt_in_user
   end
@@ -34,16 +36,18 @@ class RequestCreateJob < WebhookJob
     params[:user_attributes][:email] = params.delete(:email)
 
     return unless params[:user_attributes].key?(:marketing_opt_in)
-    params[:user_attributes][:marketing_opt_in] = params[:user_attributes][:marketing_opt_in] == "0" ? false : nil
+
+    params[:user_attributes][:marketing_opt_in] = params[:user_attributes][:marketing_opt_in] == '0' ? false : nil
     @user.update params[:user_attributes]
   end
 
   def normalize_email!
-    raise "empty email" unless params.key?(:email)
+    raise 'empty email' unless params.key?(:email)
+
     email = params[:email].to_s.downcase.strip
-    raise "empty email" if email.blank?
+    raise 'empty email' if email.blank?
+
     params[:email] = email
     params[:email]
   end
 end
-

@@ -10,8 +10,8 @@ class WebhookTest < ActiveSupport::TestCase
   end
 
   test "" do
-    assert Webhook.create(source: "Shopify", action_name: "orders_create").job_class == OrdersCreateJob
-    assert Webhook.create(source: "WordPress", action_name: "requests_create").job_class == RequestCreateJob
+    assert Webhook.create(source: "Shopify", action_name: "orders_create").job_class == CommitShopifyOrderJob
+    assert Webhook.create(source: "WordPress", action_name: "requests_create").job_class == CreateRequestJob
   end
 
   test "queues job on create" do
