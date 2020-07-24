@@ -12,10 +12,10 @@
                   <% product.variants.each do |variant| %>
                       <tr class=" ">
                         <td class="">
-                          <img src="<%= asset_url('color-wheel.png') %>" class="<%= variant.has_color? || 'fade' %>" width="12" height="12"/>
+                          <img src="<%= asset_url('color-wheel.png') %>" class="<%= variant.color? || 'fade' %>" width="12" height="12"/>
                         </td>
                         <td class="">
-                          <span  class="<%= variant.has_cover_up? || 'fade' %>">C</span>
+                          <span  class="<%= variant.cover_up? || 'fade' %>">C</span>
                         </td>
                         <td class="">
                           <%= variant.price %>

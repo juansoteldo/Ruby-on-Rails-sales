@@ -10,7 +10,7 @@ module Admin::SalespeopleHelper
   end
 
   def value_of_requests(salesperson, period)
-    requests = salesperson.deposited_requests.where(created_at: period)
+    requests = salesperson.requests.deposited.where(created_at: period)
     sum = requests.map do |r|
       MostlyShopify::Variant.find(r.variant).first.price.to_f
     end.sum

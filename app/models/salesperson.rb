@@ -13,10 +13,6 @@ class Salesperson < ApplicationRecord
     Request.quoted_or_contacted_by(id)
   end
 
-  def deposited_requests
-    requests.deposited
-  end
-
   # Called by devise to allow users to be deactivated
   # http://www.rubydoc.info/github/plataformatec/devise/master/Devise/Models/Authenticatable
   def active_for_authentication?

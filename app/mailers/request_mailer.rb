@@ -6,7 +6,7 @@ class RequestMailer < ApplicationMailer
   default display_name: "Custom Tattoo Design"
 
   def start_design_email(request)
-    @request = request
+    @request = request.decorate
     @user = request.user
     subject = "New Start Design Request - #{@request.full_name} (#{@user.email})"
     subject = "[TEST] " + subject unless Rails.env.production?
