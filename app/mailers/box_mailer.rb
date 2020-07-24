@@ -10,6 +10,7 @@ class BoxMailer < ApplicationMailer
   def marketing_email(request, marketing_email = MarketingEmail.find(1))
     return unless request.user
     @request = request
+    @variant = MostlyShopify::Variant.find(request.variant) if request.variant
     @user = @request.user
     track user: @user
     track utm_content: marketing_email.template_name
