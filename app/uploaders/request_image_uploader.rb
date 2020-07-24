@@ -1,5 +1,4 @@
 class RequestImageUploader < CarrierWave::Uploader::Base
-
   include CarrierWave::MiniMagick
 
   def store_dir
@@ -11,12 +10,11 @@ class RequestImageUploader < CarrierWave::Uploader::Base
   end
 
   def cache_dir
-    Rails.root.join 'tmp/uploads'
+    Rails.root.join "tmp/uploads"
   end
 
-
   def default_url
-    "/images/fallback/" + [version_name, "default.png"].compact.join('_')
+    "/images/fallback/" + [version_name, "default.png"].compact.join("_")
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -36,13 +34,13 @@ class RequestImageUploader < CarrierWave::Uploader::Base
 
   # Create different versions of your uploaded files:
   version :thumb do
-     process resize_to_fit: [250, 250]
+    process resize_to_fit: [250, 250]
   end
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_whitelist
-     [:jpg, :jpeg, :gif, :png]
+    [:jpg, :jpeg, :gif, :png]
   end
 
   # Override the filename of the uploaded files:
@@ -50,5 +48,4 @@ class RequestImageUploader < CarrierWave::Uploader::Base
   # def filename
   #   "something.jpg" if original_filename
   # end
-
 end

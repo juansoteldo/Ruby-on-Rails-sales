@@ -1,7 +1,6 @@
-require 'sidekiq/web'
+require "sidekiq/web"
 
 Rails.application.routes.draw do
-
   resources :email_preferences, only: [:edit, :update, :index]
   devise_for :salespeople
   devise_for :admins
@@ -9,12 +8,12 @@ Rails.application.routes.draw do
 
   match "*any" => "application#options", :via => [:options]
 
-  get "/public/redirect/:handle/:variant", to: "public#redirect", as: :cart_redirect, defaults: { format: 'html' }
+  get "/public/redirect/:handle/:variant", to: "public#redirect", as: :cart_redirect, defaults: { format: "html" }
   post "/public/new_request", as: :new_request
-  match "/public/get_uid", via: [:get, :post], as: :get_uid, defaults: { format: 'json' }
-  get "/public/get_links", as: :get_links, defaults: { format: 'json' }
-  get "/public/set_link", as: :set_link, defaults: { format: 'json' }
-  get "/public/save_email", as: :save_email, defaults: { format: 'json' }
+  match "/public/get_uid", via: [:get, :post], as: :get_uid, defaults: { format: "json" }
+  get "/public/get_links", as: :get_links, defaults: { format: "json" }
+  get "/public/set_link", as: :set_link, defaults: { format: "json" }
+  get "/public/save_email", as: :save_email, defaults: { format: "json" }
   get "/marketing/opt_out", to: "marketing#opt_out", as: :marketing_opt_out
   get "/marketing/opt_in", to: "marketing#opt_in", as: :marketing_opt_in
   match "public/thanks", via: [:get, :post], to: "public#deposit_redirect", as: :deposit_redirect
@@ -77,13 +76,12 @@ Rails.application.routes.draw do
     get "test/post_form" => "test#post_form", as: "post_form"
     get "test/cart" => "test#cart", as: "cart"
 
-    authenticated :salesperson, lambda { |user| user&.admin? } do
-      mount Sidekiq::Web => 'sidekiq'
+    authenticated :salesperson, ->(user) { user&.admin? } do
+      mount Sidekiq::Web => "sidekiq"
     end
   end
 
   get "/admin" => "content#admin", as: "admin_root"
-
 
   root to: redirect("/404.html")
 end

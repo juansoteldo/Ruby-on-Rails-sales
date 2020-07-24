@@ -12,12 +12,12 @@ json.rows do
         json.id 0
         json.email 'Unmatched'
       end
-
     end
 
     json.images do
       json.array!(request.images.decorate) do |image|
         next unless image.exists?
+
         json.url api_request_image_url(image, uuid: request.uuid)
       end
     end
@@ -26,4 +26,3 @@ json.rows do
     json.send_confirmation_path send_confirmation_admin_request_path(request)
   end
 end
-

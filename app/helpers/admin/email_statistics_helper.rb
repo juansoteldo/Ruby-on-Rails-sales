@@ -47,6 +47,7 @@ module Admin::EmailStatisticsHelper
 
   def percent_of(x, n)
     return "-" unless n.positive?
-    number_to_percentage(x.to_f / n.to_f * 100, precision: 0)
+
+    number_to_percentage(x / n.to_f * 100, precision: 0)
   end
 end

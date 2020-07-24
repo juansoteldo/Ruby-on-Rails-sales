@@ -11,14 +11,14 @@ module MostlyGmail
     end
 
     def self.new_design_requests
-      Rails.cache.fetch( "gmail/new-design-requests", expires_in: 5.seconds) do
-        all({label_ids: Settings.gmail.labels.new_design_requests})
+      Rails.cache.fetch("gmail/new-design-requests", expires_in: 5.seconds) do
+        all({ label_ids: Settings.gmail.labels.new_design_requests })
       end
     end
 
     def self.design_requests
-      Rails.cache.fetch( "gmail/new-design-requests", expires_in: 5.seconds) do
-        all({label_ids: Settings.gmail.labels.design_requests})
+      Rails.cache.fetch("gmail/new-design-requests", expires_in: 5.seconds) do
+        all({ label_ids: Settings.gmail.labels.design_requests })
       end
     end
 
@@ -36,12 +36,12 @@ module MostlyGmail
     end
 
     def text_body
-      payload.parts.find {|p| p.mime_type == "text/plain"}.body.data
+      payload.parts.find { |p| p.mime_type == "text/plain" }.body.data
     end
 
     # TODO: This should not be necessary
     def shortened_utf_8_text_body
-      text_body.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '_').split("\n")[2..-1].join("\n")
+      text_body.encode("utf-8", invalid: :replace, undef: :replace, replace: "_").split("\n")[2..-1].join("\n")
     end
 
     def fetch

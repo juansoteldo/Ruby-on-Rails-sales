@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'streak-ruby'
+require "streak-ruby"
 
 module MostlyStreak
   class Base

@@ -12,6 +12,11 @@ class Event < ApplicationRecord
   accepts_nested_attributes_for :user
   accepts_nested_attributes_for :request
 
+  def respond_to_missing?(*_args)
+    true
+  end
+
+  # rubocop:disable Style/MethodMissingSuper
   def method_missing(symbol, *args)
     super(symbol, *args) unless source
     source.send(symbol, *args)
@@ -46,14 +51,12 @@ class Event < ApplicationRecord
       phone_number = source[:text_reminder_number]
       phone_number ||= source[:answer_1]
       {
-          uuid: source[:invitee_uuid],
-          email: source[:invitee_email],
-          first_name: source[:invitee_first_name],
-          last_name: source[:invitee_last_name],
-          text_reminder_number: phone_number
+        uuid: source[:invitee_uuid],
+        email: source[:invitee_email],
+        first_name: source[:invitee_first_name],
+        last_name: source[:invitee_last_name],
+        text_reminder_number: phone_number
       }
-    else
-      nil
     end
   end
 
@@ -67,18 +70,19 @@ class Event < ApplicationRecord
     return unless invitee
 
     {
-        uuid: invitee[:uuid],
-        email: invitee[:email],
-        phone_number: invitee[:text_reminder_number],
+      uuid: invitee[:uuid],
+      email: invitee[:email],
+      phone_number: invitee[:text_reminder_number]
     }
   end
 
   def requests_attributes
     return unless invitee
+
     {
-        first_name: invitee[:first_name],
-        last_name: invitee[:last_name],
-        user_id: user_id
+      first_name: invitee[:first_name],
+      last_name: invitee[:last_name],
+      user_id: user_id
     }
   end
 
@@ -90,53 +94,51 @@ class Event < ApplicationRecord
       possible_user.update! user_attributes
     else
       password = SecureRandom.hex(8)
-      create_user! user_attributes.merge( password: password, password_confirmation: password )
+      create_user! user_attributes.merge(password: password, password_confirmation: password)
     end
   end
 
   def create_request
     return if request_id
+
     create_request! requests_attributes
   end
 
   def possible_user
-    User.where( "email ILIKE ? or phone_number = ?",
-                invitee[:email], invitee[:text_reminder_number]).first
+    User.where("email ILIKE ? or phone_number = ?",
+               invitee[:email], invitee[:text_reminder_number]).first
   end
 end
 
-
-=begin
-
-Parameters included on calendly hook
-
-  event_type_name
-  event_type_uuid
-  event_start_time (in invitee timezone (iso8601 format))
-  event_end_time (in invitee timezone (iso8601 format))
-  invitee_uuid
-  invitee_email
-  invitee_first_name (when applicable)
-  invitee_last_name (when applicable)
-  invitee_full_name (when applicable)
-  invitee_payment_amount (when applicable)
-  invitee_payment_currency (when applicable)
-  utm_source (if available)
-  utm_medium (if available)
-  utm_campaign (if available)
-  utm_content (if available)
-  utm_term (if available)
-  assigned_to
-  text_reminder_number (if available)
-  answer_1 (if available)
-  answer_2 (if available)
-  answer_3 (if available)
-  answer_4 (if available)
-  answer_5 (if available)
-  answer_6 (if available)
-  answer_7 (if available)
-  answer_8 (if available)
-  answer_9 (if available)
-  answer_10 (if available)
-
-=end
+#
+# Parameters included on calendly hook
+#
+#   event_type_name
+#   event_type_uuid
+#   event_start_time (in invitee timezone (iso8601 format))
+#   event_end_time (in invitee timezone (iso8601 format))
+#   invitee_uuid
+#   invitee_email
+#   invitee_first_name (when applicable)
+#   invitee_last_name (when applicable)
+#   invitee_full_name (when applicable)
+#   invitee_payment_amount (when applicable)
+#   invitee_payment_currency (when applicable)
+#   utm_source (if available)
+#   utm_medium (if available)
+#   utm_campaign (if available)
+#   utm_content (if available)
+#   utm_term (if available)
+#   assigned_to
+#   text_reminder_number (if available)
+#   answer_1 (if available)
+#   answer_2 (if available)
+#   answer_3 (if available)
+#   answer_4 (if available)
+#   answer_5 (if available)
+#   answer_6 (if available)
+#   answer_7 (if available)
+#   answer_8 (if available)
+#   answer_9 (if available)
+#   answer_10 (if available)
+#

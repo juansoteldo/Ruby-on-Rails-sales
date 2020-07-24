@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class WebhookTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
@@ -20,12 +20,12 @@ class WebhookTest < ActiveSupport::TestCase
       "note_attributes": [
         {
           "name": "req_id",
-          "value": @request.id.to_s,
+          "value": @request.id.to_s
         },
         {
           "name": "sales_id",
-          "value": @request.quoted_by_id,
-        },
+          "value": @request.quoted_by_id
+        }
       ]
     )
     perform_enqueued_jobs do

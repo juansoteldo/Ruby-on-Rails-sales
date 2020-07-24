@@ -30,15 +30,17 @@ class Webhook < ApplicationRecord
 
   def perform!
     return unless ["fresh", "queued", "failed"].include?(aasm_state)
+
     perform_job
   end
 
   def perform_job
     job_class.perform_now(webhook: self)
     true
-  rescue => e
+  rescue StandardError => e
     fail! "#{e.message}\n#{e.backtrace.join("\n")}"
     raise(e) if Rails.application.config.debugging
+
     false
   end
 
@@ -75,6 +77,7 @@ class Webhook < ApplicationRecord
     (1..10).each do |x|
       key = "art_sample_#{x}".to_sym
       next unless new_params.key?(key)
+
       new_params[key] = nil
     end
     update_column :params, new_params

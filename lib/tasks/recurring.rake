@@ -4,6 +4,7 @@ namespace :recurring do
   desc "Add gmail threads to streak boxes"
   task associate_gmail_threads: :environment do
     return unless Settings.streak.create_boxes
+
     CTD::GmailScanner.associate_threads
   end
 
@@ -11,6 +12,7 @@ namespace :recurring do
   task update_sales_totals: :environment do
     3.times do
       break if CTD::SalesUpdater.update
+
       sleep_duration = Rails.env.production? ? 30 : 5
       puts "Update failed, sleeping for #{sleep_duration} seconds"
       sleep sleep_duration
@@ -41,16 +43,22 @@ namespace :recurring do
     puts "Updating requests for #{orders.count} orders"
     orders.each(&:update_request!)
 
-    requests = Request.joins(:user).where("requests.created_at > ? AND state_changed_at BETWEEN ? AND ?",
-                                          cutoff, cutoff, Time.zone.now.beginning_of_day).where("quoted_by_id IS NOT NULL")
+    requests = Request.joins(:user).where(
+      "requests.created_at > ? AND state_changed_at BETWEEN ? AND ?",
+      cutoff,
+      cutoff,
+      Time.zone.now.beginning_of_day
+    ).where("quoted_by_id IS NOT NULL")
     puts "Processing #{requests.count} requests"
     requests.each do |request|
       puts "  Examining request #{request.id}, it's #{time_ago_in_words(request.state_changed_at)} old, and is `#{request.state}`"
       marketing_emails = marketing_scope.order("days_after_state_change")
-                             .where("days_after_state_change * 24 < ? AND state LIKE ?",
-                                    request.hours_since_state_change, "%#{request.state}%")
+                                        .where("days_after_state_change * 24 < ? AND state LIKE ?",
+                                               request.hours_since_state_change,
+                                               "%#{request.state}%")
 
       next unless marketing_emails.any?
+
       puts "    #{marketing_emails.count} marketing emails are appropriate"
       delivered_emails = request.delivered_emails.where(marketing_email_id: marketing_emails.last.id)
       if delivered_emails.any?
@@ -60,11 +68,14 @@ namespace :recurring do
 
       marketing_email = marketing_emails.last
       delivered_email = request.delivered_emails.create marketing_email_id: marketing_email.id, request_id: request.id
-      status = delivered_email.sent_at ?
-                   "Sent marketing email `#{marketing_email.template_name}` to `#{request.user.email}`"
-                   : "User has opted out, skipping."
+      status = if delivered_email.sent_at
+                 "Sent marketing email `#{marketing_email.template_name}` to `#{request.user.email}`"
+               else
+                 "User has opted out, skipping."
+               end
       puts "    #{status}"
       next if delivered_email.sent_at.nil?
+
       counts[counts.find_index { |c| c[:id] == marketing_email.id }][:count] += 1
     end
     puts "Done."

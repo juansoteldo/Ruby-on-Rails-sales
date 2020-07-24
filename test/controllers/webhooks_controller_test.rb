@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class WebhooksControllerTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
@@ -111,7 +111,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     @image_data = "data:image/jpg;base64," + Base64.encode64(@image_file.read.to_s)
     perform_enqueued_jobs do
       post "/webhooks/requests_create", params: wpcf7_params.merge(
-        art_sample_1: @image_data,
+        art_sample_1: @image_data
       )
       assert_response :success
     end
@@ -152,12 +152,12 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
         "note_attributes": [
           {
             "name": "req_id",
-            "value": request.id.to_s,
+            "value": request.id.to_s
           },
           {
             "name": "sales_id",
-            "value": request.quoted_by_id,
-          },
+            "value": request.quoted_by_id
+          }
         ]
       )
     end
@@ -176,9 +176,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     perform_enqueued_jobs do
       params = shopify_params.merge(
         "email": wpcf7_params[:email],
-        "note_attributes": [],
+        "note_attributes": []
       )
-      params["landing_site"].gsub! /reqid=[\d]+/, "reqid=123456"
+      params["landing_site"].gsub!(/reqid=[\d]+/, "reqid=123456")
       post "/webhooks/orders_create", params: params
     end
 
@@ -196,9 +196,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     perform_enqueued_jobs do
       params = shopify_unassociated_params.merge(
         "email": email,
-        "note_attributes": [],
+        "note_attributes": []
       )
-      params["landing_site"].gsub! /reqid=[\d]+/, "reqid=#{request.id}"
+      params["landing_site"].gsub!(/reqid=[\d]+/, "reqid=#{request.id}")
       post "/webhooks/orders_create", params: params
     end
 
@@ -216,7 +216,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     perform_enqueued_jobs do
       params = shopify_params
       params["email"] = email
-      params["landing_site"].gsub! /reqid=[\d]+/, "reqid=123456"
+      params["landing_site"].gsub!(/reqid=[\d]+/, "reqid=123456")
       params["note_attributes"] = []
       post "/webhooks/orders_create", params: params
       assert_response :success

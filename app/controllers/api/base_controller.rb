@@ -11,7 +11,6 @@ class Api::BaseController < ApplicationController
   end
 
   def globally_authenticated
-
     @globally_authenticated ||= params[:token].present? && params[:token] == global_api_token
   end
 

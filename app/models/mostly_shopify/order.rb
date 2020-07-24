@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "digest"
-require 'shopify_api'
+require "shopify_api"
 require "mostly_shopify/base"
 
 module MostlyShopify
@@ -9,7 +9,7 @@ module MostlyShopify
     DEFAULT_SALESPERSON_EMAIL = "brittany@customtattoodesign.ca"
 
     def update_request!(request = self.request)
-      raise StandardError.new("cannot find request for #{order_status_url}") unless request
+      raise StandardError, "cannot find request for #{order_status_url}" unless request
 
       if request.can_convert? && is_deposit?
         request.convert
@@ -22,9 +22,7 @@ module MostlyShopify
                                state_changed_at: @source.created_at
       end
 
-      if !sales_id.nil? && sales_id != request.quoted_by_id
-        request.update_column :quoted_by_id, sales_id
-      end
+      request.update_column :quoted_by_id, sales_id if !sales_id.nil? && sales_id != request.quoted_by_id
 
       @source.id == (is_deposit? ? request.deposit_order_id : request.final_order_id)
     end
@@ -33,12 +31,11 @@ module MostlyShopify
       @request_id ||= note_value("req_id") || request_id_from_landing_site
     end
 
-    def request_id=(value)
-      @request_id = value
-    end
+    attr_writer :request_id
 
     def request(reset_attribution: false)
       return @request if @request && !reset_attribution
+
       @request = Request.for_shopify_order(self, reset_attribution: reset_attribution)
       @request_id = @request.id if @request
       @request
@@ -48,7 +45,8 @@ module MostlyShopify
       @salesperson_id ||= note_value("sales_id")
       return @salesperson_id if @salesperson_id
       return nil unless /salesid=(\d+)/ =~ landing_site
-      @salesperson_id = landing_site.gsub(/.+salesid=(\d+).+/, "\\1")
+
+      @salesperson_id = landing_site.gsub(/.+salesid=(\d+).+/, '\\1')
     end
 
     def email
@@ -142,8 +140,8 @@ module MostlyShopify
         date_range = "Wed, 1 Jun 2016".to_date..Time.now
         orders = orders.select do |order|
           (order.note_value("sales_id") ||
-            User.where(email: order.customer.email).joins(:requests).
-              where(requests: { created_at: date_range }).any?)
+            User.where(email: order.customer.email).joins(:requests)
+              .where(requests: { created_at: date_range }).any?)
         end
 
         orders
@@ -158,6 +156,7 @@ module MostlyShopify
 
     def landing_site
       return nil unless @source.respond_to? :landing_site
+
       @source.landing_site
     end
 
@@ -166,16 +165,16 @@ module MostlyShopify
       return box_sales_id if box_sales_id
       return noted_sales_id if noted_sales_id
       return request_sales_id if request_sales_id
+
       Rails.logger.warn("Cannot find sales id for shopify order with email #{email}") unless Rails.env.test?
       nil
     end
 
     def box_sales_id
       return @box_sales_id if @box_sales_id
+
       request = Request.for_shopify_order(self)
-      if request&.quoted_by_id && request&.quoted_by_id != 6
-        @box_sales_id = request.quoted_by_id
-      end
+      @box_sales_id = request.quoted_by_id if request&.quoted_by_id && request&.quoted_by_id != 6
       @box_sales_id ||= MostlyStreak::Box.find_by_name(email)&.salesperson&.id
     end
 
@@ -185,12 +184,14 @@ module MostlyShopify
 
     def request_sales_id
       return @request_sales_id if @request_sales_id
+
       @request_sales_id ||= request&.quoted_by_id
     end
 
     def request_id_from_landing_site
       return nil unless /reqid=(\d+)/ =~ landing_site
-      id = landing_site.gsub(/.+reqid=(\d+).+/, "\\1")
+
+      id = landing_site.gsub(/.+reqid=(\d+).+/, '\\1')
       @request_id = id unless id.to_s.blank?
     end
 
@@ -207,7 +208,5 @@ module MostlyShopify
       end
       nil
     end
-
-
   end
 end
