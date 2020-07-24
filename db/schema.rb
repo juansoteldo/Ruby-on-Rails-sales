@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_21_192146) do
+ActiveRecord::Schema.define(version: 2020_07_22_183639) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -120,7 +120,9 @@ ActiveRecord::Schema.define(version: 2020_05_21_192146) do
     t.string "template_path", default: "box_mailer"
     t.string "subject_line", default: "Lee Roller Owner / Custom Tattoo Design"
     t.integer "version", default: 1
+    t.string "email_type"
     t.index ["days_after_state_change"], name: "index_marketing_emails_on_days_after_state_change"
+    t.index ["email_type"], name: "index_marketing_emails_on_email_type"
     t.index ["state"], name: "index_marketing_emails_on_state"
   end
 
@@ -170,12 +172,14 @@ ActiveRecord::Schema.define(version: 2020_05_21_192146) do
     t.string "thread_gmail_id"
     t.string "style"
     t.string "size"
+    t.integer "tattoo_size_id"
     t.index ["client_id"], name: "index_requests_on_client_id"
     t.index ["created_at"], name: "index_requests_on_created_at"
     t.index ["deposit_order_id"], name: "index_requests_on_deposit_order_id"
     t.index ["first_name", "last_name"], name: "request_names"
     t.index ["quoted_by_id"], name: "index_requests_on_quoted_by_id"
     t.index ["sku"], name: "index_requests_on_sku"
+    t.index ["tattoo_size_id"], name: "index_requests_on_tattoo_size_id"
     t.index ["user_id"], name: "index_requests_on_user_id"
   end
 
@@ -209,6 +213,21 @@ ActiveRecord::Schema.define(version: 2020_05_21_192146) do
     t.boolean "admin"
     t.index ["email"], name: "index_salespeople_on_email", unique: true
     t.index ["reset_password_token"], name: "index_salespeople_on_reset_password_token", unique: true
+  end
+
+  create_table "tattoo_sizes", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "deposit_variant_id"
+    t.integer "order"
+    t.integer "size"
+    t.integer "quote_email_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deposit_variant_id"], name: "index_tattoo_sizes_on_deposit_variant_id"
+    t.index ["name"], name: "index_tattoo_sizes_on_name"
+    t.index ["order"], name: "index_tattoo_sizes_on_order"
+    t.index ["quote_email_id"], name: "index_tattoo_sizes_on_quote_email_id"
+    t.index ["size"], name: "index_tattoo_sizes_on_size"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|

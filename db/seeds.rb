@@ -16,6 +16,7 @@ if Salesperson.count.zero?
 end
 
 require Rails.root.join("db/seeds/marketing_emails.rb")
+require Rails.root.join("db/seeds/tattoo_sizes.rb")
 
 # Product.create( name: 'Large Sleeve Design', size: 'l', type: 'design', slug: '' )
 
