@@ -11,6 +11,11 @@ class Salesperson < ApplicationRecord
 
   has_many :sales_totals
 
+  attr_reader :default
+  def self.default
+    @@default ||= find(1)
+  end
+
   def requests
     Request.quoted_or_contacted_by(id)
   end

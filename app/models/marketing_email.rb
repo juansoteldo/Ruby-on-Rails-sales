@@ -3,6 +3,7 @@
 class MarketingEmail < ApplicationRecord
   has_many :delivered_emails
 
+  validates_presence_of :email_type
   validates_presence_of :days_after_state_change
   validates_numericality_of :days_after_state_change, minimum: 0
 
