@@ -26,7 +26,7 @@ class SaveEmailJob < ApplicationJob
         sleep 2
       end
 
-      raise StreakBoxNotFoundError, 'Cannot find streak box, aborting' if box.nil?
+      raise StreakBoxNotFoundError, "Cannot find streak box, aborting" if box.nil?
     rescue StreakBoxNotFoundError
       if attempt < 4
         sleep 1 # wait a bit
@@ -37,7 +37,7 @@ class SaveEmailJob < ApplicationJob
     end
     current_stage = box.current_stage
 
-    box.set_stage('Contacted') if %w[Fresh Leads].include?(current_stage.name)
+    box.set_stage("Contacted") if ["Fresh", "Leads"].include?(current_stage.name)
 
     user_key = @salesperson&.user_key
     user_key ||= MostlyStreak::User.find_by_email(@salesperson.email)

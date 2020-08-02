@@ -9,9 +9,9 @@ class Salesperson < ApplicationRecord
 
   has_many :sales_totals
 
-  attr_reader :default
-  def self.default
-    @@default ||= where(id: 1).first
+  attr_reader :system
+  def self.system
+    @@default ||= where(email: "sales@customtattoodesign.ca").first
     @@default ||= first
   end
 
