@@ -11,14 +11,8 @@ class Event < ApplicationRecord
 
   accepts_nested_attributes_for :user
   accepts_nested_attributes_for :request
-
-  def respond_to_missing?(*_args)
-    true
-  end
-
-  # rubocop:disable Style/MethodMissingSuper
   def method_missing(symbol, *args)
-    super(symbol, *args) unless source
+    super unless source
     source.send(symbol, *args)
   end
 
