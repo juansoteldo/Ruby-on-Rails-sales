@@ -11,7 +11,9 @@ class BoxMailer < ApplicationMailer
     return unless request.user
 
     @request = request
-    @variant = MostlyShopify::Variant.find(request.tattoo_size.deposit_variant_id)
+    @variant = MostlyShopify::Variant.find(request.tattoo_size.deposit_variant_id.to_i).first
+    raise "Cannot find variant with ID #{request.tattoo_size.deposit_variant_id}" if @variant.nil?
+
     @user = @request.user
     track user: @user
     track utm_content: marketing_email.template_name
