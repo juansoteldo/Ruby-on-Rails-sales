@@ -29,7 +29,7 @@
 <p>
   Here is the link to complete your <%= number_to_currency @variant.price, precision: 0 %> USD deposit:<br>
   <a href="<%= cart_redirect_url(@variant.product.handle, @variant.id, clientId: @request.client_id,
-                        linkerParam: @request.linker_param, requestId: @request.id, _ga: @request._ga, uid: @request.uid) %>">
+                        linkerParam: @request.linker_param, requestId: @request.id, _ga: @request._ga, uuid: @request.uuid) %>">
     CLICK HERE
   </a>
 </p>
