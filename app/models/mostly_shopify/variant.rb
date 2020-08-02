@@ -35,5 +35,11 @@ module MostlyShopify
         ShopifyAPI::Variant.all params: { limit: 200 }
       end
     end
+
+    def product
+      return @source.product if @source&.respond_to?(:product)
+
+      MostlyShopify::Product.for_variant self
+    end
   end
 end

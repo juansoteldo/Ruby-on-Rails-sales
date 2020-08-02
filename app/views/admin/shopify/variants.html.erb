@@ -23,7 +23,7 @@
                         <% url = "#{CTD::APP_URL}/public/redirect/#{product.handle}/#{variant.id}?salespersonId=#{current_salesperson.id}&requestId=" %>
                         <td class="col col-xs-4 td-actions">
                           <button class="btn btn-xs btn-url" data-title="<%= product.title %>" data-url="<%= url %>"
-                                  data-clipboard-text="<%= url %>" title="Copy to clipboard"><%= product.is_deposit? && 'Deposit' || 'Final' %></button>
+                                  data-clipboard-text="<%= url %>" title="Copy to clipboard"><%= product.deposit? && 'Deposit' || 'Final' %></button>
                         </td>
                       </tr>
                   <% end %>

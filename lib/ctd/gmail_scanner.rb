@@ -22,6 +22,10 @@ module CTD
         box.update(notes: message.shortened_utf_8_text_body)
         box.set_stage("Leads") if box.current_stage.name == "Fresh"
         remove_thread_new_label message
+
+        next unless Settings.emails.auto_quoting_enabled
+
+        request.quote_from_attributes!
       end
     end
 

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/MethodMissingSuper
+
 require "streak-ruby"
 
 module MostlyStreak

@@ -20,7 +20,7 @@ json.groups(@groups) do |group|
   json.products group.products do |product|
     json.id product.id
     json.title product.title
-    json.is_deposit product.is_deposit?
+    json.is_deposit product.deposit?
     json.variants product.variants do |variant|
       json.id variant.id
       json.price variant.price

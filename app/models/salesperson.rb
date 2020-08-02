@@ -9,6 +9,12 @@ class Salesperson < ApplicationRecord
 
   has_many :sales_totals
 
+  attr_reader :default
+  def self.default
+    @@default ||= where(id: 1).first
+    @@default ||= first
+  end
+
   def requests
     Request.quoted_or_contacted_by(id)
   end

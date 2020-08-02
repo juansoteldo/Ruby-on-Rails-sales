@@ -1,0 +1,58 @@
+<p>
+  Hi <%= @request.first_name.try(:titleize) %>,
+</p>
+
+<%= render @quote_template_path %>
+
+<p>
+  In order to start the design process we require a 50% deposit of the total design cost. To make sure you're satisfied,
+  keep in mind we have a money back guarantee until you approve your first draft. Once the deposit has been paid we
+  will place you in order and assign you the best artist for your design style and needs. Your artist will contact you
+  for an introduction before you get started. Because of the size of your design and the limited amount of senior
+  designers your design may take 5- 7 days to start, however, we will always stay in contact with you. You will receive
+  a link via e-mail where you can review your design privately and ask your artist for any revisions or changes you
+  would like to see.
+</p>
+
+<p>
+  Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we
+  will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone
+  else is that you own your design and we have professional artists on staff.
+</p>
+
+<p>
+  Based on the size and complexity of your design the deposit to begin your <%= @request.size %> design is:
+  <%= number_to_currency @variant.price, precision: 0 %> USD. Use the link below and we will get started as soon as
+  possible.
+</p>
+
+<p>
+  Here is the link to complete your <%= number_to_currency @variant.price, precision: 0 %> USD deposit:<br>
+  <a href="<%= cart_redirect_url(@variant.product.handle, @variant.id, clientId: @request.client_id,
+                        linkerParam: @request.linker_param, requestId: @request.id, _ga: @request._ga, uuid: @request.uuid) %>">
+    CLICK HERE
+  </a>
+</p>
+
+<p>
+  All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now
+  accepting Visa Debit.
+</p>
+
+<p>
+  Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate
+  he opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+</p>
+
+<p>
+  I look forward to hearing from you,
+</p>
+
+<p>
+  Lee Roller<br>
+  CEO / Founder<br>
+  Custom Tattoo Design
+</p>
+
+
+
