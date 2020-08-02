@@ -121,7 +121,7 @@ class Request < ApplicationRecord
     return unless fresh?
 
     assign_tattoo_size_attributes
-    self.quoted_by_id ||= Salesperson.default
+    self.quoted_by_id ||= Salesperson.system
     save!
     quote!
   end
@@ -276,6 +276,7 @@ class Request < ApplicationRecord
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
     return unless ["Contacted", "Leads"].include?(current_stage.name)
 
+    quoted_by.claim_requests_with_email(email)
     box.set_stage("Quoted")
   end
 
