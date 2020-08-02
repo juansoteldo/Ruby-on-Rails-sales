@@ -173,13 +173,14 @@ ActiveRecord::Schema.define(version: 2020_07_22_183639) do
     t.string "style"
     t.string "size"
     t.integer "tattoo_size_id"
+    t.datetime "quoted_at"
     t.index ["client_id"], name: "index_requests_on_client_id"
     t.index ["created_at"], name: "index_requests_on_created_at"
     t.index ["deposit_order_id"], name: "index_requests_on_deposit_order_id"
     t.index ["first_name", "last_name"], name: "request_names"
     t.index ["quoted_by_id"], name: "index_requests_on_quoted_by_id"
     t.index ["sku"], name: "index_requests_on_sku"
-    t.index ["tattoo_size_id"], name: "index_requests_on_tattoo_size_id"
+    t.index ["tattoo_size_id", "quoted_at"], name: "index_requests_on_tattoo_size_id_and_quoted_at"
     t.index ["user_id"], name: "index_requests_on_user_id"
   end
 

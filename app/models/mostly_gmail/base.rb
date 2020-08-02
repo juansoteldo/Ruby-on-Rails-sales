@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/MethodMissingSuper
+
 require "google/apis/gmail_v1"
 require "googleauth"
 require "googleauth/stores/redis_token_store"
@@ -15,7 +17,7 @@ module MostlyGmail
     end
 
     def method_missing(symbol, *args)
-      @source.send(symbol, *args)
+      @source&.send(symbol, *args)
     end
 
     ME_ID = "ME"

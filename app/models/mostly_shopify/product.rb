@@ -26,11 +26,11 @@ module MostlyShopify
       []
     end
 
-    def is_final_payment?
+    def final_payment?
       handle.include?("final")
     end
 
-    def is_deposit?
+    def deposit?
       handle.include?("deposit")
     end
 

@@ -11,7 +11,8 @@ class Salesperson < ApplicationRecord
 
   attr_reader :default
   def self.default
-    @@default ||= find(1)
+    @@default ||= where(id: 1).first
+    @@default ||= first
   end
 
   def requests

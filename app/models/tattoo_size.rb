@@ -3,6 +3,7 @@ class TattooSize < ApplicationRecord
 
   def variant
     return nil if deposit_variant_id.nil?
+
     @variant ||= MostlyShopify::Variant.find(deposit_variant_id)
   end
 
@@ -21,9 +22,16 @@ class TattooSize < ApplicationRecord
     tattoo_size.size == 5 ? tattoo_size : find_by_size(tattoo_size.size + 1)
   end
 
-  attr_reader :quote_email
   def quote_email
-    @quote_email = MarketingEmail.find_by_template_name(quote_template_name)
+    @quote_email = super
     @quote_email ||= MarketingEmail.find_by_template_name("general_quote_email")
+  end
+
+  def quote_template_name=(value)
+    assign_attributes quote_email_id: MarketingEmail.find_by_template_name(value)
+  end
+
+  def quote_template_name
+    quote_email&.template_name
   end
 end

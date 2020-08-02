@@ -65,16 +65,47 @@ class Request < ApplicationRecord
     state :completed
 
     event :quote do
-      transition fresh: :quoted, after: :enqueue_quote_actions
+      transition fresh: :quoted
     end
 
     event :convert do
-      transition fresh: :deposited, quoted: :deposited, after: :enqueue_deposit_actions
+      transition fresh: :deposited, quoted: :deposited
     end
 
     event :complete do
-      transition any: :completed, after: :perform_complete_actions
+      transition any: :completed
     end
+
+    after_transition on: :quote, do: :enqueue_quote_actions
+    after_transition on: :convert, do: :enqueue_deposit_actions
+    after_transition on: :complete, do: :perform_complete_actions
+  end
+
+  def self.relevant_date_range_for_order(order)
+    return CTD::MIN_DATE..Time.now if Rails.env.test?
+
+    created_at = order.created_at.to_date
+    (created_at - 180.days)..(created_at + 7.days)
+  end
+
+  def self.find_and_attribute(label, method, *params)
+    request = Request.send method, *params
+    return nil unless request
+
+    request.attributed_by ||= label
+    request
+  end
+
+  def self.find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
+    joins(:user)
+      .where(users: { email: email })
+      .where(requests: { created_at: date_range }).last
+  end
+
+  def self.fuzzy_find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
+    joins(:user)
+      .merge(User.fuzzy_matching_email(email))
+      .where(requests: { created_at: date_range }).last
   end
 
   def quote_from_params!(params)
@@ -82,7 +113,22 @@ class Request < ApplicationRecord
 
     self.variant = params[:variant_id]
     self.quoted_by_id ||= params[:salesperson_id]
-    save! && quote!
+    save!
+    quote!
+  end
+
+  def quote_from_attributes!
+    return unless fresh?
+
+    assign_tattoo_size_attributes
+    self.quoted_by_id ||= Salesperson.default
+    save!
+    quote!
+  end
+
+  def assign_tattoo_size_attributes
+    self.tattoo_size = TattooSize.for_request(self)
+    self.variant = tattoo_size.deposit_variant_id
   end
 
   def salesperson
@@ -188,33 +234,6 @@ class Request < ApplicationRecord
 
   private
 
-  def self.relevant_date_range_for_order(order)
-    return CTD::MIN_DATE..Time.now if Rails.env.test?
-
-    created_at = order.created_at.to_date
-    (created_at - 180.days)..(created_at + 7.days)
-  end
-
-  def self.find_and_attribute(label, method, *params)
-    request = Request.send method, *params
-    return nil unless request
-
-    request.attributed_by ||= label
-    request
-  end
-
-  def self.find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
-    joins(:user)
-      .where(users: { email: email })
-      .where(requests: { created_at: date_range }).last
-  end
-
-  def self.fuzzy_find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
-    joins(:user)
-      .merge(User.fuzzy_matching_email(email))
-      .where(requests: { created_at: date_range }).last
-  end
-
   def deliver_marketing_opt_in_email
     return unless user.marketing_opt_in.nil?
     return unless user&.email
@@ -229,13 +248,16 @@ class Request < ApplicationRecord
 
   def enqueue_quote_actions
     RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
-    # RequestActionJob.perform_later(request: self, method: "send_quote") unless tattoo_size_id.nil?
+    RequestActionJob.set(wait: (Rails.env.test? ? 0 : 5).minutes).perform_later(request: self, method: "send_quote") unless tattoo_size_id.nil?
   end
 
-  # def send_quote
-  #  BoxMailer.marketing_email(self, tattoo_size.quote_template).deliver_now
-  #  update quoted_at: Time.now
-  # end
+  def send_quote
+    return unless quoted_at.nil?
+    raise "Cannot determine quote email" unless tattoo_size&.quote_email
+
+    update! quoted_at: Time.now
+    BoxMailer.quote_email(self, tattoo_size.quote_email).deliver_now
+  end
 
   def enqueue_deposit_actions
     RequestActionJob.perform_later(request: self, method: "send_confirmation_email")
@@ -243,14 +265,8 @@ class Request < ApplicationRecord
   end
 
   def streak_boxes
-    MostlyStreak::Box.query(user.email).map do |box|
-      Streak::Box.find(box.box_key)
-    end.select do |box|
-      box_created_at = Time.strptime(box.creation_timestamp.to_s, "%Q")
-      (box_created_at - created_at) < 2.days
-    end.map do |box|
-      MostlyStreak::Box.new box
-    end
+    MostlyStreak::Box.query(user.email)
+                     .select { |b| b.created_between?(created_at..(created_at + 2.days)) }
   end
 
   def mark_last_box_quoted

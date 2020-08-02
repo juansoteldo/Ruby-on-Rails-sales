@@ -11,12 +11,12 @@ module MostlyShopify
     def update_request!(request = self.request)
       raise StandardError, "cannot find request for #{order_status_url}" unless request
 
-      if request.can_convert? && is_deposit?
+      if request.can_convert? && deposit?
         request.convert
         request.update_columns deposit_order_id: @source.id,
                                state_changed_at: @source.created_at,
                                deposited_at: Time.now
-      elsif request.can_complete? && is_final?
+      elsif request.can_complete? && final?
         request.complete
         request.update_columns final_order_id: @source.id,
                                state_changed_at: @source.created_at
@@ -73,12 +73,12 @@ module MostlyShopify
       @source.line_items.map(&:sku).uniq
     end
 
-    def is_deposit?
       @source.line_items.any? { |line_item| line_item.title.include? "Deposit" }
+    def deposit?
     end
 
-    def is_final?
       @source.line_items.any? { |line_item| line_item.title.include? "Final" }
+    def final?
     end
 
     def self.find(params)
@@ -152,13 +152,13 @@ module MostlyShopify
       @sales_id ||= guess_sales_id
     end
 
-    private
-
     def landing_site
       return nil unless @source.respond_to? :landing_site
 
       @source.landing_site
     end
+
+    private
 
     def guess_sales_id
       return 6 if created_at.to_date < "Tue, 7 Jun 2016".to_date

@@ -17,6 +17,11 @@ module MostlyStreak
       assigned_to_sharing_entries.map(&:email).reject { |e| e == "sales@customtattoodesign.ca" }
     end
 
+    def created_between?(range)
+      created_at = Time.strptime(creation_timestamp.to_s, "%Q")
+      created_at >= range.first && created_at <= range.last
+    end
+
     def self.create(email)
       Streak.api_key = Settings.streak.api_key
       new Streak::Box.create(Settings.streak.pipeline_key, { name: email })
@@ -64,7 +69,7 @@ module MostlyStreak
       Streak.api_key = Settings.streak.api_key
 
       box = MostlyStreak::Box.query(email).find do |box|
-        box.name.casecmp?(email)
+        box&.name&.casecmp?(email)
       end
       box ||= MostlyStreak::Box.query(email).select do |box|
         difference = box.name.casecmp(email)

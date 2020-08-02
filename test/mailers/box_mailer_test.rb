@@ -40,4 +40,18 @@ class BoxMailerTest < ActionMailer::TestCase
     assert email.parts.all? { |part| part.body.to_s.include? "user_token=#{CGI.escape @request.user.authentication_token}" }
     assert email.parts.all? { |part| part.body.to_s.include? "user_email=#{CGI.escape @request.user.email}" }
   end
+
+  test "quote emails include link" do
+    @request.size = "Full Sleeve"
+    @request.assign_tattoo_size_attributes
+    quote_email = @request.tattoo_size.quote_email
+    email = BoxMailer.quote_email(@request, quote_email)
+
+    assert_emails 1 do
+      email.deliver_now
+    end
+
+    assert_equal [@request.user.email], email.to
+    assert email.parts.any? { |part| part.body.to_s.include? CGI.escape(@request.tattoo_size.deposit_variant_id) }
+  end
 end

@@ -41,6 +41,30 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
     assert box.stage_key == MostlyStreak::Stage.leads.key
   end
 
+  test "auto quote if enabled" do
+    Settings.emails.auto_quoting_enabled = true
+    request = Request.create! user: @user, description: "TEST, DO NOT REPLY"
+    request.update! art_sample_1: @image_url, size: "Full Sleeve"
+
+    perform_enqueued_jobs do
+      perform_enqueued_jobs do # deliver_emails
+        perform_enqueued_jobs do # streak_box_create
+          request.ensure_streak_box
+        end
+      end
+    end
+    message = wait_for_and_get_message(request.reload.streak_box_key)
+    assert_not_nil message
+    assert_emails 1 do
+      perform_enqueued_jobs do
+        perform_enqueued_jobs do # enqueue_quote_actions
+          Rake::Task["recurring:associate_gmail_threads"].invoke
+        end
+      end
+    end
+    assert_not_nil request.reload.quoted_at
+  end
+
   def wait_for_and_get_message(streak_box_key)
     message = nil
     start_time = Time.now
