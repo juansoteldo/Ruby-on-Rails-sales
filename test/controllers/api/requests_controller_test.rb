@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class Api::RequestsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -13,7 +13,7 @@ class Api::RequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show all requests with token" do
-    get api_requests_path, params: { token: ENV["GLOBAL_API_TOKEN"]}
+    get api_requests_path, params: { token: ENV["GLOBAL_API_TOKEN"] }
     assert_response :success
     result = JSON.parse(@response.body)
     assert result.count == 1
@@ -39,12 +39,12 @@ class Api::RequestsControllerTest < ActionDispatch::IntegrationTest
     first_name = SecureRandom.base64
     last_name = SecureRandom.base64
     patch api_request_path(
-              @existing_request.id,
-              uuid: @existing_request.uuid,
-              request: { client_id: client_id,
-                         first_name: first_name,
-                         last_name: last_name
-              })
+      @existing_request.id,
+      uuid: @existing_request.uuid,
+      request: { client_id: client_id,
+                 first_name: first_name,
+                 last_name: last_name }
+    )
     assert_response :success
     @existing_request.reload
 
@@ -52,5 +52,4 @@ class Api::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert @existing_request.last_name == last_name
     assert @existing_request.client_id == client_id
   end
-
 end

@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-require 'google/apis/gmail_v1'
-require 'googleauth'
-require 'googleauth/stores/redis_token_store'
-require 'redis'
-require 'fileutils'
+# rubocop:disable Style/MethodMissingSuper
+
+require "google/apis/gmail_v1"
+require "googleauth"
+require "googleauth/stores/redis_token_store"
+require "redis"
+require "fileutils"
 
 module MostlyGmail
   class Base
@@ -15,21 +17,21 @@ module MostlyGmail
     end
 
     def method_missing(symbol, *args)
-      @source.send(symbol, *args)
+      @source&.send(symbol, *args)
     end
 
-    ME_ID = "ME".freeze
-    OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
+    ME_ID = "ME"
+    OOB_URI = "urn:ietf:wg:oauth:2.0:oob"
     SCOPE = Google::Apis::GmailV1::AUTH_GMAIL_MODIFY
     CREDENTIALS_PATH = Rails.root.join("config", "gmail_credentials.json").freeze
-    APPLICATION_NAME = "CTD API".freeze
+    APPLICATION_NAME = "CTD API"
 
     class << self
-
       protected
 
       def service
         return @@service if @@service
+
         @@service = Google::Apis::GmailV1::GmailService.new
         @@service.client_options.application_name = APPLICATION_NAME
         @@service.authorization = authorize
@@ -47,15 +49,15 @@ module MostlyGmail
                                                Rails.application.credentials[:gmail][:client_secret]
         token_store = Google::Auth::Stores::RedisTokenStore.new(redis: Redis.new)
         authorizer = Google::Auth::UserAuthorizer.new(client_id, SCOPE, token_store)
-        user_id = 'default'
+        user_id = "default"
         credentials = authorizer.get_credentials(user_id)
         if credentials.nil?
           url = authorizer.get_authorization_url(base_url: OOB_URI)
-          puts 'Open the following URL in the browser and enter the ' \
+          puts "Open the following URL in the browser and enter the " \
          "resulting code after authorization:\n" + url
           code = gets
           credentials = authorizer.get_and_store_credentials_from_code(
-              user_id: user_id, code: code, base_url: OOB_URI
+            user_id: user_id, code: code, base_url: OOB_URI
           )
         end
         credentials

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
+
 require "sidekiq/worker"
 
+# Abstract ActiveJob class that accepts web hook data and logs exceptions
 class WebhookJob < ApplicationJob
   attr_accessor :webhook
 

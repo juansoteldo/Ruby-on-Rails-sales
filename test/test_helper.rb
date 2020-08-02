@@ -1,11 +1,11 @@
-ENV['RAILS_ENV'] ||= 'test'
-require 'simplecov'
-SimpleCov.start 'rails'
+ENV["RAILS_ENV"] ||= "test"
+require "simplecov"
+SimpleCov.start "rails"
 
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path("../config/environment", __dir__)
 require "rails/test_help"
 require "minitest/rails/capybara"
-require 'sidekiq/testing'
+require "sidekiq/testing"
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
@@ -17,9 +17,9 @@ class ActiveSupport::TestCase
   end
 
   def clear_requests_for(email)
-    RequestImage.joins(:user).where(email: email).each &:destroy!
-    Request.joins(:user).where(email: email).each &:destroy!
-    User.where(email: email).each &:destroy!
+    RequestImage.joins(:user).where(email: email).each(&:destroy!)
+    Request.joins(:user).where(email: email).each(&:destroy!)
+    User.where(email: email).each(&:destroy!)
   end
 
   def wpcf7_params
@@ -39,7 +39,7 @@ class ActiveSupport::TestCase
       linker_param: "",
       _ga: "",
       client_id: "",
-      user_attributes: { marketing_opt_in: "1" },
+      user_attributes: { marketing_opt_in: "1" }
     }.with_indifferent_access
   end
 
@@ -80,13 +80,13 @@ class ActiveSupport::TestCase
 
   def clear_streak_boxes
     raise "Cannot use production pipeline" if MostlyStreak::Pipeline.default.name == "CTD Sales"
+
     MostlyStreak::Box.all.each do |box|
       begin
         box.delete
-      rescue
+      rescue StandardError
       end
       sleep 2
     end
   end
-
 end

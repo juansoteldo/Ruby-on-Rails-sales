@@ -1,6 +1,6 @@
 module ApplicationHelper
   def in_admin_panel?
-    controller_path.split('/').first == 'admin' && params[:layout].to_s != "0"
+    controller_path.split("/").first == "admin" && params[:layout].to_s != "0"
   end
 
   def this_month

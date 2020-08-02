@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class EmailPreferencesControllerTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
@@ -26,7 +26,7 @@ class EmailPreferencesControllerTest < ActionDispatch::IntegrationTest
                                user_email: @user.email,
                                user_token: @user.authentication_token,
                                params: {
-                                 user: { id: @user.id, marketing_opt_in: true },
+                                 user: { id: @user.id, marketing_opt_in: true }
                                })
     assert_redirected_to edit_email_preference_path(@user,
                                                     user_email: @user.email,
@@ -37,7 +37,7 @@ class EmailPreferencesControllerTest < ActionDispatch::IntegrationTest
                                user_email: @user.email,
                                user_token: @user.authentication_token,
                                params: {
-                                 user: { id: @user.id, marketing_opt_in: false },
+                                 user: { id: @user.id, marketing_opt_in: false }
                                })
     @user.reload
     assert_equal @user.marketing_opt_in, false

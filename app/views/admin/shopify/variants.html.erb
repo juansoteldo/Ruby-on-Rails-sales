@@ -12,10 +12,10 @@
                   <% product.variants.each do |variant| %>
                       <tr class=" ">
                         <td class="">
-                          <img src="<%= asset_url('color-wheel.png') %>" class="<%= variant.has_color? || 'fade' %>" width="12" height="12"/>
+                          <img src="<%= asset_url('color-wheel.png') %>" class="<%= variant.color? || 'fade' %>" width="12" height="12"/>
                         </td>
                         <td class="">
-                          <span  class="<%= variant.has_cover_up? || 'fade' %>">C</span>
+                          <span  class="<%= variant.cover_up? || 'fade' %>">C</span>
                         </td>
                         <td class="">
                           <%= variant.price %>
@@ -23,7 +23,7 @@
                         <% url = "#{CTD::APP_URL}/public/redirect/#{product.handle}/#{variant.id}?salespersonId=#{current_salesperson.id}&requestId=" %>
                         <td class="col col-xs-4 td-actions">
                           <button class="btn btn-xs btn-url" data-title="<%= product.title %>" data-url="<%= url %>"
-                                  data-clipboard-text="<%= url %>" title="Copy to clipboard"><%= product.is_deposit? && 'Deposit' || 'Final' %></button>
+                                  data-clipboard-text="<%= url %>" title="Copy to clipboard"><%= product.deposit? && 'Deposit' || 'Final' %></button>
                         </td>
                       </tr>
                   <% end %>

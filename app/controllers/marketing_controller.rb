@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Controller that lets leads opt in and out of emails
 class MarketingController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback: :exception
   before_action :require_authentication!

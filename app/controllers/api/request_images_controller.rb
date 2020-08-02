@@ -14,12 +14,13 @@ class Api::RequestImagesController < Api::BaseController
   private
 
   def set_request_image
-    if globally_authenticated
-      @request_image = RequestImage.find(params[:id])&.decorate
-    else
-      @request_image = RequestImage.joins(:request).
-        where("request_images.id = ? AND requests.uuid = ?", params[:id], params[:uuid]).first&.decorate
-    end
+    @request_image = if globally_authenticated
+                       RequestImage.find(params[:id])&.decorate
+                     else
+                       RequestImage.joins(:request)
+                                   .where("request_images.id = ? AND requests.uuid = ?",
+                                          params[:id], params[:uuid]).first&.decorate
+                     end
     head 404 unless @request_image&.exists?
   end
 end

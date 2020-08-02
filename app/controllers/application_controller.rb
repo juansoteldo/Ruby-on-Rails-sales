@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Base controller class for whole project
 class ApplicationController < ActionController::Base
   include Pundit
   # Prevent CSRF attacks by raising an exception.
@@ -17,31 +18,31 @@ class ApplicationController < ActionController::Base
     # (using 'withCredentials' in the XMLHttpRequest), we need to add some headers so
     # the browser will not reject the response
 
-    headers['Access-Control-Allow-Origin'] = request.headers['Origin'] || '*'
-    headers['Access-Control-Allow-Credentials'] = 'true'
-    headers['X-Frame-Options'] = 'allow-from https://mail.google.com'
+    headers["Access-Control-Allow-Origin"] = request.headers["Origin"] || "*"
+    headers["Access-Control-Allow-Credentials"] = "true"
+    headers["X-Frame-Options"] = "allow-from https://mail.google.com"
   end
 
   def cors_set_access_control_headers
-    headers['Access-Control-Allow-Origin'] = '*'
-    headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
-    headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization, Token'
-    headers['Access-Control-Max-Age'] = '1728000'
+    headers["Access-Control-Allow-Origin"] = "*"
+    headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS"
+    headers["Access-Control-Allow-Headers"] = "Origin, Content-Type, Accept, Authorization, Token"
+    headers["Access-Control-Max-Age"] = "1728000"
   end
 
   def cors_preflight_check
-    if request.method == 'OPTIONS'
-      headers['Access-Control-Allow-Origin'] = '*'
-      headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
-      headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-Prototype-Version, Token'
-      headers['Access-Control-Max-Age'] = '1728000'
+    if request.method == "OPTIONS"
+      headers["Access-Control-Allow-Origin"] = "*"
+      headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS"
+      headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-Prototype-Version, Token"
+      headers["Access-Control-Max-Age"] = "1728000"
 
-      head :ok, content_type: 'text/plain'
+      head :ok, content_type: "text/plain"
     end
   end
 
   def options
-    head  :ok, 'Access-Control-Allow-Headers': 'accept, content-type'
+    head  :ok, 'Access-Control-Allow-Headers': "accept, content-type"
   end
 
   # Security note: controllers with no-CSRF protection must disable the Devise fallback,

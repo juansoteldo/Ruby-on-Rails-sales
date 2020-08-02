@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'mostly_shopify/product'
+require "mostly_shopify/product"
 
 class MostlyShopify::Group
   attr_accessor :title, :products, :id

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Handles administration of requests via the UI, mostly
 class Admin::RequestsController < Admin::BaseController
   skip_before_action :verify_authenticity_token, only: [:edit, :update]
   before_action :set_request, only: [:show, :edit, :update, :destroy, :opt_out, :send_confirmation]
@@ -11,12 +12,12 @@ class Admin::RequestsController < Admin::BaseController
 
     if params[:search]
       term = params[:search].downcase
-      @requests = @requests.
-        where('LOWER(users.email) ILIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ?',
-              "#{term}%", "#{term}%", "#{term}%")
+      @requests = @requests
+                  .where("LOWER(users.email) ILIKE ? OR LOWER(requests.first_name) LIKE ? OR LOWER(requests.last_name) LIKE ?",
+                         "#{term}%", "#{term}%", "#{term}%")
     end
-    @requests = @requests.where('requests.created_at > ?', after) if params[:after]
-    @requests = @requests.where('requests.created_at < ?', Date.strptime(params[:before])) if params[:before]
+    @requests = @requests.where("requests.created_at > ?", after) if params[:after]
+    @requests = @requests.where("requests.created_at < ?", Date.strptime(params[:before])) if params[:before]
 
     @requests_count = @requests.count
     @requests = @requests.limit(params[:limit]) if params[:limit]
@@ -25,14 +26,14 @@ class Admin::RequestsController < Admin::BaseController
     respond_to do |format|
       format.xlsx do
         send_data(CTD::ExportMaker.make_xlsx!(@requests).read_string,
-                  filename: "requests-#{Time.now.strftime("%Y%m%d-%H%M%S")}.xlsx",
-                  disposition: 'attachment')
+                  filename: "requests-#{Time.now.strftime('%Y%m%d-%H%M%S')}.xlsx",
+                  disposition: "attachment")
       end
-      format.csv {
+      format.csv do
         send_file(CTD::ExportMaker.make_csv!(@requests),
-                  filename: "requests-#{Time.now.strftime("%Y%m%d-%H%M%S")}.csv",
-                  disposition: 'attachment') and return
-      }
+                  filename: "requests-#{Time.now.strftime('%Y%m%d-%H%M%S')}.csv",
+                  disposition: "attachment") and return
+      end
       format.html
       format.json
     end
@@ -50,10 +51,10 @@ class Admin::RequestsController < Admin::BaseController
     user.opted_out = true
     respond_to do |format|
       if user.save
-        format.html { redirect_to admin_requests_path, notice: 'Opted out this user.' }
+        format.html { redirect_to admin_requests_path, notice: "Opted out this user." }
         format.json { render :show, status: :opted_out, location: admin_requests_path }
       else
-        format.html { redirect_to admin_requests_path, notice: 'Cannot opt this user out.' }
+        format.html { redirect_to admin_requests_path, notice: "Cannot opt this user out." }
         format.json { render json: user.errors, status: :unprocessable_entity }
       end
     end
@@ -64,10 +65,10 @@ class Admin::RequestsController < Admin::BaseController
     user.opted_out = false
     respond_to do |format|
       if user.save
-        format.html { redirect_to admin_requests_path, notice: 'Opted in this user.' }
+        format.html { redirect_to admin_requests_path, notice: "Opted in this user." }
         format.json { render :show, status: 200, location: admin_requests_path }
       else
-        format.html { redirect_to admin_requests_path, notice: 'Cannot opt this user in.' }
+        format.html { redirect_to admin_requests_path, notice: "Cannot opt this user in." }
         format.json { render json: user.errors, status: :unprocessable_entity }
       end
     end
@@ -76,7 +77,7 @@ class Admin::RequestsController < Admin::BaseController
   def send_confirmation
     respond_to do |format|
       @request.send_confirmation_email
-      format.html { redirect_to admin_requests_path, notice: 'Re-sent the email.' }
+      format.html { redirect_to admin_requests_path, notice: "Re-sent the email." }
       format.json { render :show, status: 200, location: admin_requests_path }
     end
   end
@@ -96,7 +97,7 @@ class Admin::RequestsController < Admin::BaseController
 
     respond_to do |format|
       if @request.save
-        format.html { redirect_to @request, notice: 'Request was successfully created.' }
+        format.html { redirect_to @request, notice: "Request was successfully created." }
         format.json { render :show, status: :created, location: @request }
       else
         format.html { render :new }
@@ -110,7 +111,7 @@ class Admin::RequestsController < Admin::BaseController
   def update
     respond_to do |format|
       if @request.update(request_params)
-        flash[:notice] = 'Request was successfully updated.'
+        flash[:notice] = "Request was successfully updated."
         format.html { render :edit }
         format.json { render :show, status: :ok, location: @request }
       else
@@ -125,12 +126,12 @@ class Admin::RequestsController < Admin::BaseController
   def destroy
     @request.destroy
     respond_to do |format|
-      format.html { redirect_to requests_url, notice: 'Request was successfully destroyed.' }
+      format.html { redirect_to requests_url, notice: "Request was successfully destroyed." }
       format.json { head :no_content }
     end
   end
 
-  private
+    private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_request
@@ -143,6 +144,6 @@ class Admin::RequestsController < Admin::BaseController
                                     :is_first_time, :gender, :has_color, :position, :notes, :description,
                                     :quote_id, :client_id, :ticket_id)
   end
-end
+  end
 
 require "ctd/export_maker"

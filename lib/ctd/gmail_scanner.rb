@@ -7,19 +7,25 @@ require "fileutils"
 
 module CTD
   class GmailScanner
-    EMAIL_REGEX = "^(?=[A-Z0-9][A-Z0-9@._%+-]{5,253}+$)[A-Z0-9._%+-]{1,64}+@(?:(?=[A-Z0-9-]{1,63}+\\.)[A-Z0-9]++(?:-[A-Z0-9]++)*+\\.){1,8}+[A-Z]{2,63}+$"
+    EMAIL_REGEX = '^(?=[A-Z0-9][A-Z0-9@._%+-]{5,253}+$)[A-Z0-9._%+-]{1,64}+@(?:(?=[A-Z0-9-]{1,63}+\\.)[A-Z0-9]++(?:-[A-Z0-9]++)*+\\.){1,8}+[A-Z]{2,63}+$'
 
     def self.associate_threads
       MostlyGmail::Message.new_design_requests.each do |message|
         next unless message.streak_box_key
         next if Request.where(thread_gmail_id: message.thread_id).any?
+
         box = MostlyStreak::Box.find(message.streak_box_key)
         next if box.nil?
+
         request = find_request_for_message(message)
         add_thread_to_box(message, box, request)
         box.update(notes: message.shortened_utf_8_text_body)
         box.set_stage("Leads") if box.current_stage.name == "Fresh"
         remove_thread_new_label message
+
+        next unless Settings.emails.auto_quoting_enabled
+
+        request.quote_from_attributes!
       end
     end
 
@@ -34,6 +40,7 @@ module CTD
     def self.add_thread_to_box(message, box, request)
       return if request.thread_gmail_id == message.thread_id
       return if MostlyStreak::Thread.all(box.key).map(&:thread_gmail_id).include?(message.thread_id)
+
       box.add_thread(message.streak_box_key, message.thread_id)
       request.update thread_gmail_id: message.thread_id
     end
@@ -41,7 +48,8 @@ module CTD
     def self.find_request_for_message(message)
       request = Request.find_by_streak_box_key(message.streak_box_key)
       return request if request
-      email = message.subject.gsub(/^.+ \((.+)\).*$/, "\\1")
+
+      email = message.subject.gsub(/^.+ \((.+)\).*$/, '\\1')
       request = Request.joins(:user).where(streak_box_key: nil, users: { email: email.strip.downcase }).last
       request
     end

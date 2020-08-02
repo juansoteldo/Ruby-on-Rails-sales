@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+# Represents a single form request from the CTD site
 class Request < ApplicationRecord
   belongs_to :user, optional: true
+  belongs_to :tattoo_size, optional: true
+  belongs_to :quoted_by, optional: true, class_name: "Salesperson"
   accepts_nested_attributes_for :user
   has_many :delivered_emails
   has_many :images, class_name: "RequestImage"
@@ -15,8 +18,8 @@ class Request < ApplicationRecord
   auto_strip_attributes :first_name, :last_name, :position
 
   scope :recent, (-> { where "created_at > ?", Rails.env.test? ? 1.seconds.ago : 5.minutes.ago })
-  scope :newer_than_days, (-> (days) { where "requests.created_at > ?", days.minutes.ago })
-  scope :matching_email, (-> (email) { joins(:user).where(users: { email: email }) })
+  scope :newer_than_days, (->(days) { where "requests.created_at > ?", days.minutes.ago })
+  scope :matching_email, (->(email) { joins(:user).where(users: { email: email }) })
   scope :deposited, (-> { where.not deposited_at: nil })
   scope :valid, (-> { where.not user_id: nil })
   scope :quoted_or_contacted_by, (->(salesperson_id) { where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
@@ -39,7 +42,7 @@ class Request < ApplicationRecord
     "Hip",
     "Wrist",
     "Ankle",
-    "Other",
+    "Other"
   ].freeze
 
   TATTOO_STYLES = [
@@ -52,14 +55,14 @@ class Request < ApplicationRecord
     "Japanese",
     "Blackwork",
     "Illustrative",
-    "Chicano",
+    "Chicano"
   ].freeze
 
   state_machine :state, initial: :fresh do
-    after_transition on: :quote, do: :enqueue_quote_actions
-    after_transition on: :convert, do: :enqueue_deposit_actions
-    # TODO: Check if this gets used
-    after_transition on: :complete, do: :perform_complete_actions
+    state :quoted
+    state :fresh
+    state :deposited
+    state :completed
 
     event :quote do
       transition fresh: :quoted
@@ -73,30 +76,59 @@ class Request < ApplicationRecord
       transition any: :completed
     end
 
-    state :quoted do
-    end
-
-    state :fresh do
-    end
-
-    state :deposited do
-    end
-
-    state :completed do
-    end
+    after_transition on: :quote, do: :enqueue_quote_actions
+    after_transition on: :convert, do: :enqueue_deposit_actions
+    after_transition on: :complete, do: :perform_complete_actions
   end
 
-  def full_name
-    names = [first_name, last_name].reject(&:nil?)
-    return nil unless names.any?
-    names.map(&:titleize).join(" ")
+  def self.relevant_date_range_for_order(order)
+    return CTD::MIN_DATE..Time.now if Rails.env.test?
+
+    created_at = order.created_at.to_date
+    (created_at - 180.days)..(created_at + 7.days)
+  end
+
+  def self.find_and_attribute(label, method, *params)
+    request = Request.send method, *params
+    return nil unless request
+
+    request.attributed_by ||= label
+    request
+  end
+
+  def self.find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
+    joins(:user)
+      .where(users: { email: email })
+      .where(requests: { created_at: date_range }).last
+  end
+
+  def self.fuzzy_find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
+    joins(:user)
+      .merge(User.fuzzy_matching_email(email))
+      .where(requests: { created_at: date_range }).last
   end
 
   def quote_from_params!(params)
     return unless fresh?
+
     self.variant = params[:variant_id]
     self.quoted_by_id ||= params[:salesperson_id]
-    save! && quote!
+    save!
+    quote!
+  end
+
+  def quote_from_attributes!
+    return unless fresh?
+
+    assign_tattoo_size_attributes
+    self.quoted_by_id ||= Salesperson.default
+    save!
+    quote!
+  end
+
+  def assign_tattoo_size_attributes
+    self.tattoo_size = TattooSize.for_request(self)
+    self.variant = tattoo_size.deposit_variant_id
   end
 
   def salesperson
@@ -114,7 +146,7 @@ class Request < ApplicationRecord
   end
 
   def relevant_order_id
-    state == 'deposited' && deposit_order_id || state == 'completed' && final_order_id || nil
+    state == "deposited" && deposit_order_id || state == "completed" && final_order_id || nil
   end
 
   def days_since_state_change
@@ -132,6 +164,7 @@ class Request < ApplicationRecord
   (1..10).each do |x|
     define_method("art_sample_#{x}=") do |file|
       return if file.to_s.empty?
+
       add_image_from_param(file)
       File.unlink(file) if File.exist?(file)
     end
@@ -140,9 +173,10 @@ class Request < ApplicationRecord
   def add_image_from_param(file)
     image = RequestImage.from_param(file)
     raise "#{file.truncate(128)} is not an image" unless image
+
     image.request_id = id
     image.save!
-  rescue => e
+  rescue StandardError => e
     logger.error ">>> Cannot add image from #{file.truncate(128)}"
     logger.error e.message
     logger.error e.backtrace.join("\n")
@@ -161,9 +195,7 @@ class Request < ApplicationRecord
 
   def self.for_shopify_order(order, reset_attribution: false)
     request = find_and_attribute("request_id", :find_by_id, order.request_id.to_i) if order.request_id
-    unless reset_attribution || order.id.nil?
-      request ||= find_and_attribute("webhook", :find_by_deposit_order_id, order.id)
-    end
+    request ||= find_and_attribute("webhook", :find_by_deposit_order_id, order.id) unless reset_attribution || order.id.nil?
     unless order.email.to_s.empty?
       request ||= find_and_attribute("email", :find_by_email,
                                      order.email.downcase.strip,
@@ -176,13 +208,15 @@ class Request < ApplicationRecord
     end
     return nil unless request
     return request unless reset_attribution || request.attributed_by.nil?
+
     request.save
     request
   end
 
   def ensure_streak_box
     return if streak_box_key
-    StreakBoxCreateJob.perform_later(self)
+
+    CreateStreakBoxJob.perform_later(self)
   end
 
   def opt_in_user
@@ -194,39 +228,16 @@ class Request < ApplicationRecord
     return false unless user&.email&.present?
     return false unless user.first_name&.present?
     return false unless description&.present?
+
     true
   end
 
   private
 
-  def self.relevant_date_range_for_order(order)
-    return CTD::MIN_DATE..Time.now if Rails.env.test?
-    created_at = order.created_at.to_date
-    (created_at - 180.days)..(created_at + 7.days)
-  end
-
-  def self.find_and_attribute(label, method, *params)
-    request = Request.send method, *params
-    return nil unless request
-    request.attributed_by ||= label
-    request
-  end
-
-  def self.find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
-    joins(:user).
-      where(users: { email: email }).
-      where(requests: { created_at: date_range }).last
-  end
-
-  def self.fuzzy_find_by_email(email, date_range: CTD::MIN_DATE..Time.now)
-    joins(:user).
-      merge(User.fuzzy_matching_email(email)).
-      where(requests: { created_at: date_range }).last
-  end
-
   def deliver_marketing_opt_in_email
     return unless user.marketing_opt_in.nil?
     return unless user&.email
+
     BoxMailer.opt_in_email(self).deliver_later
   end
 
@@ -237,6 +248,15 @@ class Request < ApplicationRecord
 
   def enqueue_quote_actions
     RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
+    RequestActionJob.set(wait: (Rails.env.test? ? 0 : 5).minutes).perform_later(request: self, method: "send_quote") unless tattoo_size_id.nil?
+  end
+
+  def send_quote
+    return unless quoted_at.nil?
+    raise "Cannot determine quote email" unless tattoo_size&.quote_email
+
+    update! quoted_at: Time.now
+    BoxMailer.quote_email(self, tattoo_size.quote_email).deliver_now
   end
 
   def enqueue_deposit_actions
@@ -245,14 +265,8 @@ class Request < ApplicationRecord
   end
 
   def streak_boxes
-    MostlyStreak::Box.query(user.email).map do |box|
-      Streak::Box.find(box.box_key)
-    end.select do |box|
-      box_created_at = Time.strptime(box.creation_timestamp.to_s, '%Q')
-      (box_created_at - created_at) < 2.days
-    end.map do |box|
-      MostlyStreak::Box.new box
-    end
+    MostlyStreak::Box.query(user.email)
+                     .select { |b| b.created_between?(created_at..(created_at + 2.days)) }
   end
 
   def mark_last_box_quoted
@@ -262,14 +276,15 @@ class Request < ApplicationRecord
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
     return unless ["Contacted", "Leads"].include?(current_stage.name)
 
-    box.set_stage('Quoted')
+    box.set_stage("Quoted")
   end
 
   def mark_boxes_deposited
     streak_boxes.each do |box|
       current_stage = MostlyStreak::Stage.find(key: box.stage_key)
       next unless ["Contacted", "Leads", "Quoted"].include?(current_stage.name)
-      box.set_stage('Deposited')
+
+      box.set_stage("Deposited")
     end
   end
 
@@ -279,6 +294,7 @@ class Request < ApplicationRecord
 
     order = MostlyShopify::Order.find(deposit_order_id).first
     return 0 unless order
+
     update_column :sub_total, order.subtotal_price
     sub_total.to_f
   end
@@ -289,6 +305,7 @@ class Request < ApplicationRecord
 
   def update_user_names
     return unless user
+
     user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
   end
 end

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Executes a Request action (method) asynchronously
 class RequestActionJob < ApplicationJob
   retry_on Streak::APIError, wait: 15.seconds, attempts: 6
 

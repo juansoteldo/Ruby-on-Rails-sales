@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'mostly_streak/base'
+require "mostly_streak/base"
 
 module MostlyStreak
   class Stage < Base
     def self.all
-      Rails.cache.fetch('streak_stage/all', expires_in: 1.hours) do
+      Rails.cache.fetch("streak_stage/all", expires_in: 1.hours) do
         Streak.api_key = Settings.streak.api_key
         Streak::Stage.all(Settings.streak.pipeline_key)
       end
@@ -14,10 +14,8 @@ module MostlyStreak
     def self.find(param = {})
       param_key = param.keys.first.to_s
 
-      all.instance_values["values"].each do |key, val|
-        if val.send(param_key).to_s == param[param_key.to_sym]
-          return val
-        end
+      all.instance_values["values"].each do |_key, val|
+        return val if val.send(param_key).to_s == param[param_key.to_sym]
       end
     end
 
@@ -28,7 +26,7 @@ module MostlyStreak
     end
 
     def self.leads
-       Rails.cache.fetch("streak_stage/leads", expires_in: 1.hour) do
+      Rails.cache.fetch("streak_stage/leads", expires_in: 1.hour) do
         find(name: "Leads")
       end
     end

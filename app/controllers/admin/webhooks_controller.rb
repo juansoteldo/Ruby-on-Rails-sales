@@ -10,12 +10,13 @@ class Admin::WebhooksController < Admin::BaseController
   def perform
     authorize @webhook
     redirect_to(admin_webhooks_path) && return if @webhook.committed?
+
     respond_to do |format|
       if @webhook.perform!
-        format.html { redirect_to admin_webhooks_path, notice: 'Committed this webhook.' }
+        format.html { redirect_to admin_webhooks_path, notice: "Committed this webhook." }
         format.json { render :index, status: :committed, location: admin_webhooks_path }
       else
-        format.html { redirect_to admin_webhooks_path, notice: 'Cannot commit this webhook.' }
+        format.html { redirect_to admin_webhooks_path, notice: "Cannot commit this webhook." }
         format.json { render json: @webhook.errors, status: :unprocessable_entity }
       end
     end
@@ -24,12 +25,13 @@ class Admin::WebhooksController < Admin::BaseController
   def destroy
     authorize @webhook
     redirect_to(admin_webhooks_path) && return if @webhook.committed?
+
     respond_to do |format|
       if @webhook.destroy!
-        format.html { redirect_to admin_webhooks_path, notice: 'Deleted this webhook.' }
+        format.html { redirect_to admin_webhooks_path, notice: "Deleted this webhook." }
         format.json { render :index, status: :committed, location: admin_webhooks_path }
       else
-        format.html { redirect_to admin_webhooks_path, notice: 'Cannot delete this webhook.' }
+        format.html { redirect_to admin_webhooks_path, notice: "Cannot delete this webhook." }
         format.json { render json: @webhook.errors, status: :unprocessable_entity }
       end
     end

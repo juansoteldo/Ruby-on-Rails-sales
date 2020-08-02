@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
-require 'shopify_api'
+# rubocop:disable Style/MethodMissingSuper
+
+require "shopify_api"
 
 module MostlyShopify
+  # The base class for MostlyShopify classes
   class Base
     attr_accessor :source
 

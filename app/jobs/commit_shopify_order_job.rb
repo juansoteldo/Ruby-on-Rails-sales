@@ -2,7 +2,8 @@
 
 require "shopify_api"
 
-class OrdersCreateJob < WebhookJob
+# Updates a Request based on Shopify order web hook data
+class CommitShopifyOrderJob < WebhookJob
   def perform(args)
     super
     source_order = ShopifyAPI::Session.temp(domain: ShopifyAPI::Base.site.to_s, api_version: "2020-01", token: nil) do

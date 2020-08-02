@@ -2,16 +2,16 @@ source "https://rubygems.org"
 ruby "2.6.6"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails"
-gem "rails", "5.2.4.2"
-gem 'rack', '2.0.8'
 gem "bootsnap"
+gem "rack", "2.0.8"
+gem "rails", "5.2.4.2"
 # Use sqlite3 as the database for Active Record
-gem 'pg', '~> 0.18'
+gem "pg", "~> 0.18"
 
 # Use SCSS for stylesheets
-gem "sass-rails"
-gem "bootstrap-sass", "~> 3.3.6"
 gem "bootstrap_form", "~> 2.7"
+gem "bootstrap-sass", "~> 3.3.6"
+gem "sass-rails"
 
 # Use Uglifier as compressor for JavaScript assets
 gem "uglifier", ">= 1.3.0"
@@ -31,25 +31,25 @@ gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.5"
 
 # bundle exec rake doc:rails generates the API under doc/api.
-#gem "sdoc", "~> 0.4.0", group: :doc
+# gem "sdoc", "~> 0.4.0", group: :doc
 
-gem 'acts_as_paranoid', '~> 0.6.0'
+gem "acts_as_paranoid", "~> 0.6.0"
 gem "ahoy_email"
 gem "aws-sdk-s3", require: false
 gem "daemons"
-gem "sidekiq"
 gem "draper"
 gem "fast_excel"
 gem "figaro"
 gem "google-api-client"
 gem "js-routes"
-gem "zeroclipboard-rails"
 gem "phony_rails"
 gem "pundit"
 gem "ransack"
 gem "shopify_api"
+gem "sidekiq"
 gem "simple_form"
 gem "streak-ruby", git: "https://github.com/mostlydev/streak-ruby.git"
+gem "zeroclipboard-rails"
 
 # Use ActiveModel has_secure_password
 # gem "bcrypt", "~> 3.1.7"
@@ -69,7 +69,7 @@ gem "carrierwave"
 gem "fog-aws"
 gem "mini_magick"
 gem "newrelic_rpm"
-gem 'will_paginate', '~> 3.1.0'
+gem "will_paginate", "~> 3.1.0"
 
 group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console
@@ -82,8 +82,8 @@ group :development, :test do
 end
 
 group :test do
-  gem 'minitest-rails-capybara'
-  gem 'simplecov', require: false
+  gem "minitest-rails-capybara"
+  gem "simplecov", require: false
 end
 
 group :development do
@@ -92,7 +92,5 @@ group :development do
   gem "overcommit", require: false
   gem "reek", require: false
   gem "rubocop", require: false
-  gem "rubocop-airbnb", require: false
   gem "web-console"
 end
-

@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class PublicControllerTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
@@ -112,7 +112,6 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     post new_request_path(position: "Chest", gender: "Male", first_name: "John", client_id: "123456", format: :json)
     assert_response 422
   end
-
 
   test "should save email and update streak box stage" do
     salesperson = Salesperson.first

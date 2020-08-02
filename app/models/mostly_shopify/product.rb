@@ -14,23 +14,28 @@ module MostlyShopify
       shopify_sources.map { |i| new(i) }
     end
 
+    def self.for_variant(_variant)
+      all.find { |p| p.variants.any? { |v| v.id == _variant.id } }
+    end
+
     def self.shopify_sources
       products = Rails.cache.fetch("shopify/products/all", expires_in: expire_in(15.minutes)) do
         ShopifyAPI::Product.all params: { limit: 200 }
       end
       raise "no-products-found" if products.nil?
+
       products
-    rescue
+    rescue StandardError
       Rails.cache.delete("shopify/products/all")
       []
     end
 
-    def is_final_payment?
-      handle.include?('final')
+    def final_payment?
+      handle.include?("final")
     end
 
-    def is_deposit?
-      handle.include?('deposit')
+    def deposit?
+      handle.include?("deposit")
     end
 
     def variants
@@ -38,11 +43,11 @@ module MostlyShopify
     end
 
     def sub_title
-      @source.title.sub(group_title, '').strip
+      @source.title.sub(group_title, "").strip
     end
 
     def group_title
-      title.sub('Final Payment', '').sub('Deposit', '').strip
+      title.sub("Final Payment", "").sub("Deposit", "").strip
     end
   end
 end

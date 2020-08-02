@@ -6,16 +6,16 @@ module Admin::SalespeopleHelper
 
     # number_to_percentage(sales_count(salesperson, date_range).to_f / total_count.to_f * 100, precision: 0)
     #      deposited_count = salesperson.deposited_requests.where( created_at: date_range ).count
-    number_to_percentage(sales_count(salesperson, date_range).to_f / total_count.to_f * 100, precision: 0)
+    number_to_percentage(sales_count(salesperson, date_range) / total_count.to_f * 100, precision: 0)
   end
 
   def value_of_requests(salesperson, period)
-    requests = salesperson.deposited_requests.where(created_at: period)
+    requests = salesperson.requests.deposited.where(created_at: period)
     sum = requests.map do |r|
       MostlyShopify::Variant.find(r.variant).first.price.to_f
     end.sum
 
-    sum && number_to_currency(sum, precision: 0, unit: '') || ''
+    sum && number_to_currency(sum, precision: 0, unit: "") || ""
   end
 
   def deposits_month_to_date(salesperson)

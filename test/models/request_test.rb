@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class RequestTest < ActiveSupport::TestCase
   include ActionMailer::TestHelper
@@ -113,7 +113,7 @@ class RequestTest < ActiveSupport::TestCase
   def last_deposit_order
     order_count = MostlyShopify::Order.count({})
 
-    order = MostlyShopify::Order.new(ShopifyAPI::Order.all({limit: 1, page: order_count}).last)
+    order = MostlyShopify::Order.new(ShopifyAPI::Order.all({ limit: 1, page: order_count }).last)
     order
   end
 
@@ -123,12 +123,12 @@ class RequestTest < ActiveSupport::TestCase
       "note_attributes": [
         {
           "name": "req_id",
-          "value": request.id.to_s,
+          "value": request.id.to_s
         },
         {
           "name": "sales_id",
-          "value": request.quoted_by_id,
-        },
+          "value": request.quoted_by_id
+        }
       ]
     ).merge(params)
     order

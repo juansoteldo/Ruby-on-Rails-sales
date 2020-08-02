@@ -1,6 +1,8 @@
-require 'test_helper'
+# frozen_string_literals: true
 
-class StreakBoxCreateJobTest < ActiveJob::TestCase
+require "test_helper"
+
+class CreateStreakBoxJobTest < ActiveJob::TestCase
   setup do
     @previous_create_value = Settings.streak.create_boxes
     Settings.streak.create_boxes = true
@@ -12,7 +14,7 @@ class StreakBoxCreateJobTest < ActiveJob::TestCase
   end
 
   test "should create a box with the correct attributes" do
-    StreakBoxCreateJob.perform_now(@request)
+    CreateStreakBoxJob.perform_now(@request)
     assert_not_nil @request.streak_box_key
     box = MostlyStreak::Box.find(@request.streak_box_key)
     assert_equal @request.description, box.notes

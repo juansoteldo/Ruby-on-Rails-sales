@@ -1,0 +1,48 @@
+-
+  name: "Don't Know"
+  deposit_variant_id:
+  order: 1
+  size: 0
+  quote_template_name: "general_quote_email"
+-
+  name: "Extra Small"
+  deposit_variant_id: "12093636542535"
+  order: 2
+  size: 1
+  quote_template_name: "general_quote_email"
+-
+  name: "Small"
+  deposit_variant_id: "24471687046"
+  order: 3
+  size: 2
+  quote_template_name: "general_quote_email"
+-
+  name: "Medium"
+  deposit_variant_id: "24466391238"
+  order: 4
+  size: 3
+  quote_template_name: "general_quote_email"
+-
+  name: "Large"
+  deposit_variant_id: "12145477382"
+  order: 5
+  size: 4
+  quote_template_name: "general_quote_email"
+-
+  name: "Half Sleeve"
+  deposit_variant_id: "12143802310"
+  order: 6
+  size: -1
+  quote_template_name: "half_sleeve_quote_email"
+-
+  name: "Full Sleeve"
+  deposit_variant_id: "12147839878"
+  order: 7
+  size: -1
+  quote_template_name: "half_sleeve_quote_email"
+-
+  name: "Extra Large"
+  deposit_variant_id: "12148420550"
+  order: 8
+  size: 5
+  quote_template_name: "general_quote_email"

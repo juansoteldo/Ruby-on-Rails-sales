@@ -1,6 +1,6 @@
-require 'test_helper'
+require "test_helper"
 
-class RequestCreateJobTest < ActiveJob::TestCase
+class CreateRequestJobTest < ActiveJob::TestCase
   include ActionMailer::TestHelper
 
   setup do
@@ -24,7 +24,7 @@ class RequestCreateJobTest < ActiveJob::TestCase
   test "opts user back in" do
     user = users(:wpcf7)
     user.update! presales_opt_in: false, marketing_opt_in: false, crm_opt_in: false
-    RequestCreateJob.perform_now webhook: new_webhook({})
+    CreateRequestJob.perform_now webhook: new_webhook({})
 
     assert user.reload.presales_opt_in
     assert user.crm_opt_in
@@ -33,22 +33,22 @@ class RequestCreateJobTest < ActiveJob::TestCase
 
   test "should add a new request with an image" do
     art_samples = {
-      art_sample_1: @image_data,
+      art_sample_1: @image_data
     }
     content_type = content_type(@image_file)
-    request = RequestCreateJob.perform_now webhook: new_webhook(art_samples)
+    request = CreateRequestJob.perform_now webhook: new_webhook(art_samples)
     assert request
     assert request.images.any?
-    assert request.images.decorate.all? &:exists?
+    assert request.images.decorate.all?(&:exists?)
     assert content_type.include?(request.images.first.decorate.content_type)
   end
 
   test "should add a new request with 2 images" do
     art_samples = {
       art_sample_1: @image_data,
-      art_sample_2: @image_data2,
+      art_sample_2: @image_data2
     }
-    request = RequestCreateJob.perform_now webhook: new_webhook(art_samples)
+    request = CreateRequestJob.perform_now webhook: new_webhook(art_samples)
     assert request
     assert_equal request.images.count, 2
   end
@@ -56,10 +56,10 @@ class RequestCreateJobTest < ActiveJob::TestCase
   test "should clear art_sample fields" do
     art_samples = {
       art_sample_1: @image_data,
-      art_sample_2: @image_data2,
+      art_sample_2: @image_data2
     }
     webhook = new_webhook(art_samples)
-    RequestCreateJob.perform_now webhook: webhook
+    CreateRequestJob.perform_now webhook: webhook
     assert_nil webhook.reload.params[:art_sample_1]
     assert_nil webhook.params[:art_sample_2]
   end

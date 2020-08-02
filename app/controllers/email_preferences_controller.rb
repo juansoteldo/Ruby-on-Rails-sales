@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Provides authenticated route with a ui for opting in and out
 class EmailPreferencesController < ApplicationController
   acts_as_token_authentication_handler_for User, fallback: :exception
   before_action :require_authentication!
@@ -16,7 +17,7 @@ class EmailPreferencesController < ApplicationController
     authorize @user
     if @user.update!(email_preference_params)
       redirect_to edit_email_preference_url(@user, user_email: @user.email, user_token: @user.authentication_token),
-                  notice: 'Email preferences were successfully updated.'
+                  notice: "Email preferences were successfully updated."
     else
       render :edit
     end

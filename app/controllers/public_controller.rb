@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Provides most publicly-accessible API routes
 class PublicController < ApplicationController
   skip_before_action :verify_authenticity_token
 
@@ -20,12 +21,12 @@ class PublicController < ApplicationController
   before_action :set_or_create_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
 
   def redirect
-    request.format = 'html'
+    request.format = "html"
     @request = Request.find(params[:requestId]) if params[:requestId].present? && Request.find(params[:requestId])
     @request ||= Request.find_by__ga(params[:_ga]) if params[:_ga] && Request.where(_ga: params[:_ga]).any?
 
-    @url = 'https://shop.customtattoodesign.ca/products/'
-    if @request&.client_id && @request.client_id != 'false'
+    @url = "https://shop.customtattoodesign.ca/products/"
+    if @request&.client_id && @request.client_id != "false"
       @request.update_columns(variant: params[:variant], handle: params[:handle], last_visited_at: Time.now)
       @url += "#{params[:handle]}?variant=#{params[:variant]}&uid=#{@request.user_id}&cid=#{@request.client_id}&reqid=#{@request.id}"
     elsif @request
@@ -62,16 +63,16 @@ class PublicController < ApplicationController
   end
 
   def get_uid
-    request.format = 'json'
+    request.format = "json"
     render json: @user&.id
   end
 
   def get_links
-    request.format = 'json'
+    request.format = "json"
   end
 
   def get_ids
-    request.format = 'json'
+    request.format = "json"
   end
 
   def set_link
@@ -94,6 +95,7 @@ class PublicController < ApplicationController
 
   def update_user_names
     return if @user.first_name.to_s.present?
+
     @user.update user_params
   end
 
@@ -109,7 +111,8 @@ class PublicController < ApplicationController
 
   def set_or_create_request_by_email
     return if @request
-    @request = Request.joins(:user).where('users.email LIKE ?', params[:email]).first
+
+    @request = Request.joins(:user).where("users.email LIKE ?", params[:email]).first
     @request ||= Request.create(user: @user)
   end
 
@@ -119,6 +122,7 @@ class PublicController < ApplicationController
 
   def set_shopify_order
     return if params[:order_id].blank?
+
     source_order = ShopifyAPI::Order.find(params[:order_id])
     @order = MostlyShopify::Order.new source_order
     params[:email] ||= @order&.customer&.email
@@ -140,24 +144,20 @@ class PublicController < ApplicationController
   end
 
   def set_user_by_client_id
-    if params[:client_id].blank?
-      render(json: false) && return
-    end
+    render(json: false) && return if params[:client_id].blank?
 
     @user = User.joins(:requests).where(requests: { client_id: params[:client_id] }).first
   end
 
   def load_products
     @groups = MostlyShopify::Group.all.reject do |group|
-      group.products.count == 0
+      group.products.count.zero?
     end
   end
 
   def validate_request_parameters
     [:position, :gender, :first_name, :last_name, :client_id].each do |sym|
-      if params[sym] == '' || params[sym] == false
-        head(422) && return
-      end
+      head(422) && return if params[sym] == "" || params[sym] == false
     end
   end
 
@@ -177,9 +177,9 @@ class PublicController < ApplicationController
   end
 
   def disable_cache
-    response.headers['Cache-Control'] = 'no-cache, no-store'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
+    response.headers["Cache-Control"] = "no-cache, no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 
   def email_is_present?
@@ -191,4 +191,4 @@ class PublicController < ApplicationController
   end
 end
 
-require 'securerandom'
+require "securerandom"

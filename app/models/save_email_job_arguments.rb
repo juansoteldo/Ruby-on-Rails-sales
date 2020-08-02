@@ -22,6 +22,7 @@ class SaveEmailJobArguments
 
   def salesperson_email=(value)
     return unless value =~ URI::MailTo::EMAIL_REGEXP
+
     @salesperson = Salesperson.find_by_email(value)
   end
 

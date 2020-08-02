@@ -1,8 +1,8 @@
-require 'test_helper'
+require "test_helper"
 
 class BoxMailerTest < ActionMailer::TestCase
   def get_urls(string)
-    regexp = /(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)/ix
+    regexp = %r{(^$)|(^(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?$)}ix
     string.scan(regexp)
   end
 
@@ -39,5 +39,22 @@ class BoxMailerTest < ActionMailer::TestCase
     assert_equal "E-Mail opt-in Custom Tattoo Design", email.subject
     assert email.parts.all? { |part| part.body.to_s.include? "user_token=#{CGI.escape @request.user.authentication_token}" }
     assert email.parts.all? { |part| part.body.to_s.include? "user_email=#{CGI.escape @request.user.email}" }
+  end
+
+  test "quote emails include link" do
+    @request.size = "Full Sleeve"
+    @request.assign_tattoo_size_attributes
+    quote_email = @request.tattoo_size.quote_email
+    email = BoxMailer.quote_email(@request, quote_email)
+
+    assert_emails 1 do
+      email.deliver_now
+    end
+
+    assert_equal [@request.user.email], email.to
+    assert email.parts.any? { |part| part.body.to_s.include? CGI.escape(@request.tattoo_size.deposit_variant_id) }
+    variant = MostlyShopify::Variant.find(@request.tattoo_size.deposit_variant_id.to_i).first
+    product = variant.product
+    assert email.parts.any? { |part| part.body.to_s.include? CGI.escape(product.handle) }
   end
 end

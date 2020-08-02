@@ -22,11 +22,11 @@ class Api::RequestsController < Api::BaseController
   private
 
   def set_request
-    if globally_authenticated
-      @request = Request.includes(:user).where(id: params[:id]).first
-    else
-      @request = Request.includes(:user).where(id: params[:id], uuid: params[:uuid]).first
-    end
+    @request = if globally_authenticated
+                 Request.includes(:user).where(id: params[:id]).first
+               else
+                 Request.includes(:user).where(id: params[:id], uuid: params[:uuid]).first
+               end
     head 404 unless @request
   end
 
