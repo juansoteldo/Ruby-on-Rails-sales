@@ -53,5 +53,8 @@ class BoxMailerTest < ActionMailer::TestCase
 
     assert_equal [@request.user.email], email.to
     assert email.parts.any? { |part| part.body.to_s.include? CGI.escape(@request.tattoo_size.deposit_variant_id) }
+    variant = MostlyShopify::Variant.find(@request.tattoo_size.deposit_variant_id.to_i).first
+    product = variant.product
+    assert email.parts.any? { |part| part.body.to_s.include? CGI.escape(product.handle) }
   end
 end
