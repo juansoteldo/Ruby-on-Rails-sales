@@ -73,12 +73,12 @@ module MostlyShopify
       @source.line_items.map(&:sku).uniq
     end
 
-      @source.line_items.any? { |line_item| line_item.title.include? "Deposit" }
     def deposit?
+      @source.line_items.any? { |line_item| line_item.title.include? "Deposit" }
     end
 
-      @source.line_items.any? { |line_item| line_item.title.include? "Final" }
     def final?
+      @source.line_items.any? { |line_item| line_item.title.include? "Final" }
     end
 
     def self.find(params)
