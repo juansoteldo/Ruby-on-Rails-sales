@@ -14,6 +14,10 @@ module MostlyShopify
       shopify_sources.map { |i| new(i) }
     end
 
+    def self.for_variant(_variant)
+      all.find { |p| p.variants.any? { |v| v.id == _variant.id } }
+    end
+
     def self.shopify_sources
       products = Rails.cache.fetch("shopify/products/all", expires_in: expire_in(15.minutes)) do
         ShopifyAPI::Product.all params: { limit: 200 }

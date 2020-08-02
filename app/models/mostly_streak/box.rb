@@ -49,7 +49,7 @@ module MostlyStreak
       Rails.cache.fetch("streak_box/query/" + query, expires_in: 5.seconds) do
         Streak.api_key = Settings.streak.api_key
         results = Streak::Search.query(query).results
-        results&.boxes || [{}]
+        results&.boxes&.map { |b| find(b.box_key) } || [{}]
       end
     end
 
