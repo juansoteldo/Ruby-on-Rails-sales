@@ -8,6 +8,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
   def setup
+    Settings.emails.auto_quoting_enabled = false
     @user = users(:one)
     RequestMailer.delivery_method = :smtp
     Settings.streak.create_boxes = true
@@ -22,7 +23,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
   end
 
   test "associate gmail threads" do
-    request = Request.create! user: @user, description: "TEST, DO NOT REPLY"
+    request = requests(:fresh)
     request.update! art_sample_1: @image_url
 
     perform_enqueued_jobs do
@@ -43,8 +44,8 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
 
   test "auto quote if enabled" do
     Settings.emails.auto_quoting_enabled = true
-    request = Request.create! user: @user, description: "TEST, DO NOT REPLY"
-    request.update! art_sample_1: @image_url, size: "Full Sleeve"
+    request = requests(:fresh)
+    request.update! art_sample_1: @image_url
 
     perform_enqueued_jobs do
       perform_enqueued_jobs do # deliver_emails

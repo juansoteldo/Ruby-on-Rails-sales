@@ -10,6 +10,8 @@ fresh:
   position: MyString
   notes: MyString
   client_id: MyString
+  size: Medium
+  style: Traditional
   state: fresh
   description: THIS IS A TEST, DO NOT EMAIL ME
 
@@ -19,6 +21,8 @@ wpcf7:
   last_name: Smith
   position: Sleeve
   has_color: false
+  size: Medium
+  style: Traditional
   is_first_time: false
   gender: Male
   description: Test test
@@ -34,6 +38,8 @@ quoted:
   position: MyString
   notes: MyString
   client_id: MyString
+  size: Medium
+  style: Traditional
   state: quoted
   description: THIS IS A TEST, DO NOT EMAIL ME
 
@@ -48,40 +54,9 @@ deposited:
   notes: MyString
   client_id: MyString
   state: deposited
+  size: Medium
+  style: Traditional
   description: THIS IS A TEST, DO NOT EMAIL ME
   created_at: <%= Time.now - 30.minutes %>
   deposited_at: <%= Time.now - 15.minutes %>
 
-
-# t.integer "user_id"
-# t.string "first_name", default: ""
-# t.string "last_name", default: ""
-# t.boolean "is_first_time"
-# t.string "gender"
-# t.boolean "has_color"
-# t.boolean "has_cover_up"
-# t.string "position"
-# t.string "large"
-# t.string "notes"
-# t.string "sku"
-# t.string "deposit_order_id"
-# t.string "final_order_id"
-# t.string "sub_total"
-# t.string "request_id"
-# t.string "client_id"
-# t.string "ticket_id"
-# t.datetime "created_at", null: false
-# t.datetime "updated_at", null: false
-# t.string "_ga"
-# t.string "linker_param"
-# t.string "handle"
-# t.string "variant"
-# t.datetime "last_visited_at"
-# t.string "deposit_variant"
-# t.integer "quoted_by_id"
-# t.string "state", default: "fresh"
-# t.datetime "state_changed_at"
-# t.text "description"
-# t.datetime "deposited_at"
-# t.integer "contacted_by_id"
-# t.uuid "uuid", default: -> { "uuid_generate_v4()" }
