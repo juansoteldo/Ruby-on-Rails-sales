@@ -1,10 +1,18 @@
 class TattooSize < ApplicationRecord
   belongs_to :quote_email, class_name: "MarketingEmail"
 
+  scope :defined, -> { where.not size: 0 }
+
   def variant
     return nil if deposit_variant_id.nil?
 
     @variant ||= MostlyShopify::Variant.find(deposit_variant_id)
+  end
+
+  def self.defined_size_names
+    Rails.cache.fetch("tattoo_size_names", expires_in: 24.hours) do
+      defined.map(&:name)
+    end
   end
 
   def self.default

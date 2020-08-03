@@ -37,15 +37,15 @@ class CreateRequestJob < WebhookJob
 
     return unless params[:user_attributes].key?(:marketing_opt_in)
 
-    params[:user_attributes][:marketing_opt_in] = params[:user_attributes][:marketing_opt_in] == '0' ? false : nil
+    params[:user_attributes][:marketing_opt_in] = params[:user_attributes][:marketing_opt_in] == "0" ? false : nil
     @user.update params[:user_attributes]
   end
 
   def normalize_email!
-    raise 'empty email' unless params.key?(:email)
+    raise "empty email" unless params.key?(:email)
 
     email = params[:email].to_s.downcase.strip
-    raise 'empty email' if email.blank?
+    raise "empty email" if email.blank?
 
     params[:email] = email
     params[:email]

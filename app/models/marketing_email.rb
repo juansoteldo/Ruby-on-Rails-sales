@@ -15,6 +15,13 @@ class MarketingEmail < ApplicationRecord
      "2_week_reminder_email", "48_hour_follow_up_email", "2_week_follow_up_email"]
   end
 
+  def self.quote_for_request(request)
+    return nil unless request.auto_quotable?
+    return find_by_template_name("first_time_quote_email") if request.first_time?
+
+    request.tattoo_size.quote_email
+  end
+
   def quote?
     email_type == "quote"
   end

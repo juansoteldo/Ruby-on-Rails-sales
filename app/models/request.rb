@@ -117,11 +117,20 @@ class Request < ApplicationRecord
     quote!
   end
 
+  def first_time?
+    user.requests.where("created_at < ?", created_at).where.not(state: "fresh").none?
+  end
+
+  def auto_quotable?
+    size != "Extra Large" && Request::TATTOO_STYLES.include?(style) && TattooSize.defined_size_names.include?(size)
+  end
+
   def quote_from_attributes!
     return unless fresh?
+    return unless auto_quotable?
 
     assign_tattoo_size_attributes
-    self.quoted_by_id ||= Salesperson.default
+    self.quoted_by = Salesperson.system
     save!
     quote!
   end
@@ -256,7 +265,7 @@ class Request < ApplicationRecord
     raise "Cannot determine quote email" unless tattoo_size&.quote_email
 
     update! quoted_at: Time.now
-    BoxMailer.quote_email(self, tattoo_size.quote_email).deliver_now
+    BoxMailer.quote_email(self).deliver_now
   end
 
   def enqueue_deposit_actions
@@ -276,6 +285,7 @@ class Request < ApplicationRecord
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
     return unless ["Contacted", "Leads"].include?(current_stage.name)
 
+    quoted_by.claim_requests_with_email(user.email)
     box.set_stage("Quoted")
   end
 

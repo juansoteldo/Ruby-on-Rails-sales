@@ -24,6 +24,7 @@ module CTD
         remove_thread_new_label message
 
         next unless Settings.emails.auto_quoting_enabled
+        next unless request.auto_quotable?
 
         request.quote_from_attributes!
       end
