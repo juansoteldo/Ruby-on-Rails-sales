@@ -118,7 +118,7 @@ class Request < ApplicationRecord
   end
 
   def first_time?
-    user.requests.where("created_at < ?", created_at).where.not(id: id).where.not(state: "fresh").none?
+    user.requests.where("created_at < ?", created_at).where.not(state: "fresh").none?
   end
 
   def auto_quotable?
