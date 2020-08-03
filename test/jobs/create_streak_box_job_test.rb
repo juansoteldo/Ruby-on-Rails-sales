@@ -33,8 +33,9 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
 
   test "should send to lee when don't know size" do
     Settings.emails.deliver_start_design = true
-    Settings.emails.auto_quote_enabled = true
-    @request.size = "Don't Know"
+    Settings.emails.auto_quoting_enabled = true
+    @request.update! size: "Don't Know"
+
     assert_emails 1 do
       perform_enqueued_jobs do
         CreateStreakBoxJob.perform_now(@request)
@@ -46,8 +47,8 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
 
   test "should send to lee when don't know style" do
     Settings.emails.deliver_start_design = true
-    Settings.emails.auto_quote_enabled = true
-    @request.style = "Don't Know"
+    Settings.emails.auto_quoting_enabled = true
+    @request.update! style: "Don't Know"
     assert_emails 1 do
       perform_enqueued_jobs do
         CreateStreakBoxJob.perform_now(@request)
@@ -59,7 +60,7 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
 
   test "should send to sales with known size" do
     Settings.emails.deliver_start_design = true
-    Settings.emails.auto_quote_enabled = true
+    Settings.emails.auto_quoting_enabled = true
     @request.update_columns size: TattooSize.find_by(size: 1).name,
                             style: Request::TATTOO_STYLES.first
     assert_emails 1 do
