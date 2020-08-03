@@ -44,7 +44,7 @@ class BoxMailerTest < ActionMailer::TestCase
   test "quote emails include link" do
     @request.size = "Full Sleeve"
     @request.assign_tattoo_size_attributes
-    quote_email = @request.tattoo_size.quote_email
+    Settings.emails.auto_quoting_enabled = true
     email = BoxMailer.quote_email(@request)
 
     assert_emails 1 do
