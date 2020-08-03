@@ -45,7 +45,7 @@ class BoxMailerTest < ActionMailer::TestCase
     @request.size = "Full Sleeve"
     @request.assign_tattoo_size_attributes
     quote_email = @request.tattoo_size.quote_email
-    email = BoxMailer.quote_email(@request, quote_email)
+    email = BoxMailer.quote_email(@request)
 
     assert_emails 1 do
       email.deliver_now

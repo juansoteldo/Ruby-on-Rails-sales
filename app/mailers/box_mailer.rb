@@ -7,7 +7,7 @@ class BoxMailer < ApplicationMailer
 
   add_template_helper(ApplicationHelper)
 
-  def quote_email(request, marketing_email = MarketingEmail.find_by_template_name("general_quote_email"))
+  def quote_email(request)
     return unless request.user
 
     @request = request
@@ -15,18 +15,20 @@ class BoxMailer < ApplicationMailer
     raise "Cannot find variant with ID #{request.tattoo_size.deposit_variant_id}" if @variant.nil?
 
     @user = @request.user
+    quote = MarketingEmail.quote_for_request(request)
+
     track user: @user
-    track utm_content: marketing_email.template_name
-    @quote_template_path = "#{marketing_email.template_path}/#{marketing_email.template_name}"
-    marketing_email.template_name = "quote_email"
-    marketing_email.template_path = "box_mailer"
+    track utm_content: quote.template_name
+    @quote_template_path = "#{quote.template_path}/#{quote.template_name}"
+    quote.template_name = "quote_email"
+    quote.template_path = "box_mailer"
 
     mail(to: @user.email,
-         subject: marketing_email.subject_line,
-         from: marketing_email.from,
-         display_name: marketing_email.from.gsub(/<.+>/, ""),
-         template_path: marketing_email.template_path,
-         template_name: marketing_email.template_name)
+         subject: quote.subject_line,
+         from: quote.from,
+         display_name: quote.from.gsub(/<.+>/, ""),
+         template_path: quote.template_path,
+         template_name: quote.template_name)
   end
 
   def marketing_email(request, marketing_email = MarketingEmail.find(1))

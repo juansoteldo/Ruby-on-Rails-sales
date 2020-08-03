@@ -11,7 +11,12 @@ class RequestMailer < ApplicationMailer
     subject = "New Start Design Request - #{@request.full_name} (#{@user.email})"
     subject = "[TEST] " + subject unless Rails.env.production?
     headers["X-CTD-Streak-Box-Key"] = @request.streak_box_key
-    mail(to: "sales@customtattoodesign.ca",
+    to = if Settings.emails.auto_quote_enabled && !request.auto_quotable?
+           "leeroller@customtattoodesign.ca"
+         else
+           "sales@customtattoodesign.ca"
+         end
+    mail(to: to,
          subject: subject,
          reply_to: @user.email)
   end
