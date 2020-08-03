@@ -331,7 +331,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
-    rack (2.0.8)
+    rack (2.1.4)
     rack-protection (2.0.8.1)
       rack
     rack-test (1.1.0)
@@ -533,7 +533,7 @@ DEPENDENCIES
   phony_rails
   puma
   pundit
-  rack (= 2.0.8)
+  rack (= 2.1.4)
   rails (= 5.2.4.2)
   ransack
   rb-readline
