@@ -45,8 +45,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
   test "auto quote if enabled" do
     Settings.emails.auto_quoting_enabled = true
     request = requests(:fresh)
-    request.update! size: TattooSize.find_by_size(1).name, style: Request::TATTOO_STYLES.first
-    request.update! art_sample_1: @image_url
+    request.update! size: TattooSize.find_by_size(1).name, style: Request::TATTOO_STYLES.first, art_sample_1: @image_url
 
     perform_enqueued_jobs do
       perform_enqueued_jobs do # deliver_emails

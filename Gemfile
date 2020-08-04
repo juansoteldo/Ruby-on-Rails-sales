@@ -34,6 +34,7 @@ gem "jbuilder", "~> 2.5"
 # gem "sdoc", "~> 0.4.0", group: :doc
 
 gem "acts_as_paranoid", "~> 0.6.0"
+gem "after_commit_everywhere", "~> 0.1", ">= 0.1.5"
 gem "ahoy_email"
 gem "aws-sdk-s3", require: false
 gem "daemons"
