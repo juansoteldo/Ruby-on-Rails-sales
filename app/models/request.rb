@@ -47,6 +47,7 @@ class Request < ApplicationRecord
 
   TATTOO_STYLES = [
     "Traditional",
+    "Custom Script",
     "Realistic",
     "Watercolor",
     "Tribal",
