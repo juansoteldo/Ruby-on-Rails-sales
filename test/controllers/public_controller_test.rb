@@ -88,6 +88,8 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "set_link should assign quotation parameters" do
+    Settings.emails.auto_quoting_enabled = false
+
     variant = MostlyShopify::Variant.all.first
     request = requests(:fresh)
     get set_link_path(request_id: request.id, variant_id: variant.id, salesperson_id: @salesperson.id, format: :json)

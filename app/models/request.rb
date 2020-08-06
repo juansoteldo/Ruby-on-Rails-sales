@@ -127,7 +127,11 @@ class Request < ApplicationRecord
   end
 
   def auto_quotable?
-    sleeve? || size != "Extra Large" && Request::TATTOO_STYLES.include?(style) && TattooSize.defined_size_names.include?(size)
+    return false unless Request.auto_quoting_enabled?
+    return true if sleeve?
+    return false if size == "Extra Large"
+
+    Request::TATTOO_STYLES.include?(style) && TattooSize.defined_size_names.include?(size)
   end
 
   def quote_from_attributes!
@@ -262,15 +266,21 @@ class Request < ApplicationRecord
 
   def enqueue_quote_actions
     RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
-    RequestActionJob.set(wait: (Rails.env.test? ? 0 : 5).minutes).perform_later(request: self, method: "send_quote") unless tattoo_size_id.nil?
+    return unless auto_quotable?
+
+    raise "Cannot determine tattoo size for request #{id}" if tattoo_size_id.nil?
+
+    RequestActionJob.set(wait: (Rails.env.test? ? 0 : 5).minutes).perform_later(request: self, method: "send_quote")
   end
 
   def send_quote
     return unless quoted_at.nil?
-    raise "Cannot determine quote email" unless tattoo_size&.quote_email
+
+    quote = MarketingEmail.quote_for_request(self)
+    raise "Cannot determine quote email" unless quote
 
     update! quoted_at: Time.now
-    BoxMailer.quote_email(self).deliver_now
+    BoxMailer.quote_email(self, quote).deliver_now
   end
 
   def enqueue_deposit_actions
@@ -322,5 +332,12 @@ class Request < ApplicationRecord
     return unless user
 
     user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
+  end
+
+  def self.auto_quoting_enabled?
+    return false unless Settings.emails.auto_quoting_enabled
+    return true if Rails.env.test?
+
+    Time.now.hour < 5 || Time.now.hour >= 17
   end
 end
