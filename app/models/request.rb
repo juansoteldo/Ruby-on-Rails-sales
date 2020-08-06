@@ -122,8 +122,12 @@ class Request < ApplicationRecord
     user.requests.where("created_at < ?", created_at).where.not(state: "fresh").none?
   end
 
+  def sleeve?
+    size&.include?("leeve")
+  end
+
   def auto_quotable?
-    size != "Extra Large" && Request::TATTOO_STYLES.include?(style) && TattooSize.defined_size_names.include?(size)
+    sleeve? || size != "Extra Large" && Request::TATTOO_STYLES.include?(style) && TattooSize.defined_size_names.include?(size)
   end
 
   def quote_from_attributes!

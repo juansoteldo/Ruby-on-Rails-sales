@@ -2,6 +2,7 @@
 
 # Mailer class responsible for sending initial request email
 class RequestMailer < ApplicationMailer
+  include ApplicationHelper
   default from: "Custom Tattoo Design <mailer@customtattoodesign.ca>"
   default display_name: "Custom Tattoo Design"
 
@@ -11,7 +12,7 @@ class RequestMailer < ApplicationMailer
     subject = "New Start Design Request - #{@request.full_name} (#{@user.email})"
     subject = "[TEST] " + subject unless Rails.env.production?
     headers["X-CTD-Streak-Box-Key"] = @request.streak_box_key
-    to = if Settings.emails.auto_quoting_enabled && !request.auto_quotable?
+    to = if auto_quoting_enabled? && !request.auto_quotable?
            "leeroller@customtattoodesign.ca"
          else
            "sales@customtattoodesign.ca"

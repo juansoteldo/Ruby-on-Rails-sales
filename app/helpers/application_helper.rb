@@ -21,4 +21,8 @@ module ApplicationHelper
       "alert alert-info"
     end
   end
+
+  def auto_quoting_enabled?
+    Settings.emails.auto_quoting_enabled && (Time.now.hour < 5 || Time.now.hour >= 17)
+  end
 end

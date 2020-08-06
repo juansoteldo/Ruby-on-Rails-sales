@@ -36,8 +36,25 @@ class RequestTest < ActiveSupport::TestCase
     end
   end
 
+  test ".auto_quotable?" do
+    @request.size = "Medium"
+    @request.style = "Traditional"
+    assert @request.auto_quotable?
+    @request.style = "Don't Know"
+    assert_not @request.auto_quotable?
+    @request.size = "Half Sleeve"
+    assert @request.auto_quotable?
+  end
+
   test "quote_from_params!" do
     @request.quote_from_params!({ variant_id: @variant.id, salesperson_id: @salesperson.id })
+  end
+
+  test ".sleeve?" do
+    @request.size = "Half Sleeve"
+    assert @request.sleeve?
+    @request.size = "Nothing"
+    assert_not @request.sleeve?
   end
 
   test ".first_time?" do
