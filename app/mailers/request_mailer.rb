@@ -2,6 +2,7 @@
 
 # Mailer class responsible for sending initial request email
 class RequestMailer < ApplicationMailer
+  include ApplicationHelper
   default from: "Custom Tattoo Design <mailer@customtattoodesign.ca>"
   default display_name: "Custom Tattoo Design"
 
