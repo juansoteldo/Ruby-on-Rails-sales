@@ -338,6 +338,7 @@ class Request < ApplicationRecord
     return false unless Settings.emails.auto_quoting_enabled
     return true if Rails.env.test?
 
-    Time.now.hour < 5 || Time.now.hour >= 17
+    hour = Time.zone.now.hour
+    hour < 5 || hour >= 17
   end
 end
