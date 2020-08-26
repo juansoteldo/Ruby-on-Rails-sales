@@ -5,7 +5,7 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Lee Roller Custom Tattoo Design/Owner"
   template_name: "24_hour_reminder_email"
-  template_path: "box_mailer/reminders"
+  template_path: "box_mailer/lead_reminders"
   version: 1
 -
   state: "fresh,quoted"
@@ -14,7 +14,7 @@
   from: '"Brittany Greenhill" <brittany@customtattoodesign.ca>'
   subject_line: "New amazing artists for you from Custom Tattoo Design"
   template_name: "1_week_reminder_email"
-  template_path: "box_mailer/reminders"
+  template_path: "box_mailer/lead_reminders"
   version: 1
 -
   state: "fresh,quoted"
@@ -23,7 +23,7 @@
   from: "Brittany Greenhill <brittany@customtattoodesign.ca>"
   subject_line: "Touching Base Brittany Custom Tattoo Design"
   template_name: "2_week_reminder_email"
-  template_path: "box_mailer/reminders"
+  template_path: "box_mailer/lead_reminders"
   version: 1
 -
   state: "deposited,completed"
@@ -50,7 +50,7 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Any questions I can help with?"
   template_name: "24_hour_unquoted_reminder_email"
-  template_path: "box_mailer/reminders"
+  template_path: "box_mailer/lead_reminders"
   version: 1
 -
   state: "fresh"
@@ -59,7 +59,7 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Any questions I can help with?"
   template_name: "24_hour_unquoted_reminder_email"
-  template_path: "box_mailer/reminders"
+  template_path: "box_mailer/lead_reminders"
   version: 1
 -
   state: "fresh"
