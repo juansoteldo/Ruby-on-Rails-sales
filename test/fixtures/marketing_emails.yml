@@ -14,7 +14,7 @@
   state: "fresh,quoted"
   email_type: "reminder"
   days_after_state_change: 7
-  from: '"Brittany Greenhill" <brittany@customtattoodesign.ca>'
+  from: '"Carmelle" <carmelle@customtattoodesign.ca>'
   subject_line: "New amazing artists for you from Custom Tattoo Design"
   template_name: "1_week_reminder_email"
   template_path: "box_mailer/lead_reminders"
@@ -24,8 +24,8 @@
   state: "fresh,quoted"
   email_type: "reminder"
   days_after_state_change: 14
-  from: "Brittany Greenhill <brittany@customtattoodesign.ca>"
-  subject_line: "Touching Base Brittany Custom Tattoo Design"
+  from: "Carmelle <carmelle@customtattoodesign.ca>"
+  subject_line: "Touching Base Carmelle Custom Tattoo Design"
   template_name: "2_week_reminder_email"
   template_path: "box_mailer/lead_reminders"
   version: 1
@@ -34,7 +34,7 @@
   state: "deposited,completed"
   email_type: "follow_up"
   days_after_state_change: 2
-  from: "Kayla McKee <kaylamckee@customtattoodesign.ca>"
+  from: "Carmelle <carmelle@customtattoodesign.ca>"
   subject_line: "Creating The Best Tattoo with Custom Tattoo Design"
   template_name: "48_hour_follow_up_email"
   template_path: "box_mailer/follow_ups"
@@ -44,7 +44,7 @@
   state: "deposited,completed"
   email_type: "follow_up"
   days_after_state_change: 14
-  from: "Kayla McKee <kaylamckee@customtattoodesign.ca>"
+  from: "Carmelle <carmelle@customtattoodesign.ca>"
   subject_line: "How Is Your Experience with Custom Tattoo Design?"
   template_name: "2_week_follow_up_email"
   template_path: "box_mailer/follow_ups"
