@@ -64,7 +64,7 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "ctd_worklist_#{Rails.env}"
 
   config.action_mailer.perform_caching = false
-  config.marketing_email_recipients = ["leeroller@customtattoodesign.ca", "brittany@customtattoodesign.ca", "johnd@customtattoodesign.ca"]
+  config.marketing_email_recipients = ["leeroller@customtattoodesign.ca", "carmelle@customtattoodesign.ca", "johnd@customtattoodesign.ca"]
 
   config.action_mailer.delivery_method = :sendmail
   # Ignore bad email addresses and do not raise email delivery errors.
