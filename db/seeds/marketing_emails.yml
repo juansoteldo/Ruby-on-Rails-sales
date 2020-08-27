@@ -21,7 +21,7 @@
   days_after_state_change: 14
   email_type: "reminder"
   from: "Carmelle Krasevec <carmelle@customtattoodesign.ca>"
-  subject_line: "Touching Base Brittany Custom Tattoo Design"
+  subject_line: "Touching Base Carmelle Custom Tattoo Design"
   template_name: "2_week_reminder_email"
   template_path: "box_mailer/lead_reminders"
   version: 1
