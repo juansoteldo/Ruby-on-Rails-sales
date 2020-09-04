@@ -1,4 +1,6 @@
 class RequestDecorator < Draper::Decorator
+  include ActionView::Helpers::DateHelper
+
   delegate_all
 
   def full_name
@@ -6,6 +8,10 @@ class RequestDecorator < Draper::Decorator
     return nil unless names.any?
 
     names.map(&:titleize).join(" ")
+  end
+
+  def age_in_words
+    time_ago_in_words(state_changed_at)
   end
 
   def full_notes

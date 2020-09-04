@@ -37,8 +37,9 @@ class BoxMailerTest < ActionMailer::TestCase
     assert_equal ["leeroller@customtattoodesign.ca"], email.from
     assert_equal [@request.user.email], email.to
     assert_equal "E-Mail opt-in Custom Tattoo Design", email.subject
-    assert email.parts.all? { |part| part.body.to_s.include? "user_token=#{CGI.escape @request.user.authentication_token}" }
-    assert email.parts.all? { |part| part.body.to_s.include? "user_email=#{CGI.escape @request.user.email}" }
+    token = CGI.escape(@request.user.authentication_token)
+    assert(email.parts.all? { |part| part.body.to_s.include? "user_token=#{token}" })
+    assert(email.parts.all? { |part| part.body.to_s.include? "user_email=#{token}" })
   end
 
   test "quote emails include link" do
@@ -52,9 +53,24 @@ class BoxMailerTest < ActionMailer::TestCase
     end
 
     assert_equal [@request.user.email], email.to
-    assert email.parts.any? { |part| part.body.to_s.include? CGI.escape(@request.tattoo_size.deposit_variant_id) }
+    assert(email.parts.any? { |part| part.body.to_s.include? CGI.escape(@request.tattoo_size.deposit_variant_id) })
     variant = MostlyShopify::Variant.find(@request.tattoo_size.deposit_variant_id.to_i).first
     product = variant.product
-    assert email.parts.any? { |part| part.body.to_s.include? CGI.escape(product.handle) }
+    handle = CGI.escape(product.handle)
+    assert(email.parts.any? { |part| part.body.to_s.include? handle })
+  end
+
+  test "quote emails bcc notification recipients" do
+    @request.size = "Full Sleeve"
+    @request.assign_tattoo_size_attributes
+    Settings.emails.auto_quoting_enabled = true
+    email = BoxMailer.quote_email(@request)
+
+    assert_emails 1 do
+      email.deliver_now
+    end
+
+    assert_equal [@request.user.email], email.to
+    assert(Settings.emails.notification_recipients.all? { |bcc| email.bcc.include?(bcc) })
   end
 end

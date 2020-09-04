@@ -8,3 +8,5 @@ streak:
 emails:
   deliver_start_design: true
   deliver_opt_in: true
+  notification_recipients:
+    - "mailer@ctd-sales.dev"
