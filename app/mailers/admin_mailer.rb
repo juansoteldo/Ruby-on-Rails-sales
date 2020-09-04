@@ -3,7 +3,7 @@
 class AdminMailer < ApplicationMailer
   def daily_blast_counts(counts)
     @counts = counts
-    recipients = Rails.application.config.marketing_email_recipients
+    recipients = Settings.emails.notification_recipients
     recipients ||= []
     mail(to: recipients,
          subject: "Daily Marketing E-Mail Report")

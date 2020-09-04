@@ -25,6 +25,7 @@ class BoxMailer < ApplicationMailer
     mail(to: @user.email,
          subject: _quote.subject_line,
          from: _quote.from,
+         bcc: Settings.emails.notification_recipients,
          display_name: _quote.from.gsub(/<.+>/, ""),
          template_path: _quote.template_path,
          template_name: _quote.template_name)
