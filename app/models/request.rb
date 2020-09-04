@@ -23,6 +23,12 @@ class Request < ApplicationRecord
   scope :deposited, (-> { where.not deposited_at: nil })
   scope :valid, (-> { where.not user_id: nil })
   scope :quoted_or_contacted_by, (->(salesperson_id) { where("quoted_by_id = ? OR contacted_by_id = ?", salesperson_id, salesperson_id) })
+  scope :created_or_changed_between, (lambda { |start_time, end_time|
+                                        where(
+                                          "requests.created_at > ? AND state_changed_at BETWEEN ? AND ?", start_time, start_time, end_time
+                                        )
+                                      })
+  scope :quoted, (-> { where.not(quoted_by_id: nil) })
 
   TATTOO_POSITIONS = [
     "Calf",
@@ -248,6 +254,10 @@ class Request < ApplicationRecord
     return false unless description&.present?
 
     true
+  end
+
+  def to_s
+    "Request ##{id}"
   end
 
   private

@@ -15,6 +15,13 @@ class MarketingEmail < ApplicationRecord
      "2_week_reminder_email", "48_hour_follow_up_email", "2_week_follow_up_email"]
   end
 
+  def self.last_reminder_for_request(request)
+    order("days_after_state_change")
+      .where("days_after_state_change * 24 < ? AND state LIKE ?",
+             request.hours_since_state_change,
+             "%#{request.state}%").last
+  end
+
   def self.quote_for_request(request)
     return nil unless request.auto_quotable?
     return find_by_template_name("first_time_quote_email") if request.first_time?
@@ -24,5 +31,9 @@ class MarketingEmail < ApplicationRecord
 
   def quote?
     email_type == "quote"
+  end
+
+  def to_s
+    "MarketingEmail ##{id} (#{template_name})"
   end
 end
