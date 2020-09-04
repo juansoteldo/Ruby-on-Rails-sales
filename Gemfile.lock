@@ -495,6 +495,7 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
+  activesupport (>= 5.2.4.3)
   acts_as_paranoid (~> 0.6.0)
   after_commit_everywhere (~> 0.1, >= 0.1.5)
   ahoy_email

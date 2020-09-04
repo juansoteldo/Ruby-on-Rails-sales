@@ -2,6 +2,7 @@ source "https://rubygems.org"
 ruby "2.6.6"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails"
+gem "activesupport", ">= 5.2.4.3"
 gem "bootsnap"
 gem "rack", "2.1.4"
 gem "rails", "5.2.4.3"
