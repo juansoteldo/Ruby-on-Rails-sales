@@ -69,6 +69,7 @@ gem "state_machines-activerecord"
 
 gem "carrierwave"
 gem "fog-aws"
+gem "honeybadger", "~> 4.0"
 gem "mini_magick"
 gem "newrelic_rpm"
 gem "will_paginate", "~> 3.1.0"
