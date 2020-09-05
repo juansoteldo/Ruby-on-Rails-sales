@@ -133,7 +133,7 @@ class Request < ApplicationRecord
   end
 
   def auto_quotable?
-    return false unless Request.auto_quoting_enabled?
+    return false unless Settings.emails.auto_quoting_enabled
     return true if sleeve?
     return false if size == "Extra Large"
 
@@ -286,6 +286,8 @@ class Request < ApplicationRecord
   def send_quote
     return unless quoted_at.nil?
 
+    raise "#{self} has no tattoo_size (style = #{style.inspect}, size = #{size.inspect})" unless tattoo_size
+
     quote = MarketingEmail.quote_for_request(self)
     raise "Cannot determine quote email" unless quote
 
@@ -342,13 +344,5 @@ class Request < ApplicationRecord
     return unless user
 
     user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
-  end
-
-  def self.auto_quoting_enabled?
-    return false unless Settings.emails.auto_quoting_enabled
-    return true if Rails.env.test?
-
-    hour = Time.zone.now.hour
-    hour < 5 || hour >= 17
   end
 end
