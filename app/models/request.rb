@@ -278,7 +278,8 @@ class Request < ApplicationRecord
     RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
     return unless auto_quotable? && salesperson == Salesperson.system
 
-    RequestActionJob.set(wait: (Rails.env.test? ? 0 : 5).minutes).perform_later(request: self, method: "send_quote")
+    delay = Settings.emails.auto_quoting_delay
+    RequestActionJob.set(wait: delay.minutes).perform_later(request: self, method: "send_quote")
   end
 
   def send_quote

@@ -10,3 +10,4 @@ emails:
   deliver_opt_in: true
   notification_recipients:
     - "mailer@ctd-sales.dev"
+  auto_quoting_delay: 0
