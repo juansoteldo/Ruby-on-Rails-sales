@@ -276,9 +276,7 @@ class Request < ApplicationRecord
 
   def enqueue_quote_actions
     RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
-    return unless auto_quotable?
-
-    raise "Cannot determine tattoo size for request #{id}" if tattoo_size_id.nil?
+    return unless auto_quotable? && salesperson == Salesperson.system
 
     RequestActionJob.set(wait: (Rails.env.test? ? 0 : 5).minutes).perform_later(request: self, method: "send_quote")
   end
