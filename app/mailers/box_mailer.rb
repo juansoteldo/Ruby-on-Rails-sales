@@ -6,6 +6,7 @@ class BoxMailer < ApplicationMailer
   layout "marketing_email"
 
   add_template_helper(ApplicationHelper)
+  track open: true, click: true
 
   def quote_email(request, _quote = MarketingEmail.quote_for_request(request))
     return unless request.user
