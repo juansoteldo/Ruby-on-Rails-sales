@@ -25,7 +25,7 @@ class TattooSize < ApplicationRecord
     tattoo_size = find_by_name(request.size)
     tattoo_size ||= default
     return tattoo_size if tattoo_size.size <= 0
-    return tattoo_size if request.style != "Realistic" || tattoo_size.sleeve?
+    return tattoo_size if request.style != "Realistic" || request.sleeve?
 
     tattoo_size.size == 5 ? tattoo_size : find_by_size(tattoo_size.size + 1)
   end
