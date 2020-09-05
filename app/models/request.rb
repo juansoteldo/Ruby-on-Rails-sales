@@ -286,12 +286,14 @@ class Request < ApplicationRecord
   def send_quote
     return unless quoted_at.nil?
 
+    assign_tattoo_size_attributes unless tattoo_size
     raise "#{self} has no tattoo_size (style = #{style.inspect}, size = #{size.inspect})" unless tattoo_size
 
     quote = MarketingEmail.quote_for_request(self)
-    raise "Cannot determine quote email" unless quote
+    raise "`send_quote` cannot determine quote for #{self} (style = #{style.inspect}, size = #{size.inspect})" unless quote
 
-    update! quoted_at: Time.now
+    self.quoted_at = Time.now
+    save!
     BoxMailer.quote_email(self, quote).deliver_now
   end
 
