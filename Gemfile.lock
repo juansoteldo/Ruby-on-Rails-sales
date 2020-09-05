@@ -243,6 +243,7 @@ GEM
     graphql-client (0.16.0)
       activesupport (>= 3.0)
       graphql (~> 1.8)
+    honeybadger (4.6.0)
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -516,6 +517,7 @@ DEPENDENCIES
   figaro
   fog-aws
   google-api-client
+  honeybadger (~> 4.0)
   jbuilder (~> 2.5)
   jquery-rails
   js-routes
