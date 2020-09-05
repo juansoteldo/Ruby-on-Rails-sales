@@ -24,7 +24,7 @@ class MarketingEmail < ApplicationRecord
 
   def self.quote_for_request(request)
     return nil unless request.auto_quotable?
-    return find_by_template_name("first_time_quote_email") if request.first_time?
+    return find_by_template_name("first_time_quote_email") if request.first_time? && !request.sleeve?
 
     request.tattoo_size.quote_email
   end

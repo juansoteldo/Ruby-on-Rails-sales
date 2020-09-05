@@ -129,7 +129,7 @@ class Request < ApplicationRecord
   end
 
   def sleeve?
-    size&.include?("leeve")
+    size&.ends_with?("leeve")
   end
 
   def auto_quotable?
