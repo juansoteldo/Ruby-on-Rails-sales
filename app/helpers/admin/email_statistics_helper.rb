@@ -8,7 +8,7 @@ module Admin::EmailStatisticsHelper
   end
 
   def all_message_of(mailer_type, template = nil, range = default_range)
-    messages = ahoy_messages(range).where(utm_campaign: mailer_type)
+    messages = ahoy_messages(range).where(mailer: mailer_type)
     messages = messages.where(utm_content: template) if template.present?
     messages
   end

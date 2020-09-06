@@ -17,8 +17,8 @@ class BoxMailer < ApplicationMailer
 
     @user = @request.user
 
-    track user: @user
-    track utm_content: _quote.template_name
+    track user: @user,
+          utm_campaign: _quote.template_name
     @quote_template_path = "#{_quote.template_path}/#{_quote.template_name}"
     _quote.template_name = "quote_email"
     _quote.template_path = "box_mailer"
@@ -38,8 +38,8 @@ class BoxMailer < ApplicationMailer
     @request = request
     @variant = MostlyShopify::Variant.find(request.variant) if request.variant
     @user = @request.user
-    track user: @user
-    track utm_content: marketing_email.template_name
+    track user: @user,
+          utm_campaign: marketing_email.template_name
 
     reply_to = if @request.converted? || @request.salesperson.nil?
                  marketing_email.from

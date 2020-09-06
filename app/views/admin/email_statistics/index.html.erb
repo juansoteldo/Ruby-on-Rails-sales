@@ -33,26 +33,26 @@
                 range = [days.days.ago.beginning_of_day..days.days.ago.end_of_day]
               %>
                   <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                    <%= all_message_of(mailer_type, nil, range).count %>
+                    <%= all_message_of("BoxMailer##{mailer_type}", nil, range).count %>
                   </td>
                   <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                    <%= open_percentage_of(mailer_type, nil, range) %>
+                    <%= open_percentage_of("BoxMailer##{mailer_type}", nil, range) %>
                   </td>
               <% end %>
             </tr>
           <% end %>
 
-          <% MarketingEmail.template_names.each do |template_name| %>
+          <% MarketingEmail.all.each do |email| %>
                 <tr class="text-center">
-                  <td class="text-primary  text-left"><%= capitalize_and_split(template_name) %></td>
+                  <td class="text-primary  text-left"><%= capitalize_and_split(email.template_name) %></td>
                   <% (0..3).each do |days|
                     range = [days.days.ago.beginning_of_day..days.days.ago.end_of_day]
                   %>
                       <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                      <%= all_message_of("marketing_email", template_name, range).count %>
+                      <%= all_message_of("BoxMailer##{email.mailer_method}", email.template_name, range).count %>
                     </td>
                       <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                        <%= open_percentage_of("marketing_email", template_name, range) %>
+                        <%= open_percentage_of("BoxMailer##{email.mailer_method}", email.template_name, range) %>
                       </td>
                   <% end %>
                 </tr>

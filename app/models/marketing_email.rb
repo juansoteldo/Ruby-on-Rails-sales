@@ -14,6 +14,10 @@ class MarketingEmail < ApplicationRecord
     all.order("email_type, days_after_state_change").map(&:template_name)
   end
 
+  def mailer_method
+    email_type == "quote" ? :quote_email : :marketing_email
+  end
+
   def self.last_reminder_for_request(request)
     order("days_after_state_change")
       .where("days_after_state_change * 24 < ? AND state LIKE ?",
