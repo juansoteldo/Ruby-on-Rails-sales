@@ -27,22 +27,25 @@
         </thead>
         <tbody>
           <% box_mailer_types_without_marketing_email.each do |mailer_type| %>
-            <tr class="text-center">
-              <td class="text-primary text-left"><%= capitalize_and_split(mailer_type) %></td>
-              <% (0..3).each do |days|
-                range = [days.days.ago.beginning_of_day..days.days.ago.end_of_day]
-              %>
-                  <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                    <%= all_message_of("BoxMailer##{mailer_type}", nil, range).count %>
-                  </td>
-                  <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                    <%= open_percentage_of("BoxMailer##{mailer_type}", nil, range) %>
-                  </td>
-              <% end %>
-            </tr>
+            <% cache "email-stats/#{mailer_type}", expires_in: 15.minutes do %>
+              <tr class="text-center">
+                <td class="text-primary text-left"><%= capitalize_and_split(mailer_type) %></td>
+                <% (0..3).each do |days|
+                  range = [days.days.ago.beginning_of_day..days.days.ago.end_of_day]
+                %>
+                    <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
+                      <%= all_message_of("BoxMailer##{mailer_type}", nil, range).count %>
+                    </td>
+                    <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
+                      <%= open_percentage_of("BoxMailer##{mailer_type}", nil, range) %>
+                    </td>
+                <% end %>
+              </tr>
+            <% end %>
           <% end %>
 
           <% MarketingEmail.all.each do |email| %>
+            <% cache "email-stats/#{email.template_name}", expires_in: 15.minutes do %>
                 <tr class="text-center">
                   <td class="text-primary  text-left"><%= capitalize_and_split(email.template_name) %></td>
                   <% (0..3).each do |days|
@@ -56,6 +59,7 @@
                       </td>
                   <% end %>
                 </tr>
+            <% end %>
           <% end %>
         </tbody>
       </table>
