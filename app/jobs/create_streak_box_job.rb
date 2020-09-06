@@ -11,8 +11,10 @@ class CreateStreakBoxJob < ApplicationJob
     return if !Rails.env.production? && !Settings.emails.deliver_start_design
 
     if Settings.emails.auto_quoting_enabled && !request.auto_quotable?
-      box.set_stage("Contacted")
-      recipient = "leeroller@customtattoodesign.ca"
+      lee = Salesperson.find_by_email("leeroller@customtattoodesign.ca")
+      box.set_stage("Contacted") if ["Fresh", "Leads"].include?(current_stage.name)
+      box.assign_to_salesperson(lee)
+      recipient = "leeroller@customtattoodesign.ca, sales@customtattoodesign.ca"
     else
       recipient = "sales@customtattoodesign.ca"
     end

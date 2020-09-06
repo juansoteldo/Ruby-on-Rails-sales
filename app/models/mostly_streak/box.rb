@@ -17,6 +17,17 @@ module MostlyStreak
       assigned_to_sharing_entries.map(&:email).reject { |e| e == "sales@customtattoodesign.ca" }
     end
 
+    def assign_to_salesperson(salesperson)
+      user_key = salesperson&.user_key
+      user_key ||= MostlyStreak::User.find_by_email(salesperson.email)
+
+      if user_key
+        box.add_follower(user_key, salesperson.streak_api_key)
+      else
+        Rails.logger.error ">>> Cannot get streak follower key for `#{salesperson.email}`"
+      end
+    end
+
     def created_between?(range)
       created_at = Time.strptime(creation_timestamp.to_s, "%Q")
       created_at >= range.first && created_at <= range.last
