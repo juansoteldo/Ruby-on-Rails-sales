@@ -5,7 +5,7 @@ class MarketingEmail < ApplicationRecord
   has_many :delivered_emails
 
   scope :quotes, -> { where email_type: "quote" }
-
+  scope :reminders, -> { where email_type: "reminder" }
   validates_presence_of :email_type
   validates_presence_of :days_after_state_change
   validates_numericality_of :days_after_state_change, minimum: 0
@@ -19,10 +19,10 @@ class MarketingEmail < ApplicationRecord
   end
 
   def self.last_reminder_for_request(request)
-    order("days_after_state_change")
-      .where("days_after_state_change * 24 < ? AND state LIKE ?",
-             request.hours_since_state_change,
-             "%#{request.state}%").last
+    reminders.order("days_after_state_change")
+             .where("days_after_state_change * 24 < ? AND state LIKE ?",
+                    request.hours_since_state_change,
+                    "%#{request.state}%").last
   end
 
   def self.quote_for_request(request)
