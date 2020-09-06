@@ -1,7 +1,11 @@
 Hi <%= @request.first_name.try(:titleize) %>,
 
-Thank you for submitting your idea. Our design team is looking it over and will be in touch soon. In the meantime, please confirm that you would like to receive occasional emails from us by clicking the link below:
+Thank you for submitting your idea. Our design team is looking it over and will be in touch soon. If you have any questions or concerns once you get your quote feel free to reach out and we will get right back to you.
+
+In the meantime, please confirm that you would like to receive occasional emails from us by clicking this link:
 <%= marketing_opt_in_url(user_email: @user.email, user_token: @user.authentication_token) %>
+
+It will allow us to send all the information you need throughout the process.
 
 Thank you for choosing Custom Tattoo Design.
 
