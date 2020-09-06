@@ -12,7 +12,7 @@ class CreateStreakBoxJob < ApplicationJob
 
     if Settings.emails.auto_quoting_enabled && !request.auto_quotable?
       lee = Salesperson.find_by_email("leeroller@customtattoodesign.ca")
-      box.set_stage("Contacted") if ["Fresh", "Leads"].include?(current_stage.name)
+      box.set_stage("Contacted")
       box.assign_to_salesperson(lee)
       recipient = "leeroller@customtattoodesign.ca, sales@customtattoodesign.ca"
     else
