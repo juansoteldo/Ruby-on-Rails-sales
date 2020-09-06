@@ -41,7 +41,7 @@ class BoxMailer < ApplicationMailer
     track user: @user,
           utm_campaign: marketing_email.template_name
 
-    reply_to = if @request.converted? || @request.salesperson.nil?
+    reply_to = if !@request.converted? || @request.salesperson.nil? || @request.salesperson == Salesperson.system
                  marketing_email.from
                else
                  @request.salesperson.email
