@@ -22,7 +22,7 @@ module MostlyStreak
       user_key ||= MostlyStreak::User.find_by_email(salesperson.email)
 
       if user_key
-        box.add_follower(user_key, salesperson.streak_api_key)
+        add_follower(user_key, salesperson.streak_api_key)
       else
         Rails.logger.error ">>> Cannot get streak follower key for `#{salesperson.email}`"
       end
