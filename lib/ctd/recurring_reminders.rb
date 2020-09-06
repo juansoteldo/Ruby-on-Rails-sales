@@ -45,7 +45,11 @@ module CTD
 
     def update_requests!
       puts_log "Updating requests for #{orders.count} orders"
-      orders.each(&:update_request!)
+      orders.each do |order|
+        order.update_request!
+      rescue StandardError => e
+        Honeybadger.notify(e)
+      end
     end
 
     def deliver_email(marketing_email, request)
