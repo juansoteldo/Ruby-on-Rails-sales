@@ -10,7 +10,7 @@ json.rows do
                       :marketing_opt_in, :crm_opt_in, :opted_out, :authentication_token)
       else
         json.id 0
-        json.email 'Unmatched'
+        json.email "Unmatched"
       end
     end
 

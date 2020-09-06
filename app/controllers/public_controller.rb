@@ -30,6 +30,7 @@ class PublicController < ApplicationController
       @request.update_columns(variant: params[:variant], handle: params[:handle], last_visited_at: Time.now)
       @url += "#{params[:handle]}?variant=#{params[:variant]}&uid=#{@request.user_id}&cid=#{@request.client_id}&reqid=#{@request.id}"
     elsif @request
+      @request.update_columns(last_visited_at: Time.now)
       @url += "#{params[:handle]}?variant=#{params[:variant]}&utm_campaign=blocked&utm_source=crm&utm_medium=email&reqid=#{@request.id}"
     else
       @url += "#{params[:handle]}?variant=#{params[:variant]}&utm_campaign=unlisted&utm_source=crm&utm_medium=email"
