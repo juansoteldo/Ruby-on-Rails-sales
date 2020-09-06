@@ -8,7 +8,7 @@ class Admin::RequestsController < Admin::BaseController
   # GET /requests
   # GET /requests.json
   def index
-    @requests = policy_scope(Request).joins(:user).includes(:images)
+    @requests = policy_scope(Request).joins(:user).includes(:images).order("requests.id desc")
 
     if params[:search]
       term = params[:search].downcase
@@ -131,7 +131,7 @@ class Admin::RequestsController < Admin::BaseController
     end
   end
 
-    private
+  private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_request
@@ -144,6 +144,6 @@ class Admin::RequestsController < Admin::BaseController
                                     :is_first_time, :gender, :has_color, :position, :notes, :description,
                                     :quote_id, :client_id, :ticket_id)
   end
-  end
+end
 
 require "ctd/export_maker"
