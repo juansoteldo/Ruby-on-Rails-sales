@@ -6,7 +6,7 @@ class BoxMailer < ApplicationMailer
   layout "marketing_email"
 
   add_template_helper(ApplicationHelper)
-  track open: true, click: true
+  track open: true, click: true, utm_params: true
 
   def quote_email(request, _quote = MarketingEmail.quote_for_request(request))
     return unless request.user
@@ -41,7 +41,7 @@ class BoxMailer < ApplicationMailer
     track user: @user,
           utm_campaign: marketing_email.template_name
 
-    reply_to = if !@request.converted? || @request.salesperson.nil? || @request.salesperson == Salesperson.system
+    reply_to = if @request.converted? || @request.salesperson.nil? || @request.salesperson == Salesperson.system
                  marketing_email.from
                else
                  @request.salesperson.email
