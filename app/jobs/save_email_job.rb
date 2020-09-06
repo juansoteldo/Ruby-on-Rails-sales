@@ -28,24 +28,14 @@ class SaveEmailJob < ApplicationJob
 
       raise StreakBoxNotFoundError, "Cannot find streak box, aborting" if box.nil?
     rescue StreakBoxNotFoundError
-      if attempt < 4
-        sleep 1 # wait a bit
-        retry
-      else
-        return
-      end
+      return unless attempt < 4
+
+      sleep 1 # wait a bit
+      retry
     end
     current_stage = box.current_stage
 
     box.set_stage("Contacted") if ["Fresh", "Leads"].include?(current_stage.name)
-
-    user_key = @salesperson&.user_key
-    user_key ||= MostlyStreak::User.find_by_email(@salesperson.email)
-
-    if user_key
-      box.add_follower(user_key, @salesperson.streak_api_key)
-    else
-      Rails.logger.error ">>> Cannot get streak follower key for `#{@salesperson.email}`"
-    end
+    box.assign_to_salesperson(@salesperson)
   end
 end
