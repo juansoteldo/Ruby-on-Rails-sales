@@ -11,8 +11,7 @@ class MarketingEmail < ApplicationRecord
   validates_numericality_of :days_after_state_change, minimum: 0
 
   def self.template_names
-    ["24_hour_reminder_email", "24_hour_unquoted_reminder_email", "1_week_reminder_email",
-     "2_week_reminder_email", "48_hour_follow_up_email", "2_week_follow_up_email"]
+    all.order("email_type, days_after_state_change").map(&:template_name)
   end
 
   def self.last_reminder_for_request(request)
