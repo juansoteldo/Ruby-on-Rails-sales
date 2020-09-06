@@ -45,19 +45,6 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
     assert_includes email.to, "leeroller@customtattoodesign.ca"
   end
 
-  test "should send to lee when don't know style" do
-    Settings.emails.deliver_start_design = true
-    Settings.emails.auto_quoting_enabled = true
-    @request.update! style: "Don't Know"
-    assert_emails 1 do
-      perform_enqueued_jobs do
-        CreateStreakBoxJob.perform_now(@request)
-      end
-    end
-    email = ActionMailer::Base.deliveries.last
-    assert_includes email.to, "leeroller@customtattoodesign.ca"
-  end
-
   test "should send to sales with known size" do
     Settings.emails.deliver_start_design = true
     Settings.emails.auto_quoting_enabled = true
