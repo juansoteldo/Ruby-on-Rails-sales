@@ -137,7 +137,7 @@ class Request < ApplicationRecord
     return true if sleeve?
     return false if size == "Extra Large"
 
-    Request::TATTOO_STYLES.include?(style) && TattooSize.defined_size_names.include?(size)
+    TattooSize.defined_size_names.include?(size)
   end
 
   def quote_from_attributes!
