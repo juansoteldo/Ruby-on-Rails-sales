@@ -45,7 +45,7 @@ class WebhooksController < ApplicationController
     data = request.body.read
     hmac_header = request.headers["HTTP_X_SHOPIFY_HMAC_SHA256"]
     digest = OpenSSL::Digest::Digest.new("sha256")
-    webhook_key = ENV.fetch("SHOPIFY_WEBHOOK_KEY", Rails.application.credentials[:shopify][:webhook_key])
+    webhook_key = Rails.application.credentials[:shopify][:webhook_key]
     calculated_hmac = Base64.encode64(
       OpenSSL::HMAC.digest(digest, webhook_key, data)
     ).strip
@@ -64,7 +64,7 @@ class WebhooksController < ApplicationController
       :art_sample_8, :art_sample_9, :art_sample_10, :style, :size, :description, :email,
       user_attributes: [:marketing_opt_in, :presales_opt_in, :crm_opt_in]
     ).to_unsafe_h
-end
+  end
 
   def calendly_params
     params.require(:payload).permit(event: [:uuid, :start_time, :end_time],

@@ -133,7 +133,6 @@ class Request < ApplicationRecord
   end
 
   def auto_quotable?
-    return false unless Settings.emails.auto_quoting_enabled
     return true if sleeve?
     return false if size == "Extra Large"
 
