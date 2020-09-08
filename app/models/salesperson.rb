@@ -11,8 +11,13 @@ class Salesperson < ApplicationRecord
 
   attr_reader :system
   def self.system
-    @@default ||= where(email: "sales@customtattoodesign.ca").first
+    @@default ||= where(email: Settings.emails.system).first
     @@default ||= first
+  end
+
+  attr_reader :lee
+  def self.lee
+    @@lee ||= where(email: Settings.emails.system).first
   end
 
   def requests

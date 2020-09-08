@@ -34,7 +34,7 @@ class BoxMailerTest < ActionMailer::TestCase
     end
 
     # Test the body of the sent email contains what we expect it to
-    assert_equal ["leeroller@customtattoodesign.ca"], email.from
+    assert_equal [Settings.emails.lee], email.from
     assert_equal [@request.user.email], email.to
     assert_equal "E-Mail opt-in Custom Tattoo Design", email.subject
     user_token = CGI.escape(@request.user.authentication_token)

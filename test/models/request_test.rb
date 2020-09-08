@@ -40,7 +40,7 @@ class RequestTest < ActiveSupport::TestCase
     @request.size = "Medium"
     @request.style = "Traditional"
     assert @request.auto_quotable?
-    @request.style = "Don't Know"
+    @request.size = "Don't Know"
     assert_not @request.auto_quotable?
     @request.size = "Half Sleeve"
     assert @request.auto_quotable?

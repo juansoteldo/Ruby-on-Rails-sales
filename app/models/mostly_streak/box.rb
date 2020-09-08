@@ -14,7 +14,7 @@ module MostlyStreak
     end
 
     def assigned_to_emails
-      assigned_to_sharing_entries.map(&:email).reject { |e| e == "sales@customtattoodesign.ca" }
+      assigned_to_sharing_entries.map(&:email).reject { |e| e == Settings.emails.system }
     end
 
     def assign_to_salesperson(salesperson)

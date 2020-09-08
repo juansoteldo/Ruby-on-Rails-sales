@@ -6,7 +6,7 @@ class RequestMailer < ApplicationMailer
   default from: "Custom Tattoo Design <mailer@customtattoodesign.ca>"
   default display_name: "Custom Tattoo Design"
 
-  def start_design_email(request, recipient = "sales@customtattoodesign.ca")
+  def start_design_email(request, recipient = Settings.emails.system)
     @request = request.decorate
     @user = request.user
     subject = "New Start Design Request - #{@request.full_name} (#{@user.email})"

@@ -21,8 +21,8 @@ class SalespersonPolicy < ApplicationPolicy
         if @user.admin?
           scope.all.order("is_active DESC, admin, sign_in_count DESC")
         else
-          scope.where("EMAIL ILIKE '%customtattoodesign.ca'").where.not(email: "sales@customtattoodesign.ca").order("admin, email")
-end
+          scope.where("EMAIL ILIKE '%customtattoodesign.ca'").where.not(email: Settings.emails.system).order("admin, email")
+        end
       else
         scope.none
       end

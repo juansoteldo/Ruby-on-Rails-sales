@@ -64,7 +64,7 @@ class BoxMailer < ApplicationMailer
     track user: @user
 
     mail(to: @user.email,
-         from: "leeroller@customtattoodesign.ca",
+         from: Settings.emails.lee,
          subject: "Thank you, Let's Get Started! Custom Tattoo Design",
          display_name: "Lee Roller")
   end
@@ -78,7 +78,7 @@ class BoxMailer < ApplicationMailer
 
     mail(
       to: @user.email,
-      from: "leeroller@customtattoodesign.ca",
+      from: Settings.emails.lee,
       subject: "E-Mail opt-in Custom Tattoo Design",
       display_name: "Lee Roller"
     )
@@ -93,7 +93,7 @@ class BoxMailer < ApplicationMailer
     track user: @user
 
     mail(to: @user.email,
-         from: "leeroller@customtattoodesign.ca",
+         from: Settings.emails.lee,
          subject: "Thank you for your business Custom Tattoo Design",
          display_name: "Lee Roller")
   end

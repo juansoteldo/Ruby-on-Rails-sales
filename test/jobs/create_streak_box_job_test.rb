@@ -42,7 +42,7 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
       end
     end
     email = ActionMailer::Base.deliveries.last
-    assert_includes email.to, "leeroller@customtattoodesign.ca"
+    assert_includes email.to, Settings.emails.lee
   end
 
   test "should send to sales with known size" do
@@ -56,6 +56,6 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
       end
     end
     email = ActionMailer::Base.deliveries.last
-    assert_includes email.to, "sales@customtattoodesign.ca"
+    assert_includes email.to, Settings.emails.system
   end
 end
