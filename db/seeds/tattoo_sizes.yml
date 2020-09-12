@@ -39,7 +39,7 @@
   deposit_variant_id: "12147839878"
   order: 7
   size: -1
-  quote_template_name: "half_sleeve_quote_email"
+  quote_template_name: "full_sleeve_quote_email"
 -
   name: "Extra Large"
   deposit_variant_id: "12148420550"
