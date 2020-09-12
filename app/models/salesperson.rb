@@ -56,4 +56,13 @@ class Salesperson < ApplicationRecord
     end
     salespeople
   end
+
+  private
+
+  def assign_user_key
+    return if user_key
+    return if email.nil?
+
+    self.user_key = MostlyStreak::User.find_by_email(email)
+  end
 end

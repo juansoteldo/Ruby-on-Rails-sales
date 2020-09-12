@@ -125,7 +125,7 @@ class Request < ApplicationRecord
   end
 
   def first_time?
-    user.requests.where("created_at < ?", created_at).where.not(state: "fresh").none?
+    is_first_time == true
   end
 
   def sleeve?
