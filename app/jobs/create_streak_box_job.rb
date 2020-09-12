@@ -10,14 +10,13 @@ class CreateStreakBoxJob < ApplicationJob
     request.update_columns streak_box_key: box.key
     return if !Rails.env.production? && !Settings.emails.deliver_start_design
 
+    recipients = [Salesperson.system.email]
     if Settings.emails.auto_quoting_enabled && !request.auto_quotable?
       lee = Salesperson.find_by_email(Settings.emails.lee)
       box.set_stage("Contacted")
       box.assign_to_salesperson(lee) if lee
-      recipient = [Settings.emails.lee, Salesperson.system.email].join(",")
-    else
-      recipient = Settings.emails.system
+      recipients << "leeroller@customtattoodesign.ca"
     end
-    RequestMailer.start_design_email(request, recipient).deliver_later
+    RequestMailer.start_design_email(request, recipients).deliver_later
   end
 end
