@@ -35,7 +35,7 @@ class SaveEmailJob < ApplicationJob
     end
     current_stage = box.current_stage
 
-    box.set_stage("Contacted") if ["Fresh", "Leads"].include?(current_stage.name)
+    box.set_stage(MostlyStreak::Stage.contacted.key) if ["Fresh", "Leads", "Contacted"].include?(current_stage.key)
     box.add_follower(@salesperson.user_key, @salesperson.streak_api_key) if @salesperson.user_key
   end
 end

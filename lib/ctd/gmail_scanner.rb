@@ -20,7 +20,7 @@ module CTD
         request = find_request_for_message(message)
         add_thread_to_box(message, box, request)
         box.update(notes: message.shortened_utf_8_text_body)
-        box.set_stage("Leads") if box.current_stage.name == "Fresh"
+        box.set_stage_by_name("Leads") if box.current_stage.name == "Fresh"
         remove_thread_new_label message
 
         next unless request.auto_quotable?

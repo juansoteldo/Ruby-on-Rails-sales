@@ -36,5 +36,11 @@ module MostlyStreak
         find(name: "Fresh")
       end
     end
+
+    def self.quoted
+      Rails.cache.fetch("streak_stage/fresh", expires_in: 1.hour) do
+        find(name: "Quoted")
+      end
+    end
   end
 end

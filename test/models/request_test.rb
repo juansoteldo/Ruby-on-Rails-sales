@@ -40,7 +40,7 @@ class RequestTest < ActiveSupport::TestCase
     @request.size = "Medium"
     @request.style = "Traditional"
     assert @request.auto_quotable?
-    @request.style = "Don't Know"
+    @request.size = "Don't Know"
     assert_not @request.auto_quotable?
     @request.size = "Half Sleeve"
     assert @request.auto_quotable?
@@ -56,16 +56,6 @@ class RequestTest < ActiveSupport::TestCase
     assert @request.sleeve?
     @request.size = "Nothing"
     assert_not @request.sleeve?
-  end
-
-  test ".first_time?" do
-    @request.user.requests.where("created_at < ?", @request.created_at).where.not(id: @request.id).delete_all
-    assert @request.reload.first_time?
-    old_request = requests(:quoted)
-    old_request.user = @request.user
-    old_request.created_at = @request.created_at - 30.days
-    old_request.save!
-    assert_not @request.reload.first_time?
   end
 
   test "updates user names on save" do

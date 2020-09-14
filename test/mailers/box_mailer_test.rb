@@ -34,13 +34,13 @@ class BoxMailerTest < ActionMailer::TestCase
     end
 
     # Test the body of the sent email contains what we expect it to
-    assert_equal ["leeroller@customtattoodesign.ca"], email.from
+    assert_equal [Settings.emails.lee], email.from
     assert_equal [@request.user.email], email.to
     assert_equal "E-Mail opt-in Custom Tattoo Design", email.subject
-    user_token = CGI.escape(@request.user.authentication_token)
-    user_email = CGI.escape(@request.user.email)
-    assert(email.parts.all? { |part| part.body.to_s.include? "user_token=#{user_token}" })
-    assert(email.parts.all? { |part| part.body.to_s.include? "user_email=#{user_email}" })
+    user_token = "user_token=" + CGI.escape(@request.user.authentication_token)
+    user_email = "user_email=" + CGI.escape(@request.user.email)
+    assert(email.parts.any? { |part| part.body.to_s.include? user_token })
+    assert(email.parts.any? { |part| part.body.to_s.include? user_email })
   end
 
   test "quote emails include link" do

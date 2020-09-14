@@ -1,14 +1,18 @@
 gmail:
   labels:
-    new_design_requests: "Label_6157564878440197778"
-    design_requests: "Label_2606897481654667624"
-    appointment_requests: "Label_7177529587396720741"
+    new_design_requests: Label_6157564878440197778
+    design_requests: Label_2606897481654667624
+    appointment_requests: Label_7177529587396720741
 streak:
-  pipeline_key: "agxzfm1haWxmb29nYWVyMQsSDE9yZ2FuaXphdGlvbiIKZmx1eGluYy5jYQwLEghXb3JrZmxvdxiAgICAhN6GCgw"
+  pipeline_key: agxzfm1haWxmb29nYWVyMQsSDE9yZ2FuaXphdGlvbiIKZmx1eGluYy5jYQwLEghXb3JrZmxvdxiAgICAhN6GCgw
 emails:
   deliver_start_design: true
   deliver_opt_in: true
   notification_recipients:
-    - "leeroller@customtattoodesign.ca"
-    - "carmelle@customtattoodesign.ca"
-    - "johnd@customtattoodesign.ca"
+    - leeroller@customtattoodesign.ca
+    - carmelle@customtattoodesign.ca
+    - johnd@customtattoodesign.ca
+  lee: leeroller@customatattoodesign.ca
+  system: sales@customtattoodesign.ca
+  mailer: mailer@customtattoodesign.ca
+  csr: mailer@customtattoodesign.ca

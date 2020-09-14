@@ -21,6 +21,7 @@ class RequestTest < ActiveSupport::TestCase
 
   test "quote_for_request returns first time" do
     @request.size = TattooSize.first.name
+    @request.is_first_time = true
     @request.user.requests.where.not(id: @request.id).delete_all
     @request.assign_tattoo_size_attributes
     assert MarketingEmail.quote_for_request(@request).template_name.include?("first")

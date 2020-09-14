@@ -4,6 +4,17 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
+
+system:
+  email: <%= Settings.emails.system %>
+  is_active: true
+  admin: true
+
+lee:
+  email: <%= Settings.emails.lee %>
+  is_active: true
+  admin: true
+
 active_admin:
   email: adminsalesperson@example.com
   is_active: true

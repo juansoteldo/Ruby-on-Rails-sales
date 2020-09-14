@@ -6,8 +6,6 @@ require "mostly_shopify/base"
 
 module MostlyShopify
   class Order < Base
-    DEFAULT_SALESPERSON_EMAIL = "carmelle@customtattoodesign.ca"
-
     def update_request!(request = self.request)
       raise StandardError, "cannot find request for #{order_status_url}" unless request
 
