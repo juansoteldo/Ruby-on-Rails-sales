@@ -313,7 +313,7 @@ class Request < ApplicationRecord
     return unless ["Contacted", "Leads"].include?(current_stage.name)
 
     quoted_by.claim_requests_with_email(user.email)
-    box.set_stage("Quoted")
+    box.set_stage_by_name("Quoted")
   end
 
   def mark_boxes_deposited
@@ -321,7 +321,7 @@ class Request < ApplicationRecord
       current_stage = MostlyStreak::Stage.find(key: box.stage_key)
       next unless ["Contacted", "Leads", "Quoted"].include?(current_stage.name)
 
-      box.set_stage("Deposited")
+      box.set_stage_by_name("Deposited")
     end
   end
 

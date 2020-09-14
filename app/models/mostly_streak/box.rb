@@ -43,14 +43,16 @@ module MostlyStreak
     end
 
     def self.all
-      Rails.cache.fetch("streak_box/all", expires_in: 2.minutes) do
+      Rails.cache.fetch("streak_box/all",
+                        expires_in: (Rails.env.test? ? 5.seconds : 2.minutes)) do
         Streak.api_key = Settings.streak.api_key
         Streak::Box.all(Settings.streak.pipeline_key).map { |b| new b }
       end
     end
 
     def self.all_with_limits(params = { limit: "10", page: "1" })
-      Rails.cache.fetch("streak_box/all/#{params[:limit]}/#{params[:page]}", expires_in: 2.minutes) do
+      Rails.cache.fetch("streak_box/all/#{params[:limit]}/#{params[:page]}",
+                        expires_in: (Rails.env.test? ? 5.seconds : 2.minutes)) do
         Streak.api_key = Settings.streak.api_key
         Streak::Box.all(Settings.streak.pipeline_key, params).map { |b| new b }
       end
@@ -94,11 +96,15 @@ module MostlyStreak
       MostlyStreak::Stage.find(key: @source.stage_key)
     end
 
-    def set_stage(stage_name)
+    def set_stage_by_name(stage_name)
       new_stage = MostlyStreak::Stage.find(name: stage_name)
       raise "cannot find stage key for `#{stage_name}`" unless new_stage
 
       update(stageKey: new_stage.key)
+    end
+
+    def set_stage(stage_key)
+      update(stageKey: stage_key)
     end
 
     def add_follower(follower_key, user_api_key)
@@ -124,7 +130,7 @@ module MostlyStreak
 
     def self.new_with_name(name)
       box = MostlyStreak::Box.create(name)
-      box.set_stage "Fresh"
+      box.set_stage_by_name "Fresh"
       box
     end
 

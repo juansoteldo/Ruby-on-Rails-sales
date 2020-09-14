@@ -120,14 +120,16 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     user = users(:wpcf7)
     delete_boxes_for_email(user.email)
     box = MostlyStreak::Box.new_with_name(user.email)
-    assert box.stage_key == MostlyStreak::Stage.fresh.key
+    stage_name = MostlyStreak::Stage.find({ key: box.stage_key }).name
+    assert MostlyStreak::Stage.fresh.name, stage_name
     perform_enqueued_jobs do
       get save_email_path(params: { thread_id: nil, recipient_email: box.name, from_email: salesperson.email }, format: :js)
       assert_response :success
     end
     sleep 5
     box = Streak::Box.find(box.key)
-    assert_equal box.stage_key, MostlyStreak::Stage.contacted.key
+    stage_name = MostlyStreak::Stage.find({ key: box.stage_key }).name
+    assert_equal MostlyStreak::Stage.contacted.name, stage_name
   end
 
   def delete_boxes_for_email(email)
