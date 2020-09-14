@@ -58,16 +58,6 @@ class RequestTest < ActiveSupport::TestCase
     assert_not @request.sleeve?
   end
 
-  test ".first_time?" do
-    @request.user.requests.where("created_at < ?", @request.created_at).where.not(id: @request.id).delete_all
-    assert @request.reload.first_time?
-    old_request = requests(:quoted)
-    old_request.user = @request.user
-    old_request.created_at = @request.created_at - 30.days
-    old_request.save!
-    assert_not @request.reload.first_time?
-  end
-
   test "updates user names on save" do
     @request.update! first_name: SecureRandom.base64(8), last_name: SecureRandom.base64(8)
     assert_equal @user.reload.first_name, @request.first_name
