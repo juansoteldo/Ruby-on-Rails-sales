@@ -11,13 +11,13 @@ class Salesperson < ApplicationRecord
 
   attr_reader :system
   def self.system
-    @@default ||= where(email: Settings.emails.system).first
-    @@default ||= first
+    @@system ||= where(email: Settings.emails.system).first
+    @@system ||= first
   end
 
   attr_reader :lee
   def self.lee
-    @@lee ||= where(email: Settings.emails.system).first
+    @@lee ||= where(email: Settings.emails.lee).first
   end
 
   def requests
