@@ -4,5 +4,4 @@ streak:
   api_key: <%= Rails.application.credentials[:streak][:api_key] %>
   create_boxes: <%= ENV.fetch("CREATE_STREAK_BOXES", "false") %>
 emails:
-  auto_quoting_enabled: <%= ENV.fetch("AUTO_QUOTING_ENABLED", "false") %>
   auto_quoting_delay: 10

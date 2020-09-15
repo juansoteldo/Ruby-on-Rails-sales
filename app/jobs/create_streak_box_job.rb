@@ -11,7 +11,7 @@ class CreateStreakBoxJob < ApplicationJob
     return if !Rails.env.production? && !Settings.emails.deliver_start_design
 
     recipients = [Salesperson.system.email]
-    if Settings.emails.auto_quoting_enabled && !request.auto_quotable?
+    if Setting.auto_quoting.value && !request.auto_quotable?
       lee = Salesperson.lee
       box.set_stage_by_name("Contacted")
       box.assign_to_salesperson(lee) if lee
