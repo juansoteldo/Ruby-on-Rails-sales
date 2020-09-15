@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_22_183639) do
+ActiveRecord::Schema.define(version: 2020_09_15_004032) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -214,6 +214,13 @@ ActiveRecord::Schema.define(version: 2020_07_22_183639) do
     t.boolean "admin"
     t.index ["email"], name: "index_salespeople_on_email", unique: true
     t.index ["reset_password_token"], name: "index_salespeople_on_reset_password_token", unique: true
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.string "name"
+    t.string "data_type", default: "boolean"
+    t.string "value"
+    t.index ["name"], name: "index_settings_on_name", unique: true
   end
 
   create_table "tattoo_sizes", force: :cascade do |t|

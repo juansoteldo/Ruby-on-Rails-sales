@@ -33,7 +33,7 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
 
   test "should send to lee when don't know size" do
     Settings.emails.deliver_start_design = true
-    Settings.emails.auto_quoting_enabled = true
+    Setting.auto_quoting.update value: true
     @request.update! size: "Don't Know"
 
     assert_emails 1 do
@@ -47,7 +47,7 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
 
   test "should send to sales with known size" do
     Settings.emails.deliver_start_design = true
-    Settings.emails.auto_quoting_enabled = true
+    Setting.auto_quoting.update value: true
     @request.update_columns size: TattooSize.find_by(size: 1).name,
                             style: Request::TATTOO_STYLES.first
     assert_emails 1 do
