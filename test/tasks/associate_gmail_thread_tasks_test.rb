@@ -8,7 +8,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
   def setup
-    Settings.emails.auto_quoting_enabled = false
+    Setting.auto_quoting.update value: false
     @user = users(:one)
     RequestMailer.delivery_method = :smtp
     Settings.streak.create_boxes = true
@@ -43,7 +43,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
   end
 
   test "auto quote if enabled" do
-    Settings.emails.auto_quoting_enabled = true
+    Setting.auto_quoting.update value: true
     request = requests(:fresh)
     request.update! size: TattooSize.find_by_size(1).name, style: Request::TATTOO_STYLES.first, art_sample_1: @image_url
 
