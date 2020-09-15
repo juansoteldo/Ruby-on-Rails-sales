@@ -23,7 +23,7 @@ module CTD
         box.set_stage_by_name("Leads") if box.current_stage.name == "Fresh"
         remove_thread_new_label message
 
-        next unless request.auto_quotable?
+        next unless Settings.emails.auto_quoting_enabled && request.auto_quotable?
 
         request.quote_from_attributes!
       end
