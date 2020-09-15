@@ -14,9 +14,4 @@ class SettingTest < ActiveSupport::TestCase
     Setting.auto_quoting.update! value: false
     assert_equal FalseClass, Setting.auto_quoting.value.class
   end
-
-  test "Responds to method missing" do
-    Setting.auto_quoting.update! value: false
-    assert_equal FalseClass, Setting.auto_quoting.value.class
-  end
 end
