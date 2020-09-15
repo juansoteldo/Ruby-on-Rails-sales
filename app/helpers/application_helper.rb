@@ -3,6 +3,10 @@ module ApplicationHelper
     controller_path.split("/").first == "admin" && params[:layout].to_s != "0"
   end
 
+  def auto_quoting
+    @auto_quoting ||= Setting.auto_quoting
+  end
+
   def this_month
     (Time.now.beginning_of_month..Time.now)
   end
