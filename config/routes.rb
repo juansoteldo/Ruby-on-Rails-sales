@@ -58,7 +58,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :marketing_emails, only: [:index, :show]
+    resources :marketing_emails, only: [:show]
 
     resources :webhooks, only: [:index, :destroy] do
       member do

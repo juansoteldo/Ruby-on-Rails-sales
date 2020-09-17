@@ -1,0 +1,15 @@
+<table class="table">
+  <tr>
+    <td>From:</td>
+    <td><%= @marketing_email.from %></td>
+  </tr>
+  <tr>
+    <td>Subject:</td>
+    <td><%= @marketing_email.subject_line %></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <%= render file: @template_path %>
+    </td>
+  </tr>
+</table>

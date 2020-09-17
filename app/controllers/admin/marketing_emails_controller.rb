@@ -2,10 +2,7 @@
 
 class Admin::MarketingEmailsController < Admin::BaseController
   before_action :set_marketing_email, only: [:show]
-  def index
-    authorize(Admin::MarketingEmailsController)
-    @events = policy_scope(MarketingEmail)
-  end
+  layout "marketing_email"
 
   def show
     @user = User.last
@@ -15,11 +12,10 @@ class Admin::MarketingEmailsController < Admin::BaseController
 
     if @marketing_email.email_type == "quote"
       @quote_template_path = "#{@marketing_email.template_path}/#{@marketing_email.template_name}"
-      path = "box_mailer/quote_email"
+      @template_path = "box_mailer/quote_email"
     else
-      path = "#{@marketing_email.template_path}/#{@marketing_email.template_name}"
+      @template_path = "#{@marketing_email.template_path}/#{@marketing_email.template_name}"
     end
-    render file: path, layout: "marketing_email"
   end
 
   private
