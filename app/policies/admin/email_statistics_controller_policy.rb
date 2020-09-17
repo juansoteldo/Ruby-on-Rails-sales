@@ -1,6 +1,8 @@
-class Admin::EmailStatisticsControllerPolicy < ApplicationPolicy
+# frozen_string_literal: true
+
+class Admin::EmailStatisticsControllerPolicy < Admin::BaseControllerPolicy
   def index?
-    active_salesperson? && @user.admin?
+    active_salesperson? || @user.admin?
   end
 
   class Scope < Scope
