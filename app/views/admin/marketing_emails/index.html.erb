@@ -1,0 +1,24 @@
+<table class="table table-striped">
+<thead>
+<tr>
+  <th>Type</th>
+  <th>Name</th>
+  <th>Days</th>
+  <th>States</th>
+  <th>From</th>
+  <th>Subject</th>
+</tr>
+</thead>
+  <tbody>
+  <%= MarketingEmail.order(:email_type, :state, :days_after_state_change).find_each do |marketing_email| %>
+    <tr>
+      <td><%= marketing_email.email_type %></td>
+      <td><%= marketing_email.state %></td>
+      <td><%= marketing_email.days_after_state_change %> </td>
+      <td><%= link_to  marketing_email.template_name, admin_marketing_email_path(marketing_email) %></td>
+      <td><%= marketing_email.from %></td>
+      <td><%= marketing_email.subject_line %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
