@@ -48,6 +48,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :settings, only: [:update]
+
     resources :events, only: [:index]
 
     resources :salespeople do
