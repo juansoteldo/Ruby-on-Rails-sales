@@ -15,8 +15,8 @@ if Salesperson.count.zero?
   Salesperson.create(email: "sales2@test.ca", password: "testtest", password_confirmation: "testtest")
 end
 
-require Rails.root.join("db/seeds/marketing_emails.rb")
-require Rails.root.join("db/seeds/tattoo_sizes.rb")
+CTD::SeedImporter.import_marketing_emails
+CTD::SeedImporter.import_tattoo_sizes
 
 # Product.create( name: 'Large Sleeve Design', size: 'l', type: 'design', slug: '' )
 

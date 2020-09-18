@@ -47,7 +47,7 @@ class RequestTest < ActiveSupport::TestCase
   end
 
   test "quote_from_params!" do
-    Setting.auto_quoting.update value: false
+    settings(:auto_quoting).update! value: false
     @request.quote_from_params!({ variant_id: @variant.id, salesperson_id: @salesperson.id })
   end
 

@@ -8,13 +8,15 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
   def setup
-    Setting.auto_quoting.update value: false
+    settings(:auto_quoting).update! value: false
     @user = users(:one)
     RequestMailer.delivery_method = :smtp
     Settings.streak.create_boxes = true
     CtdSales::Application.load_tasks
     @image_file = file_fixture_copy("test.jpg")
     @image_url = "https://www.ece.rice.edu/~wakin/images/lena512.bmp"
+    CTD::SeedImporter.import_tattoo_sizes
+    CTD::SeedImporter.import_marketing_emails
   end
 
   teardown do
@@ -43,7 +45,7 @@ class AssociateGmailThreadsTaskTest < ActiveSupport::TestCase
   end
 
   test "auto quote if enabled" do
-    Setting.auto_quoting.update value: true
+    settings(:auto_quoting).update! value: true
     request = requests(:fresh)
     request.update! size: TattooSize.find_by_size(1).name, style: Request::TATTOO_STYLES.first, art_sample_1: @image_url
 

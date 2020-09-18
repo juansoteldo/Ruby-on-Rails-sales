@@ -9,5 +9,12 @@
 
   <body>
     <%= yield %>
+
+    <p>
+      <em>
+        Please <%= link_to 'click here', marketing_opt_out_url(user_email: @user.email, user_token: @user.authentication_token) %>
+        if you do not wish to receive any more of our emails.
+      </em>
+    </p>
   </body>
 </html>

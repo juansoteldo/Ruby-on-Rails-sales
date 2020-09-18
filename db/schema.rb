@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_15_004032) do
+ActiveRecord::Schema.define(version: 2020_09_18_122239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -117,10 +117,10 @@ ActiveRecord::Schema.define(version: 2020_09_15_004032) do
     t.integer "days_after_state_change"
     t.string "template_name"
     t.string "from", default: "orders@customtattoodesign.ca"
-    t.string "template_path", default: "box_mailer"
     t.string "subject_line", default: "Lee Roller Owner / Custom Tattoo Design"
     t.integer "version", default: 1
     t.string "email_type"
+    t.text "markdown_content"
     t.index ["days_after_state_change"], name: "index_marketing_emails_on_days_after_state_change"
     t.index ["email_type"], name: "index_marketing_emails_on_email_type"
     t.index ["state"], name: "index_marketing_emails_on_state"

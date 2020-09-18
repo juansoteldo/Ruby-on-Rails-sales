@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/MethodMissingSuper
-
 require "shopify_api"
 
 module MostlyShopify

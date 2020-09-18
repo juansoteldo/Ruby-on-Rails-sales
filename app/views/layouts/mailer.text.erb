@@ -1,1 +1,5 @@
 <%= yield %>
+
+Please click the following link if you do not wish to receive any more of our emails:
+
+<%= marketing_opt_out_url(user_email: @user.email, user_token: @user.authentication_token)  %>

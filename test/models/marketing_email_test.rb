@@ -5,7 +5,7 @@ class RequestTest < ActiveSupport::TestCase
 
   setup do
     Settings.streak.create_boxes = false
-    Setting.auto_quoting.update value: true
+    settings(:auto_quoting).update value: true
     request = requests(:deposited)
     @request = requests(:fresh)
     @user = @request.user
@@ -15,7 +15,7 @@ class RequestTest < ActiveSupport::TestCase
   end
 
   teardown do
-    Setting.auto_quoting.update value: false
+    settings(:auto_quoting).update value: false
     Settings.streak.create_boxes = true
   end
 
