@@ -2,7 +2,6 @@
 
 class Admin::MarketingEmailsController < Admin::BaseController
   before_action :set_marketing_email, only: [:show, :edit, :update]
-  layout "mailer", only: [:show]
 
   def edit; end
 

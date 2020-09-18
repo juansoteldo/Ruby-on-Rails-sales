@@ -1,10 +1,8 @@
+
 <div class="card">
   <div class="card-content">
-    <h1>Editing <%= @marketing_email.template_name %></h1>
+    <h1>Editing <%= @marketing_email.template_name.titleize %></h1>
     <%= render 'form' %>
-
-  </div>
-  <div class="card-footer">
-    <%= link_to 'Back', [:admin, @marketing_email] %> |
+    <%= link_to 'Back', [:admin, @marketing_email], class: "btn btn-sm btn-simple" %>
   </div>
 </div>
