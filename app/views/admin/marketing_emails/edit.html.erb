@@ -1,7 +1,9 @@
 
 <div class="card">
   <div class="card-content">
-    <h1>Editing <%= @marketing_email.template_name.titleize %></h1>
+    <h1>Editing <%= @marketing_email.template_name.titleize %><br>
+    <small class="text-warning">Don't do it Lee!</small></h1>
+
     <%= render 'form' %>
     <%= link_to 'Back', [:admin, @marketing_email], class: "btn btn-sm btn-simple" %>
   </div>

@@ -3,9 +3,12 @@
 class Admin::MarketingEmailsController < Admin::BaseController
   before_action :set_marketing_email, only: [:show, :edit, :update]
 
-  def edit; end
+  def edit
+    authorize(Admin::MarketingEmailsController)
+  end
 
   def update
+    authorize(Admin::MarketingEmailsController)
     respond_to do |format|
       if @marketing_email.update marketing_email_params
         format.html { redirect_to admin_marketing_email_path(@marketing_email), notice: "Updated marketing email." }
@@ -18,6 +21,7 @@ class Admin::MarketingEmailsController < Admin::BaseController
   end
 
   def show
+    authorize(Admin::MarketingEmailsController)
     @user = User.last
     @request = Request.quoted.where.not(tattoo_size_id: nil).last
     @variant = MostlyShopify::Variant.find(@request.tattoo_size.deposit_variant_id.to_i).first
