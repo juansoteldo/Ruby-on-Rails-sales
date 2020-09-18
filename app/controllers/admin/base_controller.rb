@@ -3,6 +3,7 @@
 class Admin::BaseController < ApplicationController
   before_action :authenticate_salesperson!
   before_action :load_products
+  force_ssl if: -> { Rails.env.production? }
 
   def require_admin!
     return if current_salesperson&.admin?
