@@ -1,0 +1,8 @@
+<%= simple_form_for [:admin, @marketing_email] do |f| %>
+  <%= f.input :from, required: true %>
+  <%= f.input :subject_line, required: true %>
+
+  <%= f.input :markdown_content, as: :text, required: true, input_html: { rows: 30 } %>
+
+  <%= f.submit %>
+<% end %>
