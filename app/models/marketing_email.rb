@@ -6,6 +6,8 @@ class MarketingEmail < ApplicationRecord
 
   scope :quotes, -> { where email_type: "quote" }
   scope :reminders, -> { where email_type: "reminder" }
+  scope :follow_ups, -> { where email_type: "follow-up" }
+  scope :not_quotes, -> { where.not email_type: "quote" }
   validates_presence_of :email_type
   validates_presence_of :days_after_state_change
   validates_numericality_of :days_after_state_change, minimum: 0
@@ -18,11 +20,11 @@ class MarketingEmail < ApplicationRecord
     email_type == "quote" ? :quote_email : :marketing_email
   end
 
-  def self.last_reminder_for_request(request)
-    reminders.order("days_after_state_change")
-             .where("days_after_state_change * 24 < ? AND state LIKE ?",
-                    request.hours_since_state_change,
-                    "%#{request.state}%").last
+  def self.last_relevant_for_request(request)
+    not_quotes.order("days_after_state_change")
+              .where("days_after_state_change * 24 < ? AND state LIKE ?",
+                     request.hours_since_state_change,
+                     "%#{request.state}%").last
   end
 
   def self.quote_for_request(request)
