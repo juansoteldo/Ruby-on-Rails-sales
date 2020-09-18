@@ -4,10 +4,6 @@ class Admin::MarketingEmailsController < Admin::BaseController
   before_action :set_marketing_email, only: [:show]
   layout "mailer"
 
-  def edit; end
-
-  def update; end
-
   def show
     @user = User.last
     @request = Request.quoted.where.not(tattoo_size_id: nil).last
