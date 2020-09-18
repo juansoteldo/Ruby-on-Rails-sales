@@ -9,6 +9,7 @@ class MarketingEmail < ApplicationRecord
   validates_presence_of :email_type
   validates_presence_of :days_after_state_change
   validates_numericality_of :days_after_state_change, minimum: 0
+  validate :ensure_template_exists
 
   def self.template_names
     all.order("email_type, days_after_state_change").map(&:template_name)
@@ -38,5 +39,13 @@ class MarketingEmail < ApplicationRecord
 
   def to_s
     "MarketingEmail ##{id} (#{template_name})"
+  end
+
+  def ensure_template_exists
+    views_path = Rails.root.join("app/views")
+    return if File.exist?(File.join(views_path, template_path, template_name + ".html.erb"))
+    return if File.exist?(File.join(views_path, template_path, "_" + template_name + ".html.erb"))
+
+    errors.add :template_name, "not found at #{template_name}"
   end
 end

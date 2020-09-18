@@ -97,4 +97,13 @@
   template_name: "general_quote_email"
   template_path: "box_mailer/quotes"
   version: 1
+-
+  state: "fresh"
+  days_after_state_change: 1
+  email_type: "quote"
+  from: "Lee Roller <leeroller@customtattoodesign.ca>"
+  subject_line: "Custom Tattoo Design Quote"
+  template_name: "extra_small_quote_email"
+  template_path: "box_mailer/quotes"
+  version: 1
 

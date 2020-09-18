@@ -9,7 +9,7 @@
   deposit_variant_id: "12093636542535"
   order: 2
   size: 1
-  quote_template_name: "general_quote_email"
+  quote_template_name: "extra_small_quote_email"
 -
   name: "Small"
   deposit_variant_id: "24471687046"
