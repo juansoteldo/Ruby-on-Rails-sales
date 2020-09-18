@@ -11,15 +11,15 @@ class DeliveredEmail < ApplicationRecord
     state :failed
 
     event :deliver, before: :perform_delivery do
-      transitions from: [:new, :failed], to: :delivered
+      transitions from: [:fresh, :failed], to: :delivered
     end
 
     event :fail, after: :record_failure do
-      transitions from: :new, to: :failed
+      transitions from: :fresh, to: :failed
     end
 
     event :skip do
-      transitions from: :new, to: :skipped
+      transitions from: :fresh, to: :skipped
     end
   end
   belongs_to :request
