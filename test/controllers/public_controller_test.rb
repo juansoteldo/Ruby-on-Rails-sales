@@ -88,7 +88,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "set_link should assign quotation parameters" do
-    Setting.auto_quoting.update value: false
+    settings(:auto_quoting).update! value: false
 
     variant = MostlyShopify::Variant.all.first
     request = requests(:fresh)

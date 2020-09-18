@@ -7,7 +7,6 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Lee Roller Custom Tattoo Design/Owner"
   template_name: "24_hour_reminder_email"
-  template_path: "box_mailer/lead_reminders"
   version: 1
 
 1_week_reminder_email:
@@ -17,7 +16,6 @@
   from: '"Carmelle" <carmelle@customtattoodesign.ca>'
   subject_line: "New amazing artists for you from Custom Tattoo Design"
   template_name: "1_week_reminder_email"
-  template_path: "box_mailer/lead_reminders"
   version: 1
 
 2_week_reminder_email:
@@ -27,7 +25,6 @@
   from: "Carmelle <carmelle@customtattoodesign.ca>"
   subject_line: "Touching Base Carmelle Custom Tattoo Design"
   template_name: "2_week_reminder_email"
-  template_path: "box_mailer/lead_reminders"
   version: 1
 
 48_hour_follow_up_email:
@@ -37,7 +34,6 @@
   from: "Carmelle <carmelle@customtattoodesign.ca>"
   subject_line: "Creating The Best Tattoo with Custom Tattoo Design"
   template_name: "48_hour_follow_up_email"
-  template_path: "box_mailer/follow_ups"
   version: 1
 
 2_week_follow_up_email:
@@ -47,7 +43,6 @@
   from: "Carmelle <carmelle@customtattoodesign.ca>"
   subject_line: "How Is Your Experience with Custom Tattoo Design?"
   template_name: "2_week_follow_up_email"
-  template_path: "box_mailer/follow_ups"
   version: 1
 
 24_hour_unquoted_reminder_email:
@@ -57,7 +52,6 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Any questions I can help with?"
   template_name: "24_hour_unquoted_reminder_email"
-  template_path: "box_mailer/lead_reminders"
   version: 1
 
 half_sleeve_quote_email:
@@ -67,7 +61,6 @@ half_sleeve_quote_email:
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Your Half Sleeve tattoo design idea"
   template_name: "half_sleeve_quote_email"
-  template_path: "box_mailer/quotes"
   version: 1
 
 full_sleeve_quote_email:
@@ -77,7 +70,6 @@ full_sleeve_quote_email:
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Your Full Sleeve tattoo design idea"
   template_name: "full_sleeve_quote_email"
-  template_path: "box_mailer/quotes"
   version: 1
 
 first_time_quote_email:
@@ -87,7 +79,6 @@ first_time_quote_email:
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Your first tattoo design idea"
   template_name: "first_time_quote_email"
-  template_path: "box_mailer/quotes"
   version: 1
 
 general_quote_email:
@@ -97,5 +88,4 @@ general_quote_email:
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Your tattoo design idea"
   template_name: "general_quote_email"
-  template_path: "box_mailer/quotes"
   version: 1

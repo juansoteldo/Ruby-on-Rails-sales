@@ -5,8 +5,27 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Lee Roller Custom Tattoo Design/Owner"
   template_name: "24_hour_reminder_email"
-  template_path: "box_mailer/lead_reminders"
   version: 1
+  markdown_content: |
+    Hello {{Request.first_name}},
+
+    I noticed you were on our site and you sent us a design request for a quote. I’m passionate about my business and I want to make sure I have done everything I can to help each customer. If there was anything we did that kept you from moving forward, whether that's people, price or maybe concerns of purchasing online; please let me know so I can do my best to help.
+
+    I've added the deposit link that our team sent you for your convenience. If you're ready to start, just click here:
+    [CLICK HERE IF YOU'RE READY TO START]({{Variant.cart_redirect_url}})
+
+    If you have any concerns about your deposit please feel free to ask.
+
+    Also, I understand that times are tough right now and we are all in this together. Our team would love to help you with your design request so at this time, we are offering a 20% discount for any customers who choose to get started on their design over the next two weeks.
+
+    If you would like to get a discount code, just reply to this email and we will set that up for you.
+
+    I appreciate your time and look forward to hearing from you,
+
+    Lee Roller
+    CEO / Founder
+    Custom Tattoo Design
+    {{Settings.emails.lee}}
 -
   state: "fresh,quoted"
   days_after_state_change: 7
@@ -14,8 +33,23 @@
   from: 'Carmelle Krasevec <carmelle@customtattoodesign.ca>'
   subject_line: "New amazing artists for you from Custom Tattoo Design"
   template_name: "1_week_reminder_email"
-  template_path: "box_mailer/lead_reminders"
   version: 1
+  markdown_content: |
+    Hi {{Request.first_name}},
+
+    We’ve hired on some amazing new artists and I wanted to let you know, in case you were ready to get started. If you’re interested in getting a design from one of my new top designers, let me know and I’ll make sure to get you in touch with the absolute best artist for your design.
+
+    I've added the deposit link that our team sent you for your convenience. If you're ready to start, just click here:
+    [CLICK HERE IF YOU'RE READY TO START]({{Variant.cart_redirect_url}})
+
+    If you want to change the initial design idea you sent over just fill out the FREE QUOTE form again and I’ll have the design team look at it ASAP. Here is the link for the free quote page:
+    https://customtattoodesign.ca/start-design
+
+    Thank you again for your time,
+
+    Carmelle Krasevec
+    Customer Service Manager
+    Custom Tattoo Design
 -
   state: "fresh,quoted"
   days_after_state_change: 14
@@ -23,8 +57,22 @@
   from: "Carmelle Krasevec <carmelle@customtattoodesign.ca>"
   subject_line: "Touching Base Carmelle Custom Tattoo Design"
   template_name: "2_week_reminder_email"
-  template_path: "box_mailer/lead_reminders"
   version: 1
+  markdown_content: |
+    Hello again {{Request.first_name}},
+
+    I just wanted to give you a quick update on Custom Tattoo Design. Our whole family here is growing rapidly and people are going crazy about our new team and new products. If you are ready to start your design, I've attached your original quote link below. Let me know if there is anything else I can do to help you at this time.
+
+    If you're ready to start with your original request just click here:
+    [CLICK HERE IF YOU'RE READY TO START]({{Variant.cart_redirect_url}})
+
+    If you would like to submit a new request, visit https://customtattoodesign.ca/start-design
+
+    Thank you for your time and feel free to contact me if you have any questions.
+
+    Carmelle Krasevec
+    Customer Service Manager
+    Custom Tattoo Design
 -
   state: "deposited,completed"
   days_after_state_change: 2
@@ -32,8 +80,27 @@
   from: "Carmelle Krasevec <carmelle@customtattoodesign.ca>"
   subject_line: "Creating The Best Tattoo with Custom Tattoo Design"
   template_name: "48_hour_follow_up_email"
-  template_path: "box_mailer/follow_ups"
   version: 1
+  markdown_content: |
+    Dear {{Request.first_name}}
+
+    My name is Carmelle and I’m the Customer Service Manager at Custom Tattoo Design. Thank you for choosing us for your design. I thought you might want a few tips when it comes to working with us and some insight into our process.
+
+    - Share your feedback: When you get back your first sketch, you’ll hopefully love it! But sometimes adjustments need to be made. This is just a part of the design process. The best thing you can do is be as clear as you can when discussing what you like and don’t like about a design. This will help your artist get the changes right the first time so you can get your tattoo design done quickly and beautifully. Don’t be scared to share criticism, we're professionals and being blunt just helps make the process easier and better for you.  We’re all nice people we get it :)
+
+    - Try and respond in a reasonable time: You’re excited. You’re eager. You’re also busy and making time to respond to your artist can sometimes get pushed lower on the priority list. But creating a one of a kind, custom tattoo design is a collaborative process and the faster you can provide feedback to your artist, the quicker you’ll get your design completed.
+
+    - Tattoo designs and tattoo shops: It’s really important not to get impatient when you make a decision about getting a tattoo. Almost all of us get really excited and want to get a new tattoo today! Truth is that tattoo designs take much longer to design than they do to get the actual tattoo; taking into consideration all the changes, thoughts and design elements. Most reputable tattoo shops have waiting lists, sometimes several months, for good cause.
+
+    ** TIP *** If you are itching to get into a great tattoo shop, ask to wait on a cancellation list when booking your future appointment. When customers cancel and the tattoo artists will call you to fill the missed session. This can drop your wait times and allow you to get into a great tattoo shop quickly.
+
+    If you have any other questions about the design process, feel free to reach out and we’ll be happy to help you out. Thanks again for choosing Custom Tattoo Design and we look forward to getting you a great looking tattoo.
+
+    Sincerely,
+
+    Carmelle Krasevec
+    Customer Service Manager
+    Custom Tattoo Design
 -
   state: "deposited,completed"
   days_after_state_change: 14
@@ -41,8 +108,17 @@
   from: "Carmelle Krasevec <carmelle@customtattoodesign.ca>"
   subject_line: "How Is Your Experience with Custom Tattoo Design?"
   template_name: "2_week_follow_up_email"
-  template_path: "box_mailer/follow_ups"
   version: 1
+  markdown_content: |
+    Hello again {{Request.first_name}},
+
+    I hope your experience with us Custom Tattoo design has been great so far. We send a 2 minute survey out to all our customers which ranks there experience on a scale of 1-5 stars. It’s important to us that you’re happy, not only with the process but with our staff. If you have any reason why you wouldn’t think we are worthy a 5 star review; Please let me know and I will do everything I can to make your experience better.
+
+    Please feel free to contact me anytime,
+
+    Carmelle Krasevec
+    Customer Service Manager
+    Custom Tattoo Design
 -
   state: "fresh"
   days_after_state_change: 1
@@ -50,17 +126,18 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Any questions I can help with?"
   template_name: "24_hour_unquoted_reminder_email"
-  template_path: "box_mailer/lead_reminders"
   version: 1
--
-  state: "fresh"
-  days_after_state_change: 1
-  email_type: "reminder"
-  from: "Lee Roller <leeroller@customtattoodesign.ca>"
-  subject_line: "Any questions I can help with?"
-  template_name: "24_hour_unquoted_reminder_email"
-  template_path: "box_mailer/lead_reminders"
-  version: 1
+  markdown_content: |
+    Hi {{Request.first_name}},
+
+    I saw that you submitted a request for a free tattoo design quote, but haven't made your deposit to start your custom
+    tattoo design. Please let me know if you have any questions or if there is anything I can do to help you with your
+    decision.
+
+    Thank you for your time,
+
+    Lee Roller
+    CEO / Founder
 -
   state: "fresh"
   days_after_state_change: 1
@@ -68,8 +145,30 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
   template_name: "half_sleeve_quote_email"
-  template_path: "box_mailer/quotes"
   version: 1
+  markdown_content: |
+    Hi {{Request.first_name}},
+
+    Thank you for sending us your half sleeve idea. Our design team really likes your concept and I know we can do something amazing for you. Before we start your sleeve I wanted to let you know we only allow our senior tattoo artists and design team to work on tattoo sleeve designs. Tattoo sleeves take 30 - 40+ hours of drawing time to complete and we appreciate you trusting us with such a large and personal design. Let me tell you how our sleeve process works;
+
+    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
+
+    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
+
+    Use the link below and we will get started as soon as possible.
+
+    Here is the link to complete your {{Variant.price}} USD deposit:
+    [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
+
+    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+
+    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+
+    I look forward to hearing from you,
+
+    Lee Roller
+    CEO / Founder
+    Custom Tattoo Design
 -
   state: "fresh"
   days_after_state_change: 1
@@ -77,8 +176,30 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
   template_name: "full_sleeve_quote_email"
-  template_path: "box_mailer/quotes"
   version: 1
+  markdown_content: |
+    Hi {{Request.first_name}},
+
+    Thank you for sending us your tattoo sleeve idea. Our design team really likes your concept and I know we can do something amazing for you. Before we start your sleeve I wanted to let you know we only allow our senior tattoo artists and design team to work on tattoo sleeve designs. Tattoo sleeves take 30 - 40+ hours of drawing time to complete and we appreciate you trusting us with such a large and personal design. Let me tell you how our sleeve process works;
+
+    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
+
+    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
+
+    Use the link below and we will get started as soon as possible.
+
+    Here is the link to complete your {{Variant.price}} USD deposit:
+    [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
+
+    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+
+    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+
+    I look forward to hearing from you,
+
+    Lee Roller
+    CEO / Founder
+    Custom Tattoo Design
 -
   state: "fresh"
   days_after_state_change: 1
@@ -86,8 +207,30 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
   template_name: "first_time_quote_email"
-  template_path: "box_mailer/quotes"
   version: 1
+  markdown_content: |
+    Hi {{Request.first_name}},
+
+    Thank you for sending us your design idea. We really like your concept and I know we can do something amazing for you. I see this is your first tattoo and we appreciate the opportunity to work with you on such an important design. Based on your design idea I quoted your design for you below.  Our quotes are based on both the size and complexity of the design. Let me explain how the process will work for your design.
+
+    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
+
+    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
+
+    Use the link below and we will get started as soon as possible.
+
+    Here is the link to complete your {{Variant.price}} USD deposit:
+    [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
+
+    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+
+    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+
+    I look forward to hearing from you,
+
+    Lee Roller
+    CEO / Founder
+    Custom Tattoo Design
 -
   state: "fresh"
   days_after_state_change: 1
@@ -95,8 +238,30 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
   template_name: "general_quote_email"
-  template_path: "box_mailer/quotes"
   version: 1
+  markdown_content: |
+    Hi {{Request.first_name}},
+
+    Thank you for sending us your design idea. We really like your concept and I know we can do something amazing for you; based on the information you sent me in your e-mail I have quoted your design below. Let me explain how the process works for you based on your design size and complexity.
+
+    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
+
+    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
+
+    Use the link below and we will get started as soon as possible.
+
+    Here is the link to complete your {{Variant.price}} USD deposit:
+    [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
+
+    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+
+    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+
+    I look forward to hearing from you,
+
+    Lee Roller
+    CEO / Founder
+    Custom Tattoo Design
 -
   state: "fresh"
   days_after_state_change: 1
@@ -104,6 +269,27 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
   template_name: "extra_small_quote_email"
-  template_path: "box_mailer/quotes"
   version: 1
+  markdown_content: |
+    Hi {{Request.first_name}},
 
+    Thank you for sending us your custom script idea. I know that this is a fairly small design and I just wanted to let you know that our quote is based on our shop minimum.   We have some of the best custom script artists in the world who will work with you until your design is 100% perfect.  Let me explain how the process works for you based on the script idea you sent over.
+
+    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
+
+    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
+
+    Use the link below and we will get started as soon as possible.
+
+    Here is the link to complete your {{Variant.price}} USD deposit:
+    [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
+
+    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+
+    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+
+    I look forward to hearing from you,
+
+    Lee Roller
+    CEO / Founder
+    Custom Tattoo Design

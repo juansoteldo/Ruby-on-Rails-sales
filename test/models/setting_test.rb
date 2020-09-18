@@ -6,12 +6,12 @@ class SettingTest < ActiveSupport::TestCase
   end
 
   test "Boolean is boolean type" do
-    Setting.auto_quoting.update! value: false
+    settings(:auto_quoting).update! value: false
     assert_equal FalseClass, Setting.auto_quoting.value.class
   end
 
   test "String is string type" do
-    Setting.auto_quoting.update! value: false
+    settings(:auto_quoting).update! value: false
     assert_equal FalseClass, Setting.auto_quoting.value.class
   end
 end
