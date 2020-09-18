@@ -15,7 +15,7 @@ module CTD
         marketing_email.version ||= yml_email.delete("version")
         markdown_content = yml_email.delete("markdown_content")
         marketing_email.assign_attributes yml_email
-        marketing_email.markdown_content = markdown_content.to_s.strip
+        marketing_email.markdown_content ||= markdown_content.to_s.strip
         marketing_email.save!
       end
     end
