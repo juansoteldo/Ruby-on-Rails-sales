@@ -120,27 +120,7 @@
     Customer Service Manager
     Custom Tattoo Design
 -
-  state: "fresh"
-  days_after_state_change: 1
-  email_type: "reminder"
-  from: "Lee Roller <leeroller@customtattoodesign.ca>"
-  subject_line: "Any questions I can help with?"
-  template_name: "24_hour_unquoted_reminder_email"
-  version: 1
-  markdown_content: |
-    Hi {{Request.first_name}},
-
-    I saw that you submitted a request for a free tattoo design quote, but haven't made your deposit to start your custom
-    tattoo design. Please let me know if you have any questions or if there is anything I can do to help you with your
-    decision.
-
-    Thank you for your time,
-
-    Lee Roller
-    CEO / Founder
--
-  state: "fresh"
-  days_after_state_change: 1
+  state: "-"
   email_type: "quote"
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
@@ -170,8 +150,7 @@
     CEO / Founder
     Custom Tattoo Design
 -
-  state: "fresh"
-  days_after_state_change: 1
+  state: "-"
   email_type: "quote"
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
@@ -201,8 +180,7 @@
     CEO / Founder
     Custom Tattoo Design
 -
-  state: "fresh"
-  days_after_state_change: 1
+  state: "-"
   email_type: "quote"
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
@@ -232,8 +210,7 @@
     CEO / Founder
     Custom Tattoo Design
 -
-  state: "fresh"
-  days_after_state_change: 1
+  state: "-"
   email_type: "quote"
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
@@ -263,8 +240,7 @@
     CEO / Founder
     Custom Tattoo Design
 -
-  state: "fresh"
-  days_after_state_change: 1
+  state: "-"
   email_type: "quote"
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"

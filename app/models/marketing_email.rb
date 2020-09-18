@@ -8,6 +8,8 @@ class MarketingEmail < ApplicationRecord
   scope :reminders, -> { where email_type: "reminder" }
   scope :follow_ups, -> { where email_type: "follow-up" }
   scope :not_quotes, -> { where.not email_type: "quote" }
+
+  before_validation :defang, if: :quote?
   validates_presence_of :email_type
   validates_presence_of :days_after_state_change
   validates_numericality_of :days_after_state_change, minimum: 0
@@ -41,5 +43,12 @@ class MarketingEmail < ApplicationRecord
 
   def to_s
     "MarketingEmail ##{id} (#{template_name})"
+  end
+
+  private
+
+  def defang
+    self.state = "-"
+    self.days_after_state_change = nil
   end
 end
