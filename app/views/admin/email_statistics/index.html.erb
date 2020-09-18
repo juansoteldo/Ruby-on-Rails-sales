@@ -7,57 +7,41 @@
       <table class="table">
         <thead class="text-danger">
         <tr>
-          <th colspan="3"></th>
+          <th></th>
+          <th class="text-center">States</th>
+          <th class="text-center">Days</th>
           <th colspan="3" class="text-center  bg-gray">Today</th>
           <th colspan="3" class="text-center">Yesterday</th>
           <th colspan="3" class="text-center bg-gray">2 days ago</th>
           <th colspan="3" class="text-center">3 days ago</th>
         </tr>
-        <tr>
-          <th class=" text-left">Reminders & Follow-Ups</th>
-          <th class=" text-center">States</th>
-          <th class=" text-center">Days</th>
-          <th class="text-center bg-gray"><span class="glyphicon glyphicon-envelope"></span></th>
-          <th class="text-center bg-gray"><span class="glyphicon glyphicon-eye-open"></span></th>
-          <th class="text-center bg-gray"><span class="glyphicon glyphicon-chevron-up"></span></th>
-          <th class="text-center"><span class="glyphicon glyphicon-envelope"></span></th>
-          <th class="text-center"><span class="glyphicon glyphicon-eye-open"></span></th>
-          <th class="text-center"><span class="glyphicon glyphicon-chevron-up"></span></th>
-          <th class="text-center bg-gray"><span class="glyphicon glyphicon-envelope"></span></th>
-          <th class="text-center bg-gray"><span class="glyphicon glyphicon-eye-open"></span></th>
-          <th class="text-center bg-gray"><span class="glyphicon glyphicon-chevron-up"></span></th>
-          <th class="text-center"><span class="glyphicon glyphicon-envelope"></span></th>
-          <th class="text-center"><span class="glyphicon glyphicon-eye-open"></span></th>
-          <th class="text-center"><span class="glyphicon glyphicon-chevron-up"></span></th>
-        </tr>
+        </thead>
+        <thead class="text-danger">
+          <%= render partial: "admin/email_statistics/header_row", locals: { title: "Reminders & Follow-Ups" } %>
         </thead>
         <tbody>
           <% MarketingEmail.not_quotes.order("email_type desc", :state, :days_after_state_change).each do |email| %>
             <%= render partial: "admin/email_statistics/statistic", locals: { email: email, label: email.template_name }%>
           <% end %>
         </tbody>
-          <% if current_salesperson.admin? %>
+        <% if current_salesperson.admin? %>
           <thead class="text-danger">
-            <tr>
-              <th colspan="15">Quotes</th>
-            </tr>
+            <%= render partial: "admin/email_statistics/header_row", locals: { title: "Quotes" } %>
           </thead>
           <tbody>
             <% MarketingEmail.quotes.each do |email| %>
               <%= render partial: "admin/email_statistics/statistic", locals: { email: email, label: email.template_name }%>
             <% end %>
           </tbody>
-          <% end %>
+        <% end %>
         <thead class="text-danger">
-        <tr>
-          <th colspan="15">Others</th>
-        </tr>
+          <%= render partial: "admin/email_statistics/header_row", locals: { title: "Others" } %>
         </thead>
         <tbody>
-        <% box_mailer_types_without_marketing_email.each do |template_name| %>
-          <%= render partial: "admin/email_statistics/statistic",
-                     locals: { email: MarketingEmail.new(mailer_method: template_name), label: template_name }%>
-        <% end %>
+          <% box_mailer_types_without_marketing_email.each do |template_name| %>
+            <%= render partial: "admin/email_statistics/statistic",
+                       locals: { email: MarketingEmail.new(mailer_method: template_name), label: template_name }%>
+          <% end %>
         </tbody>
       </table>
 
