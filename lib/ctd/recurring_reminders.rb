@@ -25,7 +25,7 @@ module CTD
       puts "Sending reminders for #{requests.count} requests"
       requests.each do |request|
         puts_log "Is #{request.decorate.age_in_words} old, and is `#{request.state}`", request
-        marketing_email = @scope.last_reminder_for_request(request)
+        marketing_email = @scope.last_relevant_for_request(request)
         next unless marketing_email
 
         puts_log "#{marketing_email} is appropriate", request

@@ -31,7 +31,7 @@
 </table>
 <h3>E-Mails Sent During Last 24-Hours</h3>
 <table>
-  <% MarketingEmail.reminders.order(:state, :days_after_state_change).each do |email| %>
+  <% MarketingEmail.not_quotes.order(:state, :days_after_state_change).each do |email| %>
       <tr class="text-center">
         <td>
           <%= email.template_name.titleize %>

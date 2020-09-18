@@ -22,9 +22,9 @@ namespace :recurring do
   desc "Sends all outstanding reminders"
   task send_reminders: :environment do |_task, args|
     scope = if args.extras.count.positive?
-              MarketingEmail.where(template_name: args.extras.first)
+              MarketingEmail.not_quotes.where(template_name: args.extras.first)
             else
-              MarketingEmail.all
+              MarketingEmail.not_quotes.all
             end
     reminders = CTD::RecurringReminders.new(scope)
     reminders.deliver_outstanding!
