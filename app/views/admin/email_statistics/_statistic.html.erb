@@ -1,0 +1,24 @@
+<%
+%>
+  <% cache "email-stats/#{email.mailer_method}-#{email.template_name}", expires_in: 15.minutes do %>
+    <tr class="text-center">
+      <td class="text-primary  text-left">
+        <%= link_to label.titleize, email.id ? admin_marketing_email_path(email) : "#" %>
+      </td>
+      <td class="text-secondary text-center small"><%= email.state %></td>
+      <td class="text-secondary text-center small"><%= email.days_after_state_change %> </td>
+      <% (0..3).each do |days|
+        range = [days.days.ago.beginning_of_day..days.days.ago.end_of_day]
+      %>
+        <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
+          <%= all_message_of("BoxMailer##{email.mailer_method}", email.template_name, range).count %>
+        </td>
+        <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
+          <%= open_percentage_of("BoxMailer##{email.mailer_method}", email.template_name, range) %>
+        </td>
+        <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
+          <%= click_percentage_of("BoxMailer##{email.mailer_method}", email.template_name, range) %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>

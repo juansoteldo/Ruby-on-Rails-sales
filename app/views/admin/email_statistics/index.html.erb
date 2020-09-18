@@ -32,49 +32,18 @@
         </tr>
         </thead>
         <tbody>
-          <% box_mailer_types_without_marketing_email.each do |mailer_type| %>
-            <% cache "email-stats/#{mailer_type}", expires_in: 15.minutes do %>
-              <tr class="text-center">
-                <td class="text-primary text-left" colspan="3"><%= mailer_type.titleize %></td>
-                <% (0..3).each do |days|
-                  range = [days.days.ago.beginning_of_day..days.days.ago.end_of_day]
-                %>
-                    <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                      <%= all_message_of("BoxMailer##{mailer_type}", nil, range).count %>
-                    </td>
-                    <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                      <%= open_percentage_of("BoxMailer##{mailer_type}", nil, range) %>
-                    </td>
-                  <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                    <%= click_percentage_of("BoxMailer##{mailer_type}", nil, range) %>
-                  </td>
-                <% end %>
-              </tr>
-            <% end %>
+          <% MarketingEmail.not_quotes.order("email_type desc", :state, :days_after_state_change).each do |email| %>
+            <%= render partial: "admin/email_statistics/statistic", locals: { email: email, label: email.template_name }%>
           <% end %>
 
-          <% MarketingEmail.order(:email_type, :state, :days_after_state_change).each do |email| %>
-            <% cache "email-stats/#{email.template_name}", expires_in: 15.minutes do %>
-                <tr class="text-center">
-                  <td class="text-primary  text-left">
-                    <%= link_to email.template_name.titleize, admin_marketing_email_path(email), target: "_blank" %>
-                  </td>
-                  <td class="text-secondary text-center small"><%= email.state %></td>
-                  <td class="text-secondary text-center small"><%= email.days_after_state_change %> </td>
-                  <% (0..3).each do |days|
-                    range = [days.days.ago.beginning_of_day..days.days.ago.end_of_day]
-                  %>
-                      <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                      <%= all_message_of("BoxMailer##{email.mailer_method}", email.template_name, range).count %>
-                    </td>
-                      <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                        <%= open_percentage_of("BoxMailer##{email.mailer_method}", email.template_name, range) %>
-                      </td>
-                    <td class="<%= (days % 2 == 0) ? 'bg-gray' : '' %>">
-                      <%= click_percentage_of("BoxMailer##{email.mailer_method}", email.template_name, range) %>
-                    </td>
-                  <% end %>
-                </tr>
+          <% box_mailer_types_without_marketing_email.each do |template_name| %>
+            <%= render partial: "admin/email_statistics/statistic",
+                       locals: { email: MarketingEmail.new(mailer_method: template_name), label: template_name }%>
+          <% end %>
+
+          <% if current_salesperson.admin? %>
+            <% MarketingEmail.quotes.each do |email| %>
+              <%= render partial: "admin/email_statistics/statistic", locals: { email: email, label: email.template_name }%>
             <% end %>
           <% end %>
         </tbody>

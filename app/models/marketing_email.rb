@@ -16,8 +16,9 @@ class MarketingEmail < ApplicationRecord
     all.order("email_type, days_after_state_change").map(&:template_name)
   end
 
+  attr_accessor :mailer_method
   def mailer_method
-    email_type == "quote" ? :quote_email : :marketing_email
+    @mailer_method ||= email_type == "quote" ? :quote_email : :marketing_email
   end
 
   def self.last_relevant_for_request(request)
