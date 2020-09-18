@@ -9,7 +9,7 @@
   </tr>
   <tr>
     <td colspan="2">
-      <%= render file: @template_path %>
+      <%= @marketing_email.html_content(@request, @variant).html_safe %>
     </td>
   </tr>
 </table>

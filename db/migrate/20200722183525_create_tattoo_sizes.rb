@@ -9,8 +9,6 @@ class CreateTattooSizes < ActiveRecord::Migration[5.2]
 
       t.timestamps
     end
-
-    require Rails.root.join("db/seeds/tattoo_sizes.rb") unless Rails.env.test?
   end
 
   def down

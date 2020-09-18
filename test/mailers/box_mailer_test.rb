@@ -8,6 +8,8 @@ class BoxMailerTest < ActionMailer::TestCase
 
   setup do
     @request = requests(:fresh)
+    CTD::SeedImporter.import_marketing_emails
+    CTD::SeedImporter.import_tattoo_sizes
   end
 
   test "marketing_emails render and include opt-out token" do
@@ -46,7 +48,7 @@ class BoxMailerTest < ActionMailer::TestCase
   test "quote emails include link" do
     @request.size = "Full Sleeve"
     @request.assign_tattoo_size_attributes
-    Setting.auto_quoting.update value: true
+    settings(:auto_quoting).update! value: true
     email = BoxMailer.quote_email(@request)
 
     assert_emails 1 do
@@ -64,7 +66,7 @@ class BoxMailerTest < ActionMailer::TestCase
   test "quote emails bcc notification recipients" do
     @request.size = "Full Sleeve"
     @request.assign_tattoo_size_attributes
-    Setting.auto_quoting.update value: true
+    settings(:auto_quoting).update! value: true
     email = BoxMailer.quote_email(@request)
 
     assert_emails 1 do

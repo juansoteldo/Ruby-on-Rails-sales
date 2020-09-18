@@ -3,42 +3,43 @@
 class BoxMailer < ApplicationMailer
   default from: "orders@customtattoodesign.ca"
 
-  layout "marketing_email"
-
   add_template_helper(ApplicationHelper)
   track open: true, click: true, utm_params: true
 
-  def quote_email(request, _quote = MarketingEmail.quote_for_request(request))
+  def quote_email(request, marketing_email = MarketingEmail.quote_for_request(request))
     return unless request.user
 
-    @request = request
+    @request = request.decorate
+    @marketing_email = marketing_email.decorate
+    @user = @request.user
+
     @variant = MostlyShopify::Variant.find(request.tattoo_size.deposit_variant_id.to_i).first
     raise "Cannot find variant with ID #{request.tattoo_size.deposit_variant_id}" if @variant.nil?
 
-    @user = @request.user
+    @variant = MostlyShopify::VariantDecorator.decorate(@variant)
 
-    track user: @user,
-          utm_campaign: _quote.template_name
-    @quote_template_path = "#{_quote.template_path}/#{_quote.template_name}"
-    _quote.template_name = "quote_email"
-    _quote.template_path = "box_mailer"
-
-    mail(to: @user.email,
-         subject: _quote.subject_line,
-         from: _quote.from,
+    track user: @request.user,
+          utm_campaign: marketing_email.template_name
+    mail(to: @request.user.email,
+         subject: marketing_email.subject_line,
+         from: marketing_email.from,
          bcc: Settings.emails.notification_recipients,
-         display_name: _quote.from.gsub(/<.+>/, ""),
-         template_path: _quote.template_path,
-         template_name: _quote.template_name)
+         display_name: marketing_email.from.gsub(/<.+>/, ""))
   end
 
   def marketing_email(request, marketing_email = MarketingEmail.find(1))
     return unless request.user
 
-    @request = request
-    @variant = MostlyShopify::Variant.find(request.variant) if request.variant
+    @request = request.decorate
+    @marketing_email = marketing_email.decorate
+    if request.variant
+      @variant = MostlyShopify::Variant.find(request.variant)
+      @variant = MostlyShopify::VariantDecorator.decorate(@variant)
+    end
+
     @user = @request.user
-    track user: @user,
+
+    track user: @request.user,
           utm_campaign: marketing_email.template_name
 
     reply_to = if @request.converted? || @request.salesperson.nil? || @request.salesperson == Salesperson.system
@@ -47,13 +48,11 @@ class BoxMailer < ApplicationMailer
                  @request.salesperson.email
                end
 
-    mail(to: @user.email,
+    mail(to: @request.user.email,
          subject: marketing_email.subject_line,
          from: marketing_email.from,
          reply_to: reply_to,
-         display_name: marketing_email.from.gsub(/<.+>/, ""),
-         template_path: marketing_email.template_path,
-         template_name: marketing_email.template_name)
+         display_name: marketing_email.from.gsub(/<.+>/, ""))
   end
 
   def confirmation_email(request)
@@ -98,3 +97,6 @@ class BoxMailer < ApplicationMailer
          display_name: "Lee Roller")
   end
 end
+
+require "redcarpet"
+require "redcarpet/render_strip"
