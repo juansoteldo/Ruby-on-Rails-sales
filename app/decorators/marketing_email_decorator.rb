@@ -18,8 +18,8 @@ class MarketingEmailDecorator < Draper::Decorator
   private
 
   def replace_constants(content, request, variant)
-    content.gsub! "{{Request.first_name}}", request.first_name.try(:titleize)
-    content.gsub! "{{Request.size}}", request.size
+    content.gsub! "{{Request.first_name}}", request.first_name.try(:titleize).to_s
+    content.gsub! "{{Request.size}}", request.size.to_s
     content.gsub! "{{Settings.emails.lee}}", Settings.emails.lee
     if variant
       content.gsub! "{{Variant.price}}", variant.formatted_price

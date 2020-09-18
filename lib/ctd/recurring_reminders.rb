@@ -33,12 +33,13 @@ module CTD
       end
     end
 
-    def log_counts(email: true)
+    def log_counts
+      return if Rails.env.test?
+
       puts "Recurring Reminder Counts:"
       @counts.each do |count|
         puts "  #{count[:name]}: #{count[:count]}"
       end
-      AdminMailer.daily_blast_counts(@counts).deliver_later if email
     end
 
     private
@@ -53,17 +54,21 @@ module CTD
     end
 
     def deliver_email(marketing_email, request)
-      previously_delivered = request.delivered_emails.where(marketing_email: marketing_email)
+      previously_delivered = request.delivered_emails.where(marketing_email: marketing_email, aasm_state: ["delivered", "skipped"])
       if previously_delivered.any?
         puts_log "#{marketing_email} has already been sent at #{previously_delivered.last.created_at}", request
         return
       end
 
-      if request.delivered_emails.create(marketing_email: marketing_email, request: request).sent_at
+      delivered_email = request.delivered_emails.create(marketing_email: marketing_email, request: request)
+      if delivered_email.delivered?
         puts_log "Sent `#{marketing_email}`", request
         increment_counter marketing_email
-      else
+      elsif delivered_email.skipped?
         puts_log "User has opted out, skipping.", request
+      else
+        puts_log "Failed to send #{marketing_email}.  Check logs.", request
+        sleep 2 # just in case
       end
     end
 

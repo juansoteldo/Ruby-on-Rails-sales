@@ -3,10 +3,6 @@ module Admin::EmailStatisticsHelper
     ["confirmation_email", "final_confirmation_email"]
   end
 
-  def capitalize_and_split(word)
-    word.split("_").map(&:capitalize).join(" ")
-  end
-
   def all_message_of(mailer_type, template = nil, range = default_range)
     messages = ahoy_messages(range).where(mailer: mailer_type)
     messages = messages.where(utm_campaign: template) if template.present?

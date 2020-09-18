@@ -10,12 +10,12 @@ module MostlyShopify
       raise StandardError, "cannot find request for #{order_status_url}" unless request
 
       if request.can_convert? && deposit?
-        request.convert
+        request.convert!
         request.update_columns deposit_order_id: @source.id,
                                state_changed_at: @source.created_at,
                                deposited_at: Time.now
       elsif request.can_complete? && final?
-        request.complete
+        request.complete!
         request.update_columns final_order_id: @source.id,
                                state_changed_at: @source.created_at
       end

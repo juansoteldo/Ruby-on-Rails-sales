@@ -35,7 +35,7 @@
           <% box_mailer_types_without_marketing_email.each do |mailer_type| %>
             <% cache "email-stats/#{mailer_type}", expires_in: 15.minutes do %>
               <tr class="text-center">
-                <td class="text-primary text-left" colspan="3"><%= capitalize_and_split(mailer_type) %></td>
+                <td class="text-primary text-left" colspan="3"><%= mailer_type.titleize %></td>
                 <% (0..3).each do |days|
                   range = [days.days.ago.beginning_of_day..days.days.ago.end_of_day]
                 %>
@@ -57,7 +57,7 @@
             <% cache "email-stats/#{email.template_name}", expires_in: 15.minutes do %>
                 <tr class="text-center">
                   <td class="text-primary  text-left">
-                    <%= link_to  capitalize_and_split(email.template_name), admin_marketing_email_path(email), target: "_blank" %>
+                    <%= link_to email.template_name.titleize, admin_marketing_email_path(email), target: "_blank" %>
                   </td>
                   <td class="text-secondary text-center small"><%= email.state %></td>
                   <td class="text-secondary text-center small"><%= email.days_after_state_change %> </td>

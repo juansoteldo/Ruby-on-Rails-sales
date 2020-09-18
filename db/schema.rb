@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_18_122239) do
+ActiveRecord::Schema.define(version: 2020_09_18_203153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -95,6 +95,9 @@ ActiveRecord::Schema.define(version: 2020_09_18_122239) do
     t.datetime "sent_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "aasm_state"
+    t.string "exception"
+    t.index ["aasm_state"], name: "index_delivered_emails_on_aasm_state"
     t.index ["marketing_email_id"], name: "index_delivered_emails_on_marketing_email_id"
     t.index ["request_id"], name: "index_delivered_emails_on_request_id"
   end

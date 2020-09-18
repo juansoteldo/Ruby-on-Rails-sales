@@ -29,12 +29,16 @@
     <td><%= one_week_ago_count %></td>
   </tr>
 </table>
-<h3>E-Mails Just Sent</h3>
+<h3>E-Mails Sent During Last 24-Hours</h3>
 <table>
-  <% @counts.each do |count| %>
-      <tr>
-        <td><%= count[:name] %></td>
-        <td><%= count[:count] %></td>
+  <% MarketingEmail.reminders.order(:state, :days_after_state_change).each do |email| %>
+      <tr class="text-center">
+        <td>
+          <%= email.template_name.titleize %>
+        </td>
+        <td>
+          <%= email.delivered_emails.delivered.where(delivered_emails: { created_at: [24.hours.ago..Time.now]}).count %>
+        </td>
       </tr>
   <% end %>
 </table>

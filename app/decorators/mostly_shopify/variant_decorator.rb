@@ -14,7 +14,12 @@ class MostlyShopify::VariantDecorator < Draper::Decorator
              else
                {}
              end
+    product = if !object.product.respond_to?(:handle)
+                MostlyShopify::Product.for_variant(object)
+              else
+                object.product
+              end
     Rails.application.routes.default_url_options[:host] = ENV.fetch("APP_HOST", "http://localhost:3000")
-    Rails.application.routes.url_helpers.cart_redirect_url(object.product.handle, object.id, params)
+    Rails.application.routes.url_helpers.cart_redirect_url(product.handle, object.id, params)
   end
 end

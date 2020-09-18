@@ -28,6 +28,11 @@ namespace :recurring do
             end
     reminders = CTD::RecurringReminders.new(scope)
     reminders.deliver_outstanding!
-    reminders.log_counts(email: true)
+    reminders.log_counts
+  end
+
+  desc "Send daily reminder counts"
+  task send_daily_blast: :environment do |_args|
+    AdminMailer.daily_blast_counts.deliver_now
   end
 end
