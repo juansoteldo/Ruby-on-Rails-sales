@@ -19,8 +19,16 @@
 CommitMsg:
   HardTabs:
     enabled: true
+  CapitalizedSubject:
+    enabled: false
+  TextWidth:
+    enabled: false
 
 PreCommit:
+  ALL:
+    exclude: &default_excludes
+      - 'node_modules/**/*'
+      - 'vendor/**/*'
   RuboCop:
     enabled: false
     on_warn: fail
