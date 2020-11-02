@@ -5,11 +5,16 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable,
+         :registerable,
+         :recoverable,
+         :rememberable,
+         :trackable,
+         :validatable
 
   scope :fuzzy_matching_email, (->(email) { where("levenshtein(email, ?) <= 2", email) })
 
+  has_many :requests, dependent: :destroy
   has_many :requests, dependent: :destroy
   has_many :events
   has_many :messages, class_name: "Ahoy::Message"
