@@ -1,6 +1,6 @@
 {
   "name": "ctd-sales",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "config.ru",
   "repository": "git@github.com:fluxinc/ctd-sales.git",
   "author": "Wojtek Grabski <wojtek@grabski.ca>",
