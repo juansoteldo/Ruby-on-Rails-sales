@@ -4,7 +4,7 @@ class SettingPolicy < ApplicationPolicy
   end
 
   def update?
-    @user.admin?
+    @user.admin? || (@record == Setting.auto_quoting && active_salesperson?)
   end
 
   class Scope < Scope
