@@ -3,7 +3,7 @@
   <%= link_to "New salesperson", new_admin_salesperson_path,
               class: "btn btn-primary btn-sm pull-right" %>
   <% end %>
-  <% if policy(Setting).update? %>
+  <% if policy(auto_quoting).update? %>
     <%= form_for [:admin, auto_quoting] do |f| %>
       <%= f.hidden_field :value, value: !auto_quoting.value %>
       <%= f.submit "Auto-quoting #{auto_quoting.value ? "ON" : "OFF"}" %>
