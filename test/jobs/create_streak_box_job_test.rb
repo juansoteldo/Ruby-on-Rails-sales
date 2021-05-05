@@ -31,7 +31,7 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
     end
   end
 
-  test "should send to lee when don't know size" do
+  test "should send to sales_manager when don't know size" do
     Settings.emails.deliver_start_design = true
     settings(:auto_quoting).update! value: true
     @request.update! size: "Don't Know"
@@ -42,7 +42,7 @@ class CreateStreakBoxJobTest < ActiveJob::TestCase
       end
     end
     email = ActionMailer::Base.deliveries.last
-    assert_includes email.to, Settings.emails.lee
+    assert_includes email.to, Settings.emails.sales_manager
   end
 
   test "should send to sales with known size" do

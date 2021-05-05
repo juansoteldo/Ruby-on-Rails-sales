@@ -20,6 +20,11 @@ class Salesperson < ApplicationRecord
     @@lee ||= where(email: Settings.emails.lee).first
   end
 
+  attr_reader :sales_manager
+  def self.sales_manager
+    @@sales_manager ||= where(email: Settings.emails.sales_manager).first
+  end
+
   def requests
     Request.quoted_or_contacted_by(id)
   end

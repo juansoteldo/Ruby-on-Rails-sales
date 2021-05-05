@@ -12,10 +12,10 @@ class CreateStreakBoxJob < ApplicationJob
 
     recipients = [Salesperson.system.email]
     if Setting.auto_quoting.value && !request.auto_quotable?
-      lee = Salesperson.lee
+      sales_manager = Salesperson.sales_manager
       box.set_stage_by_name("Contacted")
-      box.assign_to_salesperson(lee) if lee
-      recipients << lee.email
+      box.assign_to_salesperson(sales_manager) if sales_manager
+      recipients << sales_manager.email
     end
     RequestMailer.start_design_email(request, recipients).deliver_later
   end
