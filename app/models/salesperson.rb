@@ -4,8 +4,12 @@ require "openssl"
 require "base64"
 
 class Salesperson < ApplicationRecord
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable,
+         :registerable,
+         :recoverable,
+         :rememberable,
+         :trackable,
+         :validatable
 
   has_many :sales_totals
 
@@ -39,7 +43,7 @@ class Salesperson < ApplicationRecord
 
   def claim_requests_with_email(email, after = 3.months.ago)
     Request.joins(:user).where("email = ? AND requests.created_at > ? AND requests.contacted_by_id IS NULL", email, after)
-           .update_all contacted_by_id: id
+      .update_all contacted_by_id: id
   end
 
   def self.with_sales(params)
