@@ -15,12 +15,16 @@ lee:
   is_active: true
   admin: true
 
+sales_manager:
+  email: <%= Settings.emails.sales_manager %>
+  is_active: true
+  admin: false
+
 active_admin:
   email: adminsalesperson@example.com
   is_active: true
   admin: true
-# column: value
-#
+
 active:
   email: salesperson@example.com
   is_active: true
