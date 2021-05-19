@@ -4,10 +4,9 @@ namespace :export do
   task fresh_users_to_cm: :environment do
 
     username = Rails.application.credentials.cm[:username]
-    dummy_list_id = '441e021df19eba26d01a093820471bba'
-    live_list_id  = '68e89e891e2c5a7488f9329bb07d7eee'
+    list_id = '441e021df19eba26d01a093820471bba'
     
-    url = "https://api.createsend.com/api/v3.2/subscribers/#{live_list_id}.json"
+    url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}.json"
 
     basic_auth = {
       username: username,
