@@ -248,6 +248,9 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    httparty (0.18.1)
+      mime-types (~> 3.0)
+      multi_xml (>= 0.5.2)
     httpclient (2.8.3)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
@@ -310,6 +313,7 @@ GEM
       minitest-rails (~> 3.0)
     msgpack (1.3.3)
     multi_json (1.15.0)
+    multi_xml (0.6.0)
     multipart-post (2.1.1)
     netrc (0.11.0)
     newrelic_rpm (6.13.1)
@@ -522,6 +526,7 @@ DEPENDENCIES
   fog-aws
   google-api-client
   honeybadger (~> 4.0)
+  httparty
   jbuilder (~> 2.5)
   jquery-rails
   js-routes
@@ -562,4 +567,4 @@ RUBY VERSION
    ruby 2.6.6p146
 
 BUNDLED WITH
-   2.1.4
+   2.2.17
