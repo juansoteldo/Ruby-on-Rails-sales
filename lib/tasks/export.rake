@@ -1,6 +1,6 @@
 namespace :export do
   
-  desc "Export fresh emails to CM list"
+  desc "Export fresh marketing emails to CM list"
   task fresh_users_to_cm: :environment do
 
     username = Rails.application.credentials.cm[:username]
@@ -22,7 +22,7 @@ namespace :export do
       "ConsentToTrack": "Yes"
     }
 
-    User.where('created_at > ?', 6.months.ago).where(marketing_opt_in: true).find_each do |u|
+    User.where('updated_at > ?', 6.months.ago).where(marketing_opt_in: true).find_each do |u|
       body['EmailAddress'] = u.email
       body['Name'] = u.first_name.present? ? u.first_name : ''
 
