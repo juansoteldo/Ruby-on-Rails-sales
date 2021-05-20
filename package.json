@@ -1,10 +1,10 @@
 {
   "name": "ctd-sales",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "config.ru",
-  "repository": "git@github.com:fluxinc/ctd-sales.git",
+  "repository": "git@github.com:custom-tattoo-design/ctd-sales.git",
   "author": "Wojtek Grabski <wojtek@grabski.ca>",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
