@@ -48,4 +48,8 @@ class User < ApplicationRecord
 
     self.password = SecureRandom.base64(12)
   end
+
+  def identifies_as
+    requests.take.gender
+  end
 end
