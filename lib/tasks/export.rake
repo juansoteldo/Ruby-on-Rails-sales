@@ -1,11 +1,17 @@
+require 'task_helper'
+
 namespace :export do
   
   desc "Export fresh marketing emails to CM list"
   task fresh_users_to_cm: :environment do
 
     username = Rails.application.credentials.cm[:username]
-    list_id = '441e021df19eba26d01a093820471bba'
-    
+
+    dev_list_id   = 'b4cab4c4095a9a7bde862a1041d8e1bc'
+    prod_list_id  = '441e021df19eba26d01a093820471bba'
+    list_id = Rails.env.development? ? dev_list_id : prod_list_id
+
+    threshold_date = DateTime.parse '2020-11-20'
     url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}.json"
 
     basic_auth = {
@@ -22,16 +28,40 @@ namespace :export do
       "ConsentToTrack": "Yes"
     }
 
-    User.where('updated_at > ?', 6.months.ago).where(marketing_opt_in: true).find_each do |u|
+    query = User.where('updated_at > ?', threshold_date)
+      .where(marketing_opt_in: true)
+      .includes(:requests)
+
+    query.find_each.with_index do |u, index|
       body['EmailAddress'] = u.email
       body['Name'] = u.first_name.present? ? u.first_name : ''
 
-      HTTParty.post(url, 
-        body: body.to_json,
+      if u.requests.any?
+        req = u.requests.first
+
+        fields = [
+          { 'Key': 'Identify As', 'Value': u.identifies_as.to_s },
+          { 'Key': 'Style', 'Value': req.style.to_s },
+          { 'Key': 'Size', 'Value': req.size.to_s },
+          { 'Key': 'BodyPosition', 'Value': req.position.to_s }
+        ]
+
+        fields << { 'Key': 'First Tattoo', 'Value': TaskHelper.yesno(req.is_first_time) } if req.is_first_time
+        fields << { 'Key': 'Colour', 'Value': TaskHelper.yesno(req.has_color) } if req.has_color
+        fields << { 'Key': 'Coverup', 'Value': TaskHelper.yesno(req.has_cover_up) } if req.has_cover_up
+
+        body['CustomFields'] = fields
+      end
+
+      HTTParty.post(url,
+        basic_auth: basic_auth,
         headers: headers,
-        basic_auth: basic_auth
+        body: body.to_json
       )
+
+      print '.' if (index % 25).zero?
     end
+    puts "\n"
   end
 
 end
