@@ -142,7 +142,7 @@ class Admin::RequestsController < Admin::BaseController
   def request_params
     params.require(:request).permit(:user_id, :token,
                                     :is_first_time, :gender, :has_color, :position, :notes, :description,
-                                    :quote_id, :client_id, :ticket_id)
+                                    :quote_id, :client_id, :ticket_id, :has_cover_up)
   end
 end
 

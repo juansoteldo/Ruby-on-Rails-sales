@@ -46,9 +46,9 @@ namespace :export do
           { 'Key': 'BodyPosition', 'Value': req.position.to_s }
         ]
 
-        fields << { 'Key': 'First Tattoo', 'Value': TaskHelper.yesno(req.is_first_time) } if req.is_first_time
-        fields << { 'Key': 'Colour', 'Value': TaskHelper.yesno(req.has_color) } if req.has_color
-        fields << { 'Key': 'Coverup', 'Value': TaskHelper.yesno(req.has_cover_up) } if req.has_cover_up
+        fields << { 'Key': 'First Tattoo', 'Value': TaskHelper.yesno(req.is_first_time) } unless req.is_first_time.nil?
+        fields << { 'Key': 'Colour', 'Value': TaskHelper.yesno(req.has_color) } unless req.has_color.nil?
+        fields << { 'Key': 'Coverup', 'Value': TaskHelper.yesno(req.has_cover_up) } unless req.has_cover_up.nil?
 
         body['CustomFields'] = fields
       end
