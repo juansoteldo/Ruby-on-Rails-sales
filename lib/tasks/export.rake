@@ -43,7 +43,8 @@ namespace :export do
           { 'Key': 'Identify As', 'Value': u.identifies_as.to_s },
           { 'Key': 'Style', 'Value': req.style.to_s },
           { 'Key': 'Size', 'Value': req.size.to_s },
-          { 'Key': 'BodyPosition', 'Value': req.position.to_s }
+          { 'Key': 'BodyPosition', 'Value': req.position.to_s },
+          { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) }
         ]
 
         fields << { 'Key': 'First Tattoo', 'Value': TaskHelper.yesno(req.is_first_time) } unless req.is_first_time.nil?

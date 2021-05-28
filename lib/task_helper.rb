@@ -1,7 +1,7 @@
 module TaskHelper
 
-  def self.yesno(bool)
-    bool == true ? 'Yes' : 'No'
+  def self.yesno(var)
+    var.present? ? 'Yes' : 'No'
   end
 
 end
