@@ -90,23 +90,6 @@ class User < ApplicationRecord
           'Name': first_name.to_s
         }
 
-        if requests.any?
-          req = requests.first
-
-          fields = [
-            { 'Key': 'Identify As', 'Value': identifies_as.to_s },
-            { 'Key': 'Style', 'Value': req.style.to_s },
-            { 'Key': 'Size', 'Value': req.size.to_s },
-            { 'Key': 'BodyPosition', 'Value': req.position.to_s },
-            { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) }
-          ]
-
-          fields << { 'Key': 'First Tattoo', 'Value': TaskHelper.yesno(req.is_first_time) } unless req.is_first_time.nil?
-          fields << { 'Key': 'Colour', 'Value': TaskHelper.yesno(req.has_color) } unless req.has_color.nil?
-          fields << { 'Key': 'Coverup', 'Value': TaskHelper.yesno(req.has_cover_up) } unless req.has_cover_up.nil?
-
-          body['CustomFields'] = fields
-        end
       else
         url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}/unsubscribe.json"
         body = {
