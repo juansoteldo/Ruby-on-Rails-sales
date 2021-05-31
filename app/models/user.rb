@@ -62,9 +62,9 @@ class User < ApplicationRecord
   end
 
   protected
-    def update_cm_status(:when)
+    def update_cm_status(reason)
 
-      if (:when == 'update' && !self.saved_change_to_marketing_opt_in?)
+      if (reason == 'update' && !self.saved_change_to_marketing_opt_in?)
         return
       end
 
