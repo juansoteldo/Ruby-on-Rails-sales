@@ -5,11 +5,10 @@ namespace :export do
   desc "Export fresh marketing emails to CM list"
   task fresh_users_to_cm: :environment do
 
-    username = Rails.application.credentials.cm[:username]
-
-    dev_list_id   = 'b4cab4c4095a9a7bde862a1041d8e1bc'
-    prod_list_id  = '441e021df19eba26d01a093820471bba'
-    list_id = Rails.env.development? ? dev_list_id : prod_list_id
+    username      = Rails.application.credentials.cm[:username]
+    dev_list_id   = Rails.application.credentials.cm[:dev_list_id]
+    prod_list_id  = Rails.application.credentials.cm[:prod_list_id]
+    list_id       = Rails.env.development? ? dev_list_id : prod_list_id
 
     threshold_date = DateTime.parse '2020-11-20'
     url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}.json"
@@ -59,7 +58,6 @@ namespace :export do
         headers: headers,
         body: body.to_json
       )
-
       print '.' if (index % 25).zero?
     end
     puts "\n"

@@ -22,6 +22,14 @@ class User < ApplicationRecord
   auto_strip_attributes :email, :first_name, :last_name
   phony_normalize :phone_number, default_country_code: "US"
 
+  after_save do |u| 
+    u.update_cm_status(:save)
+  end
+
+  after_create do |u| 
+    u.update_cm_status(:create)
+  end
+
   before_validation :initialize_password
   validates_presence_of :email
   validates_length_of :email, minimum: 5
@@ -52,4 +60,64 @@ class User < ApplicationRecord
   def identifies_as
     requests.take.gender
   end
+
+  protected
+    def update_cm_status(:when)
+
+      if (:when == 'update' && !self.saved_change_to_marketing_opt_in?)
+        return
+      end
+
+      creds       = Rails.application.credentials
+      list_id     = Rails.env.development? ? creds.cm[:dev_list_id] : creds.cm[:prod_list_id]
+      username    = creds.cm[:username]
+      
+      basic_auth = {
+        username: username,
+        password: 'whatever'
+      }
+
+      headers = {
+        'Content-Type': 'application/json'
+      }
+
+      if marketing_opt_in?
+        url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}.json"
+        body = {
+          'EmailAddress': email,
+          'Resubscribe': true,
+          'ConsentToTrack': 'Yes',
+          'Name': first_name.to_s
+        }
+
+        if requests.any?
+          req = requests.first
+
+          fields = [
+            { 'Key': 'Identify As', 'Value': identifies_as.to_s },
+            { 'Key': 'Style', 'Value': req.style.to_s },
+            { 'Key': 'Size', 'Value': req.size.to_s },
+            { 'Key': 'BodyPosition', 'Value': req.position.to_s },
+            { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) }
+          ]
+
+          fields << { 'Key': 'First Tattoo', 'Value': TaskHelper.yesno(req.is_first_time) } unless req.is_first_time.nil?
+          fields << { 'Key': 'Colour', 'Value': TaskHelper.yesno(req.has_color) } unless req.has_color.nil?
+          fields << { 'Key': 'Coverup', 'Value': TaskHelper.yesno(req.has_cover_up) } unless req.has_cover_up.nil?
+
+          body['CustomFields'] = fields
+        end
+      else
+        url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}/unsubscribe.json"
+        body = {
+          'EmailAddress': email
+        }
+      end
+      
+      HTTParty.post(url,
+        basic_auth: basic_auth,
+        headers: headers,
+        body: body.to_json
+      )
+    end
 end
