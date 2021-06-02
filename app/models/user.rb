@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'task_helper'
+require 'campaign_monitor'
 
 class User < ApplicationRecord
   acts_as_token_authenticatable
@@ -63,81 +63,11 @@ class User < ApplicationRecord
     requests.take.gender
   end
 
-  def cm_custom_fields
-    custom_fields = [
-      { 'Key': 'user_id', 'Value': id },
-      { 'Key': 'user_token', 'Value': authentication_token }
-    ]
-
-    if requests.any?
-      req = requests.first
-
-      req_fields = [
-        { 'Key': 'Identify As', 'Value': identifies_as.to_s },
-        { 'Key': 'Style', 'Value': req.style.to_s },
-        { 'Key': 'Size', 'Value': req.size.to_s },
-        { 'Key': 'BodyPosition', 'Value': req.position.to_s },
-        { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) }
-      ]
-
-      if !req.is_first_time.nil?
-        req_fields << { 'Key': 'First Tattoo', 'Value': TaskHelper.yesno(req.is_first_time) }
-      end
-
-      if !req.has_color.nil?
-        req_fields << { 'Key': 'Colour', 'Value': TaskHelper.yesno(req.has_color) }
-      end
-
-      if !req.has_cover_up.nil?
-        req_fields << { 'Key': 'Coverup', 'Value': TaskHelper.yesno(req.has_cover_up) }
-      end
-
-      custom_fields += req_fields
-    end
-
-    custom_fields
-  end
-
   protected
+
     def update_cm_status(reason)
-
-      if (reason == 'update' && !self.saved_change_to_marketing_opt_in?)
-        return
-      end
-
-      creds       = Rails.application.credentials
-      list_id     = Rails.env.development? ? creds.cm[:dev_list_id] : creds.cm[:prod_list_id]
-      username    = creds.cm[:username]
-      
-      basic_auth = {
-        username: username,
-        password: 'whatever'
-      }
-
-      headers = {
-        'Content-Type': 'application/json'
-      }
-
-      if marketing_opt_in?
-        url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}.json"
-        body = {
-          'EmailAddress': email,
-          'Resubscribe': true,
-          'ConsentToTrack': 'Yes',
-          'Name': first_name.to_s,
-          'CustomFields': cm_custom_fields
-        }
-      else
-        url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}/unsubscribe.json"
-        body = {
-          'EmailAddress': email
-        }
-      end
-      
-      HTTParty.post(url,
-        basic_auth: basic_auth,
-        headers: headers,
-        body: body.to_json
-      )
+      return if (reason == 'update' && !self.saved_change_to_marketing_opt_in?)
+      CampaignMonitor.export_user_data(self)
     end
+
 end
