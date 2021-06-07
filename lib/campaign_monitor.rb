@@ -38,9 +38,10 @@ module CampaignMonitor
   end
 
   def self.export_user_data(user)
-    creds       = Rails.application.credentials
-    list_id     = Rails.env.development? ? creds.cm[:dev_list_id] : creds.cm[:prod_list_id]
-    username    = creds.cm[:username]
+    creds         = Rails.application.credentials
+    username      = creds.cm[:username]
+    env_key       = (Rails.env + '_list_id').to_sym
+    list_id       = creds.cm[env_key]
     
     basic_auth = {
       username: username,
