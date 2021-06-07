@@ -7,9 +7,8 @@ namespace :export do
 
     creds         = Rails.application.credentials
     username      = creds.cm[:username]
-    dev_list_id   = creds.cm[:dev_list_id]
-    prod_list_id  = creds.cm[:prod_list_id]
-    list_id       = Rails.env.development? ? dev_list_id : prod_list_id
+    env_key       = (Rails.env + '_list_id').to_sym
+    list_id       = creds.cm[env_key]
 
     threshold_date = DateTime.parse '2020-11-20'
     url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}.json"
@@ -35,7 +34,7 @@ namespace :export do
     query.find_each.with_index do |u, index|
       body['EmailAddress'] = u.email
       body['Name'] = u.first_name.present? ? u.first_name : ''
-      body['CustomFields'] = u.cm_custom_fields
+      body['CustomFields'] = CampaignMonitor.user_custom_fields(u)
 
       HTTParty.post(url,
         basic_auth: basic_auth,
