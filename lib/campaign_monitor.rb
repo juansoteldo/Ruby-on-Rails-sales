@@ -6,7 +6,8 @@ module CampaignMonitor
   def self.user_custom_fields(user)
     custom_fields = [
       { 'Key': 'user_id', 'Value': user.id },
-      { 'Key': 'user_token', 'Value': user.authentication_token }
+      { 'Key': 'user_token', 'Value': user.authentication_token },
+      { 'Key': 'subscribed_date', 'Value': user.created_at.strftime('%Y-%m-%d') }
     ]
 
     if user.requests.any?
@@ -37,42 +38,72 @@ module CampaignMonitor
     custom_fields
   end
 
-  def self.export_user_data(user)
+  def self.set_cm_commons
     creds         = Rails.application.credentials
     username      = creds.cm[:username]
-    env_key       = (Rails.env + '_list_id').to_sym
-    list_id       = creds.cm[env_key]
+    env           = Rails.env.to_sym
     
-    basic_auth = {
+    marketing_list_id   = creds.cm[env][:marketing_list_id]
+    all_list_id         = creds.cm[env][:all_list_id]
+
+    cm_host                      = 'https://api.createsend.com/api/v3.2/subscribers'
+    @add_to_marketing_url        = "#{cm_host}/#{marketing_list_id}.json"
+    @add_to_all_url              = "#{cm_host}/#{all_list_id}.json"
+    @remove_from_marketing_url   = "#{cm_host}/#{marketing_list_id}/unsubscribe.json"
+
+    @basic_auth = {
       username: username,
       password: 'whatever'
     }
 
-    headers = {
+    @headers = {
       'Content-Type': 'application/json'
     }
+  end
 
-    if user.marketing_opt_in?
-      url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}.json"
-      body = {
-        'EmailAddress': user.email,
-        'Resubscribe': true,
-        'ConsentToTrack': 'Yes',
-        'Name': user.first_name.to_s,
-        'CustomFields': user_custom_fields(user)
-      }
-    else
-      url = "https://api.createsend.com/api/v3.2/subscribers/#{list_id}/unsubscribe.json"
-      body = {
-        'EmailAddress': user.email
-      }
-    end
-    
-    HTTParty.post(url,
-      basic_auth: basic_auth,
-      headers: headers,
-      body: body.to_json
+  def self.add_request_body(user)
+    {
+      'EmailAddress': user.email,
+      'Resubscribe': true,
+      'ConsentToTrack': 'Yes',
+      'Name': user.first_name.to_s,
+      'CustomFields': user_custom_fields(user)
+    }
+  end
+
+  def self.remove_request_body(user)
+    {
+      'EmailAddress': user.email
+    }
+  end
+ 
+  def self.add_user_to_all_list(user)
+    set_cm_commons
+  
+    HTTParty.post(@add_to_all_url,
+      basic_auth: @basic_auth,
+      headers: @headers,
+      body: add_request_body(user).to_json
     )
   end
 
+  def self.add_user_to_marketing_list(user)
+    set_cm_commons
+
+    HTTParty.post(@add_to_marketing_url,
+      basic_auth: @basic_auth,
+      headers: @headers,
+      body: add_request_body(user).to_json
+    )
+  end
+  
+  def self.remove_user_from_marketing_list(user)
+    set_cm_commons
+
+    HTTParty.post(@remove_from_marketing_url,
+      basic_auth: @basic_auth,
+      headers: @headers,
+      body: remove_request_body(user).to_json
+    )
+  end
 end
