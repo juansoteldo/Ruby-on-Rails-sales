@@ -1,5 +1,6 @@
 require 'campaign_monitor'
 require 'csv'
+require 'open-uri'
 
 namespace :cm do
   
@@ -24,10 +25,12 @@ namespace :cm do
 
     threshold_date = DateTime.parse '2020-11-20'
 
-    CSV.foreach("lib/csv/suppressions.csv") do |row|
+    csv_text = open(Rails.application.credentials.suppressions_url.to_s)
+    csv = CSV.parse(csv_text, headers: true)
+
+    csv.each do |row|
       email     = row[0]
       date_txt  = row[1]
-      reason    = row[2]
 
       next if DateTime.parse(date_txt) < threshold_date
 
@@ -37,8 +40,7 @@ namespace :cm do
       user.update(marketing_opt_in: false)
       print '.'
     end
-
     puts "\n"
-  end
 
+  end
 end
