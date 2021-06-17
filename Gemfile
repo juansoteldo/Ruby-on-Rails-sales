@@ -75,6 +75,7 @@ gem "mini_magick"
 gem "newrelic_rpm"
 gem "will_paginate", "~> 3.1.0"
 gem 'httparty'
+gem 'csv'
 
 group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console
