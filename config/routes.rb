@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   get "/marketing/opt_in", to: "marketing#opt_in", as: :marketing_opt_in
   match "public/thanks", via: [:get, :post], to: "public#deposit_redirect", as: :deposit_redirect
 
+  post '/cm/unsubscribe', to: 'cm#unsubscribe'
+
   get "/events/create", to: "events#create"
 
   resources :events, only: [:show]
