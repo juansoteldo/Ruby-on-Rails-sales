@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'services/cm'
+
 class User < ApplicationRecord
   acts_as_token_authenticatable
 
