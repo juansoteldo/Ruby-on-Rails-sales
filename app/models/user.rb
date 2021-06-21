@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'campaign_monitor'
 
 class User < ApplicationRecord
   acts_as_token_authenticatable
@@ -67,17 +66,20 @@ class User < ApplicationRecord
     # -- After receiving a marketing email, user decides to unsubscribe 
 
     def process_cm_on_create
-      CampaignMonitor.add_user_to_all_list(self)
-      CampaignMonitor.add_user_to_marketing_list(self) if self.marketing_opt_in?
+      Services::CM.add_user_to_all_list(self)
+
+      if self.marketing_opt_in?
+        Services::CM.add_user_to_marketing_list(self) 
+      end
     end
 
     def process_cm_on_update
       return if !self.saved_change_to_marketing_opt_in?
-      
+
       if self.marketing_opt_in?
-        CampaignMonitor.add_user_to_marketing_list(self)
+        Services::CM.add_user_to_marketing_list(self)
       else
-        CampaignMonitor.remove_user_from_marketing_list(self)
+        Services::CM.remove_user_from_marketing_list(self)
       end
     end
 
