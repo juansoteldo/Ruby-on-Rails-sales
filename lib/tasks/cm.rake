@@ -1,5 +1,6 @@
 require 'csv'
 require 'open-uri'
+require 'services/cm'
 
 namespace :cm do
   
