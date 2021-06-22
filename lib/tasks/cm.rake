@@ -1,6 +1,6 @@
-require 'campaign_monitor'
 require 'csv'
 require 'open-uri'
+require 'services/cm'
 
 namespace :cm do
   
@@ -13,8 +13,8 @@ namespace :cm do
       .includes(:requests)
 
     query.find_each.with_index do |user, index|
-      CampaignMonitor.add_user_to_all_list(user)
-      CampaignMonitor.add_user_to_marketing_list(user) if user.marketing_opt_in?
+      Services::CM.add_user_to_all_list(user)
+      Services::CM.add_user_to_marketing_list(user) if user.marketing_opt_in?
       print '.' if (index % 25).zero?
     end
     puts "\n"

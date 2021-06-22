@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'task_helper'
+require 'services/cm'
 
 module Services
   class CM
