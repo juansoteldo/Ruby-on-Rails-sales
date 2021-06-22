@@ -92,6 +92,9 @@ class PublicController < ApplicationController
     head :ok
   end
 
+  def unsubscribed
+  end
+
   private
 
   def update_user_names
