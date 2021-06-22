@@ -111,20 +111,26 @@ module Services
 
     def self.process_webhook_events(data)
       set_cm_commons
-      
+
+      directives = {
+        'Deactivate' => false,
+        'Subscribe' => true
+      }
+
       data['Events'].each do |event|
+        type = event['Type']
+
         user = User.find_by_email(event['EmailAddress'])
         next unless user
-    
+
         case data['ListID']
         when @marketing_list_id
-          user.update_column :marketing_opt_in, false
+          user.update_column :marketing_opt_in, directives[type]
         when @all_list_id
-          user.update_column :presales_opt_in, false
+          user.update_column :presales_opt_in, directives[type]
         end
       end
-    end
-  
-  end
 
+    end
+  end
 end
