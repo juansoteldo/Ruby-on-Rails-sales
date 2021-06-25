@@ -1,6 +1,19 @@
-json.extract! request, :id, :has_color, :style, :size,
-              :position, :description, :variant, :sku, :notes, :sub_total,
-              :first_name, :last_name, :deposit_order_id, :deposited_at
+json.extract! request,
+              :id,
+              :has_color,
+              :style,
+              :size,
+              :has_cover_up,
+              :position,
+              :description,
+              :variant,
+              :sku,
+              :notes,
+              :sub_total,
+              :first_name,
+              :last_name,
+              :deposit_order_id,
+              :deposited_at
 
 json.has_cover_up request.has_cover_up && true || false
 json.has_color request.has_color && true || false
