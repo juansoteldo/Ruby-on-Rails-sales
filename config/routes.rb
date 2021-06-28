@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get "/public/save_email", as: :save_email, defaults: { format: "json" }
   get "/marketing/opt_out", to: "marketing#opt_out", as: :marketing_opt_out
   get "/marketing/opt_in", to: "marketing#opt_in", as: :marketing_opt_in
+  get '/public/unsubscribed', to: 'public#unsubscribed', as: :unsubscribed
   match "public/thanks", via: [:get, :post], to: "public#deposit_redirect", as: :deposit_redirect
 
   post '/cm/update-subscriptions', to: 'cm#update_subscriptions'
