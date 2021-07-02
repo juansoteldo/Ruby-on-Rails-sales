@@ -260,16 +260,13 @@ class Request < ApplicationRecord
   end
 
   def quote_url
-    host            = ENV.fetch("APP_HOST", "http://localhost:3000")
-    message_token   = self.user.messages.last.token
+    host                = ENV.fetch("APP_HOST", "http://localhost:3000")
+    message_token       = self.user.messages.last.token
+    type                = self.tattoo_size.parameterized_type
+    signature           = self.user.messages.where.not(token: nil).last.token
 
-    #what is medium-design-deposit?
-    redirect_host   = 'http://api.customtattoodesign.ca/public/redirect/medium-design-deposit/' + self.variant
+    redirect_host       = "http://api.customtattoodesign.ca/public/redirect/#{type}/#{self.variant}"
 
-    # what is signature?
-    signature = '2391d3f1e6ce051410850854343f3e7be1db070b'
-
-    # how are the utm params set? 
     redirect_url_params = {
       requestId: self.user.requests.last.id,
       uuid: self.user.requests.last.uuid,

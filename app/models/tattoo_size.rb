@@ -42,4 +42,8 @@ class TattooSize < ApplicationRecord
   def quote_template_name
     quote_email&.template_name
   end
+
+  def parameterized_type
+    self.name.parameterize + '-design-deposit'
+  end
 end
