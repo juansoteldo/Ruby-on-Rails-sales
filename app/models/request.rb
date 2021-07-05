@@ -259,6 +259,32 @@ class Request < ApplicationRecord
     "Request ##{id}"
   end
 
+  def quote_url
+    host                = ENV.fetch("APP_HOST", "http://localhost:3000")
+    message_token       = self.user.messages.last.token
+    type                = self.tattoo_size.parameterized_type
+    signature           = self.user.messages.where.not(token: nil).last.token
+
+    redirect_host       = "http://api.customtattoodesign.ca/public/redirect/#{type}/#{self.variant}"
+
+    redirect_url_params = {
+      requestId: self.user.requests.last.id,
+      uuid: self.user.requests.last.uuid,
+      utm_source: 'campaign_monitor',
+      utm_medium: 'email',
+      utm_campaign: 'generated_quote_url'
+    }
+
+    redirect_url = "#{redirect_host}?#{redirect_url_params.to_query}"
+
+    quote_url_params = {
+      signature: signature,
+      url: redirect_url
+    }
+
+    "#{host}/ahoy/messages/#{message_token}/click?#{quote_url_params.to_query}"
+  end
+
   private
 
   def deliver_marketing_opt_in_email
@@ -345,4 +371,5 @@ class Request < ApplicationRecord
 
     user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
   end
+
 end
