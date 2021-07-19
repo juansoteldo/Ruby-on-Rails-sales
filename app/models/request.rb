@@ -12,6 +12,8 @@ class Request < ApplicationRecord
 
   before_create :update_state_stamp
   after_update :update_user_names
+  after_create :process_cm_on_create
+  after_update :process_cm_on_update
 
   default_scope -> { includes(:user) }
 
@@ -281,8 +283,9 @@ class Request < ApplicationRecord
       signature: signature,
       url: redirect_url
     }
-
     "#{host}/ahoy/messages/#{message_token}/click?#{quote_url_params.to_query}"
+  rescue StandardError
+    ""
   end
 
   private
@@ -317,8 +320,10 @@ class Request < ApplicationRecord
     raise "`send_quote` cannot determine quote for #{self} (style = #{style.inspect}, size = #{size.inspect})" unless quote
 
     self.quoted_at = Time.now
-    save!
+    # send quote email and the message for quote url will be created
     BoxMailer.quote_email(self, quote).deliver_now
+    # update CM quote_url custom field also
+    save!
   end
 
   def enqueue_deposit_actions
@@ -327,8 +332,9 @@ class Request < ApplicationRecord
   end
 
   def streak_boxes
-    MostlyStreak::Box.query(user.email)
-                     .select { |b| b.created_between?(created_at..(created_at + 2.days)) }
+    MostlyStreak::Box.query(user.email).select do |b|
+      b.created_between?(created_at..(created_at + 2.days))
+    end
   end
 
   def mark_last_box_quoted
@@ -372,4 +378,31 @@ class Request < ApplicationRecord
     user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
   end
 
+  protected
+
+  # scenarios:
+
+  # -- User creates a request, with marketing: true
+  # -- User created a request, with marketing: false
+  # -- After receiving a marketing email, user decides to unsubscribe
+
+  def process_cm_on_create
+    Services::CM.add_user_to_all_list(user)
+
+    Services::CM.add_user_to_marketing_list(user) if user.marketing_opt_in?
+  end
+
+  def process_cm_on_update
+    Services::CM.update_user_to_all_list(user)
+
+    if user.saved_change_to_marketing_opt_in?
+      if user.marketing_opt_in?
+        Services::CM.add_user_to_marketing_list(user)
+      else
+        Services::CM.remove_user_from_marketing_list(user)
+      end
+    elsif user.marketing_opt_in?
+      Services::CM.update_user_to_marketing_list(user)
+    end
+  end
 end
