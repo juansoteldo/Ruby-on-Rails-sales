@@ -25,9 +25,6 @@ class User < ApplicationRecord
   auto_strip_attributes :email, :first_name, :last_name
   phony_normalize :phone_number, default_country_code: "US"
 
-  after_create :process_cm_on_create
-  after_update :process_cm_on_update
-
   before_validation :initialize_password
   validates_presence_of :email
   validates_length_of :email, minimum: 5
@@ -58,31 +55,5 @@ class User < ApplicationRecord
   def identifies_as
     requests.take.gender
   end
-
-  protected
-
-    # scenarios:
-
-    # -- User creates a request, with marketing: true
-    # -- User created a request, with marketing: false
-    # -- After receiving a marketing email, user decides to unsubscribe 
-
-    def process_cm_on_create
-      Services::CM.add_user_to_all_list(self)
-
-      if self.marketing_opt_in?
-        Services::CM.add_user_to_marketing_list(self) 
-      end
-    end
-
-    def process_cm_on_update
-      return if !self.saved_change_to_marketing_opt_in?
-
-      if self.marketing_opt_in?
-        Services::CM.add_user_to_marketing_list(self)
-      else
-        Services::CM.remove_user_from_marketing_list(self)
-      end
-    end
 
 end
