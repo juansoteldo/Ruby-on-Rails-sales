@@ -13,14 +13,15 @@ module Services
       ]
 
       if user.requests.any?
-        req = user.requests.first
+        req = user.requests.last
 
         req_fields = [
           { 'Key': 'Identify As', 'Value': user.identifies_as.to_s },
           { 'Key': 'Style', 'Value': req.style.to_s },
           { 'Key': 'Size', 'Value': req.size.to_s },
           { 'Key': 'BodyPosition', 'Value': req.position.to_s },
-          { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) }
+          { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) },
+          { 'Key': 'quote_url', 'Value': req.quote_url }
         ]
 
         if !req.is_first_time.nil?
@@ -95,6 +96,28 @@ module Services
       HTTParty.post(@add_to_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
+        body: add_request_body(user).to_json
+      )
+    end
+
+    def self.update_user_to_all_list(user)
+      set_cm_commons
+    
+      HTTParty.put(@add_to_all_url,
+        basic_auth: @basic_auth,
+        headers: @headers,
+        query: {email: user.email},
+        body: add_request_body(user).to_json
+      )
+    end
+
+    def self.update_user_to_marketing_list(user)
+      set_cm_commons
+
+      response = HTTParty.put(@add_to_marketing_url,
+        basic_auth: @basic_auth,
+        headers: @headers,
+        query: {email: user.email}  ,
         body: add_request_body(user).to_json
       )
     end
