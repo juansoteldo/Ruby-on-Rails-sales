@@ -11,8 +11,7 @@ class MarketingEmail < ApplicationRecord
 
   before_validation :defang, if: :quote?
   validates_presence_of :email_type
-  validates_presence_of :days_after_state_change
-  validates_numericality_of :days_after_state_change, minimum: 0
+  validates :days_after_state_change, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
 
   def self.template_names
     all.order("email_type, days_after_state_change").map(&:template_name)
