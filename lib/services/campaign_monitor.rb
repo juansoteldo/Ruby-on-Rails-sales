@@ -166,8 +166,6 @@ module Services
     end
 
     def self.process_webhook_events(data)
-      set_commons(user)
-
       directives = {
         'Deactivate' => false,
         'Subscribe' => true
