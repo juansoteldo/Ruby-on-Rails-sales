@@ -298,7 +298,7 @@ class Request < ApplicationRecord
     self.quoted_at = Time.now
     # send quote email and the message for quote url will be created
     BoxMailer.quote_email(self, quote).deliver_now
-    # update CM quote_url custom field also
+    # update CampaignMonitor quote_url custom field also
     save!
   end
 

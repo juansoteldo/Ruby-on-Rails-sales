@@ -1,10 +1,10 @@
 require 'csv'
 require 'open-uri'
-require 'services/cm'
+require 'services/campaign_monitor'
 
 namespace :cm do
   
-  desc "Export fresh user emails to 2 CM lists"
+  desc "Export fresh user emails to 2 CampaignMonitor lists"
   task export_fresh_users: :environment do
 
     threshold_date = DateTime.parse '2020-11-20'
@@ -13,8 +13,8 @@ namespace :cm do
       .includes(:requests)
 
     query.find_each.with_index do |user, index|
-      Services::CM.add_user_to_all_list(user)
-      Services::CM.add_user_to_marketing_list(user) if user.marketing_opt_in?
+      Services::CampaignMonitor.add_user_to_all_list(user)
+      Services::CampaignMonitor.add_user_to_marketing_list(user) if user.marketing_opt_in?
       print '.' if (index % 25).zero?
     end
     puts "\n"

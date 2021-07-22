@@ -14,11 +14,11 @@ class UserTest < ActiveSupport::TestCase
     user = User.create(email: "#{email}@test.com", marketing_opt_in: true)
     sleep 15
 
-    response = Services::CM.get_subscriber_details_in_all(user)
+    response = Services::CampaignMonitor.get_subscriber_details_in_all(user)
     assert_equal response.code, 200
     assert_equal response.parsed_response['State'], 'Active'
 
-    response = Services::CM.get_subscriber_details_in_marketing(user)
+    response = Services::CampaignMonitor.get_subscriber_details_in_marketing(user)
     assert_equal response.code, 200
     assert_equal response.parsed_response['State'], 'Active'
 
@@ -26,16 +26,16 @@ class UserTest < ActiveSupport::TestCase
     user.update(marketing_opt_in: false)
     sleep 15 
  
-    response = Services::CM.get_subscriber_details_in_all(user)
+    response = Services::CampaignMonitor.get_subscriber_details_in_all(user)
     assert_equal response.code, 200
     assert_equal response.parsed_response['State'], 'Active'
 
-    response = Services::CM.get_subscriber_details_in_marketing(user)
+    response = Services::CampaignMonitor.get_subscriber_details_in_marketing(user)
     assert_equal response.code, 200
     assert_equal response.parsed_response['State'], 'Unsubscribed'
 
     # delete subscriber
-    response = Services::CM.delete_subscriber(user)
+    response = Services::CampaignMonitor.delete_subscriber(user)
     assert_equal response.code, 200
   end
 

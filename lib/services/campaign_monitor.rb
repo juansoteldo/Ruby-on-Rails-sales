@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 require 'task_helper'
-require 'services/cm'
 
 module Services
-  class CM
+  class CampaignMonitor
 
     def self.user_custom_fields(user)
       custom_fields = [
@@ -41,7 +40,7 @@ module Services
       custom_fields
     end
 
-    def self.set_cm_commons(user)
+    def self.set_commons(user)
       creds         = Rails.application.credentials
       username      = creds.cm[:username]
       env           = Rails.env.to_sym
@@ -86,7 +85,7 @@ module Services
     end
   
     def self.add_user_to_all_list(user)
-      set_cm_commons(user)
+      set_commons(user)
     
       HTTParty.post(@add_to_all_url,
         basic_auth: @basic_auth,
@@ -96,7 +95,7 @@ module Services
     end
 
     def self.add_user_to_marketing_list(user)
-      set_cm_commons(user)
+      set_commons(user)
 
       HTTParty.post(@add_to_marketing_url,
         basic_auth: @basic_auth,
@@ -106,7 +105,7 @@ module Services
     end
 
     def self.update_user_to_all_list(user)
-      set_cm_commons(user)
+      set_commons(user)
     
       HTTParty.put(@add_to_all_url,
         basic_auth: @basic_auth,
@@ -117,7 +116,7 @@ module Services
     end
 
     def self.update_user_to_marketing_list(user)
-      set_cm_commons(user)
+      set_commons(user)
 
       response = HTTParty.put(@add_to_marketing_url,
         basic_auth: @basic_auth,
@@ -128,7 +127,7 @@ module Services
     end
     
     def self.remove_user_from_marketing_list(user)
-      set_cm_commons(user)
+      set_commons(user)
 
       HTTParty.post(@remove_from_marketing_url,
         basic_auth: @basic_auth,
@@ -138,7 +137,7 @@ module Services
     end
 
     def self.get_subscriber_details_in_all(user)
-      set_cm_commons(user)
+      set_commons(user)
 
       HTTParty.get(@get_subscriber_details_in_all,
         basic_auth: @basic_auth,
@@ -147,7 +146,7 @@ module Services
     end
 
     def self.get_subscriber_details_in_marketing(user)
-      set_cm_commons(user)
+      set_commons(user)
 
       HTTParty.get(@get_subscriber_details_in_marketing,
         basic_auth: @basic_auth,
@@ -156,7 +155,7 @@ module Services
     end
 
     def self.delete_subscriber(user)
-      set_cm_commons(user)
+      set_commons(user)
 
       HTTParty.delete(@delete_subscriber,
         basic_auth: @basic_auth,
@@ -165,7 +164,7 @@ module Services
     end
 
     def self.process_webhook_events(data)
-      set_cm_commons(user)
+      set_commons(user)
 
       directives = {
         'Deactivate' => false,
