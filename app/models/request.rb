@@ -12,8 +12,6 @@ class Request < ApplicationRecord
 
   before_create :update_state_stamp
   after_update :update_user_names
-  after_create :process_cm_on_create
-  after_update :process_cm_on_update
 
   default_scope -> { includes(:user) }
 
@@ -288,6 +286,56 @@ class Request < ApplicationRecord
     ""
   end
 
+  def quote_url_base
+    host                = ENV.fetch("APP_HOST", "http://localhost:3000")
+    message_token       = user&.messages&.last&.token
+    "#{host}/ahoy/messages/#{message_token}/click?"
+  end
+
+  def quote_url_signature
+    type                = self.tattoo_size.parameterized_type
+    signature           = self.user.messages.where.not(token: nil).last.token
+
+    redirect_host       = "http://api.customtattoodesign.ca/public/redirect/#{type}/#{self.variant}"
+
+    quote_url_params = {
+      signature: signature,
+      url: redirect_host
+    }
+    "#{quote_url_params.to_query}#{URI.encode_www_form_component('?')}"
+  rescue StandardError
+    ""
+  end
+
+  def quote_url_utm_params
+    redirect_url_params = {
+      requestId: self.user.requests.last.id,
+      uuid: self.user.requests.last.uuid,
+      utm_source: 'campaign_monitor',
+      utm_medium: 'email',
+      utm_campaign: 'generated_quote_url'
+    }
+    URI.encode_www_form_component("#{redirect_url_params.to_query}")
+  rescue StandardError
+    ""
+  end
+
+  def send_quote
+    return unless quoted_at.nil?
+
+    assign_tattoo_size_attributes unless tattoo_size
+    raise "#{self} has no tattoo_size (style = #{style.inspect}, size = #{size.inspect})" unless tattoo_size
+
+    quote = MarketingEmail.quote_for_request(self)
+    raise "`send_quote` cannot determine quote for #{self} (style = #{style.inspect}, size = #{size.inspect})" unless quote
+
+    self.quoted_at = Time.now
+    # send quote email and the message for quote url will be created
+    BoxMailer.quote_email(self, quote).deliver_now
+    # update CampaignMonitor quote_url custom field also
+    save!
+  end
+
   private
 
   def deliver_marketing_opt_in_email
@@ -308,22 +356,6 @@ class Request < ApplicationRecord
 
     delay = Settings.emails.auto_quoting_delay
     RequestActionJob.set(wait: delay.minutes).perform_later(request: self, method: "send_quote")
-  end
-
-  def send_quote
-    return unless quoted_at.nil?
-
-    assign_tattoo_size_attributes unless tattoo_size
-    raise "#{self} has no tattoo_size (style = #{style.inspect}, size = #{size.inspect})" unless tattoo_size
-
-    quote = MarketingEmail.quote_for_request(self)
-    raise "`send_quote` cannot determine quote for #{self} (style = #{style.inspect}, size = #{size.inspect})" unless quote
-
-    self.quoted_at = Time.now
-    # send quote email and the message for quote url will be created
-    BoxMailer.quote_email(self, quote).deliver_now
-    # update CM quote_url custom field also
-    save!
   end
 
   def enqueue_deposit_actions
@@ -376,33 +408,5 @@ class Request < ApplicationRecord
     return unless user
 
     user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
-  end
-
-  protected
-
-  # scenarios:
-
-  # -- User creates a request, with marketing: true
-  # -- User created a request, with marketing: false
-  # -- After receiving a marketing email, user decides to unsubscribe
-
-  def process_cm_on_create
-    Services::CM.add_user_to_all_list(user)
-
-    Services::CM.add_user_to_marketing_list(user) if user.marketing_opt_in?
-  end
-
-  def process_cm_on_update
-    Services::CM.update_user_to_all_list(user)
-
-    if user.saved_change_to_marketing_opt_in?
-      if user.marketing_opt_in?
-        Services::CM.add_user_to_marketing_list(user)
-      else
-        Services::CM.remove_user_from_marketing_list(user)
-      end
-    elsif user.marketing_opt_in?
-      Services::CM.update_user_to_marketing_list(user)
-    end
   end
 end
