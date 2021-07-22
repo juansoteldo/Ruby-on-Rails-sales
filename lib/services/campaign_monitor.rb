@@ -20,7 +20,9 @@ module Services
           { 'Key': 'Size', 'Value': req.size.to_s },
           { 'Key': 'BodyPosition', 'Value': req.position.to_s },
           { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) },
-          { 'Key': 'quote_url', 'Value': req.quote_url }
+          { 'Key': 'quote_url_base', 'Value': req.quote_url_base },
+          { 'Key': 'quote_url_signature', 'Value': req.quote_url_signature },
+          { 'Key': 'quote_url_utm_params', 'Value': req.quote_url_utm_params }
         ]
 
         if !req.is_first_time.nil?

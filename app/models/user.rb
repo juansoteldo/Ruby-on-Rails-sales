@@ -82,7 +82,6 @@ class User < ApplicationRecord
       end
     else
       Services::CampaignMonitor.update_user_to_all_list(self)
-      Services::CampaignMonitor.update_user_to_marketing_list(self) if marketing_opt_in?
     end
   end
 end

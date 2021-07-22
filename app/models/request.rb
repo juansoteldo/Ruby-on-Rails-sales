@@ -286,6 +286,40 @@ class Request < ApplicationRecord
     ""
   end
 
+  def quote_url_base
+    host                = ENV.fetch("APP_HOST", "http://localhost:3000")
+    message_token       = user&.messages&.last&.token
+    "#{host}/ahoy/messages/#{message_token}/click?"
+  end
+
+  def quote_url_signature
+    type                = self.tattoo_size.parameterized_type
+    signature           = self.user.messages.where.not(token: nil).last.token
+
+    redirect_host       = "http://api.customtattoodesign.ca/public/redirect/#{type}/#{self.variant}"
+
+    quote_url_params = {
+      signature: signature,
+      url: redirect_host
+    }
+    "#{quote_url_params.to_query}#{URI.encode_www_form_component('?')}"
+  rescue StandardError
+    ""
+  end
+
+  def quote_url_utm_params
+    redirect_url_params = {
+      requestId: self.user.requests.last.id,
+      uuid: self.user.requests.last.uuid,
+      utm_source: 'campaign_monitor',
+      utm_medium: 'email',
+      utm_campaign: 'generated_quote_url'
+    }
+    URI.encode_www_form_component("#{redirect_url_params.to_query}")
+  rescue StandardError
+    ""
+  end
+
   def send_quote
     return unless quoted_at.nil?
 
