@@ -29,6 +29,9 @@ class User < ApplicationRecord
   validates_presence_of :email
   validates_length_of :email, minimum: 5
 
+  after_create :process_cm_on_create
+  after_update :process_cm_on_update
+
   def ransackable_attributes(_auth_object = nil)
     [:email, :marketing_opt_in, :crm_opt_in, :presales_opt_in]
   end
@@ -56,4 +59,30 @@ class User < ApplicationRecord
     requests.take.gender
   end
 
+  protected
+
+  # scenarios:
+
+  # -- User creates a request, with marketing: true
+  # -- User created a request, with marketing: false
+  # -- After receiving a marketing email, user decides to unsubscribe
+
+  def process_cm_on_create
+    Services::CM.add_user_to_all_list(self)
+
+    Services::CM.add_user_to_marketing_list(self) if marketing_opt_in?
+  end
+
+  def process_cm_on_update
+    if saved_change_to_marketing_opt_in?
+      if marketing_opt_in?
+        Services::CM.add_user_to_marketing_list(self)
+      else
+        Services::CM.remove_user_from_marketing_list(self)
+      end
+    else
+      Services::CM.update_user_to_all_list(self)
+      Services::CM.update_user_to_marketing_list(self) if marketing_opt_in?
+    end
+  end
 end

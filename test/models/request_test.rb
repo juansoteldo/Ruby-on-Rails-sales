@@ -117,6 +117,30 @@ class RequestTest < ActiveSupport::TestCase
     assert_equal found_request.user.email, request.user.email
   end
 
+  test "send_quote" do
+    email = SecureRandom.hex(8);
+    user = User.create(email: "#{email}@test.com", marketing_opt_in: true)
+    request = Request.create! user: user, description: "TEST, DO NOT REPLY"
+    
+    request.size = "Full Sleeve"
+    request.assign_tattoo_size_attributes
+    request.send_quote
+
+    sleep 15
+
+    response = Services::CM.get_subscriber_details_in_all(user)
+    assert_equal response.code, 200
+    assert_equal response.parsed_response['State'], 'Active'
+
+    response = Services::CM.get_subscriber_details_in_marketing(user)
+    assert_equal response.code, 200
+    assert_equal response.parsed_response['State'], 'Active'
+
+    # delete subscriber
+    response = Services::CM.delete_subscriber(user)
+    assert_equal response.code, 200
+ end
+
   def create_request_for_shopify_order(order, params = {})
     request = requests(:fresh)
     request.user.update email: order.email
