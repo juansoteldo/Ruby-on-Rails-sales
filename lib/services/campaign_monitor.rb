@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 require 'task_helper'
-require 'services/cm'
 
 module Services
-  class CM
+  class CampaignMonitor
 
     def self.user_custom_fields(user)
       custom_fields = [
@@ -21,7 +20,9 @@ module Services
           { 'Key': 'Size', 'Value': req.size.to_s },
           { 'Key': 'BodyPosition', 'Value': req.position.to_s },
           { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) },
-          { 'Key': 'quote_url', 'Value': req.quote_url }
+          { 'Key': 'quote_url_base', 'Value': req.quote_url_base },
+          { 'Key': 'quote_url_signature', 'Value': req.quote_url_signature },
+          { 'Key': 'quote_url_utm_params', 'Value': req.quote_url_utm_params }
         ]
 
         if !req.is_first_time.nil?
@@ -41,7 +42,7 @@ module Services
       custom_fields
     end
 
-    def self.set_cm_commons
+    def self.set_commons(user)
       creds         = Rails.application.credentials
       username      = creds.cm[:username]
       env           = Rails.env.to_sym
@@ -53,6 +54,11 @@ module Services
       @add_to_marketing_url        = "#{cm_host}/#{@marketing_list_id}.json"
       @add_to_all_url              = "#{cm_host}/#{@all_list_id}.json"
       @remove_from_marketing_url   = "#{cm_host}/#{@marketing_list_id}/unsubscribe.json"
+
+      @get_subscriber_details_in_all = "#{cm_host}/#{@all_list_id}.json?email=#{user.email}"
+      @get_subscriber_details_in_marketing = "#{cm_host}/#{@marketing_list_id}.json?email=#{user.email}"
+
+      @delete_subscriber = "#{cm_host}/#{@all_list_id}.json?email=#{user.email}"
 
       @basic_auth = {
         username: username,
@@ -81,7 +87,7 @@ module Services
     end
   
     def self.add_user_to_all_list(user)
-      set_cm_commons
+      set_commons(user)
     
       HTTParty.post(@add_to_all_url,
         basic_auth: @basic_auth,
@@ -91,7 +97,7 @@ module Services
     end
 
     def self.add_user_to_marketing_list(user)
-      set_cm_commons
+      set_commons(user)
 
       HTTParty.post(@add_to_marketing_url,
         basic_auth: @basic_auth,
@@ -101,7 +107,7 @@ module Services
     end
 
     def self.update_user_to_all_list(user)
-      set_cm_commons
+      set_commons(user)
     
       HTTParty.put(@add_to_all_url,
         basic_auth: @basic_auth,
@@ -112,7 +118,7 @@ module Services
     end
 
     def self.update_user_to_marketing_list(user)
-      set_cm_commons
+      set_commons(user)
 
       response = HTTParty.put(@add_to_marketing_url,
         basic_auth: @basic_auth,
@@ -123,7 +129,7 @@ module Services
     end
     
     def self.remove_user_from_marketing_list(user)
-      set_cm_commons
+      set_commons(user)
 
       HTTParty.post(@remove_from_marketing_url,
         basic_auth: @basic_auth,
@@ -132,8 +138,35 @@ module Services
       )
     end
 
+    def self.get_subscriber_details_in_all(user)
+      set_commons(user)
+
+      HTTParty.get(@get_subscriber_details_in_all,
+        basic_auth: @basic_auth,
+        headers: @headers,
+      )
+    end
+
+    def self.get_subscriber_details_in_marketing(user)
+      set_commons(user)
+
+      HTTParty.get(@get_subscriber_details_in_marketing,
+        basic_auth: @basic_auth,
+        headers: @headers,
+      )
+    end
+
+    def self.delete_subscriber(user)
+      set_commons(user)
+
+      HTTParty.delete(@delete_subscriber,
+        basic_auth: @basic_auth,
+        headers: @headers,
+      )
+    end
+
     def self.process_webhook_events(data)
-      set_cm_commons
+      set_commons(user)
 
       directives = {
         'Deactivate' => false,
