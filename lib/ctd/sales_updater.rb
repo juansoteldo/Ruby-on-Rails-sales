@@ -40,7 +40,7 @@ module CTD
             console_log(
               "Updating quoted_by_id for request #{request.id} (#{quoted_by_id.inspect} => #{sales_id})"
             )
-            request.update(quoted_by_id: sales_id)
+            request.update!(quoted_by_id: sales_id)
           end
           sales_id ||= quoted_by_id
 

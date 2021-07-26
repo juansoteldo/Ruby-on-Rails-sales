@@ -20,7 +20,7 @@ module MostlyShopify
                                state_changed_at: @source.created_at
       end
 
-      request.update(quoted_by_id: sales_id) if !sales_id.nil? && sales_id != request.quoted_by_id
+      request.update!(quoted_by_id: sales_id) if !sales_id.nil? && sales_id != request.quoted_by_id
 
       @source.id == (is_deposit? ? request.deposit_order_id : request.final_order_id)
     end

@@ -38,11 +38,11 @@ module Services
           req_fields << { 'Key': 'Coverup', 'Value': TaskHelper.yesno(req.has_cover_up) }
         end
 
-        sales_person_email = req.salesperson || MarketingEmail.find_by_template_name("general_quote_email").from.match(/.+<(.+)>/)[1]
+        salesperson_email = req.salesperson || MarketingEmail.find_by_template_name("general_quote_email").from.match(/.+<(.+)>/)[1]
         req_fields << {
-          'Key': 'sales_person_email',
-          'Value': sales_person_email
-        } if sales_person_email
+          'Key': 'salesperson_email',
+          'Value': salesperson_email
+        } if salesperson_email
 
         custom_fields += req_fields
       end
