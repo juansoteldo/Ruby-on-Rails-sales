@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'task_helper'
 
 module Services
@@ -36,6 +37,12 @@ module Services
         if !req.has_cover_up.nil?
           req_fields << { 'Key': 'Coverup', 'Value': TaskHelper.yesno(req.has_cover_up) }
         end
+
+        sales_person_email = req.salesperson || MarketingEmail.find_by_template_name("general_quote_email").from.match(/.+<(.+)>/)[1]
+        req_fields << {
+          'Key': 'sales_person_email',
+          'Value': sales_person_email
+        } if sales_person_email
 
         custom_fields += req_fields
       end
@@ -184,7 +191,6 @@ module Services
           user.update_column :presales_opt_in, directives[type]
         end
       end
-
     end
   end
 end

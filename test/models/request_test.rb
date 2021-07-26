@@ -124,6 +124,7 @@ class RequestTest < ActiveSupport::TestCase
     
     request.size = "Full Sleeve"
     request.assign_tattoo_size_attributes
+  
     request.send_quote
 
     assert_equal request.quote_url, request.quote_url_base + request.quote_url_signature + request.quote_url_utm_params
