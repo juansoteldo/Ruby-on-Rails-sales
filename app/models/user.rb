@@ -67,20 +67,20 @@ class User < ApplicationRecord
   # -- After receiving a marketing email, user decides to unsubscribe
 
   def process_cm_on_create
-    CampaignMonitorActionJob.perform_now(user: self, method: "add_user_to_all_list")
+    CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_all_list")
 
-    CampaignMonitorActionJob.perform_now(user: self, method: "add_user_to_marketing_list") if marketing_opt_in?
+    CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list") if marketing_opt_in?
   end
 
   def process_cm_on_update
     if saved_change_to_marketing_opt_in?
       if marketing_opt_in?
-        CampaignMonitorActionJob.perform_now(user: self, method: "add_user_to_marketing_list")
+        CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list")
       else
-        CampaignMonitorActionJob.perform_now(user: self, method: "remove_user_from_marketing_list")
+        CampaignMonitorActionJob.perform_later(user: self, method: "remove_user_from_marketing_list")
       end
     else
-      CampaignMonitorActionJob.perform_now(user: self, method: "update_user_to_all_list")
+      CampaignMonitorActionJob.perform_later(user: self, method: "update_user_to_all_list")
     end
   end
 end
