@@ -118,42 +118,45 @@ class RequestTest < ActiveSupport::TestCase
   end
 
   test "send_quote" do
-    email = SecureRandom.hex(8);
-    user = User.create(email: "#{email}@test.com", marketing_opt_in: true)
-    request = Request.create! user: user, description: "TEST, DO NOT REPLY"
-    
-    request.size = "Full Sleeve"
-    request.assign_tattoo_size_attributes
-    request.send_quote
+    perform_enqueued_jobs do
+      email = SecureRandom.hex(8);
+      user = User.create(email: "#{email}@test.com", marketing_opt_in: true)
+      request = Request.create! user: user, description: "TEST, DO NOT REPLY"
+      
+      request.size = "Full Sleeve"
+      request.assign_tattoo_size_attributes
 
-    assert_equal request.quote_url, request.quote_url_base + request.quote_url_signature + request.quote_url_utm_params
+      request.send_quote
+ 
+      assert_equal request.quote_url, request.quote_url_base + request.quote_url_signature + request.quote_url_utm_params
 
-    sleep 15
+      sleep 15
 
-    response = Services::CampaignMonitor.get_subscriber_details_in_all(user)
+      response = Services::CampaignMonitor.get_subscriber_details_in_all(user)
 
-    assert_equal response.code, 200
-    assert_equal response.parsed_response['State'], 'Active'
+      assert_equal response.code, 200
+      assert_equal response.parsed_response['State'], 'Active'
 
-    is_quote_url_base_equal = response.parsed_response['CustomFields'].find do |field| 
-      field['Key'] == 'quote_url_base' && field['Value'] == request.quote_url_base
+      is_quote_url_base_equal = response.parsed_response['CustomFields'].find do |field| 
+        field['Key'] == 'quote_url_base' && field['Value'] == request.quote_url_base
+      end
+      assert_not_nil is_quote_url_base_equal
+
+      is_quote_url_signature_equal = response.parsed_response['CustomFields'].find do |field| 
+        field['Key'] == 'quote_url_signature' && field['Value'] == request.quote_url_signature
+      end
+      assert_not_nil is_quote_url_signature_equal
+
+      is_quote_url_utm_params_equal = response.parsed_response['CustomFields'].find do |field| 
+        field['Key'] == 'quote_url_utm_params' && field['Value'] == request.quote_url_utm_params
+      end
+      assert_not_nil is_quote_url_utm_params_equal
+
+      # delete subscriber
+      response = Services::CampaignMonitor.delete_subscriber(user)
+      assert_equal response.code, 200
     end
-    assert_not_nil is_quote_url_base_equal
-
-    is_quote_url_signature_equal = response.parsed_response['CustomFields'].find do |field| 
-      field['Key'] == 'quote_url_signature' && field['Value'] == request.quote_url_signature
-    end
-    assert_not_nil is_quote_url_signature_equal
-
-    is_quote_url_utm_params_equal = response.parsed_response['CustomFields'].find do |field| 
-      field['Key'] == 'quote_url_utm_params' && field['Value'] == request.quote_url_utm_params
-    end
-    assert_not_nil is_quote_url_utm_params_equal
-
-    # delete subscriber
-    response = Services::CampaignMonitor.delete_subscriber(user)
-    assert_equal response.code, 200
- end
+   end
 
   def create_request_for_shopify_order(order, params = {})
     request = requests(:fresh)

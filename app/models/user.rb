@@ -18,7 +18,6 @@ class User < ApplicationRecord
   scope :subscribed_to_marketing, -> { where(marketing_opt_in: true) }
 
   has_many :requests, dependent: :destroy
-  has_many :requests, dependent: :destroy
   has_many :events
   has_many :messages, class_name: "Ahoy::Message"
 
@@ -68,20 +67,20 @@ class User < ApplicationRecord
   # -- After receiving a marketing email, user decides to unsubscribe
 
   def process_cm_on_create
-    Services::CampaignMonitor.add_user_to_all_list(self)
+    CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_all_list")
 
-    Services::CampaignMonitor.add_user_to_marketing_list(self) if marketing_opt_in?
+    CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list") if marketing_opt_in?
   end
 
   def process_cm_on_update
     if saved_change_to_marketing_opt_in?
       if marketing_opt_in?
-        Services::CampaignMonitor.add_user_to_marketing_list(self)
+        CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list")
       else
-        Services::CampaignMonitor.remove_user_from_marketing_list(self)
+        CampaignMonitorActionJob.perform_later(user: self, method: "remove_user_from_marketing_list")
       end
     else
-      Services::CampaignMonitor.update_user_to_all_list(self)
+      CampaignMonitorActionJob.perform_later(user: self, method: "update_user_to_all_list")
     end
   end
 end
