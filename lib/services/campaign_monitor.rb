@@ -23,7 +23,8 @@ module Services
           { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) },
           { 'Key': 'quote_url_base', 'Value': req.quote_url_base },
           { 'Key': 'quote_url_signature', 'Value': req.quote_url_signature },
-          { 'Key': 'quote_url_utm_params', 'Value': req.quote_url_utm_params }
+          { 'Key': 'quote_url_utm_params', 'Value': req.quote_url_utm_params },
+          { 'Key': 'salesperson_email', 'Value': req.salesperson&.email || Settings.emails.lee }
         ]
 
         if !req.is_first_time.nil?
@@ -37,12 +38,6 @@ module Services
         if !req.has_cover_up.nil?
           req_fields << { 'Key': 'Coverup', 'Value': TaskHelper.yesno(req.has_cover_up) }
         end
-
-        salesperson_email = req.salesperson&.email || MarketingEmail.find_by_template_name("general_quote_email").from.match(/.+<(.+)>/)[1]
-        req_fields << {
-          'Key': 'salesperson_email',
-          'Value': salesperson_email
-        } if salesperson_email
 
         custom_fields += req_fields
       end
