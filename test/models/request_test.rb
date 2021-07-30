@@ -125,12 +125,13 @@ class RequestTest < ActiveSupport::TestCase
       
       request.size = "Full Sleeve"
       request.assign_tattoo_size_attributes
-
+      
       request.send_quote
- 
-      assert_equal request.quote_url, request.quote_url_base + request.quote_url_signature + request.quote_url_utm_params
+      sleep 10
 
-      sleep 15
+      request.quoted_by = Salesperson.last
+      request.save!
+      sleep 10
 
       response = Services::CampaignMonitor.get_subscriber_details_in_all(user)
 
@@ -151,6 +152,11 @@ class RequestTest < ActiveSupport::TestCase
         field['Key'] == 'quote_url_utm_params' && field['Value'] == request.quote_url_utm_params
       end
       assert_not_nil is_quote_url_utm_params_equal
+
+      is_salesperson_email = response.parsed_response['CustomFields'].find do |field| 
+        field['Key'] == 'salesperson_email' && field['Value'] == request.salesperson.email
+      end
+      assert_not_nil is_salesperson_email
 
       # delete subscriber
       response = Services::CampaignMonitor.delete_subscriber(user)

@@ -81,7 +81,7 @@ class ActiveSupport::TestCase
   def clear_streak_boxes
     raise "Cannot use production pipeline" if MostlyStreak::Pipeline.default.name == "CTD Sales"
 
-    MostlyStreak::Box.all.each do |box|
+    MostlyStreak::Box.all(Settings.streak.pipeline_key).each do |box|
       begin
         box.delete
       rescue StandardError
