@@ -9,10 +9,22 @@ class RequestTest < ActiveSupport::TestCase
     @user = @request.user
     @variant = MostlyShopify::Variant.all.first
     @salesperson = salespeople(:active)
+
+    perform_enqueued_jobs do
+      email = SecureRandom.hex(8);
+      @fresh_user = User.create(email: "#{email}@test.com", marketing_opt_in: true)
+      @fresh_request = Request.create! user: @fresh_user, description: "TEST, DO NOT REPLY"
+
+      @fresh_request.size = "Full Sleeve"
+      @fresh_request.assign_tattoo_size_attributes
+    end
   end
 
   teardown do
     Settings.streak.create_boxes = true
+    # delete subscriber
+    response = Services::CampaignMonitor.delete_subscriber(@fresh_user)
+    assert_equal response.code, 200
   end
 
   test "create_user" do
@@ -117,46 +129,38 @@ class RequestTest < ActiveSupport::TestCase
     assert_equal found_request.user.email, request.user.email
   end
 
-  test "send_quote" do
+  test "chech_quote_urls" do
     perform_enqueued_jobs do
-      email = SecureRandom.hex(8);
-      user = User.create(email: "#{email}@test.com", marketing_opt_in: true)
-      request = Request.create! user: user, description: "TEST, DO NOT REPLY"
-      
-      request.size = "Full Sleeve"
-      request.assign_tattoo_size_attributes
+      @fresh_request.send_quote
+      sleep 10
 
-      request.send_quote
- 
-      assert_equal request.quote_url, request.quote_url_base + request.quote_url_signature + request.quote_url_utm_params
+      response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
 
-      sleep 15
+      assert_not_nil find_value_in_response(response: response, key: 'quote_url_base', value: @fresh_request.quote_url_base)
 
-      response = Services::CampaignMonitor.get_subscriber_details_in_all(user)
+      assert_not_nil find_value_in_response(response: response, key: 'quote_url_signature', value: @fresh_request.quote_url_signature)
 
-      assert_equal response.code, 200
-      assert_equal response.parsed_response['State'], 'Active'
-
-      is_quote_url_base_equal = response.parsed_response['CustomFields'].find do |field| 
-        field['Key'] == 'quote_url_base' && field['Value'] == request.quote_url_base
-      end
-      assert_not_nil is_quote_url_base_equal
-
-      is_quote_url_signature_equal = response.parsed_response['CustomFields'].find do |field| 
-        field['Key'] == 'quote_url_signature' && field['Value'] == request.quote_url_signature
-      end
-      assert_not_nil is_quote_url_signature_equal
-
-      is_quote_url_utm_params_equal = response.parsed_response['CustomFields'].find do |field| 
-        field['Key'] == 'quote_url_utm_params' && field['Value'] == request.quote_url_utm_params
-      end
-      assert_not_nil is_quote_url_utm_params_equal
-
-      # delete subscriber
-      response = Services::CampaignMonitor.delete_subscriber(user)
-      assert_equal response.code, 200
-    end
+      assert_not_nil find_value_in_response(response: response, key: 'quote_url_utm_params', value: @fresh_request.quote_url_utm_params)
    end
+  end
+
+  test "salesperson_email" do
+    perform_enqueued_jobs do
+      @fresh_request.quoted_by = Salesperson.last
+      @fresh_request.save!
+      sleep 10
+
+      response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
+
+      assert_not_nil find_value_in_response(response: response, key: 'salesperson_email', value: @fresh_request.salesperson.email)
+    end
+  end
+
+  def find_value_in_response(response:, key:, value:)
+    response.parsed_response['CustomFields'].find do |field| 
+        field['Key'] == key && field['Value'] == value
+    end
+  end
 
   def create_request_for_shopify_order(order, params = {})
     request = requests(:fresh)
