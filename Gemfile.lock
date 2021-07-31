@@ -315,7 +315,7 @@ GEM
       rake
     mini_magick (4.10.1)
     mini_mime (1.1.0)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.5.1)
     minitest (5.14.2)
     minitest-capybara (0.9.0)
       capybara
@@ -338,8 +338,9 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (6.13.1)
     nio4r (2.5.4)
-    nokogiri (1.10.10)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.11.4)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     orm_adapter (0.5.0)
     os (1.1.1)
     overcommit (0.56.0)
@@ -361,6 +362,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
+    racc (1.5.2)
     rack (2.1.4)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
