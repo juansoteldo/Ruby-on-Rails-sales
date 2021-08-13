@@ -69,6 +69,10 @@ class BoxMailer < ApplicationMailer
   end
 
   def opt_in_email(request)
+    # opt in email disabled by Declyn request at 12.08.2021
+    # because company wants switch opt-in email to campaign monitor. 
+    return
+
     return unless request&.user
 
     @request = request.decorate

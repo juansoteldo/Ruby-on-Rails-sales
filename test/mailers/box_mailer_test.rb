@@ -27,6 +27,10 @@ class BoxMailerTest < ActionMailer::TestCase
   end
 
   test "opt_in_email" do
+    # opt in email disabled by Declyn request at 12.08.2021
+    # because company wants switch opt-in email to campaign monitor. 
+    return true
+
     # Create the email and store it for further assertions
     email = BoxMailer.opt_in_email(@request)
 
