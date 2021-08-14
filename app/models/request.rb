@@ -339,6 +339,10 @@ class Request < ApplicationRecord
   private
 
   def deliver_marketing_opt_in_email
+    # opt in email disabled by Declyn request at 12.08.2021
+    # because company wants switch opt-in email to campaign monitor. 
+    return
+
     return unless user.marketing_opt_in.nil?
     return unless user&.email
 
