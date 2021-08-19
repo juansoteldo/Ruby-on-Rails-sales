@@ -28,7 +28,7 @@ class CreateRequestJobTest < ActiveJob::TestCase
 
     assert user.reload.presales_opt_in
     assert user.crm_opt_in
-    assert_not user.marketing_opt_in
+    assert user.marketing_opt_in
   end
 
   test "should add a new request with an image" do
