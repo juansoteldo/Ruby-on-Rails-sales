@@ -34,7 +34,7 @@ class RequestTest < ActiveSupport::TestCase
   end
 
   test "sends opt-in email" do
-    assert_enqueued_emails(1) do
+    assert_enqueued_emails(0) do
       request = Request.create! user: @user, description: "TEST, DO NOT REPLY"
       request.opt_in_user
     end

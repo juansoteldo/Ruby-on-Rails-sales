@@ -40,7 +40,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   test "webhook call should create request with positive opt_in" do
     params = wpcf7_params
     params[:user_attributes][:marketing_opt_in] = "1"
-    assert_emails(1) do
+    assert_emails(0) do
       perform_enqueued_jobs do
         post "/webhooks/requests_create", params: params
         assert_response :success
@@ -53,7 +53,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
     user = User.find(Request.joins(:user).where(users: { email: params[:email] }).first.user_id)
     assert_not_nil user
-    assert user.marketing_opt_in.nil? # nil because they have to set truthy using opt-in link
+#    assert user.marketing_opt_in.nil? # nil because they have to set truthy using opt-in link
+    assert user.marketing_opt_in? # nil because they have to set truthy using opt-in link
+
   end
 
   test "webhook call should create request with negative opt_in" do
@@ -234,7 +236,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     Settings.streak.create_boxes = true
 
     @user = User.where(email: wpcf7_params[:email]).first
-    assert_emails(2) do
+    assert_emails(1) do
       perform_enqueued_jobs do
         perform_enqueued_jobs do
           post "/webhooks/requests_create", params: wpcf7_params
