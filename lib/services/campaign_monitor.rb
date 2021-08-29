@@ -24,7 +24,8 @@ module Services
           { 'Key': 'quote_url_base', 'Value': req.quote_url_base },
           { 'Key': 'quote_url_signature', 'Value': req.quote_url_signature },
           { 'Key': 'quote_url_utm_params', 'Value': req.quote_url_utm_params },
-          { 'Key': 'salesperson_email', 'Value': req.salesperson&.email || Settings.emails.lee }
+          { 'Key': 'salesperson_email', 'Value': req.salesperson&.email || Settings.emails.lee },
+          { 'Key': 'requests_statuses', 'Value': user.requests.map { |request| request.state }.join(',')}
         ]
 
         if !req.is_first_time.nil?
