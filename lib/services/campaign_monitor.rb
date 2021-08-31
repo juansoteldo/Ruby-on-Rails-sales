@@ -76,7 +76,7 @@ module Services
     def self.add_request_body(user)
       {
         'EmailAddress': user.email,
-        'Resubscribe': true,
+        'Resubscribe': false,
         'ConsentToTrack': 'Yes',
         'Name': user.first_name.to_s,
         'CustomFields': user_custom_fields(user)
