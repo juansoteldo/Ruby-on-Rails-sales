@@ -41,6 +41,16 @@ namespace :cm do
       print '.'
     end
     puts "\n"
-
   end
+
+  desc "Sync unsubscribed users with All Emails CampaignMonitor list"
+  task sync_falsed_presales_opt_in: :environment do
+
+    puts "Total: #{User.where(presales_opt_in: false).count}"
+    User.where(presales_opt_in: false).find_each.with_index do |user, index|
+      Services::CampaignMonitor.remove_user_from_all_list(user)
+      puts index if (index % 100).zero?
+    end
+    puts "\n"
+  end  
 end

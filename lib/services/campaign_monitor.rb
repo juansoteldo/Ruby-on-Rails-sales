@@ -55,6 +55,7 @@ module Services
       @add_to_marketing_url        = "#{cm_host}/#{@marketing_list_id}.json"
       @add_to_all_url              = "#{cm_host}/#{@all_list_id}.json"
       @remove_from_marketing_url   = "#{cm_host}/#{@marketing_list_id}/unsubscribe.json"
+      @remove_from_all_url         = "#{cm_host}/#{@all_list_id}/unsubscribe.json"
 
       @get_subscriber_details_in_all = "#{cm_host}/#{@all_list_id}.json?email=#{user.email}"
       @get_subscriber_details_in_marketing = "#{cm_host}/#{@marketing_list_id}.json?email=#{user.email}"
@@ -133,6 +134,16 @@ module Services
       set_commons(user)
 
       HTTParty.post(@remove_from_marketing_url,
+        basic_auth: @basic_auth,
+        headers: @headers,
+        body: remove_request_body(user).to_json
+      )
+    end
+
+    def self.remove_user_from_all_list(user)
+      set_commons(user)
+
+      HTTParty.post(@remove_from_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
         body: remove_request_body(user).to_json
