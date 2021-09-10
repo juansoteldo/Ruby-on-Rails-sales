@@ -15,7 +15,7 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "opt_in" do
-    @user.update opted_out: true
+    @user.update! opted_out: true
     assert_not @user.marketing_opt_in
     assert_not @user.presales_opt_in
 
@@ -30,7 +30,7 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
 
   test "opt_out" do
     perform_enqueued_jobs do
-      @user.update opted_out: false
+      @user.update! opted_out: false
       assert @user.marketing_opt_in
       assert @user.presales_opt_in
 
