@@ -73,11 +73,21 @@ class User < ApplicationRecord
   end
 
   def process_cm_on_update
-    if saved_change_to_marketing_opt_in?
-      if marketing_opt_in?
-        CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list")
-      else
-        CampaignMonitorActionJob.perform_later(user: self, method: "remove_user_from_marketing_list")
+    if saved_change_to_marketing_opt_in? || saved_change_to_presales_opt_in?
+      if saved_change_to_marketing_opt_in?
+        if marketing_opt_in?
+          CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list")
+        else
+          CampaignMonitorActionJob.perform_later(user: self, method: "remove_user_from_marketing_list")
+        end
+      end
+
+      if saved_change_to_presales_opt_in?
+        if presales_opt_in?
+          CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_all_list")
+        else
+          CampaignMonitorActionJob.perform_later(user: self, method: "remove_user_from_all_list")
+        end
       end
     else
       CampaignMonitorActionJob.perform_later(user: self, method: "update_user_to_all_list")
