@@ -15,9 +15,7 @@ namespace :cm do
     query.find_each.with_index do |user, index|
       Services::CampaignMonitor.add_user_to_all_list(user)
       Services::CampaignMonitor.add_user_to_marketing_list(user) if user.marketing_opt_in?
-      print '.' if (index % 25).zero?
     end
-    puts "\n"
   end
 
   desc "Back sync suppression list with db users"
@@ -38,9 +36,16 @@ namespace :cm do
       next unless user
 
       user.update(marketing_opt_in: false)
-      print '.'
     end
-    puts "\n"
-
   end
+
+  desc "Sync unsubscribed users with All Emails CampaignMonitor list"
+  task sync_falsed_presales_opt_in: :environment do
+
+    Rails.logger.info "Total: #{User.where(presales_opt_in: false).count}"
+    User.where(presales_opt_in: false).find_each.with_index do |user, index|
+      Services::CampaignMonitor.remove_user_from_all_list(user)
+      Rails.logger.info "synced #{index} users" if (index % 100).zero?
+    end
+  end  
 end
