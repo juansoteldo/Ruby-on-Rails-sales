@@ -41,7 +41,9 @@ class DeliveredEmail < ApplicationRecord
   end
 
   def perform_delivery
-    BoxMailer.marketing_email(request, marketing_email).deliver_now
+    # marketing emails disabled by Declyn request at 14.12.2021
+    # because company wants switch marketing emails to campaign monitor.
+    false && BoxMailer.marketing_email(request, marketing_email).deliver_now
     assign_attributes sent_at: Time.now
   end
 end
