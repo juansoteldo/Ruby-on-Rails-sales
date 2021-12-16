@@ -22,6 +22,10 @@ module CTD
 
     def deliver_outstanding!
       update_requests!
+      # marketing emails disabled by Declyn request at 14.12.2021
+      # because company wants switch marketing emails to campaign monitor.
+      return
+
       puts "Sending reminders for #{requests.count} requests"
       requests.each do |request|
         puts_log "Is #{request.decorate.age_in_words} old, and is `#{request.state}`", request
