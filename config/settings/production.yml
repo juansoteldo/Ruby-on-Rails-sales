@@ -4,7 +4,8 @@ gmail:
     design_requests: Label_2606897481654667624
     appointment_requests: Label_7177529587396720741
 streak:
-  pipeline_key: agxzfm1haWxmb29nYWVyMQsSDE9yZ2FuaXphdGlvbiIKZmx1eGluYy5jYQwLEghXb3JrZmxvdxiAgICAhN6GCgw
+  api_key: <%= Rails.application.credentials[:streak][:production][:api_key] %>
+  pipeline_key: <%= Rails.application.credentials[:streak][:production][:pipeline_key] %>
 emails:
   deliver_start_design: true
   deliver_opt_in: true

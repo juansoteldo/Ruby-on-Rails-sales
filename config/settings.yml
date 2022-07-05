@@ -1,7 +1,4 @@
 streak:
-  api_cipher_random_key: <%= Rails.application.credentials[:streak][:api_cipher_random_key] %>,
-  api_cipher_random_iv: <%= Rails.application.credentials[:streak][:api_cipher_random_iv]  %>,
-  api_key: <%= Rails.application.credentials[:streak][:api_key] %>
   create_boxes: <%= ENV.fetch("CREATE_STREAK_BOXES", "false") %>
 emails:
   auto_quoting_delay: 10

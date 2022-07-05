@@ -85,6 +85,10 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"
+
+  # Debugging with IDE
+  gem "ruby-debug-ide"
+  gem "debase"
 end
 
 group :test do
@@ -99,4 +103,5 @@ group :development do
   gem "reek", require: false
   gem "rubocop", require: false
   gem "web-console"
+  gem "solargraph"
 end

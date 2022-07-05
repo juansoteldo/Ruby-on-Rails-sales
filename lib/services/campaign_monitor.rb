@@ -9,7 +9,8 @@ module Services
       custom_fields = [
         { 'Key': 'user_id', 'Value': user.id },
         { 'Key': 'user_token', 'Value': user.authentication_token },
-        { 'Key': 'subscribed_date', 'Value': user.created_at.strftime('%Y-%m-%d') }
+        { 'Key': 'subscribed_date', 'Value': user.created_at.strftime('%Y-%m-%d') },
+        { 'Key': 'job_status', 'Value': user.job_status }
       ]
 
       if user.requests.any?

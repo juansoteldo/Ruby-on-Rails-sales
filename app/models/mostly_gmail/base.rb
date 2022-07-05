@@ -39,7 +39,7 @@ module MostlyGmail
       def refresh_credentials!
         client_id = Google::Auth::ClientId.new Rails.application.credentials[:gmail][:client_id],
                                                Rails.application.credentials[:gmail][:client_secret]
-        token_store = Google::Auth::Stores::RedisTokenStore.new(redis: Redis.new)
+        token_store = Google::Auth::Stores::RedisTokenStore.new(redis: Redis.new(ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }))
         authorizer = Google::Auth::UserAuthorizer.new(client_id, SCOPE, token_store)
         url = authorizer.get_authorization_url(base_url: OOB_URI)
         puts "Open the following URL in the browser and enter the " \
@@ -60,7 +60,7 @@ module MostlyGmail
       def authorize
         client_id = Google::Auth::ClientId.new Rails.application.credentials[:gmail][:client_id],
                                                Rails.application.credentials[:gmail][:client_secret]
-        token_store = Google::Auth::Stores::RedisTokenStore.new(redis: Redis.new)
+        token_store = Google::Auth::Stores::RedisTokenStore.new(redis: Redis.new(ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }))
         authorizer = Google::Auth::UserAuthorizer.new(client_id, SCOPE, token_store)
         user_id = "default"
         credentials = authorizer.get_credentials(user_id)

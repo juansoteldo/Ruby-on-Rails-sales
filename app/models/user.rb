@@ -29,7 +29,7 @@ class User < ApplicationRecord
   validates_length_of :email, minimum: 5
 
   after_create :process_cm_on_create
-  after_update :process_cm_on_update
+  after_commit :process_cm_on_update
 
   def ransackable_attributes(_auth_object = nil)
     [:email, :marketing_opt_in, :crm_opt_in, :presales_opt_in]

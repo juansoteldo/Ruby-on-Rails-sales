@@ -3,58 +3,66 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [3.0.0] - 2021-07-14
+### Added
+- Debug support for IDE
+- Sidekiq support for development environment
+- Streak support for development environment
+- Sync job state on CRM with user model on API
+- Sync custom field job_status with Campaign Monitor
+- TLS Support for Redis 6
 
 ## [2.0.31] - 2021-12-16
 ### Added
-- disable marketing emails because company wants switch marketing emails to campaign monitor
+- Disable marketing emails because company wants switch marketing emails to campaign monitor
 
 ## [2.0.30] - 2021-09-13
 ### Added
-- unsubscribe from all list of campaign monitor
+- Unsubscribe from all list of campaign monitor
 
 ## [2.0.29] - 2021-09-03
 ### Changed
-- remake campaign monitor custom field quote_url
+- Remake campaign monitor custom field quote_url
 
 ## [2.0.28] - 2021-08-31
 ### Fixed
-- disable resubscribe in campaign monitor header
+- Disable resubscribe in campaign monitor header
 
 ## [2.0.27] - 2021-08-30
 ### Added
-- transfer requests statuses to campaign monitor in user custom field
+- Transfer requests statuses to campaign monitor in user custom field
 
 ## [2.0.26] - 2021-08-19
 ### Fixed
-- disable opt-in emails sending
+- Disable opt-in emails sending
 
 ## [2.0.25] - 2021-08-15
 ### Fixed
-- disable opt-in emails sending
+- Disable opt-in emails sending
 
 ## [2.0.24] - 2021-08-13
 ### Added
-- disable opt-in emails sending
+- Disable opt-in emails sending
 
 ## [2.0.23] - 2021-07-31
 ### Fixed
-- fix salesperson_email creation bug
+- Fix salesperson_email creation bug
 
 ## [2.0.22] - 2021-07-27
 ### Added
-- transfer sales person email to campaign manager in user custom field
+- Transfer sales person email to campaign manager in user custom field
 
 ## [2.0.21] - 2021-07-23
 ### Fixed
-- fix NameError in cm#update_subscriptions
+- Fix NameError in cm#update_subscriptions
 
 ## [2.0.20] - 2021-07-22
 ### Changed
-- split quote_url to 3 parts
+- Split quote_url to 3 parts
 
 ## [2.0.19] - 2021-07-21
 ### Fixed
-- fixed MarketingEmail class validations
+- Fixed MarketingEmail class validations
 
 ## [2.0.18] - 2021-07-20
 ### Changed
