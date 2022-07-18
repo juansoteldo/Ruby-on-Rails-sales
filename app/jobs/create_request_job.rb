@@ -34,11 +34,13 @@ class CreateRequestJob < WebhookJob
     params[:user_attributes] ||= {}
     params[:user_attributes][:id] = @user.id
     params[:user_attributes][:email] = params.delete(:email)
+    params[:user_attributes][:phone_number] = params[:phone_number]
 
     return unless params[:user_attributes].key?(:marketing_opt_in)
 
     # change nil -> true because optin confirmation moved to campaign monitor
     params[:user_attributes][:marketing_opt_in] = params[:user_attributes][:marketing_opt_in] == "0" ? false : true
+
     @user.update params[:user_attributes]
   end
 
