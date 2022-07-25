@@ -122,6 +122,8 @@ class Request < ApplicationRecord
     self.quoted_by_id ||= params[:salesperson_id]
     save!
     quote!
+    # Update quote_url for user in CM
+    CampaignMonitorActionJob.perform_later(user: self.user, method: "update_user_to_all_list")
   end
 
   def first_time?
@@ -147,6 +149,8 @@ class Request < ApplicationRecord
     self.quoted_by = Salesperson.system
     save!
     quote!
+    # Update quote_url for user in CM
+    CampaignMonitorActionJob.perform_later(user: self.user, method: "update_user_to_all_list")
   end
 
   def assign_tattoo_size_attributes

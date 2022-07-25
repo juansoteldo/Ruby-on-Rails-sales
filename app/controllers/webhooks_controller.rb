@@ -33,6 +33,12 @@ class WebhooksController < ApplicationController
     render json: webhook.id
   end
 
+  def newsletter_signup
+    safe_params = newsletter_params
+    CampaignMonitorActionJob.perform_later(user: { user: safe_params }, method: "add_email_to_marketing_list")
+    render json: safe_params
+  end
+
   private
 
   def create_webhook(args)
@@ -69,5 +75,11 @@ class WebhooksController < ApplicationController
   def calendly_params
     params.require(:payload).permit(event: [:uuid, :start_time, :end_time],
                                     invitee: [:uuid, :email, :first_name, :last_name, :text_reminder_number]).to_unsafe_h
+  end
+
+  def newsletter_params
+    params.except(:controller, :action, :type).permit(
+      :name, :email
+    ).to_unsafe_h
   end
 end

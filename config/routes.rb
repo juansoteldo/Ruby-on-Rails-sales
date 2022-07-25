@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     post "orders_create" => :orders_create
     post "requests_create" => :requests_create
     post "calendly" => :events_create
+    post "newsletter" => :newsletter_signup
   end
 
   match "public/get_ids", via: [:get, :post]

@@ -104,4 +104,5 @@ group :development do
   gem "rubocop", require: false
   gem "web-console"
   gem "solargraph"
+  gem "awesome_print", :require => 'ap'
 end

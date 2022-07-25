@@ -24,7 +24,7 @@ module Services
           { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) },
           { 'Key': 'quote_url', 'Value': req.quote_url },
           { 'Key': 'salesperson_email', 'Value': req.salesperson&.email || Settings.emails.lee },
-          { 'Key': 'requests_statuses', 'Value': user.requests.map { |request| request.state }.join(',')}
+          # { 'Key': 'requests_statuses', 'Value': user.requests.map { |request| request.state }.join(',')} # Unused
         ]
 
         if !req.is_first_time.nil?
@@ -44,7 +44,7 @@ module Services
       custom_fields
     end
 
-    def self.set_commons(user)
+    def self.set_commons(email)
       creds         = Rails.application.credentials
       username      = creds.cm[:username]
       env           = Rails.env.to_sym
@@ -58,10 +58,9 @@ module Services
       @remove_from_marketing_url   = "#{cm_host}/#{@marketing_list_id}/unsubscribe.json"
       @remove_from_all_url         = "#{cm_host}/#{@all_list_id}/unsubscribe.json"
 
-      @get_subscriber_details_in_all = "#{cm_host}/#{@all_list_id}.json?email=#{user.email}"
-      @get_subscriber_details_in_marketing = "#{cm_host}/#{@marketing_list_id}.json?email=#{user.email}"
-
-      @delete_subscriber = "#{cm_host}/#{@all_list_id}.json?email=#{user.email}"
+      @get_subscriber_details_in_all = "#{cm_host}/#{@all_list_id}.json?email=#{email}"
+      @get_subscriber_details_in_marketing = "#{cm_host}/#{@marketing_list_id}.json?email=#{email}"
+      @delete_subscriber = "#{cm_host}/#{@all_list_id}.json?email=#{email}"
 
       @basic_auth = {
         username: username,
@@ -90,7 +89,7 @@ module Services
     end
   
     def self.add_user_to_all_list(user)
-      set_commons(user)
+      set_commons(user.email)
     
       HTTParty.post(@add_to_all_url,
         basic_auth: @basic_auth,
@@ -100,7 +99,7 @@ module Services
     end
 
     def self.add_user_to_marketing_list(user)
-      set_commons(user)
+      set_commons(user.email)
 
       HTTParty.post(@add_to_marketing_url,
         basic_auth: @basic_auth,
@@ -109,30 +108,42 @@ module Services
       )
     end
 
+    def self.add_email_to_marketing_list(user)
+      user = user[:user]
+      set_commons(user[:email])
+      req_body = { "EmailAddress": user[:email], "Name": user[:name], "Resubscribe": false, "ConsentToTrack": "Yes" }
+
+      HTTParty.post(@add_to_marketing_url,
+        basic_auth: @basic_auth,
+        headers: @headers,
+        body: req_body.to_json,
+      )
+    end
+
     def self.update_user_to_all_list(user)
-      set_commons(user)
+      set_commons(user.email)
     
       HTTParty.put(@add_to_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
-        query: {email: user.email},
+        query: { email: user.email },
         body: add_request_body(user).to_json
       )
     end
 
     def self.update_user_to_marketing_list(user)
-      set_commons(user)
+      set_commons(user.email)
 
       response = HTTParty.put(@add_to_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
-        query: {email: user.email}  ,
+        query: { email: user.email },
         body: add_request_body(user).to_json
       )
     end
     
     def self.remove_user_from_marketing_list(user)
-      set_commons(user)
+      set_commons(user.email)
 
       HTTParty.post(@remove_from_marketing_url,
         basic_auth: @basic_auth,
@@ -142,7 +153,7 @@ module Services
     end
 
     def self.remove_user_from_all_list(user)
-      set_commons(user)
+      set_commons(user.email)
 
       HTTParty.post(@remove_from_all_url,
         basic_auth: @basic_auth,
@@ -152,7 +163,7 @@ module Services
     end
 
     def self.get_subscriber_details_in_all(user)
-      set_commons(user)
+      set_commons(user.email)
 
       HTTParty.get(@get_subscriber_details_in_all,
         basic_auth: @basic_auth,
@@ -161,7 +172,7 @@ module Services
     end
 
     def self.get_subscriber_details_in_marketing(user)
-      set_commons(user)
+      set_commons(user.email)
 
       HTTParty.get(@get_subscriber_details_in_marketing,
         basic_auth: @basic_auth,
@@ -170,7 +181,7 @@ module Services
     end
 
     def self.delete_subscriber(user)
-      set_commons(user)
+      set_commons(user.email)
 
       HTTParty.delete(@delete_subscriber,
         basic_auth: @basic_auth,

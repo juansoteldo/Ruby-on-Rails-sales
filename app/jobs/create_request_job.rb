@@ -24,24 +24,14 @@ class CreateRequestJob < WebhookJob
 
   def set_user_by_email
     normalize_email!
-    @user = if User.where(email: params[:email]).any?
-              User.find_by_email params[:email]
-            else
-              password = SecureRandom.hex(8)
-              User.create! email: params[:email],
-                           password: password, password_confirmation: password
-            end
-    params[:user_attributes] ||= {}
-    params[:user_attributes][:id] = @user.id
-    params[:user_attributes][:email] = params.delete(:email)
-    params[:user_attributes][:phone_number] = params[:phone_number]
-
-    return unless params[:user_attributes].key?(:marketing_opt_in)
-
-    # change nil -> true because optin confirmation moved to campaign monitor
-    params[:user_attributes][:marketing_opt_in] = params[:user_attributes][:marketing_opt_in] == "0" ? false : true
-
-    @user.update params[:user_attributes]
+    @user = User.find_by_email params[:email]
+    if !@user
+      password = SecureRandom.hex(8)
+      @user = User.create! email: params[:email],
+                           password: password, password_confirmation: password,
+                           phone_number: params[:phone_number],
+                           marketing_opt_in: !!params[:user_attributes][:marketing_opt_in]
+    end
   end
 
   def normalize_email!
