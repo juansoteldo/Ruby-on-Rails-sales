@@ -32,6 +32,10 @@ class CreateRequestJob < WebhookJob
                            phone_number: params[:phone_number],
                            marketing_opt_in: !!params[:user_attributes][:marketing_opt_in]
     end
+    params[:user_attributes] ||= {}
+    params[:user_attributes][:id] = @user.id
+    params[:user_attributes][:email] = params.delete(:email)
+    params[:user_attributes][:phone_number] = params.delete(:phone_number)
   end
 
   def normalize_email!

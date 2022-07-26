@@ -17,7 +17,7 @@ class Request < ApplicationRecord
 
   auto_strip_attributes :first_name, :last_name, :position
 
-  scope :recent, (-> { where "created_at > ?", Rails.env.test? ? 1.seconds.ago : 5.minutes.ago })
+  scope :recent, (-> { where "created_at > ?", ["test", "development"].include?(ENV["RAILS_ENV"]) ? 1.seconds.ago : 5.minutes.ago })
   scope :newer_than_days, (->(days) { where "requests.created_at > ?", days.minutes.ago })
   scope :matching_email, (->(email) { joins(:user).where(users: { email: email }) })
   scope :deposited, (-> { where.not deposited_at: nil })
