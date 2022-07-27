@@ -281,6 +281,8 @@ class Request < ApplicationRecord
     quote = MarketingEmail.quote_for_request(self)
     raise "`send_quote` cannot determine quote for #{self} (style = #{style.inspect}, size = #{size.inspect})" unless quote
 
+    return if Settings.disable_auto_quote_emails?
+    
     self.quoted_at = Time.now
     # send quote email and the message for quote url will be created
     BoxMailer.quote_email(self, quote).deliver_now

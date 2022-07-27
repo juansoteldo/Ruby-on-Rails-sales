@@ -2,3 +2,4 @@ streak:
   create_boxes: <%= ENV.fetch("CREATE_STREAK_BOXES", "false") %>
 emails:
   auto_quoting_delay: 10
+  disable_auto_quote_emails: <%= ENV.fetch("DISABLE_AUTO_QUOTE_EMAILS", "false") %>
