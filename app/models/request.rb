@@ -281,13 +281,16 @@ class Request < ApplicationRecord
     quote = MarketingEmail.quote_for_request(self)
     raise "`send_quote` cannot determine quote for #{self} (style = #{style.inspect}, size = #{size.inspect})" unless quote
 
-    return if Settings.disable_auto_quote_emails?
-    
-    self.quoted_at = Time.now
-    # send quote email and the message for quote url will be created
+    variant = MostlyShopify::Variant.find(tattoo_size.deposit_variant_id.to_i).first
+    raise "Cannot find variant with ID #{tattoo_size.deposit_variant_id}" if variant.nil?
+
     BoxMailer.quote_email(self, quote).deliver_now
-    # update CampaignMonitor quote_url custom field also
+
+    self.variant_price = variant.price
+    self.quoted_at = Time.now
     save!
+
+    CampaignMonitorActionJob.perform_later(user: self.user, method: "update_user_to_all_list")
   end
 
   private

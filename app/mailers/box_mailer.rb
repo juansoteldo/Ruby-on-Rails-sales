@@ -7,7 +7,7 @@ class BoxMailer < ApplicationMailer
   track open: true, click: true, utm_params: true
 
   def quote_email(request, marketing_email = MarketingEmail.quote_for_request(request))
-    return if Settings.disable_auto_quote_emails?
+    return if Settings.emails.disable_auto_quote_emails
     return unless request.user
 
     @request = request.decorate

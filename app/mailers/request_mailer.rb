@@ -10,7 +10,7 @@ class RequestMailer < ApplicationMailer
     @request = request.decorate
     @user = request.user
     subject = "New Start Design Request - #{@request.full_name} (#{@user.email})"
-    subject = "[TEST] " + subject unless Rails.env.production?
+    subject = "[#{ENV["RAILS_ENV"]}] #{subject}" unless Rails.env.production?
     headers["X-CTD-Streak-Box-Key"] = @request.streak_box_key
 
     mail(to: recipients,

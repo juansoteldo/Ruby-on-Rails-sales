@@ -1,7 +1,7 @@
 gmail:
   labels:
-    new_design_requests: Label_6157564878440197778
-    design_requests: Label_2606897481654667624
+    new_design_requests: Label_511143588161420553
+    design_requests: Label_3869020623180863137
     appointment_requests: Label_7177529587396720741
 streak:
   api_key: <%= Rails.application.credentials[:streak][:staging][:api_key] %>
