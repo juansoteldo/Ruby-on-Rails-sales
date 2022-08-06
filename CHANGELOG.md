@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variable for SMTP address
 ### Fixed
 - Error when attempting to generate new credentials for Google authentication
+- Handle edge case when creating streak boxes while sales_manager is nil
 
 ## [4.1.1] - 2021-07-28
 ### Added
