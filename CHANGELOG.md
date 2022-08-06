@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Environment variable for SMTP address
 - Toggle to enable/disable campaign monitor integration
+- Toggle to enable/disable confirmation emails
 ### Changed
 - Improve labeling system for Gmail API to support development/test/staging
 - Add request ID to subject line for transactional emails

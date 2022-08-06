@@ -57,6 +57,7 @@ class BoxMailer < ApplicationMailer
   end
 
   def confirmation_email(request)
+    return if Settings.emails.disable_confirmation_emails
     return unless request.user
 
     @request = request.decorate
@@ -74,21 +75,22 @@ class BoxMailer < ApplicationMailer
     # because company wants switch opt-in email to campaign monitor. 
     return
 
-    return unless request&.user
+    # return unless request&.user
 
-    @request = request.decorate
-    @user = request.user
-    track user: @user
+    # @request = request.decorate
+    # @user = request.user
+    # track user: @user
 
-    mail(
-      to: @user.email,
-      from: Settings.emails.lee,
-      subject: "E-Mail opt-in Custom Tattoo Design",
-      display_name: "Lee Roller"
-    )
+    # mail(
+    #   to: @user.email,
+    #   from: Settings.emails.lee,
+    #   subject: "E-Mail opt-in Custom Tattoo Design",
+    #   display_name: "Lee Roller"
+    # )
   end
 
   def final_confirmation_email(request)
+    return if Settings.emails.disable_confirmation_emails
     return unless request.user
 
     @request = request
