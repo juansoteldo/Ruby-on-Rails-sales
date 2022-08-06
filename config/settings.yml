@@ -3,3 +3,4 @@ streak:
 emails:
   auto_quoting_delay: 10
   disable_auto_quote_emails: <%= ENV.fetch("DISABLE_AUTO_QUOTE_EMAILS", "false") %>
+  disable_campaign_monitor: <%= ENV.fetch("DISABLE_CAMPAIGN_MONITOR", "false") %>

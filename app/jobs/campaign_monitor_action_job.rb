@@ -3,6 +3,8 @@
 # Executes a Request action (method) asynchronously
 class CampaignMonitorActionJob < ApplicationJob
   def perform(args)
+    return if Settings.emails.disable_campaign_monitor
+
     user = args[:user]
     async_method = args[:method]
 

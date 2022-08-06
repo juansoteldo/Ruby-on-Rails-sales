@@ -33,7 +33,7 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: "email-smtp.us-east-2.amazonaws.com",
+    address: ENV["SMTP_ADDRESS"],
     port: 587,
     domain: "customtattoodesign.ca",
     user_name: ENV["SMTP_USER_NAME"],

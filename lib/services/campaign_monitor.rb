@@ -88,6 +88,17 @@ module Services
         'EmailAddress': user.email
       }
     end
+
+    def self.add_or_update_user_to_all_list(user)
+      response = get_subscriber_details_in_all(user)
+      data = JSON.parse response, symbolize_names: true
+
+      if !data[:Code].nil? && data[:Code] == 203
+        add_user_to_all_list(user)
+      else
+        update_user_to_all_list(user)
+      end
+    end
   
     def self.add_user_to_all_list(user)
       set_commons(user.email)
@@ -166,9 +177,10 @@ module Services
     def self.get_subscriber_details_in_all(user)
       set_commons(user.email)
 
-      HTTParty.get(@get_subscriber_details_in_all,
+      return HTTParty.get(@get_subscriber_details_in_all,
         basic_auth: @basic_auth,
         headers: @headers,
+        format: :plain,
       )
     end
 

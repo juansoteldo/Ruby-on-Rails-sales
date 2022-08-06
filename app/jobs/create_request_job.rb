@@ -31,6 +31,8 @@ class CreateRequestJob < WebhookJob
                            password: password, password_confirmation: password,
                            phone_number: params[:phone_number],
                            marketing_opt_in: !!params[:user_attributes][:marketing_opt_in]
+    else
+      CampaignMonitorActionJob.set(wait: 10.seconds).perform_later(user: @user, method: "add_or_update_user_to_all_list")
     end
     params[:user_attributes] ||= {}
     params[:user_attributes][:id] = @user.id

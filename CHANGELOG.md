@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Environment variable for SMTP address
+- Toggle to enable/disable campaign monitor integration
+
 ### Fixed
 - Error when attempting to generate new credentials for Google authentication
 - Handle edge case when creating streak boxes while sales_manager is nil
+- Handle edge case if user does not exist in CM list but does exist in API database
 
 ## [4.1.1] - 2021-07-28
 ### Added
