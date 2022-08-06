@@ -1,5 +1,7 @@
 streak:
   create_boxes: <%= ENV.fetch("CREATE_STREAK_BOXES", "false") %>
+gmail:
+  subject_append: <%= Rails.application.credentials[:gmail][ENV["RAILS_ENV"].to_sym][:subject_append] %>
 emails:
   auto_quoting_delay: 10
   disable_auto_quote_emails: <%= ENV.fetch("DISABLE_AUTO_QUOTE_EMAILS", "false") %>
