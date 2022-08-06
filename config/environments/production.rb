@@ -64,10 +64,9 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "ctd_worklist_#{Rails.env}"
 
   config.action_mailer.perform_caching = false
-
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: "email-smtp.us-east-1.amazonaws.com",
+    address: ENV["SMTP_ADDRESS"],
     port: 587,
     domain: "customtattoodesign.ca",
     user_name: ENV["SMTP_USER_NAME"],

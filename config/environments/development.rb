@@ -35,7 +35,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: "email-smtp.us-east-2.amazonaws.com",
     port: 587,
-    # domain: "customtattoodesign.ca",
+    domain: "customtattoodesign.ca",
     user_name: ENV["SMTP_USER_NAME"],
     password: ENV["SMTP_PASSWORD"],
     authentication: "plain",
