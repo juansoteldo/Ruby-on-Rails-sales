@@ -23,7 +23,7 @@ class User < ApplicationRecord
 
   auto_strip_attributes :email, :first_name, :last_name
   phony_normalize :phone_number, default_country_code: "US"
-  validates_plausible_phone :phone_number, if: :phone_number?
+  validates_plausible_phone :phone_number, with: /\A(\+\d{1,3}\s{0,1})?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\z/, if: :phone_number?
 
   before_validation :initialize_password
   validates_presence_of :email

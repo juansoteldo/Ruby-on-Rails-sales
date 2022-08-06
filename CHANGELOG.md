@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Improve labeling system for Gmail API to support development/test/staging
 - Add request ID to subject line for transactional emails
+- Use same regex validation used on WWW for phone number
 ### Fixed
 - Error when attempting to generate new credentials for Google authentication
 - Handle edge case when creating streak boxes while sales_manager is nil
