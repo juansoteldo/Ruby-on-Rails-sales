@@ -1,4 +1,5 @@
 gmail:
+  subject_append: <%= Rails.application.credentials[:gmail][:development][:subject_append] %>
   labels:
     new_design_requests: Label_5143087514283227928
     design_requests: Label_2918953571817969548
@@ -11,7 +12,6 @@ emails:
   deliver_opt_in: true
   notification_recipients:
     - mailer@ctd-sales.dev
-  auto_quoting_delay: 0
   lee: leeroller@ctd-sales.dev
   system: sales@ctd-sales.dev
   mailer: mailer@ctd-sales.dev

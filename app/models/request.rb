@@ -115,6 +115,7 @@ class Request < ApplicationRecord
       .where(requests: { created_at: date_range }).last
   end
 
+  # Quote from extension
   def quote_from_params!(params)
     return unless fresh?
 
@@ -141,6 +142,7 @@ class Request < ApplicationRecord
     TattooSize.defined_size_names.include?(size)
   end
 
+  # Autoquote
   def quote_from_attributes!
     return unless fresh?
     return unless auto_quotable?
@@ -149,8 +151,6 @@ class Request < ApplicationRecord
     self.quoted_by = Salesperson.system
     save!
     quote!
-    # Update quote_url for user in CM
-    CampaignMonitorActionJob.perform_later(user: self.user, method: "update_user_to_all_list")
   end
 
   def assign_tattoo_size_attributes
@@ -290,6 +290,7 @@ class Request < ApplicationRecord
     self.quoted_at = Time.now
     save!
 
+    # Update [ quote_url, variant_price, quoted_url ] in CM
     CampaignMonitorActionJob.perform_later(user: self.user, method: "update_user_to_all_list")
   end
 
@@ -315,7 +316,7 @@ class Request < ApplicationRecord
     RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
     return unless auto_quotable? && salesperson == Salesperson.system
 
-    delay = Settings.emails.auto_quoting_delay
+    delay = Settings.emails.auto_quote_delay
     RequestActionJob.set(wait: delay.minutes).perform_later(request: self, method: "send_quote")
   end
 

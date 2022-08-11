@@ -1,4 +1,5 @@
 gmail:
+  subject_append: <%= Rails.application.credentials[:gmail][:production][:subject_append] %>
   labels:
     new_design_requests: Label_6157564878440197778
     design_requests: Label_2606897481654667624

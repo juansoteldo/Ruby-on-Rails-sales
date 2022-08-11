@@ -1,4 +1,5 @@
 gmail:
+  subject_append: <%= Rails.application.credentials[:gmail][:staging][:subject_append] %>
   labels:
     new_design_requests: Label_511143588161420553
     design_requests: Label_3869020623180863137

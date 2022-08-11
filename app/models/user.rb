@@ -29,7 +29,7 @@ class User < ApplicationRecord
   validates_presence_of :email
   validates_length_of :email, minimum: 5
 
-  after_create :process_cm_on_create
+  after_create_commit :process_cm_on_create # possible fix for: "ActiveJob::DeserializationError: Error while trying to deserialize arguments"
   after_update_commit :process_cm_on_update
 
   def ransackable_attributes(_auth_object = nil)

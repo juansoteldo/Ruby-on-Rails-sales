@@ -7,7 +7,7 @@ class BoxMailer < ApplicationMailer
   track open: true, click: true, utm_params: true
 
   def quote_email(request, marketing_email = MarketingEmail.quote_for_request(request))
-    return if Settings.emails.disable_auto_quote_emails
+    return if Settings.emails.use_cm_for_auto_quote_emails
     return unless request.user
 
     @request = request.decorate
@@ -57,7 +57,7 @@ class BoxMailer < ApplicationMailer
   end
 
   def confirmation_email(request)
-    return if Settings.emails.disable_confirmation_emails
+    return if Settings.emails.use_cm_for_confirmation_emails
     return unless request.user
 
     @request = request.decorate
@@ -90,7 +90,7 @@ class BoxMailer < ApplicationMailer
   end
 
   def final_confirmation_email(request)
-    return if Settings.emails.disable_confirmation_emails
+    return if Settings.emails.use_cm_for_confirmation_emails
     return unless request.user
 
     @request = request
