@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.0.0] - 2021-08-06
+## [5.1.0] - 2022-08-17
+### Added
+- Auto quote with CM integration using transactional emails
+- Error handling for adding followers to streak boxes
+### Changed
+- Update auto quote emails with new descriptions
+### Fixed
+- Issue where box would get stuck in leads after auto quote
+- Issue where box would get stuck in leads if a customer submits multiple requests
+
+## [5.0.0] - 2022-08-06
 ### Added
 - Environment variable for SMTP address
 - Toggle to enable/disable campaign monitor integration
@@ -19,11 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Handle edge case if user does not exist in CM list but does exist in API database
 - Issue where requests would get stuck in fresh if a user submits multiple design requests
 
-## [4.1.1] - 2021-07-28
+## [4.1.1] - 2022-07-28
 ### Added
 - Automatic database migration after deployment
 
-## [4.1.0] - 2021-07-27
+## [4.1.0] - 2022-07-27
 ### Added
 - Variant price custom field for Campaign Monitor
 - Configure gmail labels for development/staging
@@ -31,16 +41,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Logic error for DISABLE_AUTO_QUOTE_EMAILS
 
-## [4.0.2] - 2021-07-27
+## [4.0.2] - 2022-07-27
 ### Added
 - Toggle for auto quote emails via ENV["DISABLE_AUTO_QUOTE_EMAILS"]
 
-## [4.0.1] - 2021-07-26
+## [4.0.1] - 2022-07-26
 ### Fixed
 - Created requests failing to commit
 - Recent scope for requests in development
 
-## [4.0.0] - 2021-07-25
+## [4.0.0] - 2022-07-25
 ### Added
 - Newsletter route for marketing_opt_in
 - Awesome_print for pretty printing
@@ -51,11 +61,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Phone_number column from requests table
 
-## [3.1.0] - 2021-07-18
+## [3.1.0] - 2022-07-18
 ### Added
 - Phone number field
 
-## [3.0.0] - 2021-07-14
+## [3.0.0] - 2022-07-14
 ### Added
 - Debug support for IDE
 - Sidekiq support for development environment
