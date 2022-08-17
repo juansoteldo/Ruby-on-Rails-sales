@@ -108,7 +108,7 @@ module MostlyStreak
     end
 
     def add_follower(follower_key, user_api_key)
-      # has to be user specific
+      raise if user_api_key.nil?
       Streak.api_key = user_api_key
       box = Streak::Box.find(key)
       follower_keys = box.follower_keys | [follower_key]

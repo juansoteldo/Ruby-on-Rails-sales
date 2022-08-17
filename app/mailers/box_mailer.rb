@@ -7,8 +7,23 @@ class BoxMailer < ApplicationMailer
   track open: true, click: true, utm_params: true
 
   def quote_email(request, marketing_email = MarketingEmail.quote_for_request(request))
-    return if Settings.emails.use_cm_for_auto_quote_emails
     return unless request.user
+
+    if Settings.emails.use_cm_for_auto_quote_emails
+      tattoo_size = request.tattoo_size.name.downcase
+      smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:general_auto_quote]
+      if request.first_time?
+        smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:first_time_auto_quote]
+      elsif tattoo_size == "full sleeve"
+        smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:full_sleeve_auto_quote]
+      elsif tattoo_size == "half sleeve"
+        smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:half_sleeve_auto_quote]
+      elsif tattoo_size == "extra small"
+        smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:extra_small_auto_quote]
+      end
+      CampaignMonitorActionJob.perform_later(smart_email_id: smart_email_id, user: request.user, method: "send_transactional_email")
+      return
+    end
 
     @request = request.decorate
     @marketing_email = marketing_email.decorate

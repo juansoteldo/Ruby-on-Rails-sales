@@ -202,6 +202,31 @@ module Services
       )
     end
 
+    def self.send_transactional_email(smart_email_id, user)
+      set_commons(user.email)
+      url = "https://api.createsend.com/api/v3.3/transactional/smartEmail/#{smart_email_id}/send"
+      first_name = user.first_name
+      request = user.requests.last
+      message = {
+        'To': ["#{first_name} <#{user.email}>"],
+        'Data': {
+          'firstname': first_name,
+          'variant_price': request.variant_price,
+          'quote_url': request.quote_url,
+          'user_id': user.id,
+          'email': user.email,
+          'user_token': user.authentication_token
+        },
+        'ConsentToTrack': 'yes'
+      }
+      response = HTTParty.post(url,
+        basic_auth: @basic_auth,
+        headers: @headers,
+        body: message.to_json,
+      )
+      raise "transactional email failed to send" if response.nil? || (response.code != 200 && response.code != 202)
+    end
+
     def self.process_webhook_events(data)
       directives = {
         'Deactivate' => false,

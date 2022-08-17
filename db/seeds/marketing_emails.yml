@@ -125,26 +125,28 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
   template_name: "half_sleeve_quote_email"
-  version: 1
+  version: 2
   markdown_content: |
     Hi {{Request.first_name}},
 
-    Thank you for sending us your half sleeve idea. Our design team really likes your concept and I know we can do something amazing for you. Before we start your sleeve I wanted to let you know we only allow our senior tattoo artists and design team to work on tattoo sleeve designs. Tattoo sleeves take 30 - 40+ hours of drawing time to complete and we appreciate you trusting us with such a large and personal design. Let me tell you how our sleeve process works;
+    I love the overall design idea for your half sleeve and I know that our Design Team will do something incredible for you. I wanted to let you know we only allow our senior tattoo artists and design team to work on tattoo sleeves. They have become renowned for doing world class work for over 10+ years, so you're in good hands. Your half sleeve can take 30- 40+ hours of drawing time to complete and we appreciate you trusting us with such a large and personal design.
 
-    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
+    In order to start the design process we require a 50% deposit of the total design cost. 
 
-    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
-
-    Use the link below and we will get started as soon as possible.
-
-    Here is the link to complete your {{Variant.price}} USD deposit:
+    DEPOSIT LINK {{Variant.price}} USD: 
     [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
 
-    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+    (Please note: Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout).
 
-    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+    Your transaction is 100% protected and we have a Money Back Guarantee. We accept PayPal and all major credit cards. 
 
-    I look forward to hearing from you,
+    If you have any questions about the process I added a link below to our "How It Works" page. 
+
+    https://customtattoodesign.ca/how-it-works
+
+    I'm excited to work with you on this amazing sleeve design, If you need anything at all don't hesitate to ask.
+
+    Sincerely,
 
     Lee Roller
     CEO / Founder
@@ -155,26 +157,28 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
   template_name: "full_sleeve_quote_email"
-  version: 1
+  version: 2
   markdown_content: |
     Hi {{Request.first_name}},
 
-    Thank you for sending us your tattoo sleeve idea. Our design team really likes your concept and I know we can do something amazing for you. Before we start your sleeve I wanted to let you know we only allow our senior tattoo artists and design team to work on tattoo sleeve designs. Tattoo sleeves take 30 - 40+ hours of drawing time to complete and we appreciate you trusting us with such a large and personal design. Let me tell you how our sleeve process works;
+    I love your overall sleeve concept and I know that our Design Team will do something incredible for you. I wanted to let you know we only allow our senior tattoo artists and design team to work on tattoo sleeves. They have become renowned for doing world class work for over 10+ years, so you're in good hands. Your sleeve can take 30-40+ hours of drawing time to complete and we appreciate you trusting us with such a large and personal design.
 
-    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
+    In order to start the design process we require a 50% deposit of the total design cost. 
 
-    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
-
-    Use the link below and we will get started as soon as possible.
-
-    Here is the link to complete your {{Variant.price}} USD deposit:
+    DEPOSIT LINK {{Variant.price}} USD:
     [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
 
-    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+    (Please note: Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout).
 
-    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+    Your transaction is 100% protected and we have a Money Back Guarantee. We accept PayPal and all major credit cards. 
 
-    I look forward to hearing from you,
+    If you have any questions about the process I added a link below to our "How It Works" page. 
+
+    https://customtattoodesign.ca/how-it-works
+
+    I'm excited to work with you on this amazing sleeve design, if you need anything at all don't hesitate to ask.
+
+    Sincerely,
 
     Lee Roller
     CEO / Founder
@@ -185,26 +189,28 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
   template_name: "first_time_quote_email"
-  version: 1
+  version: 2
   markdown_content: |
     Hi {{Request.first_name}},
 
-    Thank you for sending us your design idea. We really like your concept and I know we can do something amazing for you. I see this is your first tattoo and we appreciate the opportunity to work with you on such an important design. Based on your design idea I quoted your design for you below.  Our quotes are based on both the size and complexity of the design. Let me explain how the process will work for your design.
-
-    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
-
-    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
-
-    Use the link below and we will get started as soon as possible.
+    I love your design idea and I know our Design Team is going to do something incredible for you.  I see this is your first tattoo and we appreciate the opportunity to work with you on such an important design. For 10+ years our team has become renowned for doing incredible work, so you're in good hands. Your artist will help you both develop your idea and work with you one on one to make a completely custom design. I reviewed your description and based on the size and complexity of the design, I have custom quoted your tattoo design below. 
+    
+    In order to start the design process we require a 50% deposit of the total design cost. 
 
     Here is the link to complete your {{Variant.price}} USD deposit:
     [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
 
-    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+    (Please note: Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout).
 
-    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+    Your transaction is 100% protected and we have a Money Back Guarantee. We accept PayPal and all major credit cards. 
 
-    I look forward to hearing from you,
+    If you have any questions about the process I added a link below to our "How It Works" page. 
+
+    https://customtattoodesign.ca/how-it-works
+
+    I'm excited to work with you on this amazing project, if you need anything at all don't hesitate to ask.
+
+    Sincerely,
 
     Lee Roller
     CEO / Founder
@@ -215,26 +221,28 @@
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
   subject_line: "Custom Tattoo Design Quote"
   template_name: "general_quote_email"
-  version: 1
+  version: 2
   markdown_content: |
     Hi {{Request.first_name}},
 
-    Thank you for sending us your design idea. We really like your concept and I know we can do something amazing for you; based on the information you sent me in your e-mail I have quoted your design below. Let me explain how the process works for you based on your design size and complexity.
+    I love your design idea and I know our Design Team is going to do something incredible for you.  For 10+ years our team has become renowned for doing incredible work, so you're in good hands. Your artist will help you both develop your idea and work with you one on one to make a completely custom design. I reviewed your description and based on the size and complexity of the design, I have custom quoted your tattoo design below. 
 
-    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
-
-    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
-
-    Use the link below and we will get started as soon as possible.
+    In order to start the design process we require a 50% deposit of the total design cost. 
 
     Here is the link to complete your {{Variant.price}} USD deposit:
     [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
 
-    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+    (Please note: Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout).
 
-    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+    Your transaction is 100% protected and we have a Money Back Guarantee. We accept PayPal and all major credit cards. 
 
-    I look forward to hearing from you,
+    If you have any questions about the process I added a link below to our "How It Works" page. 
+
+    https://customtattoodesign.ca/how-it-works
+
+    I'm excited to work with you on this amazing project, if you need anything at all don't hesitate to ask.
+
+    Sincerely,
 
     Lee Roller
     CEO / Founder
@@ -249,22 +257,26 @@
   markdown_content: |
     Hi {{Request.first_name}},
 
-    Thank you for sending us your custom script idea. I know that this is a fairly small design and I just wanted to let you know that our quote is based on our shop minimum.   We have some of the best custom script artists in the world who will work with you until your design is 100% perfect.  Let me explain how the process works for you based on the script idea you sent over.
+    I love your design idea and I know our Design Team is going to do something incredible for you. I reviewed your description and I have quoted your tattoo design below. 
 
-    In order to start the design process we require a 50% deposit of the total design cost. In order to make sure you're 100% satisfied, we have a money back guarantee until you approve your first draft. Once the deposit has been paid we will place you in order and assign you the best artist for your design style and needs. Your artist will contact you for an introduction before you get started,  as things can get very busy this can take 2- 3 days however we will always stay in contact with you. Throughout the process your artist will send you links via email where you can review your design privately and ask your artist for any revisions or changes you would like to make. Once the final piece is complete and you are 100% happy with your design, you’ll make the final 50% payment and we will send your final design in high resolution straight to your inbox. The biggest difference between us and anyone else is that you own your design.  We will give you the copyrights to the design once it's complete and will never reuse or resell your design.
+    We do understand that your design is quite small however the design team is so incredibly talented that we have to create a shop minimum in order to pay them. This is reflected in your design quote and it's the smallest price point we currently offer.
 
-    Based on the size and complexity of your design the deposit to begin your {{Request.size}} design is: {{Variant.price}} USD.
+    In order to start the design process we require a 50% deposit of the total design cost. 
 
-    Use the link below and we will get started as soon as possible.
-
-    Here is the link to complete your {{Variant.price}} USD deposit:
+    DEPOSIT LINK {{Variant.price}} USD: 
     [CLICK HERE TO MAKE YOUR DEPOSIT]({{Variant.cart_redirect_url}})
 
-    All our transactions are protected for our customers; you can use PayPal, any major credit card and we're now accepting Visa Debit.
+    (Please note: Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout).
 
-    Color, Cover ups and Tattoo Integrations have additional charges which you can add before checkout.  We appreciate the opportunity to work with you. If you have any questions or concerns, please feel free to email me back.
+    Your transaction is 100% protected and we have a Money Back Guarantee. We accept PayPal and all major credit cards. 
 
-    I look forward to hearing from you,
+    If you have any questions about the process I added a link below to our "How It Works" page. 
+
+    https://customtattoodesign.ca/how-it-works
+
+    I'm excited to work with you on this amazing project, if you need anything at all don't hesitate to ask.
+
+    Sincerely,
 
     Lee Roller
     CEO / Founder

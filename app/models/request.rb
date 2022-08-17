@@ -284,11 +284,11 @@ class Request < ApplicationRecord
     variant = MostlyShopify::Variant.find(tattoo_size.deposit_variant_id.to_i).first
     raise "Cannot find variant with ID #{tattoo_size.deposit_variant_id}" if variant.nil?
 
-    BoxMailer.quote_email(self, quote).deliver_now
-
     self.variant_price = variant.price
     self.quoted_at = Time.now
     save!
+
+    BoxMailer.quote_email(self, quote).deliver_now
 
     # Update [ quote_url, variant_price, quoted_url ] in CM
     CampaignMonitorActionJob.perform_later(user: self.user, method: "update_user_to_all_list")
@@ -313,7 +313,7 @@ class Request < ApplicationRecord
   end
 
   def enqueue_quote_actions
-    RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
+    RequestActionJob.perform_later(request: self, method: "set_box_to_quoted")
     return unless auto_quotable? && salesperson == Salesperson.system
 
     delay = Settings.emails.auto_quote_delay
@@ -325,15 +325,19 @@ class Request < ApplicationRecord
     RequestActionJob.perform_later(request: self, method: "mark_boxes_deposited")
   end
 
-  def streak_boxes
+  def streak_boxes 
     MostlyStreak::Box.query(user.email).select do |b|
       b.created_between?(created_at..(created_at + 2.days))
     end
   end
 
-  def mark_last_box_quoted
-    box = streak_boxes.last
-    return unless box
+  def streak_box
+    MostlyStreak::Box.find(self.streak_box_key)
+  end
+
+  def set_box_to_quoted
+    box = streak_box
+    raise "streak box does not exist in pipeline" if box.nil?
 
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
     return unless ["Contacted", "Leads"].include?(current_stage.name)
