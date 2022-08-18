@@ -5,6 +5,34 @@ require 'task_helper'
 module Services
   class CampaignMonitor
 
+    # TODO: refactor this further
+    creds     = Rails.application.credentials
+    base_url  = creds.cm[:url]
+    username  = creds.cm[:username]
+    env       = Rails.env.to_sym
+
+    @marketing_list_id  = creds.cm[env][:marketing_list_id]
+    @all_list_id        = creds.cm[env][:all_list_id]
+
+    @add_to_marketing_url       = "#{base_url}/#{@marketing_list_id}.json"
+    @add_to_all_url             = "#{base_url}/#{@all_list_id}.json"
+    @remove_from_marketing_url  = "#{base_url}/#{@marketing_list_id}/unsubscribe.json"
+    @remove_from_all_url        = "#{base_url}/#{@all_list_id}/unsubscribe.json"
+
+    # Note: Need to add email as a query parameter to below URLs
+    @get_subscriber_details_in_all        = "#{base_url}/#{@all_list_id}.json"
+    @get_subscriber_details_in_marketing  = "#{base_url}/#{@marketing_list_id}.json"
+    @delete_subscriber                    = "#{base_url}/#{@all_list_id}.json"
+
+    @basic_auth = {
+      username: username,
+      password: 'whatever'
+    }
+
+    @headers = {
+      'Content-Type': 'application/json'
+    }
+
     def self.user_custom_fields(user)
       custom_fields = [
         { 'Key': 'user_id', 'Value': user.id },
@@ -46,53 +74,35 @@ module Services
       custom_fields
     end
 
-    def self.set_commons(email)
-      creds         = Rails.application.credentials
-      username      = creds.cm[:username]
-      env           = Rails.env.to_sym
-      
-      @marketing_list_id   = creds.cm[env][:marketing_list_id]
-      @all_list_id         = creds.cm[env][:all_list_id]
-
-      cm_host                      = 'https://api.createsend.com/api/v3.2/subscribers'
-      @add_to_marketing_url        = "#{cm_host}/#{@marketing_list_id}.json"
-      @add_to_all_url              = "#{cm_host}/#{@all_list_id}.json"
-      @remove_from_marketing_url   = "#{cm_host}/#{@marketing_list_id}/unsubscribe.json"
-      @remove_from_all_url         = "#{cm_host}/#{@all_list_id}/unsubscribe.json"
-
-      @get_subscriber_details_in_all = "#{cm_host}/#{@all_list_id}.json?email=#{email}"
-      @get_subscriber_details_in_marketing = "#{cm_host}/#{@marketing_list_id}.json?email=#{email}"
-      @delete_subscriber = "#{cm_host}/#{@all_list_id}.json?email=#{email}"
-
-      @basic_auth = {
-        username: username,
-        password: 'whatever'
-      }
-
-      @headers = {
-        'Content-Type': 'application/json'
-      }
-    end
-
     def self.add_request_body(user)
       {
         'EmailAddress': user.email,
         'Resubscribe': false,
-        'ConsentToTrack': 'Yes',
+        'ConsentToTrack': 'yes',
         'Name': user.first_name.to_s,
-        'CustomFields': user_custom_fields(user)
+        'CustomFields': user_custom_fields(user),
       }
     end
 
     def self.remove_request_body(user)
       {
-        'EmailAddress': user.email
+        'EmailAddress': user.email,
       }
     end
+
+    ## utility functions
 
     def self.raise_exception(exception_name, response)
       raise exception_name.new({ response: response.inspect, request: response.request.inspect })
     end
+
+    def self.parse_response(response)
+      data = JSON.parse(response, symbolize_names: true)
+      raise_exception(Exceptions::InvalidResponseError, response) if data.nil?
+      return data
+    end
+
+    ##
 
     def self.add_or_update_user_to_all_list(user)
       response = get_subscriber_details_in_all(user)
@@ -106,15 +116,9 @@ module Services
         update_user_to_all_list(user)
       end
     end
-
-    def self.parse_response(response)
-      data = JSON.parse(response, symbolize_names: true)
-      raise_exception(Exceptions::InvalidResponseError, response) if data.nil?
-      return data
-    end
   
     def self.add_user_to_all_list(user)
-      set_commons(user.email)
+      # set_commons(user.email)
       response = HTTParty.post(@add_to_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
@@ -126,8 +130,7 @@ module Services
     end
 
     def self.add_user_to_marketing_list(user)
-      set_commons(user.email)
-
+      # set_commons(user.email)
       HTTParty.post(@add_to_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
@@ -137,8 +140,9 @@ module Services
 
     def self.add_email_to_marketing_list(user)
       user = user[:user]
-      set_commons(user[:email])
-      req_body = { "EmailAddress": user[:email], "Name": user[:name], "Resubscribe": false, "ConsentToTrack": "Yes" }
+      # set_commons(user[:email])
+      # TODO: use a function for below
+      req_body = { "EmailAddress": user[:email], "Name": user[:name], "Resubscribe": false, "ConsentToTrack": "yes" }
       response = HTTParty.post(@add_to_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
@@ -152,7 +156,7 @@ module Services
     end
 
     def self.update_user_to_all_list(user)
-      set_commons(user.email)
+      # set_commons(user.email)
     
       HTTParty.put(@add_to_all_url,
         basic_auth: @basic_auth,
@@ -163,8 +167,7 @@ module Services
     end
 
     def self.update_user_to_marketing_list(user)
-      set_commons(user.email)
-
+      # set_commons(user.email)
       response = HTTParty.put(@add_to_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
@@ -174,8 +177,7 @@ module Services
     end
     
     def self.remove_user_from_marketing_list(user)
-      set_commons(user.email)
-
+      # set_commons(user.email)
       HTTParty.post(@remove_from_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
@@ -184,8 +186,7 @@ module Services
     end
 
     def self.remove_user_from_all_list(user)
-      set_commons(user.email)
-
+      # set_commons(user.email)
       HTTParty.post(@remove_from_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
@@ -194,8 +195,8 @@ module Services
     end
 
     def self.get_subscriber_details_in_all(user)
-      set_commons(user.email)
-      response = HTTParty.get(@get_subscriber_details_in_all,
+      # set_commons(user.email)
+      response = HTTParty.get("#{@get_subscriber_details_in_all}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
         format: :plain
@@ -205,25 +206,23 @@ module Services
     end
 
     def self.get_subscriber_details_in_marketing(user)
-      set_commons(user.email)
-
-      HTTParty.get(@get_subscriber_details_in_marketing,
+      # set_commons(user.email)
+      HTTParty.get("#{@get_subscriber_details_in_marketing}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
       )
     end
 
     def self.delete_subscriber(user)
-      set_commons(user.email)
-
-      HTTParty.delete(@delete_subscriber,
+      # set_commons(user.email)
+      HTTParty.delete("#{@delete_subscriber}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
       )
     end
 
     def self.send_transactional_email(smart_email_id, user)
-      set_commons(user.email)
+      # set_commons(user.email)
       url = "https://api.createsend.com/api/v3.3/transactional/smartEmail/#{smart_email_id}/send"
       first_name = user.first_name
       request = user.requests.last
@@ -267,5 +266,33 @@ module Services
         end
       end
     end
+  end
+
+  def self.set_commons(email)
+    # creds         = Rails.application.credentials
+    # username      = creds.cm[:username]
+    # env           = Rails.env.to_sym
+    
+    # @marketing_list_id   = creds.cm[env][:marketing_list_id]
+    # @all_list_id         = creds.cm[env][:all_list_id]
+
+    # cm_host                      = 'https://api.createsend.com/api/v3.2/subscribers'
+    # @add_to_marketing_url        = "#{cm_host}/#{@marketing_list_id}.json"
+    # @add_to_all_url              = "#{cm_host}/#{@all_list_id}.json"
+    # @remove_from_marketing_url   = "#{cm_host}/#{@marketing_list_id}/unsubscribe.json"
+    # @remove_from_all_url         = "#{cm_host}/#{@all_list_id}/unsubscribe.json"
+
+    # @get_subscriber_details_in_all = "#{cm_host}/#{@all_list_id}.json?email=#{email}"
+    # @get_subscriber_details_in_marketing = "#{cm_host}/#{@marketing_list_id}.json?email=#{email}"
+    # @delete_subscriber = "#{cm_host}/#{@all_list_id}.json?email=#{email}"
+
+    # @basic_auth = {
+    #   username: username,
+    #   password: 'whatever'
+    # }
+
+    # @headers = {
+    #   'Content-Type': 'application/json'
+    # }
   end
 end
