@@ -130,12 +130,15 @@ module Services
       user = user[:user]
       set_commons(user[:email])
       req_body = { "EmailAddress": user[:email], "Name": user[:name], "Resubscribe": false, "ConsentToTrack": "Yes" }
-
-      HTTParty.post(@add_to_marketing_url,
+      response = HTTParty.post(@add_to_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
         body: req_body.to_json,
       )
+      data = JSON.parse response, symbolize_names: true
+      response_code = data[:Code]
+      raise "response code is nil" if response_code.nil?
+      raise data[:Message] if response_code != 201
     end
 
     def self.update_user_to_all_list(user)
