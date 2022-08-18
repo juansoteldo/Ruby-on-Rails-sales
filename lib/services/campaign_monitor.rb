@@ -42,6 +42,7 @@ module Services
 
         custom_fields += req_fields
       end
+
       custom_fields
     end
 
@@ -89,6 +90,10 @@ module Services
       }
     end
 
+    def self.raise_exception(exception_name, response)
+      raise exception_name.new({ response: response.inspect, request: response.request.inspect })
+    end
+
     def self.add_or_update_user_to_all_list(user)
       response = get_subscriber_details_in_all(user)
       data = parse_response(response)
@@ -96,7 +101,7 @@ module Services
       if response_code == 203
         add_user_to_all_list(user)
       elsif response_code == 1
-        raise data[:Message]
+        raise_exception(Exceptions::FailedRequestError, response)
       else
         update_user_to_all_list(user)
       end
@@ -104,7 +109,7 @@ module Services
 
     def self.parse_response(response)
       data = JSON.parse(response, symbolize_names: true)
-      raise Exceptions::InvalidResponseError.new({ response: response.inspect, request: response.request.inspect }) if data.nil?
+      raise_exception(Exceptions::InvalidResponseError, response) if data.nil?
       return data
     end
   
@@ -117,7 +122,7 @@ module Services
         format: :plain
       )
       data = parse_response(response)
-      raise Exceptions::InvalidResponseError.new({ response: response.inspect, request: response.request.inspect }) if response.code != 201
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
     end
 
     def self.add_user_to_marketing_list(user)
@@ -195,7 +200,7 @@ module Services
         headers: @headers,
         format: :plain
       )
-      raise Exceptions::NotFoundError.new({ response: response.inspect, request: response.request.inspect }) if response.code == 404
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
