@@ -91,8 +91,7 @@ module Services
 
     def self.add_or_update_user_to_all_list(user)
       response = get_subscriber_details_in_all(user)
-      data = JSON.parse response, symbolize_names: true
-      raise "data is nil" if data.nil?
+      data = parse_response(response)
       response_code = data[:Code]
       if response_code == 203
         add_user_to_all_list(user)
@@ -102,18 +101,23 @@ module Services
         update_user_to_all_list(user)
       end
     end
+
+    def self.parse_response(response)
+      data = JSON.parse(response, symbolize_names: true)
+      raise Exceptions::InvalidResponseError.new({ response: response.inspect, request: response.request.inspect }) if data.nil?
+      return data
+    end
   
     def self.add_user_to_all_list(user)
       set_commons(user.email)
       response = HTTParty.post(@add_to_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
-        body: add_request_body(user).to_json
+        body: add_request_body(user).to_json,
+        format: :plain
       )
-      data = JSON.parse response, symbolize_names: true
-      response_code = data[:Code]
-      raise "response code is nil" if response_code.nil?
-      raise data[:Message] if response_code != 201
+      data = parse_response(response)
+      raise Exceptions::InvalidResponseError.new({ response: response.inspect, request: response.request.inspect }) if response.code != 201
     end
 
     def self.add_user_to_marketing_list(user)
@@ -134,6 +138,7 @@ module Services
         basic_auth: @basic_auth,
         headers: @headers,
         body: req_body.to_json,
+        format: :plain
       )
       data = JSON.parse response, symbolize_names: true
       response_code = data[:Code]
@@ -185,12 +190,13 @@ module Services
 
     def self.get_subscriber_details_in_all(user)
       set_commons(user.email)
-
-      return HTTParty.get(@get_subscriber_details_in_all,
+      response = HTTParty.get(@get_subscriber_details_in_all,
         basic_auth: @basic_auth,
         headers: @headers,
-        format: :plain,
+        format: :plain
       )
+      raise Exceptions::NotFoundError.new({ response: response.inspect, request: response.request.inspect }) if response.code == 404
+      return response
     end
 
     def self.get_subscriber_details_in_marketing(user)
