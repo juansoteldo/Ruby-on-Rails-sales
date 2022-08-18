@@ -92,9 +92,12 @@ module Services
     def self.add_or_update_user_to_all_list(user)
       response = get_subscriber_details_in_all(user)
       data = JSON.parse response, symbolize_names: true
-
-      if !data[:Code].nil? && data[:Code] == 203
+      response_code = data[:Code]
+      raise "response code is nil" if response_code.nil?
+      if response_code == 203
         add_user_to_all_list(user)
+      elsif response_code == 1
+        raise data[:Message]
       else
         update_user_to_all_list(user)
       end
@@ -102,12 +105,15 @@ module Services
   
     def self.add_user_to_all_list(user)
       set_commons(user.email)
-    
-      HTTParty.post(@add_to_all_url,
+      response = HTTParty.post(@add_to_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
         body: add_request_body(user).to_json
       )
+      data = JSON.parse response, symbolize_names: true
+      response_code = data[:Code]
+      raise "response code is nil" if response_code.nil?
+      raise data[:Message] if response_code != 201
     end
 
     def self.add_user_to_marketing_list(user)
