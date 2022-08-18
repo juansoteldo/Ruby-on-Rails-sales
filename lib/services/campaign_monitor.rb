@@ -92,8 +92,8 @@ module Services
     def self.add_or_update_user_to_all_list(user)
       response = get_subscriber_details_in_all(user)
       data = JSON.parse response, symbolize_names: true
+      raise "data is nil" if data.nil?
       response_code = data[:Code]
-      raise "response code is nil" if response_code.nil?
       if response_code == 203
         add_user_to_all_list(user)
       elsif response_code == 1
