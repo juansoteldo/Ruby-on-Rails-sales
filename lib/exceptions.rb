@@ -1,4 +1,5 @@
 module Exceptions
+  class InvalidArguments < StandardError; end
   class NotFoundError < StandardError; end
   class InvalidResponseError < StandardError; end
   class FailedRequestError < StandardError; end

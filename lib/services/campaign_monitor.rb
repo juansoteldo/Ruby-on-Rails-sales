@@ -8,21 +8,25 @@ module Services
 
     # TODO: refactor this further
     creds     = Rails.application.credentials
-    base_url  = creds.cm[:url]
-    username  = creds.cm[:username]
     env       = Rails.env.to_sym
+    base_url  = creds.cm[:base_url]
+    username  = creds.cm[:username]
+    client_id = creds.cm[:client_id]
 
     @marketing_list_id  = creds.cm[env][:marketing_list_id]
     @all_list_id        = creds.cm[env][:all_list_id]
 
-    @add_to_marketing_url       = "#{base_url}/#{@marketing_list_id}.json"
-    @add_to_all_url             = "#{base_url}/#{@all_list_id}.json"
-    @remove_from_marketing_url  = "#{base_url}/#{@marketing_list_id}/unsubscribe.json"
-    @remove_from_all_url        = "#{base_url}/#{@all_list_id}/unsubscribe.json"
+    @add_to_marketing_url       = "#{base_url}/subscribers/#{@marketing_list_id}.json"
+    @add_to_all_url             = "#{base_url}/subscribers/#{@all_list_id}.json"
+    @remove_from_marketing_url  = "#{base_url}/subscribers/#{@marketing_list_id}/unsubscribe.json"
+    @remove_from_all_url        = "#{base_url}/subscribers/#{@all_list_id}/unsubscribe.json"
 
-    @get_subscriber_details_in_all        = "#{base_url}/#{@all_list_id}.json"
-    @get_subscriber_details_in_marketing  = "#{base_url}/#{@marketing_list_id}.json"
-    @delete_subscriber                    = "#{base_url}/#{@all_list_id}.json"
+    @get_subscriber_details_in_all        = "#{base_url}/subscribers/#{@all_list_id}.json"
+    @get_subscriber_details_in_marketing  = "#{base_url}/subscribers/#{@marketing_list_id}.json"
+    @delete_subscriber_url                = "#{base_url}/subscribers/#{@all_list_id}.json"
+
+    @create_list_url                      = "#{base_url}/lists/#{client_id}.json"
+    @delete_list_url                      = "#{base_url}/lists/"
 
     @basic_auth = {
       username: username,
@@ -217,7 +221,7 @@ module Services
 
     ### DELETE SUBSCRIBER
     def self.delete_subscriber(user)
-      response = HTTParty.delete("#{@delete_subscriber}?email=#{user.email}",
+      response = HTTParty.delete("#{@delete_subscriber_url}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
       )
@@ -246,6 +250,32 @@ module Services
         body: message.to_json,
       )
       raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 202
+    end
+
+    ### CREATE LIST
+    def self.create_list(list_title)
+      response = HTTParty.post(@create_list_url,
+        basic_auth: @basic_auth,
+        headers: @headers,
+        body: {
+          "Title": list_title,
+          "UnsubscribeSetting": "OnlyThisList",
+          "ConfirmedOptIn": false,
+        }.to_json,
+        format: :plain
+      )
+      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 201
+      return response
+    end
+
+    ### DELETE LIST
+    def self.delete_list(list_id)
+      response = HTTParty.delete("#{@delete_list_url}#{list_id}.json",
+        basic_auth: @basic_auth,
+        headers: @headers
+      )
+      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 200
+      return response
     end
 
     def self.process_webhook_events(data)
