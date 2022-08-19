@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'exceptions'
 require 'task_helper'
 
 module Services
