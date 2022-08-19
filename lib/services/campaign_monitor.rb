@@ -19,7 +19,6 @@ module Services
     @remove_from_marketing_url  = "#{base_url}/#{@marketing_list_id}/unsubscribe.json"
     @remove_from_all_url        = "#{base_url}/#{@all_list_id}/unsubscribe.json"
 
-    # Note: Need to add email as a query parameter to below URLs
     @get_subscriber_details_in_all        = "#{base_url}/#{@all_list_id}.json"
     @get_subscriber_details_in_marketing  = "#{base_url}/#{@marketing_list_id}.json"
     @delete_subscriber                    = "#{base_url}/#{@all_list_id}.json"
@@ -77,9 +76,9 @@ module Services
     def self.add_request_body(user)
       {
         'EmailAddress': user.email,
+        'Name': user.first_name.to_s,
         'Resubscribe': false,
         'ConsentToTrack': 'yes',
-        'Name': user.first_name.to_s,
         'CustomFields': user_custom_fields(user),
       }
     end
@@ -90,19 +89,16 @@ module Services
       }
     end
 
-    ## utility functions
+    def self.parse_response(response)
+      data = JSON.parse(response, symbolize_names: true)
+      raise_exception(Exceptions::InvalidResponseError, response) if data.nil?
+      raise_exception(Exceptions::NotFoundError, response) if data.code == 404
+      return data
+    end
 
     def self.raise_exception(exception_name, response)
       raise exception_name.new({ response: response.inspect, request: response.request.inspect })
     end
-
-    def self.parse_response(response)
-      data = JSON.parse(response, symbolize_names: true)
-      raise_exception(Exceptions::InvalidResponseError, response) if data.nil?
-      return data
-    end
-
-    ##
 
     def self.add_or_update_user_to_all_list(user)
       response = get_subscriber_details_in_all(user)
@@ -117,112 +113,114 @@ module Services
       end
     end
   
+    # TODO: Change to add_user_to_list and add an argument to specify the url (add_to_all_url/add_to_marketing_url)
     def self.add_user_to_all_list(user)
-      # set_commons(user.email)
       response = HTTParty.post(@add_to_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
         body: add_request_body(user).to_json,
         format: :plain
       )
-      data = parse_response(response)
       raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
     end
 
     def self.add_user_to_marketing_list(user)
-      # set_commons(user.email)
-      HTTParty.post(@add_to_marketing_url,
+      response = HTTParty.post(@add_to_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
-        body: add_request_body(user).to_json
+        body: add_request_body(user).to_json,
+        format: :plain
       )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
     end
 
     def self.add_email_to_marketing_list(user)
       user = user[:user]
-      # set_commons(user[:email])
-      # TODO: use a function for below
-      req_body = { "EmailAddress": user[:email], "Name": user[:name], "Resubscribe": false, "ConsentToTrack": "yes" }
+      req_body = { 
+        'EmailAddress': user[:email], 
+        'Name': user[:name], 
+        'Resubscribe': false, 
+        'ConsentToTrack': 'yes',
+      }
       response = HTTParty.post(@add_to_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
         body: req_body.to_json,
         format: :plain
       )
-      data = JSON.parse response, symbolize_names: true
-      response_code = data[:Code]
-      raise "response code is nil" if response_code.nil?
-      raise data[:Message] if response_code != 201
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
     end
 
+    ### UPDATE SUBSCRIBER
     def self.update_user_to_all_list(user)
-      # set_commons(user.email)
-    
-      HTTParty.put(@add_to_all_url,
+      response = HTTParty.put(@add_to_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
         query: { email: user.email },
         body: add_request_body(user).to_json
       )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
     end
 
     def self.update_user_to_marketing_list(user)
-      # set_commons(user.email)
       response = HTTParty.put(@add_to_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
         query: { email: user.email },
         body: add_request_body(user).to_json
       )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
     end
     
+    ### REMOVE SUBSCRIBER
     def self.remove_user_from_marketing_list(user)
-      # set_commons(user.email)
-      HTTParty.post(@remove_from_marketing_url,
+      response = HTTParty.post(@remove_from_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
         body: remove_request_body(user).to_json
       )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
     end
 
     def self.remove_user_from_all_list(user)
-      # set_commons(user.email)
-      HTTParty.post(@remove_from_all_url,
+      response = HTTParty.post(@remove_from_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
         body: remove_request_body(user).to_json
       )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
     end
 
+    ### GET SUBSCRIBER
     def self.get_subscriber_details_in_all(user)
-      # set_commons(user.email)
       response = HTTParty.get("#{@get_subscriber_details_in_all}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
         format: :plain
       )
-      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
       return response
     end
 
     def self.get_subscriber_details_in_marketing(user)
-      # set_commons(user.email)
-      HTTParty.get("#{@get_subscriber_details_in_marketing}?email=#{user.email}",
+      response = HTTParty.get("#{@get_subscriber_details_in_marketing}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
       )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      return response
     end
 
+    ### DELETE SUBSCRIBER
     def self.delete_subscriber(user)
-      # set_commons(user.email)
-      HTTParty.delete("#{@delete_subscriber}?email=#{user.email}",
+      response = HTTParty.delete("#{@delete_subscriber}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
       )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
     end
 
     def self.send_transactional_email(smart_email_id, user)
-      # set_commons(user.email)
       url = "https://api.createsend.com/api/v3.3/transactional/smartEmail/#{smart_email_id}/send"
       first_name = user.first_name
       request = user.requests.last
@@ -243,7 +241,7 @@ module Services
         headers: @headers,
         body: message.to_json,
       )
-      raise "transactional email failed to send" if response.nil? || (response.code != 200 && response.code != 202)
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil? || response.code != 202
     end
 
     def self.process_webhook_events(data)
@@ -266,33 +264,5 @@ module Services
         end
       end
     end
-  end
-
-  def self.set_commons(email)
-    # creds         = Rails.application.credentials
-    # username      = creds.cm[:username]
-    # env           = Rails.env.to_sym
-    
-    # @marketing_list_id   = creds.cm[env][:marketing_list_id]
-    # @all_list_id         = creds.cm[env][:all_list_id]
-
-    # cm_host                      = 'https://api.createsend.com/api/v3.2/subscribers'
-    # @add_to_marketing_url        = "#{cm_host}/#{@marketing_list_id}.json"
-    # @add_to_all_url              = "#{cm_host}/#{@all_list_id}.json"
-    # @remove_from_marketing_url   = "#{cm_host}/#{@marketing_list_id}/unsubscribe.json"
-    # @remove_from_all_url         = "#{cm_host}/#{@all_list_id}/unsubscribe.json"
-
-    # @get_subscriber_details_in_all = "#{cm_host}/#{@all_list_id}.json?email=#{email}"
-    # @get_subscriber_details_in_marketing = "#{cm_host}/#{@marketing_list_id}.json?email=#{email}"
-    # @delete_subscriber = "#{cm_host}/#{@all_list_id}.json?email=#{email}"
-
-    # @basic_auth = {
-    #   username: username,
-    #   password: 'whatever'
-    # }
-
-    # @headers = {
-    #   'Content-Type': 'application/json'
-    # }
   end
 end
