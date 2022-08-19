@@ -90,15 +90,15 @@ module Services
       }
     end
 
-    def self.parse_response(response)
-      data = JSON.parse(response, symbolize_names: true)
-      raise_exception(Exceptions::InvalidResponseError, response) if data.nil?
-      raise_exception(Exceptions::NotFoundError, response) if data.code == 404
-      return data
-    end
-
     def self.raise_exception(exception_name, response)
       raise exception_name.new({ response: response.inspect, request: response.request.inspect })
+    end
+
+    def self.parse_response(response)
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil?
+      data = JSON.parse(response, symbolize_names: true)
+      raise_exception(Exceptions::NotFoundError, response) if data.code == 404
+      return data
     end
 
     def self.add_or_update_user_to_all_list(user)
@@ -122,7 +122,7 @@ module Services
         body: add_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil? || response.code != 201
     end
 
     def self.add_user_to_marketing_list(user)
@@ -132,7 +132,7 @@ module Services
         body: add_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil? || response.code != 201
     end
 
     def self.add_email_to_marketing_list(user)
@@ -149,7 +149,7 @@ module Services
         body: req_body.to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil? || response.code != 201
     end
 
     ### UPDATE SUBSCRIBER
@@ -160,7 +160,7 @@ module Services
         query: { email: user.email },
         body: add_request_body(user).to_json
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil? || response.code != 200
     end
 
     def self.update_user_to_marketing_list(user)
@@ -170,7 +170,7 @@ module Services
         query: { email: user.email },
         body: add_request_body(user).to_json
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil? || response.code != 200
     end
     
     ### REMOVE SUBSCRIBER
@@ -180,7 +180,7 @@ module Services
         headers: @headers,
         body: remove_request_body(user).to_json
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil? || response.code != 200
     end
 
     def self.remove_user_from_all_list(user)
@@ -189,7 +189,7 @@ module Services
         headers: @headers,
         body: remove_request_body(user).to_json
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil? || response.code != 200
     end
 
     ### GET SUBSCRIBER
@@ -199,7 +199,7 @@ module Services
         headers: @headers,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::NotFoundError, response) if response.nil? || response.code == 404
       return response
     end
 
@@ -208,7 +208,7 @@ module Services
         basic_auth: @basic_auth,
         headers: @headers,
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::NotFoundError, response) if response.nil? || response.code == 404
       return response
     end
 
@@ -218,7 +218,7 @@ module Services
         basic_auth: @basic_auth,
         headers: @headers,
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.nil? || response.code != 200
     end
 
     def self.send_transactional_email(smart_email_id, user)
