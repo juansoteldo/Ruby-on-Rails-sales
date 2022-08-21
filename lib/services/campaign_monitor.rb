@@ -9,24 +9,28 @@ module Services
     # TODO: refactor this further
     creds     = Rails.application.credentials
     env       = Rails.env.to_sym
+
     base_url  = creds.cm[:base_url]
     username  = creds.cm[:username]
     client_id = creds.cm[:client_id]
 
+    @subscribers_url    = "#{base_url}/subscribers/"
+    @lists_url          = "#{base_url}/lists/"
+
     @marketing_list_id  = creds.cm[env][:marketing_list_id]
     @all_list_id        = creds.cm[env][:all_list_id]
 
-    @add_to_marketing_url       = "#{base_url}/subscribers/#{@marketing_list_id}.json"
-    @add_to_all_url             = "#{base_url}/subscribers/#{@all_list_id}.json"
-    @remove_from_marketing_url  = "#{base_url}/subscribers/#{@marketing_list_id}/unsubscribe.json"
-    @remove_from_all_url        = "#{base_url}/subscribers/#{@all_list_id}/unsubscribe.json"
+    @add_to_marketing_url       = "#{@subscribers_url}#{@marketing_list_id}.json"
+    @add_to_all_url             = "#{@subscribers_url}#{@all_list_id}.json"
+    @remove_from_marketing_url  = "#{@subscribers_url}#{@marketing_list_id}/unsubscribe.json"
+    @remove_from_all_url        = "#{@subscribers_url}#{@all_list_id}/unsubscribe.json"
 
-    @get_subscriber_details_in_all        = "#{base_url}/subscribers/#{@all_list_id}.json"
-    @get_subscriber_details_in_marketing  = "#{base_url}/subscribers/#{@marketing_list_id}.json"
-    @delete_subscriber_url                = "#{base_url}/subscribers/#{@all_list_id}.json"
+    @get_subscriber_details_in_all        = "#{@subscribers_url}#{@all_list_id}.json"
+    @get_subscriber_details_in_marketing  = "#{@subscribers_url}#{@marketing_list_id}.json"
+    @delete_subscriber_url                = "#{@subscribers_url}#{@all_list_id}.json"
 
-    @create_list_url                      = "#{base_url}/lists/#{client_id}.json"
-    @delete_list_url                      = "#{base_url}/lists/"
+    @create_list_url                      = "#{@lists_url}#{client_id}.json"
+    @delete_list_url                      = "#{@lists_url}"
 
     @basic_auth = {
       username: username,
@@ -120,6 +124,17 @@ module Services
     end
   
     # TODO: Change to add_user_to_list and add an argument to specify the url (add_to_all_url/add_to_marketing_url)
+    def self.add_user_to_list(list_id, user)
+      response = HTTParty.post("#{@subscribers_url}#{list_id}.json",
+        basic_auth: @basic_auth,
+        headers: @headers,
+        body: add_request_body(user).to_json,
+        format: :plain
+      )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      return response
+    end
+
     def self.add_user_to_all_list(user)
       response = HTTParty.post(@add_to_all_url,
         basic_auth: @basic_auth,
@@ -127,7 +142,8 @@ module Services
         body: add_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 201
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      return response
     end
 
     def self.add_user_to_marketing_list(user)
@@ -137,7 +153,8 @@ module Services
         body: add_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 201
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      return response
     end
 
     def self.add_email_to_marketing_list(user)
@@ -154,10 +171,23 @@ module Services
         body: req_body.to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 201
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      return response
     end
 
     ### UPDATE SUBSCRIBER
+    def self.update_user_to_list(list_id, user)
+      response = HTTParty.put("#{@subscribers_url}#{list_id}.json",
+        basic_auth: @basic_auth,
+        headers: @headers,
+        query: { email: user.email },
+        body: add_request_body(user).to_json,
+        format: :plain
+      )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      return response
+    end
+
     def self.update_user_to_all_list(user)
       response = HTTParty.put(@add_to_all_url,
         basic_auth: @basic_auth,
@@ -165,9 +195,10 @@ module Services
         query: { email: user.email },
         body: add_request_body(user).to_json
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
       # TODO: if code is 203, Subscriber is not in list or has already been removed
       #       so we should instead call 'add_user_to_all_list'
+      return response
     end
 
     def self.update_user_to_marketing_list(user)
@@ -175,9 +206,11 @@ module Services
         basic_auth: @basic_auth,
         headers: @headers,
         query: { email: user.email },
-        body: add_request_body(user).to_json
+        body: add_request_body(user).to_json,
+        format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      return response
     end
     
     ### REMOVE SUBSCRIBER
@@ -187,26 +220,39 @@ module Services
         headers: @headers,
         body: remove_request_body(user).to_json
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      return response
     end
 
     def self.remove_user_from_marketing_list(user)
       response = HTTParty.post(@remove_from_marketing_url,
         basic_auth: @basic_auth,
         headers: @headers,
-        body: remove_request_body(user).to_json
+        body: remove_request_body(user).to_json,
+        format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      return response
     end
 
     ### GET SUBSCRIBER
+    def self.get_subscriber_details_from_list(list_id, user)
+      response = HTTParty.get("#{@subscribers_url}#{list_id}.json?email=#{user.email}",
+        basic_auth: @basic_auth,
+        headers: @headers,
+        format: :plain
+      )
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
+      return response
+    end
+
     def self.get_subscriber_details_in_all(user)
       response = HTTParty.get("#{@get_subscriber_details_in_all}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
         format: :plain
       )
-      raise_exception(Exceptions::NotFoundError, response) if response == nil || response.code == 404
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
@@ -214,18 +260,30 @@ module Services
       response = HTTParty.get("#{@get_subscriber_details_in_marketing}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
+        format: :plain
       )
-      raise_exception(Exceptions::NotFoundError, response) if response == nil || response.code == 404
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
     ### DELETE SUBSCRIBER
+    def self.delete_subscriber_from_list(list_id, user)
+      response = HTTParty.delete("#{@subscribers_url}#{list_id}.json?email=#{user.email}",
+        basic_auth: @basic_auth,
+        headers: @headers,
+        format: :plain
+      )
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      return response
+    end
+
     def self.delete_subscriber(user)
       response = HTTParty.delete("#{@delete_subscriber_url}?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
+        format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
     end
 
     def self.send_transactional_email(smart_email_id, user)
@@ -249,7 +307,8 @@ module Services
         headers: @headers,
         body: message.to_json,
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 202
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 202
+      return response
     end
 
     ### CREATE LIST
@@ -264,7 +323,7 @@ module Services
         }.to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 201
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
       return response
     end
 
@@ -274,7 +333,7 @@ module Services
         basic_auth: @basic_auth,
         headers: @headers
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response == nil || response.code != 200
+      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
       return response
     end
 

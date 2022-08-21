@@ -27,7 +27,7 @@ development:
 
 test:
   <<: *default
-  database: ctd-worklist-test
+  database: ctd-sales-test
 
 staging:
   <<: *default

@@ -15,6 +15,8 @@ class CampaignMonitorActionJob < ApplicationJob
 
     if smart_email_id && async_method && user
       Services::CampaignMonitor.send(async_method.to_sym, smart_email_id, user)
+    elsif async_method && list_id && user
+      Services::CampaignMonitor.send(async_method.to_sym, list_id, user)    
     elsif async_method && user
       Services::CampaignMonitor.send(async_method.to_sym, user)
     elsif async_method && list_title
