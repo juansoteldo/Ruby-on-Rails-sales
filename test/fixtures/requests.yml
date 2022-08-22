@@ -42,6 +42,7 @@ quoted:
   style: Traditional
   state: quoted
   description: THIS IS A TEST, DO NOT EMAIL ME
+  variant_price: 150.00
 
 deposited:
   user: one
