@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Auto quote with CM integration using transactional emails
 - Error handling for adding followers to streak boxes
+- Error handling for campaign monitor jobs
+- Unit testing for campaign monitor jobs
 ### Changed
 - Update auto quote emails with new descriptions
+- Refactor code for campaign monitor services
 ### Fixed
 - Issue where box would get stuck in leads after auto quote
 - Issue where box would get stuck in leads if a customer submits multiple requests
