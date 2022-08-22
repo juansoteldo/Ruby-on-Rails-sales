@@ -23,7 +23,7 @@ class Api::UsersController < Api::BaseController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
-    @user = User.where(email: params[:email]).first_or_create
+    @user = User.where(email: params[:email].downcase).first_or_create
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
