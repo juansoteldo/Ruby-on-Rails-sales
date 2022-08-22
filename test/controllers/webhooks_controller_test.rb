@@ -7,7 +7,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   setup do
     RequestMailer.delivery_method = :test
     @image_file = file_fixture_copy("test.jpg")
-    @image_url = "https://www.ece.rice.edu/~wakin/images/lena512.bmp"
+    @image_url = "https://wiki.customtattoodesign.ca/templates/graphic-layovers/male/male_-_arm_1_-_left.jpg"
   end
 
   teardown do
@@ -53,9 +53,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
     user = User.find(Request.joins(:user).where(users: { email: params[:email] }).first.user_id)
     assert_not_nil user
-#    assert user.marketing_opt_in.nil? # nil because they have to set truthy using opt-in link
-    assert user.marketing_opt_in? # nil because they have to set truthy using opt-in link
-
+    assert user.marketing_opt_in?
   end
 
   test "webhook call should create request with negative opt_in" do
@@ -81,6 +79,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
       post "/webhooks/requests_create", params: wpcf7_params.merge(art_sample_1: @image_file)
       assert_response :success
     end
+
     webhook = Webhook.find(response.body.to_i)
     assert_not_equal webhook.tries, 0
     assert_equal "committed", webhook.aasm_state
@@ -93,9 +92,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   test "webhook call with image url should create request with an attached image" do
     stamp = Time.now
     perform_enqueued_jobs do
-      post "/webhooks/requests_create", params: wpcf7_params.merge(
-        art_sample_1: @image_url
-      )
+      post "/webhooks/requests_create", params: wpcf7_params.merge(art_sample_1: @image_url)
       assert_response :success
     end
 
@@ -232,6 +229,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert request.state == "fresh"
   end
 
+  # TODO: failing test
   test "webhook call should send start design email" do
     Settings.streak.create_boxes = true
 
