@@ -21,15 +21,14 @@ class User < ApplicationRecord
   has_many :events
   has_many :messages, class_name: "Ahoy::Message"
 
-  auto_strip_attributes :email, :first_name, :last_name
-  phony_normalize :phone_number, default_country_code: "US"
-  validates_plausible_phone :phone_number, with: /\A(\+\d{1,3}\s{0,1})?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\z/, if: :phone_number?
+  auto_strip_attributes :email, :first_name, :last_name, :phone_number
+  validates :phone_number, format: { with: /\A(\+{0,1}\d{1,3}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\z/ }
 
   before_validation :initialize_password
   validates_presence_of :email
   validates_length_of :email, minimum: 5
 
-  after_create_commit :process_cm_on_create # possible fix for: "ActiveJob::DeserializationError: Error while trying to deserialize arguments"
+  after_create_commit :process_cm_on_create
   after_update_commit :process_cm_on_update
 
   def ransackable_attributes(_auth_object = nil)
