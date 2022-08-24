@@ -17,6 +17,8 @@ class UserTest < ActiveSupport::TestCase
     assert user.invalid?
     user.phone_number = "abc"
     assert user.invalid?
+    user.phone_number = ""
+    assert user.valid?
   end
 
   test "check subscribe user to CM" do

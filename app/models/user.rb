@@ -22,7 +22,7 @@ class User < ApplicationRecord
   has_many :messages, class_name: "Ahoy::Message"
 
   auto_strip_attributes :email, :first_name, :last_name, :phone_number
-  validates :phone_number, format: { with: /\A(\+{0,1}\d{1,3}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\z/ }
+  validates :phone_number, format: { with: /\A((\+{0,1}\d{1,3}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}?)?\z/ }
 
   before_validation :initialize_password
   validates_presence_of :email
