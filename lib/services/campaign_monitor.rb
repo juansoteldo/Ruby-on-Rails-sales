@@ -60,9 +60,9 @@ module Services
           { 'Key': 'Purchased', 'Value': TaskHelper.yesno(req.deposit_order_id) },
           { 'Key': 'quote_url', 'Value': req.quote_url },
           { 'Key': 'salesperson_email', 'Value': req.salesperson&.email || Settings.emails.lee },
-          { 'Key': 'variant_price', 'Value': req.variant_price }
+          { 'Key': 'variant_price', 'Value': req.variant_price },
+          { 'Key': 'phone_number', 'Value': user.phone_number }
           # { 'Key': 'requests_statuses', 'Value': user.requests.map { |request| request.state }.join(',')} # Unused
-          # TODO: add MobileNumber from user.phone_number
         ]
 
         if !req.is_first_time.nil?
