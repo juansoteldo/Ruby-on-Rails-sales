@@ -9,6 +9,16 @@ class UserTest < ActiveSupport::TestCase
   teardown do
   end
 
+  test "phone number validation" do
+    user = users(:one)
+    user.phone_number = "+9117867900700"
+    assert user.valid?
+    user.phone_number = "++9117867900700"
+    assert user.invalid?
+    user.phone_number = "abc"
+    assert user.invalid?
+  end
+
   test "check subscribe user to CM" do
     email = SecureRandom.hex(8);
     perform_enqueued_jobs do
