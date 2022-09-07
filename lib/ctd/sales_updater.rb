@@ -30,11 +30,11 @@ module CTD
 
         console_log "Calculating sales totals for #{orders.count} orders"
         orders.each do |order|
+          next if order.customer.nil?
+
           request = order.request(reset_attribution: true)
 
-          if !order.customer.nil?
-            Rails.logger.warn("Cannot find request for #{order.customer.email}") unless request
-          end
+          Rails.logger.warn("Cannot find request for #{order.customer.email}") unless request
 
           sales_id = order.sales_id
           quoted_by_id = order.request&.quoted_by_id
@@ -67,8 +67,10 @@ module CTD
 
         until done
           boxes = MostlyStreak::Box.all_with_limits({ limit: "1000", page: page.to_s, sortBy: "creationTimestamp" })
+          break if boxes.empty? || boxes.nil?
 
           boxes.each do |box|
+            next if box.nil?
             epoch = box.creation_timestamp / 1000
             (done = true) && break unless epoch_range === epoch
 
