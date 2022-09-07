@@ -31,7 +31,10 @@ module CTD
         console_log "Calculating sales totals for #{orders.count} orders"
         orders.each do |order|
           request = order.request(reset_attribution: true)
-          Rails.logger.warn("Cannot find request for #{order.customer.email}") unless request
+
+          if !order.customer.nil?
+            Rails.logger.warn("Cannot find request for #{order.customer.email}") unless request
+          end
 
           sales_id = order.sales_id
           quoted_by_id = order.request&.quoted_by_id
