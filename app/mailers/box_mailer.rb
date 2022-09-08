@@ -11,15 +11,15 @@ class BoxMailer < ApplicationMailer
 
     if Settings.emails.use_cm_for_auto_quote_emails
       tattoo_size = request.tattoo_size.name.downcase
-      smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:general_auto_quote]
+      smart_email_id = TransactionalEmail.find_by(name: 'general_auto_quote').smart_id
       if request.first_time?
-        smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:first_time_auto_quote]
+        smart_email_id = TransactionalEmail.find_by(name: 'first_time_auto_quote').smart_id
       elsif tattoo_size == "full sleeve"
-        smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:full_sleeve_auto_quote]
+        smart_email_id = TransactionalEmail.find_by(name: 'full_sleeve_auto_quote').smart_id
       elsif tattoo_size == "half sleeve"
-        smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:half_sleeve_auto_quote]
+        smart_email_id = TransactionalEmail.find_by(name: 'half_sleeve_auto_quote').smart_id
       elsif tattoo_size == "extra small"
-        smart_email_id = Rails.application.credentials[:cm][:transactional_emails][:extra_small_auto_quote]
+        smart_email_id = TransactionalEmail.find_by(name: 'extra_small_auto_quote').smart_id
       end
       CampaignMonitorActionJob.perform_later(smart_email_id: smart_email_id, user: request.user, method: "send_transactional_email")
       return

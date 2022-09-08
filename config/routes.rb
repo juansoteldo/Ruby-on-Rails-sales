@@ -84,6 +84,9 @@ Rails.application.routes.draw do
     get "test/post_form" => "test#post_form", as: "post_form"
     get "test/cart" => "test#cart", as: "cart"
 
+    get '/campaign_monitor' => 'campaign_monitor#index'
+    put '/campaign_monitor', to: 'campaign_monitor#update'
+
     authenticated :salesperson, ->(user) { user&.admin? } do
       mount Sidekiq::Web => "sidekiq"
     end

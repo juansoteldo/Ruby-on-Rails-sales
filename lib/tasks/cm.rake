@@ -48,4 +48,17 @@ namespace :cm do
       Rails.logger.info "synced #{index} users" if (index % 100).zero?
     end
   end  
+
+  desc 'Add transactional emails from credentials'
+  task add_transactional_emails: :environment do
+    transactional_emails = Rails.application.credentials[:cm][:transactional_emails]
+    TransactionalEmail.delete_all
+    transactional_emails.each do |key, value|
+      TransactionalEmail.create({
+        name: key,
+        smart_id: value
+      })
+    end
+    Rails.logger.info 'Transactional emails added.'
+  end
 end
