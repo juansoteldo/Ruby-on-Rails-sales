@@ -3,7 +3,7 @@
 # Creates a streak box based on a request
 class CreateStreakBoxJob < ApplicationJob
   def perform(request)
-    return unless Settings.streak.create_boxes
+    return unless Settings.config.create_streak_boxes
 
     box = MostlyStreak::Box.new_with_name(request.user.email)
     box.update(notes: request.description)

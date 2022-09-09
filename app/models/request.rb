@@ -123,6 +123,7 @@ class Request < ApplicationRecord
     self.quoted_by_id ||= params[:salesperson_id]
     save!
     quote!
+
     # Update quote_url for user in CM
     CampaignMonitorActionJob.perform_later(user: self.user, method: "update_user_to_all_list")
   end
@@ -304,7 +305,7 @@ class Request < ApplicationRecord
     RequestActionJob.perform_later(request: self, method: "set_box_to_quoted")
     return unless auto_quotable? && salesperson == Salesperson.system
 
-    delay = Settings.emails.auto_quote_delay
+    delay = Settings.config.auto_quote_delay
     RequestActionJob.set(wait: delay.minutes).perform_later(request: self, method: "send_quote")
   end
 

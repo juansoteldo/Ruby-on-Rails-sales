@@ -9,9 +9,9 @@ class BoxMailer < ApplicationMailer
   def quote_email(request, marketing_email = MarketingEmail.quote_for_request(request))
     return unless request.user
 
-    if Settings.emails.use_cm_for_auto_quote_emails
+    if Settings.config.auto_quote_emails == 'cm'
       tattoo_size = request.tattoo_size.name.downcase
-      smart_email_id = TransactionalEmail.find_by(name: 'general_auto_quote').smart_id
+
       if request.first_time?
         smart_email_id = TransactionalEmail.find_by(name: 'first_time_auto_quote').smart_id
       elsif tattoo_size == "full sleeve"
@@ -20,27 +20,31 @@ class BoxMailer < ApplicationMailer
         smart_email_id = TransactionalEmail.find_by(name: 'half_sleeve_auto_quote').smart_id
       elsif tattoo_size == "extra small"
         smart_email_id = TransactionalEmail.find_by(name: 'extra_small_auto_quote').smart_id
+      else
+        smart_email_id = TransactionalEmail.find_by(name: 'general_auto_quote').smart_id
       end
-      CampaignMonitorActionJob.perform_later(smart_email_id: smart_email_id, user: request.user, method: "send_transactional_email")
-      return
-    end
-
-    @request = request.decorate
-    @marketing_email = marketing_email.decorate
-    @user = @request.user
-
-    @variant = MostlyShopify::Variant.find(request.tattoo_size.deposit_variant_id.to_i).first
-    raise "Cannot find variant with ID #{request.tattoo_size.deposit_variant_id}" if @variant.nil?
-
-    @variant = MostlyShopify::VariantDecorator.decorate(@variant)
-
-    track user: @request.user,
-          utm_campaign: marketing_email.template_name
-    mail(to: @request.user.email,
-         subject: marketing_email.subject_line,
-         from: marketing_email.from,
-         bcc: Settings.emails.notification_recipients,
-         display_name: marketing_email.from.gsub(/<.+>/, ""))
+      
+      CampaignMonitorActionJob.perform_later(smart_email_id: smart_email_id, user: request.user, method: "send_transactional_email") unless Settings.config.transactional_emails == 'disabled'
+    elsif Settings.config.auto_quote_emails == 'aws'
+      @request = request.decorate
+      @marketing_email = marketing_email.decorate
+      @user = @request.user
+  
+      @variant = MostlyShopify::Variant.find(request.tattoo_size.deposit_variant_id.to_i).first
+      raise "Cannot find variant with ID #{request.tattoo_size.deposit_variant_id}" if @variant.nil?
+  
+      @variant = MostlyShopify::VariantDecorator.decorate(@variant)
+  
+      track user: @request.user,
+            utm_campaign: marketing_email.template_name
+      mail(to: @request.user.email,
+           subject: marketing_email.subject_line,
+           from: marketing_email.from,
+           bcc: Settings.emails.notification_recipients,
+           display_name: marketing_email.from.gsub(/<.+>/, ""))
+      else
+        Rails.logger.warn 'Auto quote emails are turned off'
+      end
   end
 
   def marketing_email(request, marketing_email = MarketingEmail.find(1))
@@ -72,7 +76,7 @@ class BoxMailer < ApplicationMailer
   end
 
   def confirmation_email(request)
-    return if Settings.emails.use_cm_for_confirmation_emails
+    return if Settings.config.confirmation_emails != 'aws'
     return unless request.user
 
     @request = request.decorate
@@ -86,12 +90,11 @@ class BoxMailer < ApplicationMailer
   end
 
   def final_confirmation_email(request)
-    return if Settings.emails.use_cm_for_confirmation_emails
+    return if Settings.config.confirmation_emails != 'aws'
     return unless request.user
 
     @request = request
     @user = @request.user
-
     track user: @user
 
     mail(to: @user.email,

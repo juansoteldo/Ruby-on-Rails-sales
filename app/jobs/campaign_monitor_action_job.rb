@@ -5,7 +5,7 @@ require 'exceptions'
 # Executes a Request action (method) asynchronously
 class CampaignMonitorActionJob < ApplicationJob
   def perform(args)
-    return if Settings.emails.disable_campaign_monitor
+    return if Settings.config.campaign_monitor == 'disabled'
 
     smart_email_id = args[:smart_email_id]
     user = args[:user]

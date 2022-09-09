@@ -1,7 +1,7 @@
-emails:
-  auto_quote_delay: <%= ENV.fetch("AUTO_QUOTE_DELAY", 0) %>
-  disable_campaign_monitor: <%= ENV.fetch("DISABLE_CAMPAIGN_MONITOR", "false") %>
-  use_cm_for_auto_quote_emails: <%= ENV.fetch("USE_CM_FOR_AUTO_QUOTE_EMAILS", "true") %>
-  use_cm_for_confirmation_emails: <%= ENV.fetch("USE_CM_FOR_CONFIRMATION_EMAILS", "true") %>
-streak:
-  create_boxes: <%= ENV.fetch("CREATE_STREAK_BOXES", "false") %>
+config:
+  auto_quote_delay: <%= ENV.fetch 'CONFIG_AUTO_QUOTE_DELAY', 0 %>
+  create_streak_boxes: <%= ENV.fetch 'CONFIG_CREATE_STREAK_BOXES', 'false' %>
+  auto_quote_emails: <%= ENV.fetch 'CONFIG_AUTO_QUOTE_EMAILS', 'disabled' %>
+  confirmation_emails: <%= ENV.fetch 'CONFIG_CONFIRMATION_EMAILS', 'disabled' %>
+  campaign_monitor: <%= ENV.fetch 'CONFIG_CAMPAIGN_MONITOR', 'enabled' %>
+  transactional_emails: <%= ENV.fetch 'CONFIG_TRANSACTIONAL_EMAILS', 'disabled' %>
