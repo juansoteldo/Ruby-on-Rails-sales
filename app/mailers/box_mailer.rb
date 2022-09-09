@@ -85,25 +85,6 @@ class BoxMailer < ApplicationMailer
          display_name: "Lee Roller")
   end
 
-  def opt_in_email(request)
-    # opt in email disabled by Declyn request at 12.08.2021
-    # because company wants switch opt-in email to campaign monitor. 
-    return
-
-    # return unless request&.user
-
-    # @request = request.decorate
-    # @user = request.user
-    # track user: @user
-
-    # mail(
-    #   to: @user.email,
-    #   from: Settings.emails.lee,
-    #   subject: "E-Mail opt-in Custom Tattoo Design",
-    #   display_name: "Lee Roller"
-    # )
-  end
-
   def final_confirmation_email(request)
     return if Settings.emails.use_cm_for_confirmation_emails
     return unless request.user

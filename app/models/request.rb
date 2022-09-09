@@ -248,7 +248,6 @@ class Request < ApplicationRecord
 
   def opt_in_user
     user.update presales_opt_in: true, crm_opt_in: true
-    deliver_marketing_opt_in_email
   end
 
   def complete?
@@ -295,17 +294,6 @@ class Request < ApplicationRecord
   end
 
   private
-
-  def deliver_marketing_opt_in_email
-    # opt in email disabled by Declyn request at 12.08.2021
-    # because company wants switch opt-in email to campaign monitor. 
-    return
-
-    return unless user.marketing_opt_in.nil?
-    return unless user&.email
-
-    BoxMailer.opt_in_email(self).deliver_later
-  end
 
   def perform_complete_actions
     puts "Sending final confirmation email to #{user.email}" unless Rails.env.test?
