@@ -52,8 +52,6 @@ class PublicController < ApplicationController
 
   def deposit_redirect
     @order.update_request!(@request)
-    # Update custom field 'Purchased' to Yes on Campaign Monitor
-    CampaignMonitorActionJob.set(wait: 10.seconds).perform_later(user: @request.user, method: "update_user_to_all_list")
 
     if @request
       respond_to do |format|

@@ -22,6 +22,9 @@ module MostlyShopify
 
       request.update!(quoted_by_id: sales_id) if !sales_id.nil? && sales_id != request.quoted_by_id
 
+      # Update custom field 'Purchased' to Yes on Campaign Monitor
+      CampaignMonitorActionJob.perform_later(user: request.user, method: "update_user_to_all_list")
+
       @source.id == (is_deposit? ? request.deposit_order_id : request.final_order_id)
     end
 
