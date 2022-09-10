@@ -4,38 +4,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.2.1] - 2022-09-09
+## [2.7.1] - 2022-09-09
 ### Added
 - Sync user data with Campaign Monitor when Shopify order is updated
 ### Changed
 - Refactor environment variables for easier configuration
 ### Removed
-- Remove unused code for opt_in_email
+- Unused code for opt_in_email
 
-## [5.2.0] - 2022-09-08
+## [2.7.0] - 2022-09-08
 ### Added
 - Campaign Monitor page for ability to edit smart ids
 
-## [5.1.4] - 2022-09-07
+## [2.6.2] - 2022-09-07
 ### Fixed
 - Issue where SalesUpdater crashes if there is an order in Shopify with no customer
 
-## [5.1.3] - 2022-09-01
+## [2.6.1] - 2022-09-01
 ### Fixed
 - Issue where custom field 'Purchased' does not get updated to 'Yes' after a deposit is made
 
-## [5.1.2] - 2022-08-23
+## [2.6.0] - 2022-08-23
 ### Added
 - Unit tests for phone number validation
 - Sync phone number with Campaign Monitor
 ### Fixed
 - Regex validation for phone numbers
 
-## [5.1.1] - 2022-08-22
+## [2.5.1] - 2022-08-22
 ### Changed
 - Updated smart_email_id for production
 
-## [5.1.0] - 2022-08-17
+## [2.5.0] - 2022-08-17
 ### Added
 - Auto quote with CM integration using transactional emails
 - Error handling for adding followers to streak boxes
@@ -48,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issue where box would get stuck in leads after auto quote
 - Issue where box would get stuck in leads if a customer submits multiple requests
 
-## [5.0.0] - 2022-08-06
+## [2.4.2] - 2022-08-06
 ### Added
 - Environment variable for SMTP address
 - Toggle to enable/disable campaign monitor integration
@@ -63,11 +63,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Handle edge case if user does not exist in CM list but does exist in API database
 - Issue where requests would get stuck in fresh if a user submits multiple design requests
 
-## [4.1.1] - 2022-07-28
+## [2.4.1] - 2022-07-28
 ### Added
 - Automatic database migration after deployment
 
-## [4.1.0] - 2022-07-27
+## [2.4.0] - 2022-07-27
 ### Added
 - Variant price custom field for Campaign Monitor
 - Configure gmail labels for development/staging
@@ -75,16 +75,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Logic error for DISABLE_AUTO_QUOTE_EMAILS
 
-## [4.0.2] - 2022-07-27
+## [2.3.2] - 2022-07-27
 ### Added
 - Toggle for auto quote emails via ENV["DISABLE_AUTO_QUOTE_EMAILS"]
 
-## [4.0.1] - 2022-07-26
+## [2.3.1] - 2022-07-26
 ### Fixed
 - Created requests failing to commit
 - Recent scope for requests in development
 
-## [4.0.0] - 2022-07-25
+## [2.3.0] - 2022-07-25
 ### Added
 - Newsletter route for marketing_opt_in
 - Awesome_print for pretty printing
@@ -95,11 +95,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Phone_number column from requests table
 
-## [3.1.0] - 2022-07-18
+## [2.2.0] - 2022-07-18
 ### Added
 - Phone number field
 
-## [3.0.0] - 2022-07-14
+## [2.1.0] - 2022-07-14
 ### Added
 - Debug support for IDE
 - Sidekiq support for development environment
