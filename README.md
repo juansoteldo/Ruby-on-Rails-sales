@@ -1,10 +1,10 @@
 ## Git Flow
 
 1. Pull from develop branch
-   - `git branch develop && git pull`
+   - `git checkout develop && git pull`
 2. Create a feature branch
    - `git checkout -b <feature_branch_name>`
-3. Work on feature branch until ready for staging
+3. Work on feature branch until ready for deployment on staging environment
 4. Create a release branch
    - `git checkout -b release-<version_number>`
 5. Merge feature branch into release branch
@@ -17,7 +17,7 @@
     - `git checkout main`
     - `git merge --no-ff <release_branch_name>`
 10. Add a git tag
-    - `git tag -a`
+    - `git tag -a <version_number>`
 11. Merge main branch into develop
     - `git checkout develop`
     - `git merge --no-ff main`
