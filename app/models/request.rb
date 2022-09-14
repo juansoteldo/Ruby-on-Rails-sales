@@ -265,10 +265,9 @@ class Request < ApplicationRecord
   end
 
   def quote_url
-    variant = MostlyShopify::Variant.find(self.variant.to_i).last
+    variant = Variant.find(self.variant.to_i)
     variant_decorator = MostlyShopify::VariantDecorator.decorate(variant)
     variant_decorator.cart_redirect_url(self)
-
   rescue StandardError
     ""
   end
@@ -282,7 +281,7 @@ class Request < ApplicationRecord
     quote = MarketingEmail.quote_for_request(self)
     raise "`send_quote` cannot determine quote for #{self} (style = #{style.inspect}, size = #{size.inspect})" unless quote
 
-    variant = MostlyShopify::Variant.find(tattoo_size.deposit_variant_id.to_i).first
+    variant = Variant.find(tattoo_size.deposit_variant_id.to_i)
     raise "Cannot find variant with ID #{tattoo_size.deposit_variant_id}" if variant.nil?
 
     self.variant_price = variant.price
@@ -370,4 +369,11 @@ class Request < ApplicationRecord
 
     user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
   end
+
+  # def deposit_redirect_url
+  #   order = MostlyShopify::Order.find(deposit_order_id)
+  #   return nil if order.nil?
+  #   order_id = order.first.id
+  #   return "#{CTD::APP_URL}/public/thanks?order_id=#{order_id}&request_id=#{self.id}"
+  # end
 end

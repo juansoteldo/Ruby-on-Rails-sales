@@ -26,7 +26,7 @@ class PublicController < ApplicationController
     @request = Request.find(params[:requestId]) if params[:requestId].present? && Request.find(params[:requestId])
     @request ||= Request.find_by__ga(params[:_ga]) if params[:_ga] && Request.where(_ga: params[:_ga]).any?
 
-    @url = "https://shop.customtattoodesign.ca/products/"
+    @url = "https://#{Settings.shopify.shop_name}/products/"
     if @request&.client_id && @request.client_id != "false"
       @request.update_columns(variant: params[:variant], handle: params[:handle], last_visited_at: Time.now)
       @url += "#{params[:handle]}?variant=#{params[:variant]}&uid=#{@request.user_id}&cid=#{@request.client_id}&reqid=#{@request.id}"
@@ -128,7 +128,7 @@ class PublicController < ApplicationController
   def set_shopify_order
     return if params[:order_id].blank?
 
-    source_order = ShopifyAPI::Order.find(params[:order_id])
+    source_order = ShopifyAPI::Order.find(session: AppConfig.get_shopify_session, id: params[:order_id])
     @order = MostlyShopify::Order.new source_order
     params[:email] ||= @order&.customer&.email
   end

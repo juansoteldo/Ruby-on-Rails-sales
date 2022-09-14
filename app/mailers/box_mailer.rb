@@ -56,8 +56,8 @@ class BoxMailer < ApplicationMailer
     @request = request.decorate
     @marketing_email = marketing_email.decorate
 
-    @variant = MostlyShopify::Variant.find(request.tattoo_size.deposit_variant_id.to_i).first if request.tattoo_size
-    @variant ||= MostlyShopify::Variant.find(request.variant.to_i).first if request.variant
+    @variant = Variant.find(request.tattoo_size.deposit_variant_id.to_i).first if request.tattoo_size
+    @variant ||= Variant.find(request.variant.to_i) if request.variant
     @variant = MostlyShopify::VariantDecorator.decorate(@variant) unless @variant.nil?
 
     @user = @request.user

@@ -24,7 +24,7 @@ class Admin::MarketingEmailsController < Admin::BaseController
     authorize(Admin::MarketingEmailsController)
     @user = User.last
     @request = Request.quoted.where.not(tattoo_size_id: nil).last
-    @variant = MostlyShopify::Variant.find(@request.tattoo_size.deposit_variant_id.to_i).first
+    @variant = Variant.find(@request.tattoo_size.deposit_variant_id.to_i)
     @variant = MostlyShopify::VariantDecorator.decorate(@variant)
     @user = @request.user
   end
