@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: <%= ENV.fetch("DATABASE_URL", "ctd-worklist-development") %>
+  database: <%= ENV.fetch 'DATABASE_URL' %>
 
 test:
   <<: *default
@@ -31,8 +31,8 @@ test:
 
 staging:
   <<: *default
-  database: <%= ENV["DATABASE_URL"] %>
+  database: <%= ENV.fetch 'DATABASE_URL' %>
 
 production:
   <<: *default
-  database: <%= ENV["DATABASE_URL"] %>
+  database: <%= ENV.fetch 'DATABASE_URL' %>
