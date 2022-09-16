@@ -1,4 +1,5 @@
-require "test_helper"
+require 'faker'
+require 'test_helper'
 
 class MarketingControllerTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
@@ -30,7 +31,10 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
 
   test "opt_out" do
     perform_enqueued_jobs do
-      @user.update! opted_out: false
+      # NOTE: when using test fixtures 'after_create_commit' doesn't get called so we need to call 'add_user_to_all_list'
+      @user.email = Faker::Internet.email
+      CampaignMonitorActionJob.perform_now(user: @user, method: "add_user_to_all_list")
+      @user.update! presales_opt_in: true, marketing_opt_in: true, crm_opt_in: true
       assert @user.marketing_opt_in
       assert @user.presales_opt_in
 
