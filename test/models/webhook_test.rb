@@ -5,7 +5,7 @@ class WebhookTest < ActiveSupport::TestCase
 
   setup do
     @request = requests(:fresh)
-    @variant = MostlyShopify::Variant.all.first
+    @variant = Variant.all.first
     @salesperson = salespeople(:active)
   end
 

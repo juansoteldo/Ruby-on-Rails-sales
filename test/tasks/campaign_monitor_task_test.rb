@@ -11,8 +11,4 @@ class CampaignMonitorTaskTest < ActiveSupport::TestCase
   test "export_fresh_users" do
     Rake::Task["cm:export_fresh_users"].invoke
   end
-
-  test "back_sync_suppressions" do
-    Rake::Task["cm:back_sync_suppressions"].invoke
-  end
 end
