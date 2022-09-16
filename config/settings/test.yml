@@ -1,8 +1,8 @@
 gmail:
   subject_append: <%= Rails.application.credentials[:gmail][:test][:subject_append] %>
   labels:
-    new_design_requests: Label_5143087514283227928
-    design_requests: Label_2918953571817969548
+    new_design_requests: Label_4678907867277817538
+    design_requests: Label_2826655562080482681
     appointment_requests: Label_7177529587396720741
 streak:
   api_key: <%= Rails.application.credentials[:streak][:test][:api_key] %>
@@ -11,9 +11,9 @@ emails:
   deliver_start_design: true
   deliver_opt_in: true
   notification_recipients:
-    - mailer@ctd-sales.dev
-  lee: leeroller@ctd-sales.dev
-  system: sales@ctd-sales.dev
-  mailer: mailer@ctd-sales.dev
-  csr: carmelle@ctd-sales.dev
-  sales_manager: geoff@ctd-sales.dev
+    - stephen@customtattoodesign.ca
+  lee: leeroller@customtattoodesign.ca
+  system: sales@customtattoodesign.ca
+  mailer: mailer@customtattoodesign.ca
+  csr: mailer@customtattoodesign.ca
+  sales_manager: geoff@customtattoodesign.ca

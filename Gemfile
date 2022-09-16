@@ -82,6 +82,8 @@ group :development, :test do
   gem "byebug"
   gem "dotenv-rails"
   gem "rb-readline"
+  gem "awesome_print", :require => 'ap'
+  gem 'pry-rails'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"
@@ -93,6 +95,7 @@ end
 
 group :test do
   gem "minitest-rails-capybara"
+  gem 'minitest-reporters'
   gem "simplecov", require: false
 end
 
@@ -104,5 +107,4 @@ group :development do
   gem "rubocop", require: false
   gem "web-console"
   gem "solargraph"
-  gem "awesome_print", :require => 'ap'
 end

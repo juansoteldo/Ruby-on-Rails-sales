@@ -21,11 +21,8 @@ module MostlyShopify
       end
 
       request.update!(quoted_by_id: sales_id) if !sales_id.nil? && sales_id != request.quoted_by_id
-
-      # Update custom field 'Purchased' to Yes on Campaign Monitor
-      CampaignMonitorActionJob.perform_later(user: request.user, method: "update_user_to_all_list")
-
-      @source.id == (is_deposit? ? request.deposit_order_id : request.final_order_id)
+      # Update custom field 'Purchased' to 'Yes' on Campaign Monitor
+      CampaignMonitorActionJob.perform_later(user: request.user, method: 'update_user_to_all_list')
     end
 
     def request_id
@@ -199,13 +196,13 @@ module MostlyShopify
     def note_value(attr_name)
       return nil unless @source.respond_to? :note_attributes
       return nil unless @source.note_attributes
+      return nil if @source.note_attributes.all?(&:blank?)
 
       @source.note_attributes.each do |note_attr|
-        next unless note_attr.respond_to?(:name)
-        next unless note_attr.name == attr_name
-        return nil if note_attr.value == "undefined"
-
-        return note_attr.value
+        next unless note_attr.key?(:name)
+        next unless note_attr[:name] == attr_name
+        return nil if note_attr[:value] == 'undefined'
+        return note_attr[:value]
       end
       nil
     end

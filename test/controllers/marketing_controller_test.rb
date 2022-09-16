@@ -46,8 +46,9 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
 
       response = Services::CampaignMonitor.get_subscriber_details_in_all(@user)
     
-      assert_equal response.code, 200
-      assert_equal response.parsed_response['State'], 'Unsubscribed'
+      assert_equal 200, response.code
+      parsed_response = parse_response(response)
+      assert_equal 'Unsubscribed', parsed_response[:State]
     end
   end
 end

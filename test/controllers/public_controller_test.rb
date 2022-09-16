@@ -90,7 +90,7 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   test "set_link should assign quotation parameters" do
     settings(:auto_quoting).update! value: false
 
-    variant = MostlyShopify::Variant.all.first
+    variant = Variant.all.first
     request = requests(:fresh)
     get set_link_path(request_id: request.id, variant_id: variant.id, salesperson_id: @salesperson.id, format: :json)
     assert_response :success
@@ -101,8 +101,8 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should redirect to shopify cart" do
-    variant = MostlyShopify::Variant.all.first
-    product = MostlyShopify::Product.find(variant.product_id).first
+    variant = Variant.all.first
+    product = Product.find(variant.product_id)
     get cart_redirect_path(product.handle, variant.id, requestId: @existing_request.id)
     assert_response :success
     assert @response.body.include?(product.handle)
@@ -118,15 +118,25 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
   test "should save email and update streak box stage" do
     salesperson = Salesperson.first
     user = users(:wpcf7)
+
     delete_boxes_for_email(user.email)
+
     box = MostlyStreak::Box.new_with_name(user.email)
     stage_name = MostlyStreak::Stage.find({ key: box.stage_key }).name
     assert MostlyStreak::Stage.fresh.name, stage_name
+
+    # NOTE: need to wait at least 30 seconds or we won't be able to find a streak box that is newly created
+    # even with delay, still prone to failure, known testing streak/gmail issue
+    sleep 30
+
     perform_enqueued_jobs do
       get save_email_path(params: { thread_id: nil, recipient_email: box.name, from_email: salesperson.email }, format: :js)
       assert_response :success
     end
+    assert_performed_jobs 1
+
     sleep 5
+
     box = Streak::Box.find(box.key)
     stage_name = MostlyStreak::Stage.find({ key: box.stage_key }).name
     assert_equal MostlyStreak::Stage.contacted.name, stage_name
