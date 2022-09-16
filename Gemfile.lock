@@ -206,6 +206,8 @@ GEM
     erubi (1.9.0)
     excon (0.76.0)
     execjs (2.7.0)
+    faker (2.19.0)
+      i18n (>= 1.6, < 2)
     faraday (1.4.1)
       faraday-excon (~> 1.1)
       faraday-net_http (~> 1.0)
@@ -587,6 +589,7 @@ DEPENDENCIES
   devise
   dotenv-rails
   draper
+  faker
   fast_excel
   figaro
   fog-aws

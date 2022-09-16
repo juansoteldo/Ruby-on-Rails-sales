@@ -91,6 +91,8 @@ group :development, :test do
   # Debugging with IDE
   gem "ruby-debug-ide"
   gem "debase"
+
+  gem "faker"
 end
 
 group :test do
