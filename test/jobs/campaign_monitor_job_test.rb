@@ -44,7 +44,7 @@ class CampaignMonitorJobTest < ActiveJob::TestCase
   end
 
   test 'send transactional email' do
-    smart_email_id = Rails.application.credentials.cm[:transactional_emails][:test]
+    smart_email_id = TransactionalEmail.find_by(name: 'test').smart_id
     response = CampaignMonitorActionJob.perform_now(method: 'send_transactional_email', smart_email_id: smart_email_id, user: @user)
     assert_equal 202, response.code
   end

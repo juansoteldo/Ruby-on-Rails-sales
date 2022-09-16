@@ -56,6 +56,7 @@ namespace :cm do
 
   desc 'Add transactional emails from credentials'
   task add_transactional_emails: :environment do
+    # TODO: change this to load from YML file instead of credentials file
     transactional_emails = Rails.application.credentials[:cm][:transactional_emails]
     TransactionalEmail.delete_all
     transactional_emails.each do |key, value|

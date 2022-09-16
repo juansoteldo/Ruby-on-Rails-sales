@@ -13,7 +13,7 @@ class Api::RequestImagesControllerTest < ActionDispatch::IntegrationTest
 
   test "should show image for using global token" do
     get api_request_image_path(@test_request.images.first.id,
-                               token: Rails.application.credentials[:global_api_token])
+                               token: Settings.ctd.global_api_token)
     assert_response 200
   end
 

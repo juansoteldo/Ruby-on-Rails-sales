@@ -13,7 +13,7 @@ class Api::RequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show all requests with token" do
-    get api_requests_path, params: { token: Rails.application.credentials[:global_api_token] }
+    get api_requests_path, params: { token: Settings.ctd.global_api_token }
     assert_response :success
     result = JSON.parse(@response.body)
     assert result.count == 1
@@ -25,7 +25,7 @@ class Api::RequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show request with global token" do
-    get api_request_path(@request_with_image.id, token: Rails.application.credentials[:global_api_token])
+    get api_request_path(@request_with_image.id, token: Settings.ctd.global_api_token)
     assert_response :success
   end
 

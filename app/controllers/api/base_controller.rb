@@ -15,6 +15,6 @@ class Api::BaseController < ApplicationController
   end
 
   def global_api_token
-    @global_api_token ||= Rails.application.credentials[:global_api_token]
+    @global_api_token ||= Settings.ctd.global_api_token
   end
 end
