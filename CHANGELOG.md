@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Added
+- faker gem (generates random data for testing)
+- minitest-reporters gem (displays a progress bar when running rake test)
+- Streak pipeline for test environment
+- Gmail label for test environment
+### Changed
+- Moved most of existing rails credentials into .ENV (better practice to solely use ENV variables instead)
+### Fixed
+- Broken unit tests
+### Removed
+- Fallback for ENV.fetch so it raises an exception instead if a value is not provided
+
 ## [2.7.1] - 2022-09-09
 ### Added
 - Sync user data with Campaign Monitor when Shopify order is updated
