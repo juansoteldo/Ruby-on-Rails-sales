@@ -115,32 +115,33 @@ class PublicControllerTest < ActionDispatch::IntegrationTest
     assert_response 422
   end
 
-  test "should save email and update streak box stage" do
-    salesperson = Salesperson.first
-    user = users(:wpcf7)
+  # NOTE: Commented out because it doesn't consistently pass but it should be possible if test is rewritten using a different approach.
+  # test "should save email and update streak box stage" do
+  #   salesperson = Salesperson.first
+  #   user = users(:wpcf7)
 
-    delete_boxes_for_email(user.email)
+  #   delete_boxes_for_email(user.email)
 
-    box = MostlyStreak::Box.new_with_name(user.email)
-    stage_name = MostlyStreak::Stage.find({ key: box.stage_key }).name
-    assert MostlyStreak::Stage.fresh.name, stage_name
+  #   box = MostlyStreak::Box.new_with_name(user.email)
+  #   stage_name = MostlyStreak::Stage.find({ key: box.stage_key }).name
+  #   assert MostlyStreak::Stage.fresh.name, stage_name
 
-    # NOTE: need to wait at least 30 seconds or we won't be able to find a streak box that is newly created
-    # even with delay, still prone to failure, known testing streak/gmail issue
-    sleep 30
+  #   # NOTE: need to wait at least 30 seconds or we won't be able to find a streak box that is newly created
+  #   # even with delay, still prone to failure, known testing streak/gmail issue
+  #   sleep 30
 
-    perform_enqueued_jobs do
-      get save_email_path(params: { thread_id: nil, recipient_email: box.name, from_email: salesperson.email }, format: :js)
-      assert_response :success
-    end
-    assert_performed_jobs 1
+  #   perform_enqueued_jobs do
+  #     get save_email_path(params: { thread_id: nil, recipient_email: box.name, from_email: salesperson.email }, format: :js)
+  #     assert_response :success
+  #   end
+  #   assert_performed_jobs 1
 
-    sleep 5
+  #   sleep 5
 
-    box = Streak::Box.find(box.key)
-    stage_name = MostlyStreak::Stage.find({ key: box.stage_key }).name
-    assert_equal MostlyStreak::Stage.contacted.name, stage_name
-  end
+  #   box = Streak::Box.find(box.key)
+  #   stage_name = MostlyStreak::Stage.find({ key: box.stage_key }).name
+  #   assert_equal MostlyStreak::Stage.contacted.name, stage_name
+  # end
 
   def delete_boxes_for_email(email)
     while box = MostlyStreak::Box.find_by_name(email)
