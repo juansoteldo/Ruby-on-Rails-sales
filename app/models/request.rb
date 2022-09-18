@@ -139,7 +139,8 @@ class Request < ApplicationRecord
   def auto_quotable?
     return true if sleeve?
     return false if size == "Extra Large"
-
+    # NOTE: Extra Large is not auto quotable but everything else is:
+    # - ["Extra Small", "Small", "Medium", "Large", "Half Sleeve", "Full Sleeve"]
     TattooSize.defined_size_names.include?(size)
   end
 
@@ -223,7 +224,7 @@ class Request < ApplicationRecord
 
   def self.for_shopify_order(order, reset_attribution: false)
     request = find_and_attribute("request_id", :find_by_id, order.request_id.to_i) if order.request_id
-    request ||= find_and_attribute("webhook", :find_by_deposit_order_id, order.id) unless reset_attribution || order.id.nil?
+    request ||= find_and_attribute("webhook", :find_by_deposit_order_id, order.id.to_i) unless reset_attribution || order.id.nil?
     unless order.email.to_s.empty?
       request ||= find_and_attribute("email", :find_by_email,
                                      order.email.downcase.strip,

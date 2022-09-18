@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class BoxMailer < ApplicationMailer
-  default from: "orders@customtattoodesign.ca"
+  default from: "leeroller@customtattoodesign.ca"
 
   add_template_helper(ApplicationHelper)
   track open: true, click: true, utm_params: true
@@ -10,6 +10,9 @@ class BoxMailer < ApplicationMailer
     return unless request.user
 
     if Settings.config.auto_quote_emails == 'cm'
+      # TODO: add transactional emails for test environment
+      raise 'CM is not available for test environment' if ENV['RAILS_ENV'] == 'test'
+
       tattoo_size = request.tattoo_size.name.downcase
 
       if request.first_time?
@@ -42,9 +45,9 @@ class BoxMailer < ApplicationMailer
            from: marketing_email.from,
            bcc: Settings.emails.notification_recipients,
            display_name: marketing_email.from.gsub(/<.+>/, ""))
-      else
-        Rails.logger.warn 'Auto quote emails are turned off'
-      end
+    else
+      Rails.logger.warn 'Auto quote emails are turned off'
+    end
   end
 
   def marketing_email(request, marketing_email = MarketingEmail.find(1))

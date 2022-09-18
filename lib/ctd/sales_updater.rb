@@ -47,6 +47,8 @@ module CTD
           end
           sales_id ||= quoted_by_id
 
+          next if sales_id.nil?
+
           created_at = order.created_at.to_date
 
           total = SalesTotal.where(sold_on: created_at,
@@ -63,6 +65,7 @@ module CTD
         done = false
         page = 1
         total_boxes = 0
+        box_count = 0
         initial_count = Request.where.not(contacted_by_id: nil).count
 
         until done
@@ -85,7 +88,9 @@ module CTD
                                            salesperson_id: box.salesperson.id).first_or_create
             sales_total.update_attribute :box_count, sales_total.box_count + 1
           end
-          console_log "Processed #{page * 1000} boxes, last was on #{Time.at(boxes.last.creation_timestamp / 1000).to_date}"
+
+          break if boxes.empty?
+          console_log "Processed #{total_boxes} boxes, last was on #{Time.at(boxes.last.creation_timestamp / 1000).to_date}"
           page += 1
 
         end

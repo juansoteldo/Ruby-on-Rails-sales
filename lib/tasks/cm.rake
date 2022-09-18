@@ -1,6 +1,6 @@
-require 'csv'
-require 'open-uri'
-require 'services/campaign_monitor'
+# require 'csv'
+# require 'open-uri'
+# require 'services/campaign_monitor'
 
 namespace :cm do
   
@@ -18,26 +18,31 @@ namespace :cm do
     end
   end
 
-  desc "Back sync suppression list with db users"
-  task back_sync_suppressions: :environment do
+  # TODO: failing test
+  # desc "Back sync suppression list with db users"
+  # task back_sync_suppressions: :environment do
 
-    threshold_date = DateTime.parse '2020-11-20'
+  #   threshold_date = DateTime.parse '2020-11-20'
 
-    csv_text = open(Rails.application.credentials.suppressions_url.to_s)
-    csv = CSV.parse(csv_text, headers: true)
+  #   TODO: get supression list through API
+  #   https://www.campaignmonitor.com/api/v3-3/clients/#getting-suppression-list
+  #   https://api.createsend.com/api/v3.3/clients/{clientid}/suppressionlist.{xml|json}?page={page}&pagesize={pagesize}&orderfield={email|date}&orderdirection={asc|desc}
 
-    csv.each do |row|
-      email     = row[0]
-      date_txt  = row[1]
+  #   csv_text = open(Rails.application.credentials.suppressions_url.to_s) # broken link
+  #   csv = CSV.parse(csv_text, headers: true)
 
-      next if DateTime.parse(date_txt) < threshold_date
+  #   csv.each do |row|
+  #     email     = row[0]
+  #     date_txt  = row[1]
 
-      user = User.find_by_email(email)
-      next unless user
+  #     next if DateTime.parse(date_txt) < threshold_date
 
-      user.update(marketing_opt_in: false)
-    end
-  end
+  #     user = User.find_by_email(email)
+  #     next unless user
+
+  #     user.update(marketing_opt_in: false)
+  #   end
+  # end
 
   desc "Sync unsubscribed users with All Emails CampaignMonitor list"
   task sync_falsed_presales_opt_in: :environment do
@@ -51,6 +56,7 @@ namespace :cm do
 
   desc 'Add transactional emails from credentials'
   task add_transactional_emails: :environment do
+    # TODO: change this to load from YML file instead of credentials file
     transactional_emails = Rails.application.credentials[:cm][:transactional_emails]
     TransactionalEmail.delete_all
     transactional_emails.each do |key, value|

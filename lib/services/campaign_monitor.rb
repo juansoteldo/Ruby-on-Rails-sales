@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: this file really needs a rewrite/refactor, too much repeated code
+
 require 'exceptions'
 require 'task_helper'
 
@@ -131,7 +133,7 @@ module Services
         body: add_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
@@ -142,7 +144,7 @@ module Services
         body: add_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
@@ -153,7 +155,7 @@ module Services
         body: add_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
@@ -171,7 +173,7 @@ module Services
         body: req_body.to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
@@ -184,7 +186,13 @@ module Services
         body: add_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      # 200 code - success
+      # 203 code - subscriber not in list yet
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
+      if response.code != 200
+        data = parse_response(response)
+        add_user_to_all_list(user) if data[:Code] == 203
+      end
       return response
     end
 
@@ -193,11 +201,16 @@ module Services
         basic_auth: @basic_auth,
         headers: @headers,
         query: { email: user.email },
-        body: add_request_body(user).to_json
+        body: add_request_body(user).to_json,
+        format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
-      # TODO: if code is 203, Subscriber is not in list or has already been removed
-      #       so we should instead call 'add_user_to_all_list'
+      # 200 code - success
+      # 203 code - subscriber not in list yet
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
+      if response.code != 200
+        data = parse_response(response)
+        add_user_to_all_list(user) if data[:Code] == 203
+      end
       return response
     end
 
@@ -209,18 +222,22 @@ module Services
         body: add_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
+      if response.code != 200
+        data = parse_response(response)
+        add_user_to_all_list(user) if data[:Code] == 203
+      end
       return response
     end
     
-    ### REMOVE SUBSCRIBER
+    ### Unsubscribe user from list
     def self.remove_user_from_all_list(user)
       response = HTTParty.post(@remove_from_all_url,
         basic_auth: @basic_auth,
         headers: @headers,
         body: remove_request_body(user).to_json
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
@@ -231,11 +248,11 @@ module Services
         body: remove_request_body(user).to_json,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
-    ### GET SUBSCRIBER
+    ### Get subscriber from list
     def self.get_subscriber_details_from_list(list_id, user)
       response = HTTParty.get("#{@subscribers_url}#{list_id}.json?email=#{user.email}",
         basic_auth: @basic_auth,
@@ -266,14 +283,14 @@ module Services
       return response
     end
 
-    ### DELETE SUBSCRIBER
+    ### Delete subscriber from list
     def self.delete_subscriber_from_list(list_id, user)
       response = HTTParty.delete("#{@subscribers_url}#{list_id}.json?email=#{user.email}",
         basic_auth: @basic_auth,
         headers: @headers,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       return response
     end
 
@@ -283,9 +300,13 @@ module Services
         headers: @headers,
         format: :plain
       )
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
+      return response
     end
 
+    ### Send a transactional email
+    ### Use Cases: 
+    ### - Auto Quote
     def self.send_transactional_email(smart_email_id, user)
       url = "https://api.createsend.com/api/v3.3/transactional/smartEmail/#{smart_email_id}/send"
       first_name = user.first_name
@@ -307,11 +328,12 @@ module Services
         headers: @headers,
         body: message.to_json,
       )
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       raise_exception(Exceptions::InvalidResponseError, response) if response.code != 202
       return response
     end
 
-    ### CREATE LIST
+    ### Create List
     def self.create_list(list_title)
       response = HTTParty.post(@create_list_url,
         basic_auth: @basic_auth,
@@ -323,16 +345,18 @@ module Services
         }.to_json,
         format: :plain
       )
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       raise_exception(Exceptions::InvalidResponseError, response) if response.code != 201
       return response
     end
 
-    ### DELETE LIST
+    ### Delete List
     def self.delete_list(list_id)
       response = HTTParty.delete("#{@delete_list_url}#{list_id}.json",
         basic_auth: @basic_auth,
         headers: @headers
       )
+      raise_exception(Exceptions::NotFoundError, response) if response.code == 404
       raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
       return response
     end

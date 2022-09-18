@@ -92,6 +92,30 @@ module MostlyStreak
       box.nil? ? nil : find(box.box_key)
     end
 
+    # def self.find_by_name(email)
+    #   byebug
+    #   return unless email =~ /\A[^@]+@[^@]+\Z/
+    #   email.downcase!
+
+    #   Streak.api_key = Settings.streak.api_key
+
+    #   # TODO: improve streak library search
+    #   # https://github.com/jsboulanger/streak-ruby/blob/master/lib/streak/search.rb
+
+    #   # Finds Streak Box with newest timestamp
+    #   box = MostlyStreak::Box.query(email).sort_by { |e| -e.creation_timestamp }.first
+
+    #   # box = MostlyStreak::Box.query(email).find do |box|s
+    #   #   box&.name&.casecmp?(email)
+    #   # end
+    #   # box ||= MostlyStreak::Box.query(email).select do |box|
+    #   #   difference = box.name.casecmp(email)
+    #   #   !difference.nil? && difference.to_i < 2
+    #   # end.last
+
+    #   # box.nil? ? nil : find(box.box_key)
+    # end
+
     def current_stage
       MostlyStreak::Stage.find(key: @source.stage_key)
     end
