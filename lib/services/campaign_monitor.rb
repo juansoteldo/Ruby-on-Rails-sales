@@ -189,7 +189,10 @@ module Services
       # 200 code - success
       # 203 code - subscriber not in list yet
       raise_exception(Exceptions::NotFoundError, response) if response.code == 404
-      raise_exception(Exceptions::InvalidResponseError, response) if response.code != 200
+      if response.code != 200
+        data = parse_response(response)
+        add_user_to_all_list(user) if data[:Code] == 203
+      end
       return response
     end
 
