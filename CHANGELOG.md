@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Gmail label for test environment
 ### Changed
 - Moved most of existing rails credentials into .ENV (better practice to solely use ENV variables instead)
+- When updating a user in Campaign Monitor fails (not in list), it will try to add the user to the list instead
+- When a CM service request is not successful, only raise the exception if the response code is 404
 ### Fixed
 - Broken unit tests
 ### Removed
