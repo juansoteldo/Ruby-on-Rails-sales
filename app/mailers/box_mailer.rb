@@ -33,7 +33,7 @@ class BoxMailer < ApplicationMailer
       @marketing_email = marketing_email.decorate
       @user = @request.user
   
-      @variant = MostlyShopify::Variant.find(request.tattoo_size.deposit_variant_id.to_i).first
+      @variant = Variant.find(request.tattoo_size.deposit_variant_id.to_i)
       raise "Cannot find variant with ID #{request.tattoo_size.deposit_variant_id}" if @variant.nil?
   
       @variant = MostlyShopify::VariantDecorator.decorate(@variant)
