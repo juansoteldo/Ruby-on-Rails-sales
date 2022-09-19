@@ -63,7 +63,8 @@ module Services
           { 'Key': 'quote_url', 'Value': req.quote_url },
           { 'Key': 'salesperson_email', 'Value': req.salesperson&.email || Settings.emails.lee },
           { 'Key': 'variant_price', 'Value': req.variant_price },
-          { 'Key': 'phone_number', 'Value': user.phone_number }
+          { 'Key': 'phone_number', 'Value': user.phone_number },
+          { 'Key': 'deposit_redirect_url', 'Value': req.deposit_redirect_url }
           # { 'Key': 'requests_statuses', 'Value': user.requests.map { |request| request.state }.join(',')} # Unused
         ]
 
