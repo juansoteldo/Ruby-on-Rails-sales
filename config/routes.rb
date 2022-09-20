@@ -42,6 +42,9 @@ Rails.application.routes.draw do
   match "public/get_ids", via: [:get, :post]
 
   namespace :admin do
+    get 'shopify/add_order' => 'shopify#index'
+    post 'shopify/add_order' => 'shopify#add_order'
+
     resources :users, only: [:index]
     resources :products
     resources :requests do
