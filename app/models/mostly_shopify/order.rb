@@ -189,10 +189,11 @@ module MostlyShopify
     end
 
     def request_id_from_landing_site
-      return nil unless /reqid=(\d+)/ =~ landing_site
-
-      id = landing_site.gsub(/.+reqid=(\d+).+/, '\\1')
-      @request_id = id unless id.to_s.blank?
+      return nil unless @source.respond_to? :landing_site
+      return nil unless @source.landing_site
+      reqid_pos = /reqid=(\d+)$/ =~ landing_site
+      return nil unless reqid_pos
+      @request_id = landing_site[reqid_pos, 5 + landing_site.length - reqid_pos]
     end
 
     def note_value(attr_name)
@@ -201,10 +202,10 @@ module MostlyShopify
       return nil if @source.note_attributes.all?(&:blank?)
 
       @source.note_attributes.each do |note_attr|
-        next unless note_attr.key?(:name)
-        next unless note_attr[:name] == attr_name
-        return nil if note_attr[:value] == 'undefined'
-        return note_attr[:value]
+        next unless note_attr.attributes.key?(:name)
+        next unless note_attr.attributes[:name] == attr_name
+        return nil if note_attr.attributes[:value] == 'undefined'
+        return note_attr.attributes[:value]
       end
       nil
     end
