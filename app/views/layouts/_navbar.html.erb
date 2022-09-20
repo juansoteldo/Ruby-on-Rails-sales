@@ -32,6 +32,12 @@
             </li>
           <% end %>
 
+          <% if policy(Admin::ShopifyController).index? %>
+            <li>
+              <%= link_to "Shopify", admin_shopify_add_order_path %>
+            </li>
+          <% end %>
+
           <!-- <% if policy(Admin::EmailStatisticsController).index? %>
             <li>
               <%= link_to "Email Statistics", admin_email_statistics_path %>
