@@ -68,3 +68,5 @@ yarn-error.log
 
 # Backups
 /backups/*.dump
+*.sql.gz
+*.tar
