@@ -32,6 +32,7 @@ class CreateRequestJob < WebhookJob
                            phone_number: params[:phone_number],
                            marketing_opt_in: !!params[:user_attributes][:marketing_opt_in]
     else
+      @user.update!(job_status: 'undefined')
       CampaignMonitorActionJob.set(wait: 10.seconds).perform_later(user: @user, method: "add_or_update_user_to_all_list")
     end
     params[:user_attributes] ||= {}
