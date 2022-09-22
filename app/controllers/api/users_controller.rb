@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Api::UsersController < Api::BaseController
-  protect_from_forgery prepend: true
+  protect_from_forgery prepend: true # TODO: not working, look for a different solution -- Can't verify CSRF token authenticity.
   before_action :set_user, only: [:show, :update]
 
   def index
