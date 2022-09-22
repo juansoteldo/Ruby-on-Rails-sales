@@ -13,3 +13,6 @@ end
 Sidekiq.configure_client do |config|
   config.redis = REDIS_OPTIONS
 end
+
+# Print backtraces when exceptions occur
+Sidekiq.default_worker_options = { 'backtrace' => true }
