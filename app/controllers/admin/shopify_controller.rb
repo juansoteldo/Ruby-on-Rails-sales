@@ -14,13 +14,14 @@ class Admin::ShopifyController < Admin::BaseController
     raise "Failed. Order with id #{order_id} could not be found." if order.nil?
     order = flatten_object(order)
     raise "Failed. Webhook with order id #{order_id} already exists." if Webhook.find_by_source_id(order_id)
-    Webhook.create! source: "Shopify", source_id: order_id, email: order['email'], params: order, action_name: 'orders_create'
+    webhook = Webhook.create! source: "Shopify", source_id: order_id, email: order['email'], params: order, action_name: 'orders_create'
 
     respond_to do |format|
       format.html { redirect_to admin_shopify_add_order_path, notice: "Shopify order #{order_id} was successfully added." }
+      ShopifyAddOrderAction.create order_id: order_id, webhook_id: webhook.id, salesperson_id: current_salesperson.id, created_at: Time.now
     end
 
-    rescue Exception => e
+  rescue Exception => e
       respond_to do |format|
         format.html { redirect_to admin_shopify_add_order_path, :flash => { :error => "#{e}" } }
       end

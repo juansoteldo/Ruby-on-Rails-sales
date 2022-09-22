@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_08_175648) do
+ActiveRecord::Schema.define(version: 2022_09_22_060915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -129,36 +129,6 @@ ActiveRecord::Schema.define(version: 2022_09_08_175648) do
     t.index ["state"], name: "index_marketing_emails_on_state"
   end
 
-  create_table "referral_awards", id: :serial, force: :cascade do |t|
-    t.string "referral_id"
-    t.string "user_id"
-    t.string "user_type"
-    t.integer "amount"
-    t.string "aasm_state"
-    t.datetime "date_redeemed"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["aasm_state"], name: "index_referral_awards_on_aasm_state"
-    t.index ["referral_id"], name: "index_referral_awards_on_referral_id"
-    t.index ["user_id"], name: "index_referral_awards_on_user_id"
-    t.index ["user_type"], name: "index_referral_awards_on_user_type"
-  end
-
-  create_table "referrals", id: :serial, force: :cascade do |t|
-    t.integer "request_id"
-    t.string "referrer_id"
-    t.integer "referrer_user_id"
-    t.integer "referral_user_id"
-    t.string "aasm_state"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["aasm_state"], name: "index_referrals_on_aasm_state"
-    t.index ["referral_user_id"], name: "index_referrals_on_referral_user_id"
-    t.index ["referrer_id"], name: "index_referrals_on_referrer_id"
-    t.index ["referrer_user_id"], name: "index_referrals_on_referrer_user_id"
-    t.index ["request_id"], name: "index_referrals_on_request_id", unique: true
-  end
-
   create_table "request_images", id: :serial, force: :cascade do |t|
     t.integer "request_id"
     t.string "carrier_wave_file"
@@ -208,7 +178,6 @@ ActiveRecord::Schema.define(version: 2022_09_08_175648) do
     t.integer "tattoo_size_id"
     t.datetime "quoted_at"
     t.string "variant_price"
-    t.string "referrer_id"
     t.index ["client_id"], name: "index_requests_on_client_id"
     t.index ["created_at"], name: "index_requests_on_created_at"
     t.index ["deposit_order_id"], name: "index_requests_on_deposit_order_id"
@@ -258,6 +227,13 @@ ActiveRecord::Schema.define(version: 2022_09_08_175648) do
     t.index ["name"], name: "index_settings_on_name", unique: true
   end
 
+  create_table "shopify_add_order_actions", force: :cascade do |t|
+    t.string "order_id"
+    t.string "webhook_id"
+    t.integer "salesperson_id"
+    t.datetime "created_at"
+  end
+
   create_table "tattoo_sizes", force: :cascade do |t|
     t.string "name", null: false
     t.string "deposit_variant_id"
@@ -303,10 +279,8 @@ ActiveRecord::Schema.define(version: 2022_09_08_175648) do
     t.string "first_name"
     t.string "last_name"
     t.string "job_status"
-    t.string "referrer_id"
     t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["referrer_id"], name: "index_users_on_referrer_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["shopify_id"], name: "index_users_on_shopify_id"
   end
