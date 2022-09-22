@@ -297,10 +297,7 @@ class Request < ApplicationRecord
 
   def deposit_redirect_url
     return nil if deposit_order_id.nil?
-    order = ShopifyAPI::Order.find(deposit_order_id)
-    return nil if order.nil?
-    order_id = order.id
-    return "#{CTD::APP_URL}/public/thanks?order_id=#{order_id}&request_id=#{self.id}"
+    return "#{CTD::APP_URL}/public/thanks?order_id=#{deposit_order_id}&request_id=#{id}"
   end
 
   private
