@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::UsersController < Api::BaseController
+  protect_from_forgery prepend: true
   before_action :set_user, only: [:show, :update]
 
   def index
