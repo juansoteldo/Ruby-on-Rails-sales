@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unreleased
 ### Added
 - Display error backtrace in retry payload in web UI
+- Shopify add order actions logging
 
 ## [2.10.2] - 2022-09-21
 ### Fixed
