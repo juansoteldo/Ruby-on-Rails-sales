@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Fixed
+- Deprecation warninng for OpenSSL:Digest
+- Warning for verifyingn CSRF token authenticity
+
 ## [2.10.4] - 2022-09-22
 ### Fixed
 - Phone number sync with CM even if they have no requests
