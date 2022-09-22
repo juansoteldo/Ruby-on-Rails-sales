@@ -48,7 +48,8 @@ module Services
         { 'Key': 'user_id', 'Value': user.id },
         { 'Key': 'user_token', 'Value': user.authentication_token },
         { 'Key': 'subscribed_date', 'Value': user.created_at.strftime('%Y-%m-%d') },
-        { 'Key': 'job_status', 'Value': user.job_status }
+        { 'Key': 'job_status', 'Value': user.job_status },
+        { 'Key': 'phone_number', 'Value': user.phone_number }
       ]
 
       if user.requests.any?
@@ -63,7 +64,6 @@ module Services
           { 'Key': 'quote_url', 'Value': req.quote_url },
           { 'Key': 'salesperson_email', 'Value': req.salesperson&.email || Settings.emails.lee },
           { 'Key': 'variant_price', 'Value': req.variant_price },
-          { 'Key': 'phone_number', 'Value': user.phone_number },
           { 'Key': 'deposit_redirect_url', 'Value': req.deposit_redirect_url }
           # { 'Key': 'requests_statuses', 'Value': user.requests.map { |request| request.state }.join(',')} # Unused
         ]
