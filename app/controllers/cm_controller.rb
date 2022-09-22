@@ -2,6 +2,7 @@
 require 'services/campaign_monitor'
 
 class CmController < ApplicationController
+  protect_from_forgery prepend: true
   respond_to :json
 
   def update_subscriptions

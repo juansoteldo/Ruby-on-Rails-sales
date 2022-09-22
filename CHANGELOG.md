@@ -6,8 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.10.5] - 2022-09-22
 ### Fixed
-- Deprecation warninng for OpenSSL:Digest
-- Warning for verifyingn CSRF token authenticity
+- Deprecation warning for OpenSSL:Digest
+- Warning for verifying CSRF token authenticity
 
 ## [2.10.4] - 2022-09-22
 ### Fixed
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.10.1] - 2022-09-20
 ### Fixed
-- New shopify orders referncing wrong requests
+- New shopify orders referencing wrong requests
 
 ## [2.10.0] - 2022-09-20
 ### Added
