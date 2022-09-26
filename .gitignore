@@ -67,7 +67,7 @@ yarn-error.log
 .vscode
 
 # Backups
-/backups/*.dump
+*.dump
 *.sql.gz
 *.tar
 
