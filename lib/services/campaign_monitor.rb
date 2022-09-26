@@ -324,6 +324,9 @@ module Services
         },
         'ConsentToTrack': 'yes'
       }
+      if Settings.config.auto_quote_bcc == 'enabled'
+        message['BCC'] = Settings.emails.notification_recipients
+      end
       response = HTTParty.post(url,
         basic_auth: @basic_auth,
         headers: @headers,
