@@ -14,6 +14,8 @@ emails:
     - leeroller@customtattoodesign.ca
     - carmelle@customtattoodesign.ca
     - johnd@customtattoodesign.ca
+  autoquote_bcc_recipients:
+    - leeroller@customtattoodesign.ca
   lee: leeroller@customtattoodesign.ca
   system: sales@customtattoodesign.ca
   mailer: mailer@customtattoodesign.ca
