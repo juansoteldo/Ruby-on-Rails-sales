@@ -15,7 +15,7 @@ class CreateStreakBoxJob < ApplicationJob
     if Setting.auto_quoting.value && !request.auto_quotable?
       sales_manager = Salesperson.sales_manager
       if sales_manager
-        box.set_stage_by_name("Contacted")
+        box.set_stage_by_name('Leads')
         box.assign_to_salesperson(sales_manager)
         recipients << sales_manager.email
       end

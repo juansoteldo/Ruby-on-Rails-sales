@@ -1,0 +1,3 @@
+<strong>Access Token:</strong><br /><%= @access_token %><br /><br />
+<strong>Session:</strong><br /><%= @active_session&.inspect %><br /><br />
+<%= button_to 'Generate Access Token for Shopify OAuth', admin_shopify_auth_login_path, method: :get, data: { confirm: 'Are you sure you want to do this?' } %><br />

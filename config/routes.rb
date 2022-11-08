@@ -90,6 +90,10 @@ Rails.application.routes.draw do
     get '/campaign_monitor' => 'campaign_monitor#index'
     put '/campaign_monitor', to: 'campaign_monitor#update'
 
+    get '/shopify_auth' => 'shopify_auth#index'
+    get '/shopify_auth/new' => 'shopify_auth#login', as: 'shopify_auth_login'
+    get '/shopify_auth/callback' => 'shopify_auth#callback'
+
     authenticated :salesperson, ->(user) { user&.admin? } do
       mount Sidekiq::Web => "sidekiq"
     end

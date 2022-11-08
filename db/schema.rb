@@ -74,6 +74,11 @@ ActiveRecord::Schema.define(version: 2022_09_22_060915) do
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
   end
 
+  create_table "app_configs", force: :cascade do |t|
+    t.string "shopify_access_token"
+    t.string "shopify_session"
+  end
+
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
@@ -127,6 +132,11 @@ ActiveRecord::Schema.define(version: 2022_09_22_060915) do
     t.index ["days_after_state_change"], name: "index_marketing_emails_on_days_after_state_change"
     t.index ["email_type"], name: "index_marketing_emails_on_email_type"
     t.index ["state"], name: "index_marketing_emails_on_state"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "title"
+    t.string "handle"
   end
 
   create_table "request_images", id: :serial, force: :cascade do |t|
@@ -283,6 +293,17 @@ ActiveRecord::Schema.define(version: 2022_09_22_060915) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["shopify_id"], name: "index_users_on_shopify_id"
+  end
+
+  create_table "variants", force: :cascade do |t|
+    t.string "product_id"
+    t.string "title"
+    t.string "price"
+    t.string "fulfillment_service"
+    t.string "option1"
+    t.string "option2"
+    t.string "option3"
+    t.index ["product_id"], name: "index_variants_on_product_id"
   end
 
   create_table "webhooks", force: :cascade do |t|
