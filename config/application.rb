@@ -21,5 +21,6 @@ module CtdSales
     config.action_dispatch.ip_spoofing_check = false
     config.autoload_paths += ["#{config.root}/lib"]
     config.debugging = ENV["DEBUGGER_HOST"].present?
+    config.gem "acts_as_singleton"
   end
 end

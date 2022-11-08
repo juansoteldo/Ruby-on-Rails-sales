@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2022-11-07
+### Changed
+- Upgrade shopify_api gem from 9.2.0 to 11.1.0
+- Migrate from private app to custom app for Shopify API (private apps have been deprecated as of Jan 2022)
+- Store product and variant data into our own database instead of needlessly using API calls to retrieve said data
+### Added
+- admin/shopify_auth page for generating access tokens for Shopify OAuth
+- Rake task to update products and variants
+- Rake task to update tattoo sizes
+
 ## [2.10.7] - 2022-10-11
 ### Changed
 - If a request is not auto quotable, the streak box's stage is now set to Leads instead of Contacted

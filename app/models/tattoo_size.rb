@@ -6,7 +6,7 @@ class TattooSize < ApplicationRecord
   def variant
     return nil if deposit_variant_id.nil?
 
-    @variant ||= MostlyShopify::Variant.find(deposit_variant_id)
+    @variant ||= Variant.find(deposit_variant_id)
   end
 
   def self.defined_size_names
