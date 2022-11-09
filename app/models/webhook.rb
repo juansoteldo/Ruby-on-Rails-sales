@@ -24,7 +24,7 @@ class Webhook < ApplicationRecord
     end
 
     event :fail, before: :record_failure do
-      transitions from: [:fresh, :queued], to: :failed
+      transitions from: [:fresh, :queued, :failed], to: :failed
     end
   end
 
