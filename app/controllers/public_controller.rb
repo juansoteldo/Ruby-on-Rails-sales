@@ -136,7 +136,7 @@ class PublicController < ApplicationController
   def set_shopify_order
     return if params[:order_id].blank?
     return if !(params[:order_id] =~ /^\d+$/)
-    source_order = ShopifyAPI::Order.find(session: AppConfig.get_shopify_session, id: params[:order_id])
+    source_order = MostlyShopify::Order.find(id: params[:order_id])
     @order = MostlyShopify::Order.new source_order
     params[:email] ||= @order&.customer&.email
   end
