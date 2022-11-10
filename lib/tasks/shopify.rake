@@ -31,7 +31,7 @@ namespace :shopify do
 
     products = ShopifyAPI::Product.all(session: AppConfig.shopify_session)
     for product in products
-      # next if product.product_type.end_with? 'Final Payment'
+      next if product.product_type.end_with? 'Final Payment'
       Product.create(
         id: product.id,
         title: product.title,
@@ -57,6 +57,7 @@ namespace :shopify do
   task update_tattoo_sizes: :environment do
     variants = Variant.where(option1: 'no', option2: 'no')
     for variant in variants
+      next if variant.fulfillment_service === 'gift_card'
       size = variant.size
       tattoo_size = TattooSize.find_by(name: size)
       if tattoo_size
