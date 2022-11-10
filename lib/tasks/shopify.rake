@@ -31,7 +31,7 @@ namespace :shopify do
 
     products = ShopifyAPI::Product.all(session: AppConfig.shopify_session)
     for product in products
-      next if product.product_type != 'Deposit'
+      # next if product.product_type.end_with? 'Final Payment'
       Product.create(
         id: product.id,
         title: product.title,
