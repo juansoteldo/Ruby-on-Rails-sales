@@ -58,7 +58,7 @@ module MostlyShopify
     end
 
     def created_at
-      @source.created_at
+      Date.strptime(@source.created_at)
     end
 
     def sku
@@ -80,7 +80,7 @@ module MostlyShopify
     def self.find(params)
       digest = Digest::SHA256.base64digest params.inspect
       Rails.cache.fetch('shopify/orders/' + digest, expires_in: expire_in) do
-        ShopifyAPI::Order.all(session: AppConfig.shopify_session, params: params)
+        self::all(session: AppConfig.shopify_session, params: params).map{ |c| new(c) }
       end
     end
 
@@ -91,10 +91,10 @@ module MostlyShopify
         orders = ShopifyAPI::Order.all(session: AppConfig.shopify_session, params: params)
         while ShopifyAPI::Order.next_page?
           next_page_info = ShopifyAPI::Order.next_page_info
-          orders += ShopifyAPI::Order.all(session: AppConfig.shopify_session, page_info: next_page_info)
-          sleep 0.75 if ShopifyAPI::Order.next_page?
+          orders += ShopifyAPI::Order.all(session: AppConfig.shopify_session, params: params, page_info: next_page_info)
+          sleep 0.15 if ShopifyAPI::Order.next_page?
         end
-        orders
+        orders.map(&method(:new))
       end
     end
 
@@ -189,10 +189,10 @@ module MostlyShopify
       return nil if @source.note_attributes.all?(&:blank?)
 
       @source.note_attributes.each do |note_attr|
-        next unless note_attr.attributes.key?(:name)
-        next unless note_attr.attributes[:name] == attr_name
-        return nil if note_attr.attributes[:value] == 'undefined'
-        return note_attr.attributes[:value]
+        next unless note_attr.key?(:name)
+        next unless note_attr[:name] == attr_name
+        return nil if note_attr[:value] == 'undefined'
+        return note_attr[:value]
       end
       nil
     end
