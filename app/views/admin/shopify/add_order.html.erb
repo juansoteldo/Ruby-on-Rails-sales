@@ -1,0 +1,25 @@
+<!-- TODO: add css file instead of using inline styles -->
+<style>
+  h2 {
+    margin-bottom: 1em;
+  }
+  h4 {
+    margin-top: 0;
+  }
+  .form_label {
+    color: black; 
+    min-width: 64px;
+    margin-bottom: 1em;
+  }
+  .form_submit {
+    margin-top: .5em;
+  }
+</style>
+
+<h2>Shopify</h2>
+<p>Simulate a webhook to add a missing Shopify order to API.</p>
+<%= form_with method: :post do |form| %>
+  <%= form.label 'Order ID:', for: 'order_id', class: 'form_label' %>
+  <%= form.text_field name: 'order_id', class: 'form_input' %>
+  <%= form.submit 'Add Shopify Order', class: 'form_submit' %>
+<% end %>

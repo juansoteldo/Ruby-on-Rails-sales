@@ -36,11 +36,15 @@ Rails.application.routes.draw do
     post "orders_create" => :orders_create
     post "requests_create" => :requests_create
     post "calendly" => :events_create
+    post "newsletter" => :newsletter_signup
   end
 
   match "public/get_ids", via: [:get, :post]
 
   namespace :admin do
+    get 'shopify/add_order' => 'shopify#index'
+    post 'shopify/add_order' => 'shopify#add_order'
+
     resources :users, only: [:index]
     resources :products
     resources :requests do
@@ -82,6 +86,13 @@ Rails.application.routes.draw do
     get "test/quote_form" => "test#quote_form", as: "quote_form"
     get "test/post_form" => "test#post_form", as: "post_form"
     get "test/cart" => "test#cart", as: "cart"
+
+    get '/campaign_monitor' => 'campaign_monitor#index'
+    put '/campaign_monitor', to: 'campaign_monitor#update'
+
+    get '/shopify_auth' => 'shopify_auth#index'
+    get '/shopify_auth/new' => 'shopify_auth#login', as: 'shopify_auth_login'
+    get '/shopify_auth/callback' => 'shopify_auth#callback'
 
     authenticated :salesperson, ->(user) { user&.admin? } do
       mount Sidekiq::Web => "sidekiq"

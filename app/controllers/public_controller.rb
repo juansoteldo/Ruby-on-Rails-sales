@@ -2,6 +2,7 @@
 
 # Provides most publicly-accessible API routes
 class PublicController < ApplicationController
+  protect_from_forgery prepend: true
   skip_before_action :verify_authenticity_token
 
   before_action :disable_cache, only: [:get_links]
@@ -12,7 +13,10 @@ class PublicController < ApplicationController
   before_action :set_shopify_order, only: [:deposit_redirect]
   before_action :set_request_by_id, only: [:set_link, :deposit_redirect]
 
-  # Things that require a params[:email]
+  # Required: params[:order_id]
+  before_action :set_request_by_order_id, only: [:deposit_redirect]
+
+  # Required: params[:email]
   before_action :normalize_email, if: :email_is_present?
   before_action :assert_email_is_valid, only: [:get_ids, :get_links, :deposit_redirect, :new_request]
   before_action :set_or_create_user_by_email, only: [:get_ids, :get_links, :deposit_redirect, :new_request]
@@ -20,12 +24,19 @@ class PublicController < ApplicationController
   before_action :update_user_names, only: [:new_request]
   before_action :set_or_create_request_by_email, only: [:get_ids, :get_links, :deposit_redirect]
 
+  def set_request_by_order_id
+    return if params[:order_id].blank?
+    return if @request
+    @request = Request.where(deposit_order_id: params[:order_id]).first
+  end
+
   def redirect
     request.format = "html"
     @request = Request.find(params[:requestId]) if params[:requestId].present? && Request.find(params[:requestId])
     @request ||= Request.find_by__ga(params[:_ga]) if params[:_ga] && Request.where(_ga: params[:_ga]).any?
-
-    @url = "https://shop.customtattoodesign.ca/products/"
+    @request ||= Request.find(params[:format].match(/(requestId=\d+)/).to_s.split('=')[1])
+    
+    @url = "https://#{Settings.shopify.shop_name}/products/"
     if @request&.client_id && @request.client_id != "false"
       @request.update_columns(variant: params[:variant], handle: params[:handle], last_visited_at: Time.now)
       @url += "#{params[:handle]}?variant=#{params[:variant]}&uid=#{@request.user_id}&cid=#{@request.client_id}&reqid=#{@request.id}"
@@ -51,15 +62,14 @@ class PublicController < ApplicationController
   end
 
   def deposit_redirect
-    @order.update_request!(@request)
-
-    if @request
+    if @request && @order
+      @order.update_request!(@request)
       respond_to do |format|
         format.json { render json: !@request.deposit_order_id.nil? }
         format.html {}
       end
     else
-      render text: "Request not found"
+      render text: "Request/order not found"
     end
   end
 
@@ -115,7 +125,6 @@ class PublicController < ApplicationController
 
   def set_or_create_request_by_email
     return if @request
-
     @request = Request.joins(:user).where("users.email LIKE ?", params[:email]).first
     @request ||= Request.create(user: @user)
   end
@@ -126,8 +135,8 @@ class PublicController < ApplicationController
 
   def set_shopify_order
     return if params[:order_id].blank?
-
-    source_order = ShopifyAPI::Order.find(params[:order_id])
+    return if !(params[:order_id] =~ /^\d+$/)
+    source_order = MostlyShopify::Order.find(id: params[:order_id])
     @order = MostlyShopify::Order.new source_order
     params[:email] ||= @order&.customer&.email
   end

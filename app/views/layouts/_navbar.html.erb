@@ -25,11 +25,24 @@
               <%= link_to "Salespeople", [:admin, :salespeople] %>
             </li>
           <% end %>
-          <% if policy(Admin::EmailStatisticsController).index? %>
+
+          <% if policy(Admin::CampaignMonitorController).index? %>
+            <li>
+              <%= link_to "Campaign Monitor", admin_campaign_monitor_path %>
+            </li>
+          <% end %>
+
+          <% if policy(Admin::ShopifyController).index? %>
+            <li>
+              <%= link_to "Shopify", admin_shopify_add_order_path %>
+            </li>
+          <% end %>
+
+          <!-- <% if policy(Admin::EmailStatisticsController).index? %>
             <li>
               <%= link_to "Email Statistics", admin_email_statistics_path %>
             </li>
-          <% end %>
+          <% end %> -->
 
           <% if SalesTotal.where( salesperson: current_salesperson, sold_on: this_month ).any? %>
             <li>

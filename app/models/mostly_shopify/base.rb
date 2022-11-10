@@ -12,7 +12,13 @@ module MostlyShopify
     end
 
     def method_missing(symbol, *args)
-      @source.send(symbol, *args)
+      if symbol == :customer
+        if defined?(@source.customer)
+          @source.customer
+        end
+      else
+        @source.send(symbol, *args)
+      end
     end
 
     def self.expire_in(default = 5.minutes)

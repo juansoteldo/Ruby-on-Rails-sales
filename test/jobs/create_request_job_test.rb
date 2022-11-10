@@ -21,16 +21,6 @@ class CreateRequestJobTest < ActiveJob::TestCase
     Webhook.create! source: "WordPress", action_name: "requests_create", params: wpcf7_params.dup.merge(new_params)
   end
 
-  test "opts user back in" do
-    user = users(:wpcf7)
-    user.update! presales_opt_in: false, marketing_opt_in: false, crm_opt_in: false
-    CreateRequestJob.perform_now webhook: new_webhook({})
-
-    assert user.reload.presales_opt_in
-    assert user.crm_opt_in
-    assert user.marketing_opt_in
-  end
-
   test "should add a new request with an image" do
     art_samples = {
       art_sample_1: @image_data

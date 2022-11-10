@@ -10,7 +10,7 @@ class RequestTest < ActiveSupport::TestCase
     @request = requests(:fresh)
     @user = @request.user
     @request.style = Request::TATTOO_STYLES.first
-    @variant = MostlyShopify::Variant.all.first
+    @variant = Variant.all.first
     @salesperson = salespeople(:active)
   end
 

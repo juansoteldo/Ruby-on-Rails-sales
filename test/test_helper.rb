@@ -6,6 +6,8 @@ require File.expand_path("../config/environment", __dir__)
 require "rails/test_help"
 require "minitest/rails/capybara"
 require "sidekiq/testing"
+require "minitest/reporters"
+Minitest::Reporters.use!
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
@@ -73,9 +75,8 @@ class ActiveSupport::TestCase
   end
 
   def new_start_design_messages_for_streak_box(streak_box_key)
-    MostlyGmail::Message.new_design_requests.select do |m|
-      m.streak_box_key && m.streak_box_key == streak_box_key
-    end
+    emails = MostlyGmail::Message.new_design_requests
+    emails.select { |e| e.streak_box_key == streak_box_key } 
   end
 
   def clear_streak_boxes
@@ -88,5 +89,12 @@ class ActiveSupport::TestCase
       end
       sleep 2
     end
+  end
+
+  def parse_response(response)
+    raise_exception(Exceptions::InvalidResponseError, response) if response == nil
+    data = JSON.parse(response, symbolize_names: true)
+    raise_exception(Exceptions::NotFoundError, response) if data[:Code] == 404
+    return data
   end
 end

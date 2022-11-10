@@ -21,15 +21,15 @@ class User < ApplicationRecord
   has_many :events
   has_many :messages, class_name: "Ahoy::Message"
 
-  auto_strip_attributes :email, :first_name, :last_name
-  phony_normalize :phone_number, default_country_code: "US"
+  auto_strip_attributes :email, :first_name, :last_name, :phone_number
+  validates :phone_number, format: { with: /\A((\+{0,1}\d{1,3}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}?)?\z/ }
 
   before_validation :initialize_password
   validates_presence_of :email
   validates_length_of :email, minimum: 5
 
-  after_create :process_cm_on_create
-  after_update :process_cm_on_update
+  after_create_commit :process_cm_on_create
+  after_update_commit :process_cm_on_update
 
   def ransackable_attributes(_auth_object = nil)
     [:email, :marketing_opt_in, :crm_opt_in, :presales_opt_in]
@@ -49,7 +49,7 @@ class User < ApplicationRecord
   end
 
   def initialize_password
-    return unless password.blank?
+    return unless encrypted_password.blank?
 
     self.password = SecureRandom.base64(12)
   end
@@ -60,37 +60,34 @@ class User < ApplicationRecord
 
   protected
 
-  # scenarios:
-
-  # -- User creates a request, with marketing: true
-  # -- User created a request, with marketing: false
-  # -- After receiving a marketing email, user decides to unsubscribe
-
   def process_cm_on_create
     CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_all_list")
-
-    CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list") if marketing_opt_in?
+    if marketing_opt_in?
+      CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list") 
+    end
   end
 
   def process_cm_on_update
-    if saved_change_to_marketing_opt_in? || saved_change_to_presales_opt_in?
-      if saved_change_to_marketing_opt_in?
-        if marketing_opt_in?
-          CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list")
-        else
-          CampaignMonitorActionJob.perform_later(user: self, method: "remove_user_from_marketing_list")
+    if !previous_changes.empty?
+      if saved_change_to_marketing_opt_in? || saved_change_to_presales_opt_in?
+        if saved_change_to_marketing_opt_in?
+          if marketing_opt_in?
+            CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_marketing_list")
+          else
+            CampaignMonitorActionJob.perform_later(user: self, method: "remove_user_from_marketing_list")
+          end
         end
-      end
-
-      if saved_change_to_presales_opt_in?
-        if presales_opt_in?
-          CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_all_list")
-        else
-          CampaignMonitorActionJob.perform_later(user: self, method: "remove_user_from_all_list")
+        if saved_change_to_presales_opt_in?
+          if presales_opt_in?
+            CampaignMonitorActionJob.perform_later(user: self, method: "add_user_to_all_list")
+          else
+            CampaignMonitorActionJob.perform_later(user: self, method: "remove_user_from_all_list")
+          end
         end
+      else
+        CampaignMonitorActionJob.perform_later(user: self, method: "update_user_to_all_list")
       end
-    else
-      CampaignMonitorActionJob.perform_later(user: self, method: "update_user_to_all_list")
     end
+
   end
 end

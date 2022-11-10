@@ -7,7 +7,7 @@ class RequestTest < ActiveSupport::TestCase
     Settings.streak.create_boxes = false
     @request = requests(:fresh)
     @user = @request.user
-    @variant = MostlyShopify::Variant.all.first
+    @variant = Variant.all.first
     @salesperson = salespeople(:active)
 
     perform_enqueued_jobs do
@@ -154,32 +154,21 @@ class RequestTest < ActiveSupport::TestCase
     end
   end
 
-  test "requests_statuses" do
-    perform_enqueued_jobs do
-      @fresh_request.save!
-      sleep 10
-
-      response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
-
-      assert_not_nil find_value_in_response(
-        response: response, 
-        key: 'requests_statuses', 
-        value: @fresh_user.requests.map { |request| request.state }.join(',')
-      )
-    end
-  end
-
   def find_value_in_response(response:, key:, value:)
-    response.parsed_response['CustomFields'].find do |field| 
-        field['Key'] == key && field['Value'] == value
+    parsed_response = parse_response(response)
+
+    for custom_field in parsed_response[:CustomFields]
+      return true if custom_field[:Key] == key && custom_field[:Value] == value
     end
+
+    false
   end
 
   def create_request_for_shopify_order(order, params = {})
     request = requests(:fresh)
     request.user.update email: order.email
     request.deposit_order_id = order.id
-    request.variant = MostlyShopify::Variant.find(order.line_items.first.variant_id)
+    request.variant = Variant.find(order.line_items.first['variant_id'])
     request.assign_attributes params
     request.save
     request.update(id: order.request_id) if order.request_id
@@ -189,7 +178,8 @@ class RequestTest < ActiveSupport::TestCase
   def last_deposit_order
     order_count = MostlyShopify::Order.count({})
 
-    order = MostlyShopify::Order.new(ShopifyAPI::Order.all({ limit: 1, page: order_count }).last)
+    source_order = ShopifyAPI::Order.all(session: AppConfig.get_shopify_session, params: { limit: 1, page: order_count }).last
+    order = MostlyShopify::Order.new(source_order)
     order
   end
 

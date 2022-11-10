@@ -12,7 +12,7 @@ module Admin::SalespeopleHelper
   def value_of_requests(salesperson, period)
     requests = salesperson.requests.deposited.where(created_at: period)
     sum = requests.map do |r|
-      MostlyShopify::Variant.find(r.variant).first.price.to_f
+      Variant.find(r.variant).price.to_f
     end.sum
 
     sum && number_to_currency(sum, precision: 0, unit: "") || ""

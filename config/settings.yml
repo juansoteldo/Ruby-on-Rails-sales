@@ -1,7 +1,24 @@
-streak:
-  api_cipher_random_key: <%= Rails.application.credentials[:streak][:api_cipher_random_key] %>,
-  api_cipher_random_iv: <%= Rails.application.credentials[:streak][:api_cipher_random_iv]  %>,
-  api_key: <%= Rails.application.credentials[:streak][:api_key] %>
-  create_boxes: <%= ENV.fetch("CREATE_STREAK_BOXES", "false") %>
-emails:
-  auto_quoting_delay: 10
+config:
+  auto_quote_delay: <%= ENV.fetch 'CONFIG_AUTO_QUOTE_DELAY', 0 %>
+  auto_quote_emails: <%= ENV.fetch 'CONFIG_AUTO_QUOTE_EMAILS', 'disabled' %>
+  auto_quote_bcc: <%= ENV.fetch 'CONFIG_AUTO_QUOTE_BCC', 'disabled' %>
+  create_streak_boxes: <%= ENV.fetch 'CONFIG_CREATE_STREAK_BOXES', 'false' %>
+  confirmation_emails: <%= ENV.fetch 'CONFIG_CONFIRMATION_EMAILS', 'disabled' %>
+  campaign_monitor: <%= ENV.fetch 'CONFIG_CAMPAIGN_MONITOR', 'enabled' %>
+  transactional_emails: <%= ENV.fetch 'CONFIG_TRANSACTIONAL_EMAILS', 'disabled' %>
+shopify:
+  app_type: <%= ENV.fetch 'SHOPIFY_APP_TYPE' %>
+  api_key: <%= ENV.fetch 'SHOPIFY_API_KEY' %>
+  api_secret_key: <%= ENV.fetch 'SHOPIFY_API_SECRET_KEY' %>
+  host_name: <%= ENV.fetch 'SHOPIFY_API_HOST_NAME' %>
+  shop_name: <%= ENV.fetch 'SHOPIFY_API_SHOP_NAME' %>
+  url: <%= ENV.fetch 'SHOPIFY_URL' %>
+  webhook_key: <%= ENV.fetch 'SHOPIFY_WEBHOOK_KEY' %>
+ctd:
+  global_api_token: <%= ENV.fetch 'GLOBAL_API_TOKEN' %>
+aws:
+  access_key_id: <%= ENV.fetch 'AWS_ACCESS_KEY_ID' %>
+  secret_access_key: <%= ENV.fetch 'AWS_SECRET_ACCESS_KEY' %>
+  s3_asset_host: <% ENV.fetch 'AWS_S3_ASSET_HOST' %>
+  s3_region: <% ENV.fetch 'AWS_S3_REGION' %>
+  s3_bucket_name: <% ENV.fetch 'AWS_S3_BUCKET_NAME' %>

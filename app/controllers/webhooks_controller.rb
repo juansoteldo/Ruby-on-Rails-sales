@@ -33,6 +33,12 @@ class WebhooksController < ApplicationController
     render json: webhook.id
   end
 
+  def newsletter_signup
+    safe_params = newsletter_params
+    CampaignMonitorActionJob.perform_later(user: { user: safe_params }, method: "add_email_to_marketing_list")
+    render json: safe_params
+  end
+
   private
 
   def create_webhook(args)
@@ -44,8 +50,8 @@ class WebhooksController < ApplicationController
   def verify_shopify_webhook
     data = request.body.read
     hmac_header = request.headers["HTTP_X_SHOPIFY_HMAC_SHA256"]
-    digest = OpenSSL::Digest::Digest.new("sha256")
-    webhook_key = Rails.application.credentials[:shopify][:webhook_key]
+    digest = OpenSSL::Digest.new("sha256")
+    webhook_key = Settings.shopify.webhook_key
     calculated_hmac = Base64.encode64(
       OpenSSL::HMAC.digest(digest, webhook_key, data)
     ).strip
@@ -61,7 +67,7 @@ class WebhooksController < ApplicationController
     params.except(:controller, :action, :type).permit(
       :client_id, :position, :gender, :has_color, :is_first_time, :first_name, :last_name, :linker_param, :_ga,
       :art_sample_1, :art_sample_2, :art_sample_3, :art_sample_4, :art_sample_5, :art_sample_6, :art_sample_7,
-      :art_sample_8, :art_sample_9, :art_sample_10, :style, :size, :description, :email, :has_cover_up,
+      :art_sample_8, :art_sample_9, :art_sample_10, :style, :size, :description, :email, :has_cover_up, :phone_number,
       user_attributes: [:marketing_opt_in, :presales_opt_in, :crm_opt_in]
     ).to_unsafe_h
   end
@@ -69,5 +75,11 @@ class WebhooksController < ApplicationController
   def calendly_params
     params.require(:payload).permit(event: [:uuid, :start_time, :end_time],
                                     invitee: [:uuid, :email, :first_name, :last_name, :text_reminder_number]).to_unsafe_h
+  end
+
+  def newsletter_params
+    params.except(:controller, :action, :type).permit(
+      :name, :email
+    ).to_unsafe_h
   end
 end

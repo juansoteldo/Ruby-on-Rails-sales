@@ -30,7 +30,10 @@ module CTD
 
         console_log "Calculating sales totals for #{orders.count} orders"
         orders.each do |order|
+          next if order.customer.nil?
+
           request = order.request(reset_attribution: true)
+
           Rails.logger.warn("Cannot find request for #{order.customer.email}") unless request
 
           sales_id = order.sales_id
@@ -43,6 +46,8 @@ module CTD
             request.update!(quoted_by_id: sales_id)
           end
           sales_id ||= quoted_by_id
+
+          next if sales_id.nil?
 
           created_at = order.created_at.to_date
 
@@ -60,12 +65,15 @@ module CTD
         done = false
         page = 1
         total_boxes = 0
+        box_count = 0
         initial_count = Request.where.not(contacted_by_id: nil).count
 
         until done
           boxes = MostlyStreak::Box.all_with_limits({ limit: "1000", page: page.to_s, sortBy: "creationTimestamp" })
+          break if boxes.empty? || boxes.nil?
 
           boxes.each do |box|
+            next if box.nil?
             epoch = box.creation_timestamp / 1000
             (done = true) && break unless epoch_range === epoch
 
@@ -80,7 +88,9 @@ module CTD
                                            salesperson_id: box.salesperson.id).first_or_create
             sales_total.update_attribute :box_count, sales_total.box_count + 1
           end
-          console_log "Processed #{page * 1000} boxes, last was on #{Time.at(boxes.last.creation_timestamp / 1000).to_date}"
+
+          break if boxes.empty?
+          console_log "Processed #{total_boxes} boxes, last was on #{Time.at(boxes.last.creation_timestamp / 1000).to_date}"
           page += 1
 
         end

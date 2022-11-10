@@ -14,12 +14,8 @@ class MostlyShopify::VariantDecorator < Draper::Decorator
              else
                {}
              end
-    product = if !object.product.respond_to?(:handle)
-                MostlyShopify::Product.for_variant(object)
-              else
-                object.product
-              end
-    Rails.application.routes.default_url_options[:host] = ENV.fetch("APP_HOST", "http://localhost:3000")
-    Rails.application.routes.url_helpers.cart_redirect_url(product.handle, object.id, params)
+    product = Product.find(object.product_id)
+    Rails.application.routes.default_url_options[:host] = ENV.fetch('APP_URL', 'https://localhost:3001')
+    Rails.application.routes.url_helpers.cart_redirect_url(product.handle, object.id, params.to_query) # TODO: test to see if this encodes properly
   end
 end

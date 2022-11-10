@@ -3,7 +3,7 @@
 namespace :recurring do
   desc "Add gmail threads to streak boxes"
   task associate_gmail_threads: :environment do
-    return unless Settings.streak.create_boxes
+    return unless Settings.config.create_streak_boxes
 
     CTD::GmailScanner.associate_threads
   end

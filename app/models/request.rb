@@ -17,7 +17,7 @@ class Request < ApplicationRecord
 
   auto_strip_attributes :first_name, :last_name, :position
 
-  scope :recent, (-> { where "created_at > ?", Rails.env.test? ? 1.seconds.ago : 5.minutes.ago })
+  scope :recent, (-> { where "created_at > ?", ["test", "development"].include?(ENV["RAILS_ENV"]) ? 1.seconds.ago : 5.minutes.ago })
   scope :newer_than_days, (->(days) { where "requests.created_at > ?", days.minutes.ago })
   scope :matching_email, (->(email) { joins(:user).where(users: { email: email }) })
   scope :deposited, (-> { where.not deposited_at: nil })
@@ -115,6 +115,7 @@ class Request < ApplicationRecord
       .where(requests: { created_at: date_range }).last
   end
 
+  # Quote from extension
   def quote_from_params!(params)
     return unless fresh?
 
@@ -122,6 +123,9 @@ class Request < ApplicationRecord
     self.quoted_by_id ||= params[:salesperson_id]
     save!
     quote!
+
+    # Update quote_url for user in CM
+    CampaignMonitorActionJob.perform_later(user: self.user, method: "update_user_to_all_list")
   end
 
   def first_time?
@@ -135,10 +139,12 @@ class Request < ApplicationRecord
   def auto_quotable?
     return true if sleeve?
     return false if size == "Extra Large"
-
+    # NOTE: Extra Large is not auto quotable but everything else is:
+    # - ["Extra Small", "Small", "Medium", "Large", "Half Sleeve", "Full Sleeve"]
     TattooSize.defined_size_names.include?(size)
   end
 
+  # Autoquote
   def quote_from_attributes!
     return unless fresh?
     return unless auto_quotable?
@@ -218,7 +224,8 @@ class Request < ApplicationRecord
 
   def self.for_shopify_order(order, reset_attribution: false)
     request = find_and_attribute("request_id", :find_by_id, order.request_id.to_i) if order.request_id
-    request ||= find_and_attribute("webhook", :find_by_deposit_order_id, order.id) unless reset_attribution || order.id.nil?
+
+    request ||= find_and_attribute("webhook", :find_by_deposit_order_id, order.id.to_i) unless reset_attribution || order.id.nil?
     unless order.email.to_s.empty?
       request ||= find_and_attribute("email", :find_by_email,
                                      order.email.downcase.strip,
@@ -244,7 +251,6 @@ class Request < ApplicationRecord
 
   def opt_in_user
     user.update presales_opt_in: true, crm_opt_in: true
-    deliver_marketing_opt_in_email
   end
 
   def complete?
@@ -260,10 +266,9 @@ class Request < ApplicationRecord
   end
 
   def quote_url
-    variant = MostlyShopify::Variant.find(self.variant.to_i).last
+    variant = Variant.find(self.variant.to_i)
     variant_decorator = MostlyShopify::VariantDecorator.decorate(variant)
     variant_decorator.cart_redirect_url(self)
-
   rescue StandardError
     ""
   end
@@ -277,25 +282,25 @@ class Request < ApplicationRecord
     quote = MarketingEmail.quote_for_request(self)
     raise "`send_quote` cannot determine quote for #{self} (style = #{style.inspect}, size = #{size.inspect})" unless quote
 
+    variant = Variant.find(tattoo_size.deposit_variant_id.to_i)
+    raise "Cannot find variant with ID #{tattoo_size.deposit_variant_id}" if variant.nil?
+
+    self.variant_price = variant.price
     self.quoted_at = Time.now
-    # send quote email and the message for quote url will be created
-    BoxMailer.quote_email(self, quote).deliver_now
-    # update CampaignMonitor quote_url custom field also
     save!
+
+    BoxMailer.quote_email(self, quote).deliver_now
+
+    # Update [ quote_url, variant_price, quoted_url ] in CM
+    CampaignMonitorActionJob.perform_later(user: self.user, method: "update_user_to_all_list")
+  end
+
+  def deposit_redirect_url
+    return nil if deposit_order_id.nil?
+    return "#{CTD::APP_URL}/public/thanks?order_id=#{deposit_order_id}&request_id=#{id}"
   end
 
   private
-
-  def deliver_marketing_opt_in_email
-    # opt in email disabled by Declyn request at 12.08.2021
-    # because company wants switch opt-in email to campaign monitor. 
-    return
-
-    return unless user.marketing_opt_in.nil?
-    return unless user&.email
-
-    BoxMailer.opt_in_email(self).deliver_later
-  end
 
   def perform_complete_actions
     puts "Sending final confirmation email to #{user.email}" unless Rails.env.test?
@@ -303,10 +308,10 @@ class Request < ApplicationRecord
   end
 
   def enqueue_quote_actions
-    RequestActionJob.perform_later(request: self, method: "mark_last_box_quoted")
+    RequestActionJob.perform_later(request: self, method: "set_box_to_quoted")
     return unless auto_quotable? && salesperson == Salesperson.system
 
-    delay = Settings.emails.auto_quoting_delay
+    delay = Settings.config.auto_quote_delay
     RequestActionJob.set(wait: delay.minutes).perform_later(request: self, method: "send_quote")
   end
 
@@ -315,15 +320,19 @@ class Request < ApplicationRecord
     RequestActionJob.perform_later(request: self, method: "mark_boxes_deposited")
   end
 
-  def streak_boxes
+  def streak_boxes 
     MostlyStreak::Box.query(user.email).select do |b|
       b.created_between?(created_at..(created_at + 2.days))
     end
   end
 
-  def mark_last_box_quoted
-    box = streak_boxes.last
-    return unless box
+  def streak_box
+    MostlyStreak::Box.find(self.streak_box_key)
+  end
+
+  def set_box_to_quoted
+    box = streak_box
+    raise "streak box does not exist in pipeline" if box.nil?
 
     current_stage = MostlyStreak::Stage.find(key: box.stage_key)
     return unless ["Contacted", "Leads"].include?(current_stage.name)
@@ -361,4 +370,11 @@ class Request < ApplicationRecord
 
     user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
   end
+
+  # def deposit_redirect_url
+  #   order = MostlyShopify::Order.find(deposit_order_id)
+  #   return nil if order.nil?
+  #   order_id = order.first.id
+  #   return "#{CTD::APP_URL}/public/thanks?order_id=#{order_id}&request_id=#{self.id}"
+  # end
 end

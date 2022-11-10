@@ -26,6 +26,8 @@ module CTD
         next unless Setting.auto_quoting.value && request.auto_quotable?
 
         request.quote_from_attributes!
+
+        # TODO: need to rescue and rollback thread_gmail_id if Streak fails at any point
       end
     end
 

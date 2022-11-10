@@ -27,6 +27,7 @@ wpcf7:
   gender: Male
   description: Test test
   state: fresh
+  deposit_order_id: 1054668357703
 
 quoted:
   user: one
@@ -42,6 +43,7 @@ quoted:
   style: Traditional
   state: quoted
   description: THIS IS A TEST, DO NOT EMAIL ME
+  variant_price: 150.00
 
 deposited:
   user: one

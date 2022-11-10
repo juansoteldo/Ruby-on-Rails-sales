@@ -32,7 +32,7 @@ class RequestImageDecorator < Draper::Decorator
   end
 
   def url
-    Rails.application.routes.default_url_options[:host] = ENV["APP_HOST"]
+    Rails.application.routes.default_url_options[:host] = ENV['APP_URL']
     if file.attached?
       url_for(file)
     elsif carrier_wave_file&.file&.exists?

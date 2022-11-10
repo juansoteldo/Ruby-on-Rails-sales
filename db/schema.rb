@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_18_203153) do
+ActiveRecord::Schema.define(version: 2022_09_22_060915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -74,6 +74,11 @@ ActiveRecord::Schema.define(version: 2020_09_18_203153) do
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
   end
 
+  create_table "app_configs", force: :cascade do |t|
+    t.string "shopify_access_token"
+    t.string "shopify_session"
+  end
+
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
@@ -129,6 +134,11 @@ ActiveRecord::Schema.define(version: 2020_09_18_203153) do
     t.index ["state"], name: "index_marketing_emails_on_state"
   end
 
+  create_table "products", force: :cascade do |t|
+    t.string "title"
+    t.string "handle"
+  end
+
   create_table "request_images", id: :serial, force: :cascade do |t|
     t.integer "request_id"
     t.string "carrier_wave_file"
@@ -177,6 +187,7 @@ ActiveRecord::Schema.define(version: 2020_09_18_203153) do
     t.string "size"
     t.integer "tattoo_size_id"
     t.datetime "quoted_at"
+    t.string "variant_price"
     t.index ["client_id"], name: "index_requests_on_client_id"
     t.index ["created_at"], name: "index_requests_on_created_at"
     t.index ["deposit_order_id"], name: "index_requests_on_deposit_order_id"
@@ -226,6 +237,13 @@ ActiveRecord::Schema.define(version: 2020_09_18_203153) do
     t.index ["name"], name: "index_settings_on_name", unique: true
   end
 
+  create_table "shopify_add_order_actions", force: :cascade do |t|
+    t.string "order_id"
+    t.string "webhook_id"
+    t.integer "salesperson_id"
+    t.datetime "created_at"
+  end
+
   create_table "tattoo_sizes", force: :cascade do |t|
     t.string "name", null: false
     t.string "deposit_variant_id"
@@ -239,6 +257,12 @@ ActiveRecord::Schema.define(version: 2020_09_18_203153) do
     t.index ["order"], name: "index_tattoo_sizes_on_order"
     t.index ["quote_email_id"], name: "index_tattoo_sizes_on_quote_email_id"
     t.index ["size"], name: "index_tattoo_sizes_on_size"
+  end
+
+  create_table "transactional_emails", force: :cascade do |t|
+    t.string "name"
+    t.string "smart_id"
+    t.index ["smart_id"], name: "index_transactional_emails_on_smart_id", unique: true
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -264,10 +288,22 @@ ActiveRecord::Schema.define(version: 2020_09_18_203153) do
     t.string "uuid"
     t.string "first_name"
     t.string "last_name"
+    t.string "job_status"
     t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["shopify_id"], name: "index_users_on_shopify_id"
+  end
+
+  create_table "variants", force: :cascade do |t|
+    t.string "product_id"
+    t.string "title"
+    t.string "price"
+    t.string "fulfillment_service"
+    t.string "option1"
+    t.string "option2"
+    t.string "option3"
+    t.index ["product_id"], name: "index_variants_on_product_id"
   end
 
   create_table "webhooks", force: :cascade do |t|

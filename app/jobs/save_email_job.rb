@@ -17,25 +17,16 @@ class SaveEmailJob < ApplicationJob
 
     start = Time.now
     box = nil
-    begin
-      attempt += 1
-      while Time.now - start < TIME_TO_WAIT_FOR_BOX.seconds
-        box = MostlyStreak::Box.find_by_name(args[:recipient_email])
-        break unless box.nil?
-
-        sleep 2
-      end
-
-      raise StreakBoxNotFoundError, "Cannot find streak box, aborting" if box.nil?
-    rescue StreakBoxNotFoundError
-      return unless attempt < 4
-
-      sleep 1 # wait a bit
-      retry
+    while Time.now - start < TIME_TO_WAIT_FOR_BOX.seconds
+      email = args[:recipient_email].downcase
+      box = MostlyStreak::Box.query(email).sort_by { |e| -e.creation_timestamp }.first
+      break unless box.nil?
+      sleep 1
     end
-    current_stage = box.current_stage
 
-    box.set_stage(MostlyStreak::Stage.contacted.key) if ["Fresh", "Leads", "Contacted"].include?(current_stage.key)
+    raise StreakBoxNotFoundError, "Cannot find streak box, aborting" if box.nil?
+
+    box.set_stage_by_name('Contacted') if ['Fresh', 'Leads'].include?(box.current_stage.name)
     box.add_follower(@salesperson.user_key, @salesperson.streak_api_key) if @salesperson.user_key
   end
 end

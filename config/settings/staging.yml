@@ -1,10 +1,12 @@
 gmail:
+  subject_append: <%= Rails.application.credentials[:gmail][:staging][:subject_append] %>
   labels:
-    new_design_requests: Label_6157564878440197778
-    design_requests: Label_2606897481654667624
+    new_design_requests: Label_511143588161420553
+    design_requests: Label_3869020623180863137
     appointment_requests: Label_7177529587396720741
 streak:
-  pipeline_key: agxzfm1haWxmb29nYWVyMQsSDE9yZ2FuaXphdGlvbiIKZmx1eGluYy5jYQwLEghXb3JrZmxvdxiAgICAhN6GCgw
+  api_key: <%= Rails.application.credentials[:streak][:staging][:api_key] %>
+  pipeline_key: <%= Rails.application.credentials[:streak][:staging][:pipeline_key] %>
 emails:
   deliver_start_design: true
   deliver_opt_in: true
@@ -16,4 +18,4 @@ emails:
   system: sales@customtattoodesign.ca
   mailer: mailer@customtattoodesign.ca
   csr: mailer@customtattoodesign.ca
-  sales_manager: geoff@customtattoodesign.ca
+  sales_manager: gdietrich@customtattoodesign.ca 

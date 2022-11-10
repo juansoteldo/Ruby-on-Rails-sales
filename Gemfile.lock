@@ -47,10 +47,6 @@ GEM
       activemodel (= 5.2.4.4)
       activesupport (= 5.2.4.4)
       arel (>= 9.0)
-    activeresource (5.1.1)
-      activemodel (>= 5.0, < 7)
-      activemodel-serializers-xml (~> 1.0)
-      activesupport (>= 5.0, < 7)
     activestorage (5.2.4.4)
       actionpack (= 5.2.4.4)
       activerecord (= 5.2.4.4)
@@ -63,6 +59,8 @@ GEM
     acts_as_paranoid (0.6.3)
       activerecord (>= 4.2, < 7.0)
       activesupport (>= 4.2, < 7.0)
+    acts_as_singleton (0.0.8)
+      activerecord (>= 3.1.0)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     after_commit_everywhere (0.1.5)
@@ -72,12 +70,14 @@ GEM
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.1.1)
+    ansi (1.5.0)
     arel (9.0.0)
     ast (2.4.1)
     auto_strip_attributes (2.6.0)
       activerecord (>= 4.0)
     autoprefixer-rails (10.0.0.2)
       execjs
+    awesome_print (1.9.2)
     aws-eventstream (1.1.0)
     aws-partitions (1.411.0)
     aws-sdk-core (3.110.0)
@@ -94,7 +94,9 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.2.2)
       aws-eventstream (~> 1, >= 1.0.2)
+    backport (1.2.0)
     bcrypt (3.1.16)
+    benchmark (0.2.0)
     bindex (0.8.1)
     bootsnap (1.4.8)
       msgpack (~> 1.0)
@@ -120,6 +122,7 @@ GEM
       mimemagic (>= 0.3.0)
       mini_mime (>= 0.1.3)
     childprocess (4.0.0)
+    coderay (1.1.3)
     coffee-rails (5.0.0)
       coffee-script (>= 2.2.0)
       railties (>= 5.2.0)
@@ -127,7 +130,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.7)
+    concurrent-ruby (1.1.10)
     config (2.2.1)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
@@ -135,6 +138,9 @@ GEM
     crass (1.0.6)
     csv (3.2.0)
     daemons (1.3.1)
+    debase (0.2.4.1)
+      debase-ruby_core_source (>= 0.10.2)
+    debase-ruby_core_source (0.10.16)
     declarative (0.0.20)
     deep_merge (1.2.1)
     devise (4.7.3)
@@ -194,10 +200,13 @@ GEM
       dry-equalizer (~> 0.2)
       dry-initializer (~> 3.0)
       dry-schema (~> 1.5, >= 1.5.2)
+    e2mmap (0.1.0)
     errbase (0.2.0)
     erubi (1.9.0)
     excon (0.76.0)
     execjs (2.7.0)
+    faker (2.19.0)
+      i18n (>= 1.6, < 2)
     faraday (1.4.1)
       faraday-excon (~> 1.1)
       faraday-net_http (~> 1.0)
@@ -260,10 +269,7 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (~> 0.14)
-    graphql (1.11.4)
-    graphql-client (0.16.0)
-      activesupport (>= 3.0)
-      graphql (~> 1.8)
+    hash_diff (1.1.1)
     honeybadger (4.7.2)
     http-accept (1.7.0)
     http-cookie (1.0.3)
@@ -272,13 +278,14 @@ GEM
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (1.8.5)
+    i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     image_processing (1.12.0)
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
     iniparse (1.5.0)
     ipaddress (0.8.3)
+    jaro_winkler (1.5.4)
     jbuilder (2.10.1)
       activesupport (>= 5.0.0)
     jmespath (1.4.0)
@@ -290,6 +297,10 @@ GEM
       railties (>= 4)
       sprockets-rails
     jwt (2.2.3)
+    kramdown (2.4.0)
+      rexml
+    kramdown-parser-gfm (1.1.0)
+      kramdown (~> 2.0)
     kwalify (0.7.2)
     launchy (2.5.0)
       addressable (~> 2.7)
@@ -316,7 +327,7 @@ GEM
     mini_magick (4.10.1)
     mini_mime (1.1.0)
     mini_portile2 (2.5.1)
-    minitest (5.14.2)
+    minitest (5.16.3)
     minitest-capybara (0.9.0)
       capybara
       minitest (~> 5.0)
@@ -331,6 +342,11 @@ GEM
       minitest-capybara (~> 0.8)
       minitest-metadata (~> 0.6)
       minitest-rails (~> 3.0)
+    minitest-reporters (1.5.0)
+      ansi
+      builder
+      minitest (>= 5.0)
+      ruby-progressbar
     msgpack (1.3.3)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -341,6 +357,8 @@ GEM
     nokogiri (1.11.4)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
+    oj (3.13.21)
+    openssl (3.0.0)
     orm_adapter (0.5.0)
     os (1.1.1)
     overcommit (0.56.0)
@@ -356,6 +374,11 @@ GEM
       phony (> 2.15)
     polyamorous (2.3.2)
       activerecord (>= 5.2.1)
+    pry (0.14.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry-rails (0.3.9)
+      pry (>= 0.10.4)
     psych (3.1.0)
     public_suffix (4.0.6)
     puma (5.3.1)
@@ -391,13 +414,13 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.19.0, < 2.0)
     rainbow (3.0.0)
-    rake (13.0.1)
+    rake (13.0.6)
     ransack (2.3.2)
       activerecord (>= 5.2.1)
       activesupport (>= 5.2.1)
       i18n
       polyamorous (= 2.3.2)
-    rb-fsevent (0.10.4)
+    rb-fsevent (0.11.1)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rb-readline (0.5.5)
@@ -424,6 +447,8 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     retriable (3.1.2)
+    reverse_markdown (2.1.1)
+      nokogiri
     rexml (3.2.5)
     rubocop (0.92.0)
       parallel (~> 1.10)
@@ -436,6 +461,8 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (0.7.1)
       parser (>= 2.7.1.5)
+    ruby-debug-ide (0.7.3)
+      rake (>= 0.8.1)
     ruby-progressbar (1.10.1)
     ruby-vips (2.0.17)
       ffi (~> 1.9)
@@ -452,10 +479,17 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    shopify_api (9.2.0)
-      activeresource (>= 4.1.0, < 6.0.0)
-      graphql-client
-      rack
+    securerandom (0.2.0)
+    shopify_api (11.1.0)
+      concurrent-ruby
+      hash_diff
+      httparty
+      jwt
+      oj
+      openssl
+      securerandom
+      sorbet-runtime
+      zeitwerk (~> 2.5)
     sidekiq (6.1.2)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
@@ -476,6 +510,21 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
     simplecov-html (0.12.3)
+    solargraph (0.40.1)
+      backport (~> 1.1)
+      benchmark
+      bundler (>= 1.17.2)
+      e2mmap
+      jaro_winkler (~> 1.5)
+      kramdown (~> 2.3)
+      kramdown-parser-gfm (~> 1.1)
+      parser (~> 2.3)
+      reverse_markdown (>= 1.0.5, < 3)
+      rubocop (>= 0.52)
+      thor (~> 1.0)
+      tilt (~> 2.0)
+      yard (~> 0.9, >= 0.9.24)
+    sorbet-runtime (0.5.10393)
     spring (2.1.1)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
@@ -498,7 +547,7 @@ GEM
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    tzinfo (1.2.7)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     uber (0.1.0)
     uglifier (4.2.0)
@@ -521,6 +570,9 @@ GEM
     will_paginate (3.1.8)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yard (0.9.28)
+      webrick (~> 1.7.0)
+    zeitwerk (2.6.0)
     zeroclipboard-rails (0.1.2)
       railties (>= 3.1)
 
@@ -531,9 +583,11 @@ DEPENDENCIES
   aasm
   activesupport
   acts_as_paranoid (~> 0.6.0)
+  acts_as_singleton
   after_commit_everywhere (~> 0.1, >= 0.1.5)
   ahoy_email
   auto_strip_attributes (~> 2.5)
+  awesome_print
   aws-sdk-s3
   bootsnap
   bootstrap-sass (~> 3.4.1)
@@ -544,9 +598,11 @@ DEPENDENCIES
   config
   csv
   daemons
+  debase
   devise
   dotenv-rails
   draper
+  faker
   fast_excel
   figaro
   fog-aws
@@ -560,10 +616,12 @@ DEPENDENCIES
   listen
   mini_magick
   minitest-rails-capybara
+  minitest-reporters
   newrelic_rpm
   overcommit
   pg (~> 0.18)
   phony_rails
+  pry-rails
   puma
   pundit
   rack (= 2.1.4)
@@ -573,12 +631,14 @@ DEPENDENCIES
   redcarpet
   reek
   rubocop
+  ruby-debug-ide
   sass-rails
   shopify_api
   sidekiq
   simple_form
   simple_token_authentication (~> 1.0)
   simplecov
+  solargraph
   spring
   state_machines
   state_machines-activerecord
@@ -593,4 +653,4 @@ RUBY VERSION
    ruby 2.6.6p146
 
 BUNDLED WITH
-   2.2.17
+   2.3.15

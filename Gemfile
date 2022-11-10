@@ -76,19 +76,29 @@ gem "newrelic_rpm"
 gem "will_paginate", "~> 3.1.0"
 gem 'httparty'
 gem 'csv'
+gem 'acts_as_singleton'
 
 group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console
   gem "byebug"
   gem "dotenv-rails"
   gem "rb-readline"
+  gem "awesome_print", :require => 'ap'
+  gem 'pry-rails'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"
+
+  # Debugging with IDE
+  gem "ruby-debug-ide"
+  gem "debase"
+
+  gem "faker"
 end
 
 group :test do
   gem "minitest-rails-capybara"
+  gem 'minitest-reporters'
   gem "simplecov", require: false
 end
 
@@ -99,4 +109,5 @@ group :development do
   gem "reek", require: false
   gem "rubocop", require: false
   gem "web-console"
+  gem "solargraph"
 end

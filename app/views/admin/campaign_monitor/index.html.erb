@@ -1,0 +1,32 @@
+<!-- TODO: add css file instead of using inline styles -->
+<style>
+  h2 {
+    margin-bottom: 1em;
+  }
+  h4 {
+    margin-top: 0;
+  }
+  .form_label {
+    color: black; 
+    min-width: 160px;
+    margin-bottom: 1em;
+    text-transform: capitalize;
+  }
+  .form_input {
+    width: 320px;
+  }
+  .form_submit {
+    margin-top: .5em;
+  }
+</style>
+
+<h2>Campaign Monitor</h2>
+<h4>Smart IDs for Auto Quote Emails:</h4>
+<%= form_with scope: 'form_data', method: :put do |form| %>
+  <% @transactional_emails.each do |email| %>
+    <%= form.label email[:name], for: email[:name], class: 'form_label' %>
+    <%= form.text_field email[:smart_id], name: email[:name], class: 'form_input', value: email[:smart_id] %>
+    <br />
+  <% end %>
+  <%= form.submit 'Update Smart IDs', class: 'form_submit' %>
+<% end %>

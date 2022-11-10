@@ -62,3 +62,14 @@ yarn-error.log
 /config/gmail_credentials.json
 
 !/app/assets/javascripts/application.js
+
+# Ignore VSCode configuration
+.vscode
+
+# Backups
+*.dump
+*.sql.gz
+*.tar
+
+# Test
+test.rake

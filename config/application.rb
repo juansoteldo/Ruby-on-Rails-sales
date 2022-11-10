@@ -5,6 +5,7 @@ require "rails/all"
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+Dotenv::Railtie.load unless ['production', 'staging'].include?(ENV['RAILS_ENV'])
 
 module CtdSales
   class Application < Rails::Application
@@ -20,5 +21,6 @@ module CtdSales
     config.action_dispatch.ip_spoofing_check = false
     config.autoload_paths += ["#{config.root}/lib"]
     config.debugging = ENV["DEBUGGER_HOST"].present?
+    config.gem "acts_as_singleton"
   end
 end

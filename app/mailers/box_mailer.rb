@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class BoxMailer < ApplicationMailer
-  default from: "orders@customtattoodesign.ca"
+  default from: "leeroller@customtattoodesign.ca"
 
   add_template_helper(ApplicationHelper)
   track open: true, click: true, utm_params: true
@@ -9,22 +9,45 @@ class BoxMailer < ApplicationMailer
   def quote_email(request, marketing_email = MarketingEmail.quote_for_request(request))
     return unless request.user
 
-    @request = request.decorate
-    @marketing_email = marketing_email.decorate
-    @user = @request.user
+    if Settings.config.auto_quote_emails == 'cm'
+      # TODO: add transactional emails for test environment
+      raise 'CM is not available for test environment' if ENV['RAILS_ENV'] == 'test'
 
-    @variant = MostlyShopify::Variant.find(request.tattoo_size.deposit_variant_id.to_i).first
-    raise "Cannot find variant with ID #{request.tattoo_size.deposit_variant_id}" if @variant.nil?
+      tattoo_size = request.tattoo_size.name.downcase
 
-    @variant = MostlyShopify::VariantDecorator.decorate(@variant)
-
-    track user: @request.user,
-          utm_campaign: marketing_email.template_name
-    mail(to: @request.user.email,
-         subject: marketing_email.subject_line,
-         from: marketing_email.from,
-         bcc: Settings.emails.notification_recipients,
-         display_name: marketing_email.from.gsub(/<.+>/, ""))
+      if request.first_time?
+        smart_email_id = TransactionalEmail.find_by(name: 'first_time_auto_quote').smart_id
+      elsif tattoo_size == "full sleeve"
+        smart_email_id = TransactionalEmail.find_by(name: 'full_sleeve_auto_quote').smart_id
+      elsif tattoo_size == "half sleeve"
+        smart_email_id = TransactionalEmail.find_by(name: 'half_sleeve_auto_quote').smart_id
+      elsif tattoo_size == "extra small"
+        smart_email_id = TransactionalEmail.find_by(name: 'extra_small_auto_quote').smart_id
+      else
+        smart_email_id = TransactionalEmail.find_by(name: 'general_auto_quote').smart_id
+      end
+      
+      CampaignMonitorActionJob.perform_later(smart_email_id: smart_email_id, user: request.user, method: "send_transactional_email") unless Settings.config.transactional_emails == 'disabled'
+    elsif Settings.config.auto_quote_emails == 'aws'
+      @request = request.decorate
+      @marketing_email = marketing_email.decorate
+      @user = @request.user
+  
+      @variant = Variant.find(request.tattoo_size.deposit_variant_id.to_i)
+      raise "Cannot find variant with ID #{request.tattoo_size.deposit_variant_id}" if @variant.nil?
+  
+      @variant = MostlyShopify::VariantDecorator.decorate(@variant)
+  
+      track user: @request.user,
+            utm_campaign: marketing_email.template_name
+      mail(to: @request.user.email,
+           subject: marketing_email.subject_line,
+           from: marketing_email.from,
+           bcc: Settings.emails.auto_quote_bcc_recipients,
+           display_name: marketing_email.from.gsub(/<.+>/, ""))
+    else
+      Rails.logger.warn 'Auto quote emails are turned off'
+    end
   end
 
   def marketing_email(request, marketing_email = MarketingEmail.find(1))
@@ -33,8 +56,8 @@ class BoxMailer < ApplicationMailer
     @request = request.decorate
     @marketing_email = marketing_email.decorate
 
-    @variant = MostlyShopify::Variant.find(request.tattoo_size.deposit_variant_id.to_i).first if request.tattoo_size
-    @variant ||= MostlyShopify::Variant.find(request.variant.to_i).first if request.variant
+    @variant = Variant.find(request.tattoo_size.deposit_variant_id.to_i).first if request.tattoo_size
+    @variant ||= Variant.find(request.variant.to_i) if request.variant
     @variant = MostlyShopify::VariantDecorator.decorate(@variant) unless @variant.nil?
 
     @user = @request.user
@@ -56,6 +79,7 @@ class BoxMailer < ApplicationMailer
   end
 
   def confirmation_email(request)
+    return if Settings.config.confirmation_emails != 'aws'
     return unless request.user
 
     @request = request.decorate
@@ -68,31 +92,12 @@ class BoxMailer < ApplicationMailer
          display_name: "Lee Roller")
   end
 
-  def opt_in_email(request)
-    # opt in email disabled by Declyn request at 12.08.2021
-    # because company wants switch opt-in email to campaign monitor. 
-    return
-
-    return unless request&.user
-
-    @request = request.decorate
-    @user = request.user
-    track user: @user
-
-    mail(
-      to: @user.email,
-      from: Settings.emails.lee,
-      subject: "E-Mail opt-in Custom Tattoo Design",
-      display_name: "Lee Roller"
-    )
-  end
-
   def final_confirmation_email(request)
+    return if Settings.config.confirmation_emails != 'aws'
     return unless request.user
 
     @request = request
     @user = @request.user
-
     track user: @user
 
     mail(to: @user.email,

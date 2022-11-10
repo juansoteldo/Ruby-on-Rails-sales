@@ -50,7 +50,7 @@ half_sleeve_quote_email:
   days_after_state_change: 1
   email_type: "quote"
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
-  subject_line: "Your Half Sleeve tattoo design idea"
+  subject_line: "Custom Tattoo Design Quote"
   template_name: "half_sleeve_quote_email"
   version: 1
 
@@ -59,7 +59,7 @@ full_sleeve_quote_email:
   days_after_state_change: 1
   email_type: "quote"
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
-  subject_line: "Your Full Sleeve tattoo design idea"
+  subject_line: "Custom Tattoo Design Quote"
   template_name: "full_sleeve_quote_email"
   version: 1
 
@@ -68,7 +68,7 @@ first_time_quote_email:
   days_after_state_change: 1
   email_type: "quote"
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
-  subject_line: "Your first tattoo design idea"
+  subject_line: "Custom Tattoo Design Quote"
   template_name: "first_time_quote_email"
   version: 1
 
@@ -77,6 +77,6 @@ general_quote_email:
   days_after_state_change: 1
   email_type: "quote"
   from: "Lee Roller <leeroller@customtattoodesign.ca>"
-  subject_line: "Your tattoo design idea"
+  subject_line: "Custom Tattoo Design Quote"
   template_name: "general_quote_email"
   version: 1

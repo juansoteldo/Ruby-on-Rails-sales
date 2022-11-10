@@ -6,11 +6,15 @@ require "shopify_api"
 class CommitShopifyOrderJob < WebhookJob
   def perform(args)
     super
-    source_order = ShopifyAPI::Session.temp(domain: ShopifyAPI::Base.site.to_s, api_version: "2020-01", token: nil) do
-      ShopifyAPI::Order.new(params)
+    source_order = ShopifyAPI::Order.new(session: AppConfig.get_shopify_session)
+
+    params.each do |key, value|
+      source_order.instance_variable_set("@#{key}".to_sym, value)
     end
-    order = MostlyShopify::Order.new source_order
+
+    order = MostlyShopify::Order.new(source_order)
     order.update_request!
+
     @webhook.commit!(order.request_id)
   end
 end
