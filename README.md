@@ -24,3 +24,11 @@
 12. Deploy main branch into production environmment
     - `git checkout main`
     - `git push heroku.production main -f`
+
+## Occasional tasks
+
+Run these rake tasks on first deployment/whenever any changes are made to the Shopify store products/variants.
+
+`bundle exec rake shopify:update_products_and_variants`
+
+`bundle exec rake shopify:update_tattoo_sizes`
