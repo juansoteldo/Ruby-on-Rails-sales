@@ -1,6 +1,6 @@
 {
   "name": "ctd-sales",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "main": "config.ru",
   "repository": "git@github.com:custom-tattoo-design/ctd-sales.git",
   "author": "Wojtek Grabski <wojtek@grabski.ca>",
