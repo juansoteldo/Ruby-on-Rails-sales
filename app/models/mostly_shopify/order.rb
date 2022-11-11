@@ -92,7 +92,6 @@ module MostlyShopify
         params[:limit] ||= 250
         orders = ShopifyAPI::Order.all(session: AppConfig.shopify_session, **params)
         while ShopifyAPI::Order.next_page?
-          break if orders.count >= params[:limit]
           next_page_info = ShopifyAPI::Order.next_page_info
           orders += ShopifyAPI::Order.all(session: AppConfig.shopify_session, page_info: next_page_info)
           sleep 0.75 if ShopifyAPI::Order.next_page?
