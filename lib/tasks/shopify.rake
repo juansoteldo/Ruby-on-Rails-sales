@@ -71,7 +71,7 @@ namespace :shopify do
     # Example: rake shopify:flatten_shopify_order_data\[4593098752193\]
     args.with_defaults(:order_id => '4590702100673')
     order_id = args[:order_id]
-    order = ShopifyAPI::Order.find(order_id)
+    order = MostlyShopify::Order.find(id: order_id)
     result = {}
     result = flatten_object(order)
     puts result.to_json

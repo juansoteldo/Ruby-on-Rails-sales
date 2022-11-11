@@ -61,7 +61,7 @@ class Salesperson < ApplicationRecord
       grouped_orders = MostlyShopify::Order.attributed(param).group_by(&:sales_id)
       grouped_orders.select { |id, _orders| id != "" }.map do |id, orders|
         salesperson = salespeople.find { |s| s.id == id }
-        sales = orders.inject(0) { |sum, o| sum + o.total_price.to_f.round(2) }
+        sales = orders.inject(0) { |sum, o| sum + o.current_total_price.to_f.round(2) }
         salesperson.instance_variable_set "@#{key}_sales", sales
         salesperson.instance_variable_set "@#{key}_count", orders.count
         salesperson.orders = orders

@@ -53,7 +53,7 @@ module CTD
 
           total = SalesTotal.where(sold_on: created_at,
                                    salesperson_id: sales_id).first_or_create
-          total.order_total += order.total_price.to_f.round(2)
+          total.order_total += order.current_total_price.to_f.round(2)
           total.order_count += 1
           total.save!
         end
