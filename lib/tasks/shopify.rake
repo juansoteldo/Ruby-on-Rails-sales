@@ -57,7 +57,7 @@ namespace :shopify do
   task update_tattoo_sizes: :environment do
     variants = Variant.where(option1: 'no', option2: 'no')
     for variant in variants
-      next if variant.fulfillment_service === 'gift_card'
+      next if variant.fulfillment_service == 'gift_card'
       size = variant.size
       tattoo_size = TattooSize.find_by(name: size)
       if tattoo_size
