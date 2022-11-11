@@ -80,7 +80,9 @@ module MostlyShopify
     def self.find(params)
       digest = Digest::SHA256.base64digest params.inspect
       Rails.cache.fetch('shopify/orders/' + digest, expires_in: expire_in) do
-        self::all(params).map{ |c| new(c) }
+        order = ShopifyAPI::Order.find(session: AppConfig.shopify_session, **params)
+        return nil if order.nil?
+        return new(order)
       end
     end
 
@@ -92,7 +94,7 @@ module MostlyShopify
         while ShopifyAPI::Order.next_page?
           next_page_info = ShopifyAPI::Order.next_page_info
           orders += ShopifyAPI::Order.all(session: AppConfig.shopify_session, page_info: next_page_info)
-          sleep 0.1 if ShopifyAPI::Order.next_page?
+          sleep 0.75 if ShopifyAPI::Order.next_page?
         end
         orders.map{ |c| new(c) }
       end
@@ -111,7 +113,7 @@ module MostlyShopify
         params[:created_at_min] ||= CTD::MIN_DATE.dup
         params[:created_at_max] ||= 1.day.ago.end_of_day
         params[:created_at_min] = [params[:created_at_min], CTD::MIN_DATE.dup].max
-        params[:fields] = 'customer,line_items,total_price,subtotal_price,note_attributes,created_at'
+        params[:fields] = 'customer,line_items,current_total_price,current_subtotal_price,note_attributes,created_at'
         Rails.logger.debug "Loading Shopify orders using #{params.inspect}"
         orders = self::all(params)
         orders = orders.reject do |order|

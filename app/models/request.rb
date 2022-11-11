@@ -357,10 +357,10 @@ class Request < ApplicationRecord
     return sub_total if sub_total
     return 0 if deposit_order_id.nil?
 
-    order = MostlyShopify::Order.find(deposit_order_id).first
+    order = MostlyShopify::Order.find(id: deposit_order_id)
     return 0 unless order
 
-    update_column :sub_total, order.subtotal_price
+    update_column :sub_total, order.current_subtotal_price
     sub_total.to_f
   end
 
@@ -375,7 +375,7 @@ class Request < ApplicationRecord
   end
 
   # def deposit_redirect_url
-  #   order = MostlyShopify::Order.find(deposit_order_id)
+  #   order = MostlyShopify::Order.find(id: deposit_order_id)
   #   return nil if order.nil?
   #   order_id = order.first.id
   #   return "#{CTD::APP_URL}/public/thanks?order_id=#{order_id}&request_id=#{self.id}"

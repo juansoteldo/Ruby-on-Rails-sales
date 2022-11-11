@@ -85,7 +85,7 @@ module CTD
     end
 
     def orders
-      @orders ||= MostlyShopify::Order.find(created_at_min: cutoff, limit: 250)
+      @orders ||= MostlyShopify::Order.all(created_at_min: cutoff, limit: 250)
     end
 
     def cutoff
