@@ -70,11 +70,11 @@ module MostlyShopify
     end
 
     def deposit?
-      @source.line_items.any? { |line_item| line_item['title'].end_with? "Deposit" }
+      @source.line_items.any? { |line_item| line_item['title'].end_with? 'Deposit' }
     end
 
     def final?
-      @source.line_items.any? { |line_item| line_item.title.include? "Final" }
+      @source.line_items.any? { |line_item| line_item.title.include? 'Final' }
     end
 
     def self.find(params)
