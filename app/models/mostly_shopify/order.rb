@@ -80,7 +80,7 @@ module MostlyShopify
     def self.find(params)
       digest = Digest::SHA256.base64digest params.inspect
       Rails.cache.fetch('shopify/orders/' + digest, expires_in: expire_in) do
-        self::all(session: AppConfig.shopify_session, params: params).map{ |c| new(c) }
+        self::all(params).map{ |c| new(c) }
       end
     end
 
