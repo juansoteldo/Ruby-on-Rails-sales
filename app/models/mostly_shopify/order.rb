@@ -46,7 +46,7 @@ module MostlyShopify
     end
 
     def email
-      @source.respond_to?(:email) ? @source.email : customer&.email
+      @source.email || @source.customer&.email
     end
 
     def has_request_id?
@@ -58,7 +58,7 @@ module MostlyShopify
     end
 
     def created_at
-      @source.created_at
+      Date.strptime(@source.created_at)
     end
 
     def sku
@@ -70,24 +70,31 @@ module MostlyShopify
     end
 
     def deposit?
-      @source.line_items.any? { |line_item| line_item['title'].end_with? "Deposit" }
+      @source.line_items.any? { |line_item| line_item['title'].end_with? 'Deposit' }
     end
 
     def final?
-      @source.line_items.any? { |line_item| line_item.title.include? "Final" }
+      @source.line_items.any? { |line_item| line_item.title.include? 'Final' }
     end
 
     def self.find(params)
       digest = Digest::SHA256.base64digest params.inspect
       Rails.cache.fetch('shopify/orders/' + digest, expires_in: expire_in) do
-        ShopifyAPI::Order.all(session: AppConfig.shopify_session, params: params)
+        self::all(params).map{ |c| new(c) }
       end
     end
 
     def self.all(params)
       digest = Digest::SHA256.base64digest params.inspect
       Rails.cache.fetch('shopify/orders/all' + digest, expires_in: expire_in) do
-        ShopifyAPI::Order.all(session: AppConfig.shopify_session, params: params)
+        params[:limit] ||= 250
+        orders = ShopifyAPI::Order.all(session: AppConfig.shopify_session, **params)
+        while ShopifyAPI::Order.next_page?
+          next_page_info = ShopifyAPI::Order.next_page_info
+          orders += ShopifyAPI::Order.all(session: AppConfig.shopify_session, page_info: next_page_info)
+          sleep 0.1 if ShopifyAPI::Order.next_page?
+        end
+        orders.map{ |c| new(c) }
       end
     end
 
@@ -106,7 +113,7 @@ module MostlyShopify
         params[:created_at_min] = [params[:created_at_min], CTD::MIN_DATE.dup].max
         params[:fields] = 'customer,line_items,total_price,subtotal_price,note_attributes,created_at'
         Rails.logger.debug "Loading Shopify orders using #{params.inspect}"
-        orders = MostlyShopify::Order.all(params)
+        orders = self::all(params)
         orders = orders.reject do |order|
           order.created_at < (params[:created_at_min]) || order.created_at > (params[:created_at_max])
         end.select do |order|
@@ -137,8 +144,7 @@ module MostlyShopify
     end
 
     def landing_site
-      return nil unless @source.respond_to? :landing_site
-      @source.landing_site
+      @source.landing_site || @source.customer.landing_site
     end
 
     private
@@ -169,23 +175,18 @@ module MostlyShopify
     end
 
     def request_id_from_landing_site
-      return nil unless @source.respond_to? :landing_site
-      return nil unless @source.landing_site
-      reqid_pos = /reqid=(\d+)$/ =~ landing_site
-      return nil unless reqid_pos
-      @request_id = landing_site[reqid_pos, 5 + landing_site.length - reqid_pos]
+      return nil unless landing_site
+      match = landing_site.match(/reqid=(\d+)/)
+      return nil unless match&.length == 2
+      @request_id = match[1]
     end
 
     def note_value(attr_name)
-      return nil unless @source.respond_to? :note_attributes
-      return nil unless @source.note_attributes
-      return nil if @source.note_attributes.all?(&:blank?)
-
+      return nil unless @source.note_attributes && @source.note_attributes.length > 0
       @source.note_attributes.each do |note_attr|
-        next unless note_attr.attributes.key?(:name)
-        next unless note_attr.attributes[:name] == attr_name
-        return nil if note_attr.attributes[:value] == 'undefined'
-        return note_attr.attributes[:value]
+        next unless note_attr.has_key?('name') && note_attr['name'] == attr_name
+        return nil if note_attr['value'] == 'undefined'
+        return note_attr['value']
       end
       nil
     end

@@ -5,7 +5,7 @@ if Settings.shopify.app_type == 'custom'
     api_key: Settings.shopify.api_key,
     api_secret_key: Settings.shopify.api_secret_key,
     host_name: Settings.shopify.host_name,
-    scope: 'read_orders,read_products',
+    scope: 'read_orders,read_products,read_all_orders',
     session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
     is_embedded: false,
     is_private: false,
