@@ -88,13 +88,13 @@ module MostlyShopify
       digest = Digest::SHA256.base64digest params.inspect
       Rails.cache.fetch('shopify/orders/all' + digest, expires_in: expire_in) do
         params[:limit] ||= 250
-        orders = ShopifyAPI::Order.all(session: AppConfig.shopify_session, params: params)
+        orders = ShopifyAPI::Order.all(session: AppConfig.shopify_session, **params)
         while ShopifyAPI::Order.next_page?
           next_page_info = ShopifyAPI::Order.next_page_info
-          orders += ShopifyAPI::Order.all(session: AppConfig.shopify_session, params: params, page_info: next_page_info)
-          sleep 0.15 if ShopifyAPI::Order.next_page?
+          orders += ShopifyAPI::Order.all(session: AppConfig.shopify_session, page_info: next_page_info)
+          sleep 0.1 if ShopifyAPI::Order.next_page?
         end
-        orders.map(&method(:new))
+        orders.map{ |c| new(c) }
       end
     end
 
