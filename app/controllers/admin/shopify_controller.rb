@@ -10,7 +10,7 @@ class Admin::ShopifyController < Admin::BaseController
   def add_order
     order_id = params["{:name=>\"order_id\", :class=>\"form_input\"}"]
     raise 'Failed. Order id was not specified.' if order_id.blank?
-    order = ShopifyAPI::Order.find(order_id)
+    order = MostlyShopify::Order.find(id: order_id)
     raise "Failed. Order with id #{order_id} could not be found." if order.nil?
     order = flatten_object(order)
     raise "Failed. Webhook with order id #{order_id} already exists." if Webhook.find_by_source_id(order_id)
