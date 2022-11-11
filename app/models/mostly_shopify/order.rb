@@ -58,7 +58,7 @@ module MostlyShopify
     end
 
     def created_at
-      Date.strptime(@source.created_at)
+      @source.created_at
     end
 
     def sku
