@@ -373,11 +373,4 @@ class Request < ApplicationRecord
 
     user.update first_name: first_name || user.first_name, last_name: last_name || user.last_name
   end
-
-  # def deposit_redirect_url
-  #   order = MostlyShopify::Order.find(id: deposit_order_id)
-  #   return nil if order.nil?
-  #   order_id = order.first.id
-  #   return "#{CTD::APP_URL}/public/thanks?order_id=#{order_id}&request_id=#{self.id}"
-  # end
 end
