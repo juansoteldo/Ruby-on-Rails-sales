@@ -113,7 +113,7 @@ module MostlyShopify
         params[:created_at_min] ||= CTD::MIN_DATE.dup
         params[:created_at_max] ||= 1.day.ago.end_of_day
         params[:created_at_min] = [params[:created_at_min], CTD::MIN_DATE.dup].max
-        params[:fields] = 'customer,line_items,total_price,subtotal_price,note_attributes,created_at'
+        params[:fields] = 'customer,line_items,current_total_price,current_subtotal_price,note_attributes,created_at'
         Rails.logger.debug "Loading Shopify orders using #{params.inspect}"
         orders = self::all(params)
         orders = orders.reject do |order|

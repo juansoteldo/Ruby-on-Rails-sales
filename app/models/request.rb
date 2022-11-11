@@ -360,7 +360,7 @@ class Request < ApplicationRecord
     order = MostlyShopify::Order.find(id: deposit_order_id)
     return 0 unless order
 
-    update_column :sub_total, order.subtotal_price
+    update_column :sub_total, order.current_subtotal_price
     sub_total.to_f
   end
 
