@@ -175,11 +175,10 @@ module MostlyShopify
     end
 
     def request_id_from_landing_site
-      return nil unless @source.respond_to? :landing_site
-      return nil unless @source.landing_site
-      reqid_pos = /reqid=(\d+)$/ =~ landing_site
-      return nil unless reqid_pos
-      @request_id = landing_site[reqid_pos, 5 + landing_site.length - reqid_pos]
+      return nil unless landing_site
+      match = landing_site.match(/reqid=(\d+)/)
+      return nil unless match&.length == 2
+      @request_id = match[1]
     end
 
     def note_value(attr_name)
