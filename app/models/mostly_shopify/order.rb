@@ -146,7 +146,7 @@ module MostlyShopify
     end
 
     def landing_site
-      @source.landing_site || @source.customer.landing_site
+      @source.landing_site
     end
 
     private
