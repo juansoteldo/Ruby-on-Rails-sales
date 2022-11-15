@@ -1,3 +1,5 @@
+ctd:
+  global_api_token: <%= ENV.fetch 'GLOBAL_API_TOKEN' %>
 config:
   auto_quote_delay: <%= ENV.fetch 'CONFIG_AUTO_QUOTE_DELAY', 0 %>
   auto_quote_emails: <%= ENV.fetch 'CONFIG_AUTO_QUOTE_EMAILS', 'disabled' %>
@@ -14,8 +16,6 @@ shopify:
   shop_name: <%= ENV.fetch 'SHOPIFY_API_SHOP_NAME' %>
   url: <%= ENV.fetch 'SHOPIFY_URL' %>
   webhook_key: <%= ENV.fetch 'SHOPIFY_WEBHOOK_KEY' %>
-ctd:
-  global_api_token: <%= ENV.fetch 'GLOBAL_API_TOKEN' %>
 aws:
   access_key_id: <%= ENV.fetch 'AWS_ACCESS_KEY_ID' %>
   secret_access_key: <%= ENV.fetch 'AWS_SECRET_ACCESS_KEY' %>
