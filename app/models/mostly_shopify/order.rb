@@ -100,13 +100,6 @@ module MostlyShopify
       end
     end
 
-    def self.count(params)
-      digest = Digest::SHA256.base64digest params.inspect
-      Rails.cache.fetch('shopify/orders/count/' + digest, expires_in: expire_in) do
-        ShopifyAPI::Order.count(session: AppConfig.shopify_session, params: params)
-      end
-    end
-
     def self.newest()
       orders = ShopifyAPI::Order.all(session: AppConfig.shopify_session)
       return nil if orders.nil?
