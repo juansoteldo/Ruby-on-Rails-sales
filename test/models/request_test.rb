@@ -176,10 +176,9 @@ class RequestTest < ActiveSupport::TestCase
   end
 
   def last_deposit_order
-    order_count = MostlyShopify::Order.count({})
-
-    source_order = ShopifyAPI::Order.all(session: AppConfig.get_shopify_session, params: { limit: 1, page: order_count }).last
-    order = MostlyShopify::Order.new(source_order)
+    order = MostlyShopify::Order.newest
+    raise StandardError, 'Order customer cannot be blank.' if order.source.customer.nil?
+    raise StandardError, 'Order email cannot be blank.' if order.source.email.blank?
     order
   end
 
