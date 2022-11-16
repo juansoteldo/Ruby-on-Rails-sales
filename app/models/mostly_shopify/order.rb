@@ -107,6 +107,12 @@ module MostlyShopify
       end
     end
 
+    def self.newest()
+      orders = ShopifyAPI::Order.all(session: AppConfig.shopify_session)
+      return nil if orders.nil?
+      return new(orders.first)
+    end
+
     def self.deposits(params)
       digest = Digest::SHA256.base64digest params.inspect
       Rails.cache.fetch('shopify/orders/deposits/' + digest, expires_in: expire_in(6.hours)) do
