@@ -12,7 +12,7 @@ class RequestTest < ActiveSupport::TestCase
 
     perform_enqueued_jobs do
       email = SecureRandom.hex(8);
-      @fresh_user = User.create(email: "#{email}@test.com", marketing_opt_in: true)
+      @fresh_user = User.create(email: "#{email}@test.com", presales_opt_in: true, marketing_opt_in: true, crm_opt_in: true)
       @fresh_request = Request.create! user: @fresh_user, description: "TEST, DO NOT REPLY"
 
       @fresh_request.size = "Full Sleeve"
