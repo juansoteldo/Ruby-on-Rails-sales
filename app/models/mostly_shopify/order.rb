@@ -179,10 +179,12 @@ module MostlyShopify
     end
 
     def request_id_from_landing_site
-      return nil unless landing_site
-      match = landing_site.match(/reqid=(\d+)/)
-      return nil unless match&.length == 2
-      @request_id = match[1]
+      # TODO: this is broken, landing_site is incorrect, giving wrong req_id.
+      return nil
+      # return nil unless landing_site
+      # match = landing_site.match(/reqid=(\d+)/)
+      # return nil unless match&.length == 2
+      # @request_id = match[1]
     end
 
     def note_value(attr_name)
