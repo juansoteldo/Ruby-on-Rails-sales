@@ -12,6 +12,8 @@ emails:
   deliver_opt_in: true
   notification_recipients:
     - stephen@customtattoodesign.ca
+  autoquote_bcc_recipients:
+    - stephen@customtattoodesign.ca
   lee: leeroller@customtattoodesign.ca
   system: sales@customtattoodesign.ca
   mailer: mailer@customtattoodesign.ca

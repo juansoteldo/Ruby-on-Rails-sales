@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.3] - 2022-11-11
+### Fixed
+- Auto quote bcc recipients for AWS
+### Changed
+- Removed `MostlyShopify::Order.count` as it doesn't work with new Shopify API. Added method `MostlyShopify::Order.newest` as a replacement.
+- Updated deposit variant ids for tattoo sizes fixture to use Shopify test store ids
+### Added
+- Environment variable `SHOPIFY_API_SCOPE` to specify scope for Shopify API.
+- Autoquote_bcc_recipients for test.yml
+- Documentation for commit messages and testing
+- Rake task to update all shopify data instead of having to run multiple rake tasks
+
 ## [3.0.2] - 2022-11-11
 
 ### Fixed
@@ -307,6 +319,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New API client_id and secret for sales account
 
 ## [2.0.1] - 2020-11-02
-
 ### Added
 - Allow active salespeople to toggle auto-quoting
