@@ -188,25 +188,26 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert request.state == "deposited"
   end
 
-  test "shopify webhook should update using landing_site url params" do
-    request = generate_request
-    email = SecureRandom.base64(8)
+  # NOTE: disabled for now since landing_site is disabled.
+  # test "shopify webhook should update using landing_site url params" do
+  #   request = generate_request
+  #   email = SecureRandom.base64(8)
 
-    perform_enqueued_jobs do
-      params = shopify_unassociated_params.merge(
-        "email": email,
-        "note_attributes": []
-      )
-      params["landing_site"].gsub!(/reqid=[\d]+/, "reqid=#{request.id}")
-      post "/webhooks/orders_create", params: params, as: :json
-    end
+  #   perform_enqueued_jobs do
+  #     params = shopify_unassociated_params.merge(
+  #       "email": email,
+  #       "note_attributes": []
+  #     )
+  #     params["landing_site"].gsub!(/reqid=[\d]+/, "reqid=#{request.id}")
+  #     post "/webhooks/orders_create", params: params, as: :json
+  #   end
 
-    webhook = Webhook.find(response.body.to_i)
-    assert_not_equal webhook.tries, 0
-    assert_equal "committed", webhook.aasm_state
-    assert request.reload.deposit_order_id == shopify_unassociated_params["id"].to_s
-    assert request.state == "deposited"
-  end
+  #   webhook = Webhook.find(response.body.to_i)
+  #   assert_not_equal webhook.tries, 0
+  #   assert_equal "committed", webhook.aasm_state
+  #   assert request.reload.deposit_order_id == shopify_unassociated_params["id"].to_s
+  #   assert request.state == "deposited"
+  # end
 
   # NOTE: needs to be updated, broken test.
   # test "shopify webhook should fail to update on mismatch" do
