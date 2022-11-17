@@ -1,3 +1,4 @@
+## Commit Message Types
 
 feat: A new feature
 fix: A bug fix
