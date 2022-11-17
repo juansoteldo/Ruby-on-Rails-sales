@@ -133,13 +133,11 @@ class RequestTest < ActiveSupport::TestCase
     perform_enqueued_jobs do
       @fresh_request.send_quote
       @fresh_request.reload
-      
       sleep 10
-
-      response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
-  
-      assert_not_nil find_value_in_response(response: response, key: 'quote_url', value: @fresh_request.quote_url)
-   end
+    end
+    assert_performed_jobs 3
+    response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
+    assert_not_nil find_value_in_response(response: response, key: 'quote_url', value: @fresh_request.quote_url)
   end
 
   test "salesperson_email" do
