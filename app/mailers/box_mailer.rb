@@ -43,7 +43,7 @@ class BoxMailer < ApplicationMailer
       mail(to: @request.user.email,
            subject: marketing_email.subject_line,
            from: marketing_email.from,
-           bcc: Settings.emails.auto_quote_bcc_recipients,
+           bcc: Settings.emails.autoquote_bcc_recipients,
            display_name: marketing_email.from.gsub(/<.+>/, ""))
     else
       Rails.logger.warn 'Auto quote emails are turned off'
