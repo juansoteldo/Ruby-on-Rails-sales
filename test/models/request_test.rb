@@ -174,6 +174,7 @@ class RequestTest < ActiveSupport::TestCase
 
   def last_deposit_order
     order = MostlyShopify::Order.newest
+    raise StandardError, 'Order cannot be blank.' if order.source.nil?
     raise StandardError, 'Order customer cannot be blank.' if order.source.customer.nil?
     raise StandardError, 'Order email cannot be blank.' if order.source.email.blank?
     order
