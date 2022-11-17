@@ -24,11 +24,20 @@ namespace :shopify do
     puts 'done'
   end
 
+  desc 'update all data'
+  task update_all_data: :environment do
+    update_products_and_variants
+    update_tattoo_sizes
+  end
+
   desc 'update products and variants by pulling data from Shopify API'
   task update_products_and_variants: :environment do
+    update_products_and_variants
+  end
+
+  def update_products_and_variants
     Product.destroy_all
     Variant.destroy_all
-
     products = ShopifyAPI::Product.all(session: AppConfig.shopify_session)
     for product in products
       next if product.product_type.end_with? 'Final Payment'
@@ -51,10 +60,10 @@ namespace :shopify do
         )
       end
     end
+    puts 'Products and variants have been updated.'
   end
 
-  desc 'update variant ids for tattoo sizes by pulling data from Shopify API'
-  task update_tattoo_sizes: :environment do
+  def update_tattoo_sizes
     variants = Variant.where(option1: 'no', option2: 'no')
     for variant in variants
       next if variant.fulfillment_service == 'gift_card'
@@ -64,6 +73,12 @@ namespace :shopify do
         tattoo_size.update(deposit_variant_id: variant.id)
       end
     end
+    puts 'Tattoo sizes have been updated.'
+  end
+
+  desc 'update variant ids for tattoo sizes by pulling data from Shopify API'
+  task update_tattoo_sizes: :environment do
+    update_tattoo_sizes
   end
 
   desc "flatten shopify order data"

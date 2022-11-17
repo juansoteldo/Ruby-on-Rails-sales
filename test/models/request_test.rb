@@ -12,7 +12,7 @@ class RequestTest < ActiveSupport::TestCase
 
     perform_enqueued_jobs do
       email = SecureRandom.hex(8);
-      @fresh_user = User.create(email: "#{email}@test.com", marketing_opt_in: true)
+      @fresh_user = User.create(email: "#{email}@test.com", presales_opt_in: true, marketing_opt_in: true, crm_opt_in: true)
       @fresh_request = Request.create! user: @fresh_user, description: "TEST, DO NOT REPLY"
 
       @fresh_request.size = "Full Sleeve"
@@ -133,29 +133,27 @@ class RequestTest < ActiveSupport::TestCase
     perform_enqueued_jobs do
       @fresh_request.send_quote
       @fresh_request.reload
-      
       sleep 10
-
-      response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
-  
-      assert_not_nil find_value_in_response(response: response, key: 'quote_url', value: @fresh_request.quote_url)
-   end
+    end
+    assert_performed_jobs 3
+    response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
+    assert_not_nil find_value_in_response(response: response, key: 'quote_url', value: @fresh_request.quote_url)
   end
 
   test "salesperson_email" do
     perform_enqueued_jobs do
-      @fresh_request.quoted_by = Salesperson.last
+      @fresh_request.quoted_by = Salesperson.find_by_email('leeroller@customtattoodesign.ca')
       @fresh_request.save!
       sleep 10
-
-      response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
-
-      assert_not_nil find_value_in_response(response: response, key: 'salesperson_email', value: @fresh_request.salesperson.email)
     end
+    response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
+    assert_not_nil find_value_in_response(response: response, key: 'salesperson_email', value: @fresh_request.salesperson.email)
   end
 
   def find_value_in_response(response:, key:, value:)
     parsed_response = parse_response(response)
+
+    raise StandardError, parsed_response[:Message] if parsed_response[:Code] == 203
 
     for custom_field in parsed_response[:CustomFields]
       return true if custom_field[:Key] == key && custom_field[:Value] == value
@@ -176,10 +174,9 @@ class RequestTest < ActiveSupport::TestCase
   end
 
   def last_deposit_order
-    order_count = MostlyShopify::Order.count({})
-
-    source_order = ShopifyAPI::Order.all(session: AppConfig.get_shopify_session, params: { limit: 1, page: order_count }).last
-    order = MostlyShopify::Order.new(source_order)
+    order = MostlyShopify::Order.newest
+    raise StandardError, 'Order customer cannot be blank.' if order.source.customer.nil?
+    raise StandardError, 'Order email cannot be blank.' if order.source.email.blank?
     order
   end
 
