@@ -8,6 +8,7 @@ module MostlyShopify
   class Order < Base
     def update_request!(request = self.request)
       raise StandardError, "cannot find request for #{order_status_url}" unless request
+
       if request.can_convert? && deposit?
         request.convert!
         request.update_columns deposit_order_id: @source.id,
@@ -18,7 +19,9 @@ module MostlyShopify
         request.update_columns final_order_id: @source.id,
                                state_changed_at: @source.created_at
       end
+
       request.update!(quoted_by_id: sales_id) if !sales_id.nil? && sales_id != request.quoted_by_id
+
       # Update custom field 'Purchased' to 'Yes' on Campaign Monitor
       CampaignMonitorActionJob.perform_later(user: request.user, method: 'update_user_to_all_list')
 
