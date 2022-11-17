@@ -88,16 +88,15 @@ class RequestTest < ActiveSupport::TestCase
     order.source.email = SecureRandom.base64(8)
     order.source.note_attributes = [
       {
-        "name": "req_id",
-        "value": request.id.to_s
+        "name" => "req_id",
+        "value" => request.id.to_s
       },
       {
-        "name": "sales_id",
-        "value": nil
+        "name" => "sales_id",
+        "value" => nil
       }
     ]
     order.source.id = nil
-
     found_request = Request.for_shopify_order(order)
     assert_not_nil found_request
     assert_equal "request_id", found_request.attributed_by
