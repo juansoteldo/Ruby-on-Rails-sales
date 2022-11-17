@@ -142,14 +142,12 @@ class RequestTest < ActiveSupport::TestCase
 
   test "salesperson_email" do
     perform_enqueued_jobs do
-      @fresh_request.quoted_by = Salesperson.last
+      @fresh_request.quoted_by = Salesperson.find_by_email('leeroller@customtattoodesign.ca')
       @fresh_request.save!
       sleep 10
-
-      response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
-
-      assert_not_nil find_value_in_response(response: response, key: 'salesperson_email', value: @fresh_request.salesperson.email)
     end
+    response = Services::CampaignMonitor.get_subscriber_details_in_all(@fresh_user)
+    assert_not_nil find_value_in_response(response: response, key: 'salesperson_email', value: @fresh_request.salesperson.email)
   end
 
   def find_value_in_response(response:, key:, value:)
