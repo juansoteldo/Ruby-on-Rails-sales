@@ -157,6 +157,8 @@ class RequestTest < ActiveSupport::TestCase
   def find_value_in_response(response:, key:, value:)
     parsed_response = parse_response(response)
 
+    raise StandardError, parsed_response[:Message] if parsed_response[:Code] == 203
+
     for custom_field in parsed_response[:CustomFields]
       return true if custom_field[:Key] == key && custom_field[:Value] == value
     end
