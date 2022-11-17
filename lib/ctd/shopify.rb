@@ -10,7 +10,6 @@ module CTD
       Variant.destroy_all
       products = ShopifyAPI::Product.all(session: AppConfig.shopify_session)
       for product in products
-        next if product.product_type.end_with? 'Final Payment'
         Product.create(
           id: product.id,
           title: product.title,
@@ -26,7 +25,7 @@ module CTD
             fulfillment_service: variant.fulfillment_service,
             option1: variant.option1,
             option2: variant.option2,
-            option3: variant.option3,
+            option3: variant.option3
           )
         end
       end
@@ -36,7 +35,7 @@ module CTD
     def self.update_tattoo_sizes
       variants = Variant.where(option1: 'no', option2: 'no')
       for variant in variants
-        next if variant.fulfillment_service == 'gift_card'
+        next if variant.product_type != 'deposit'
         size = variant.size
         tattoo_size = TattooSize.find_by(name: size)
         if tattoo_size
