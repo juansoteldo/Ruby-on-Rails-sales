@@ -30,4 +30,12 @@ class Variant < ApplicationRecord
     product.title[0, product.title.index('Tattoo Design Deposit') - 1]
   end
 
+  def product_type
+    return 'preview' if product.title == 'Custom Tattoo Design Preview'
+    return 'gift card' if product.title == 'Custom Tattoo Design Gift Card'
+    return 'aftercare kit' if product.title == 'Ultimate Tattoo Aftercare Kit'
+    return 'deposit' if product.title.end_with?('Design Deposit')
+    return 'final payment' if product.title.end_with?('Final Payment')
+    'unknown'
+  end
 end
